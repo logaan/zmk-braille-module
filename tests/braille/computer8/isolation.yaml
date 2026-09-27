@@ -1,0 +1,29 @@
+# computer8 isolation from UEB context
+#
+# computer8: UEB indicators, word-position rules and contractions do not apply; every cell is
+# its own character (phase 04 plan, isolate-computer8-from-ueb-context).
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: computer8
+cases:
+  - {name: "dot 6 is a comma, not a capital prefix", inputs: [[6], [1]], outputs: [",", "a"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 3456 is the number sign, not a numeric indicator", inputs: [[3, 4, 5, 6], [1]], outputs: ["#", "a"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 56 is a semicolon, not a grade 1 indicator", inputs: [[5, 6], [1, 2]], outputs: [";", "b"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 6, 6 are two commas, not a capitalised word indicator", inputs: [[6], [6], [1], [1, 2]], outputs: [",", ",", "a", "b"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 236 is the digit 8, not a quotation mark or question mark", inputs: [[2, 3, 6]], outputs: ["8"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "a standing-alone letter is the letter, not an alphabetic wordsign", inputs: [[1, 2], []], outputs: ["b", " "], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 16 is an asterisk, not the groupsign ch", inputs: [[1, 6]], outputs: ["*"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dots 25 is the digit 3, not a colon or con", inputs: [[2, 5], [1, 4]], outputs: ["3", "c"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "letters after a digit need no indicator", inputs: [[2], [1], [1, 2]], outputs: ["1", "a", "b"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "dot 7 makes a capital letter without a capitals indicator", inputs: [[1, 2, 5, 7], [1, 5], [1, 2, 3], [1, 2, 3], [1, 3, 5]], outputs: ["H", "e", "l", "l", "o"], source: "liblouis en-us-comp8.ctb"}
