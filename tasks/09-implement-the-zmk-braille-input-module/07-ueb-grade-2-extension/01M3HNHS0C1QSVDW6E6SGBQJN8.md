@@ -9,7 +9,7 @@ cargo:
 
 # UEB Grade 2 extension
 
-1. Resolve the decision milestone first, then add `ueb2` as an optional named mode after initial-feature acceptance; nothing here blocks phases 01–06.
+1. Add `ueb2` as an optional named mode after initial-feature acceptance; nothing here blocks phases 01–06.
 2. Its table contains every contraction the rulebook defines, read as the rulebook's reading rules permit, including word-position and word-part restrictions.
     1. The 182 contractions fall into nine classes: alphabetic wordsigns, strong wordsigns, strong contractions, strong groupsigns, lower wordsigns, lower groupsigns, initial-letter contractions, final-letter groupsigns, and shortforms.
     2. Shortforms also apply in the longer words of the rulebook's Shortforms List and under its rules 10.9.3–10.9.5.
