@@ -1,0 +1,26 @@
+# ueb1 dropped prefixes
+#
+# ueb1: an incomplete prefix that the next chord rules out sends nothing; that chord is read
+# afresh (root plan 4.5.3). One case per prefix cell.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: ueb1
+cases:
+  - {name: "prefix dots 4 that the next chord cannot continue is dropped", inputs: [[4], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 45 that the next chord cannot continue is dropped", inputs: [[4, 5], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 456 that the next chord cannot continue is dropped", inputs: [[4, 5, 6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 5 that the next chord cannot continue is dropped", inputs: [[5], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 46 that the next chord cannot continue is dropped", inputs: [[4, 6], [1]], outputs: ["a"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 6 that the next chord cannot continue is dropped", inputs: [[6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 3456 that the next chord cannot continue is dropped", inputs: [[3, 4, 5, 6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
