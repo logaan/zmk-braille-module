@@ -1,0 +1,34 @@
+---
+created: Mon 28 Sep 2026 - 00h 50m 48s
+author: user
+subject: Match positional Grade 2 rules
+cargo:
+  type: task
+  status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
+---
+
+# Match positional Grade 2 rules
+
+1. Reuse the existing `word-start` constraint (the `word_start` field) and longest-valid matching; `word-middle` is `after-alphabetic` and `before-alphabetic` together.
+2. Add the rule conditions of `references/research/ueb-grade2-word-boundaries.yaml` (`normative.conditions`):
+    1. `grade1-off`: grade 1 mode is not in effect; no contraction is read in grade 1 mode.
+    2. `standing-alone`: the sign is a letters-sequence of its own under rules 2.6.1–2.6.4, bounded by a space, hyphen, or dash with only the listed punctuation and indicators between.
+    3. `after-alphabetic` and `before-alphabetic`: the neighbouring sign is a letter or contraction, not a capitals indicator or terminator.
+    4. `no-lower-contact`: the immediate neighbours, disregarding capitals indicators, are not lower punctuation, a hyphen, a dash, or a quotation mark.
+    5. `shortform-word`: a shortform inside a longer standing-alone word qualifies under rules 10.9.2–10.9.5, checked against the Shortforms List data.
+3. Track grade 1 mode in the context fields `grade1` and `grade1_symbol`, as in `context_representation` of `references/research/ueb-grade2-indicator-interactions.yaml`:
+    1. ⠰ puts the next symbol, after any capitals indicators, in grade 1 mode; ⠰⠰ sets word mode, ended by a space; ⠰⠰⠰ sets passage mode; ⠰⠄ ends every grade 1 mode.
+    2. A numeric indicator sets grade 1 mode until the next space, hyphen, dash, or ⠰⠄, even after numeric mode ends.
+    3. ⠰ directly after a letter or contraction and before e, g, l, n, s, t, or y is a final-letter groupsign, not an indicator.
+    4. Reset both fields with the rest of the UEB context.
+4. Resolve each buffered word as a whole, following `back_translation.procedure` in `references/research/ueb-grade2-word-boundaries.yaml`:
+    1. Read left to right with the `ueb1` context rules, trying the contraction rows whose conditions hold, longest first, else the `ueb1` meaning.
+    2. Then read shortforms in each standing-alone letters-sequence that qualifies and does not begin in grade 1 mode, preferring the reading with the most qualifying shortforms.
+    3. Output the `ueb1` (uncontracted) meaning wherever no contraction's condition holds.
+5. Treat the Braille space, Return, and Tab chords as spaces for standing alone; a buffer resolved at 32 cells ends at a word boundary, and its next cell begins a word.
+6. Keep all resulting text and actions on the shared binding-dispatch path.
+7. Unit-test positional matching alongside the implementation: each condition holding and failing, each grade 1 mode and its end, numeric-indicator grade 1 mode ending at a hyphen, dash, space, and ⠰⠄, ⠰ as final-letter groupsign or indicator, longest-valid match with shorter and uncontracted fallback, every case in `normative.ambiguous_sequences`, and shared dispatch of the resulting actions.
