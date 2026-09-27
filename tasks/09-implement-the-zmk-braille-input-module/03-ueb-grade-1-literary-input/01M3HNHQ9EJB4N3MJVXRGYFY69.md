@@ -13,3 +13,4 @@ cargo:
 2. Implement uncontracted UEB from the pinned ICEB rulebook on the phase 02 engine and actions.
     1. Uncontracted UEB is not a one-cell-to-one-character translation: indicators and multi-cell signs carry context.
 3. Limit literary-sign work to keyboard input for the completeness target; do not build a general Braille-document or technical-notation translator.
+4. Incomplete prefixes, such as the capital indicator or the first cell of a multi-cell sign, follow the shared pending-input policy with no Grade 1-specific dispatch: when the next chord cannot continue one, drop it with a display notice and interpret that chord from scratch.

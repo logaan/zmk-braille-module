@@ -15,4 +15,4 @@ cargo:
 
 1. Dot 6 before a lowercase letter capitalizes that letter.
 2. Follow the rulebook for capitalized words and passages and for grade 1 indicators; indicators are context, never printable keys.
-3. Unit-test alongside the implementation: dot-6 letter capitalization, capitalized words and passages, grade 1 indicators, and no indicator emitted as a printable key.
+3. Unit-test alongside the implementation: dot-6 letter capitalization, capitalized words and passages, grade 1 indicators, no indicator emitted as a printable key, and an indicator followed by a chord that cannot continue it.

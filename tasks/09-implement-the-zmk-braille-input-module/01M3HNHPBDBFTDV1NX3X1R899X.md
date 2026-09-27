@@ -63,7 +63,8 @@ cargo:
 5. The engine matches the active character table, that mode's factory command table, and the user override layer.
     1. It prefers the longest valid sequence; a user override wins over a factory rule with the same input.
     2. Ambiguous input stays pending until the next chord extends it or rules it out.
-    3. Any layer change, non-Braille key press, character-mode change, command action, or settings entry discards pending input and resets UEB context.
+    3. An incomplete prefix that the next chord rules out is dropped with a display notice, and that chord is interpreted from scratch.
+    4. Any layer change, non-Braille key press, character-mode change, command action, or settings entry discards pending input and resets UEB context.
 6. Up to 256 user overrides and the selected character mode persist across reset and power cycle; overrides are edited on the keyboard.
 
 ## 5. Execution model

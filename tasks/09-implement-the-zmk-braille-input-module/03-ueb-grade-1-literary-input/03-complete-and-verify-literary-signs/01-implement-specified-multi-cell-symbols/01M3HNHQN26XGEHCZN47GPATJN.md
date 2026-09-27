@@ -39,4 +39,4 @@ cargo:
     | `}` close curly brace    | 4,5,6 then 3,4,5   |
     | `\` backslash            | 4,5,6 then 1,6     |
 
-2. Unit-test every sign alongside the implementation, asserting ordered cells and correct host output.
+2. Unit-test every sign alongside the implementation, asserting ordered cells and correct host output, and each first cell followed by a chord that cannot continue it.
