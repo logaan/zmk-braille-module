@@ -17,7 +17,7 @@ cargo:
     1. `ueb1`: uncontracted Unified English Braille (UEB) Grade 1.
     2. `computer8`: eight-dot computer Braille.
     3. Navigation and other ZMK actions.
-    4. Persistent on-device chord bindings.
+    4. Persistent on-device chord bindings and selected character mode.
     5. Display feedback for settings and pending input.
 4. Phase 07 adds `ueb2` (UEB Grade 2 contractions) as an optional extension; the initial feature set must not depend on it.
 5. Other named Braille systems, such as Japanese or Spanish Braille, must be addable as named character tables without changing chord detection, matching, or navigation; none is required.
@@ -64,7 +64,7 @@ cargo:
     1. It prefers the longest valid sequence; a user override wins over a factory rule with the same input.
     2. Ambiguous input stays pending until the next chord extends it or rules it out.
     3. Any layer change, non-Braille key press, character-mode change, command action, or settings entry discards pending input and resets UEB context.
-6. Up to 256 user overrides persist across reset and power cycle and are edited on the keyboard.
+6. Up to 256 user overrides and the selected character mode persist across reset and power cycle; overrides are edited on the keyboard.
 
 ## 5. Execution model
 
@@ -96,4 +96,4 @@ cargo:
 1. Parent tasks summarize their children; no work is implemented twice.
 2. Use fixture tables or in-memory overrides where a later component does not exist yet; verify real combinations when both sides are built.
 3. Maintain one key-coverage checklist through phases 03, 04, and 06; record host-dependent exceptions rather than inventing literary signs.
-4. Initial acceptance requires a core-unmodified ZMK build, host-keystroke and key-function coverage, usable display and settings flows, pending-input feedback, and override survival across reset and power cycle.
+4. Initial acceptance requires a core-unmodified ZMK build, host-keystroke and key-function coverage, usable display and settings flows, pending-input feedback, and survival of overrides and the selected mode across reset and power cycle.
