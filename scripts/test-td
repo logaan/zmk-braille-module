@@ -26,7 +26,10 @@ fail_if_successful() {
 "$td" message --help > /dev/null
 "$td" message new --help > /dev/null
 "$td" message validate --help > /dev/null
-"$td" system > /dev/null
+"$td" system > system.txt
+grep -Fq 'A brief summary of the message, not the task as a whole.' system.txt
+grep -Fq '`OldStatus -> NewStatus`' system.txt
+grep -Fq 'subject: draft -> ready' system.txt
 "$td" system --help > /dev/null
 
 task=$("$td" message new --task example/nested --subject 'Work' --type task \
