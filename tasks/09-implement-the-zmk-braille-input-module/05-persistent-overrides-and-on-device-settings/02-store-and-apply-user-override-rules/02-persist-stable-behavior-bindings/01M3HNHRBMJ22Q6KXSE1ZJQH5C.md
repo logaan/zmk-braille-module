@@ -15,7 +15,7 @@ cargo:
 
 1. Use a dedicated ZMK/Zephyr settings key; serialize each action as its behavior's compiled device name string, such as `key_press`, and up to two parameters, never device pointers.
 2. Persist the full common rule shape (up to 8 chords, the position constraint, and up to 16 ordered actions) at variable length, so short rules stay small within the settings partition.
-3. Resolve device names to live compiled devices on load.
+3. Resolve device names to live compiled devices on load with `zmk_behavior_get_binding()`, and check parameters with `zmk_behavior_validate_binding()`.
 4. Load each saved record independently.
     1. Skip a record that is corrupt, fails validation, uses an unsupported storage format, or names a behavior that is not compiled in; valid records still load.
     2. Leave skipped records in storage, so a record whose behavior returns in a later firmware works again.
