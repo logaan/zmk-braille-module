@@ -173,10 +173,10 @@
     (is (= [0] (cursor (walk state :parents :right :right :left) :parents))))
   (testing "right from a task reaches its first kept child"
     (is (= [0 1] (cursor (walk state :parents :right :right) :parents))))
-  (testing "cousins are unreachable and pruned leaves have no children"
+  (testing "pruned leaves have no children, and down falls back to the uncle"
     (let [salt (walk state :parents :right :right)]
       (is (= [0 1] (cursor salt :parents)))
-      (is (identical? salt (walk salt :parents :down)))
+      (is (= [2] (cursor (walk salt :parents :down) :parents)))
       (is (identical? salt (walk salt :parents :right)))))
   (testing "top and bottom jump to the first and last row"
     (is (= :heading (cursor (walk state :parents :top) :parents)))
@@ -196,7 +196,7 @@
   (testing "siblings are only the tasks with the same parent"
     (let [salt (walk state :listing :right :right :down)]
       (is (= [0 1] (cursor salt :listing)))
-      (is (identical? salt (walk salt :listing :down)))))
+      (is (= [0 1 0] (cursor (walk salt :listing :down) :listing)))))
   (testing "the last task of a subtree has no siblings of its own"
     (let [call (walk state :listing :bottom)]
       (is (= [2 0] (cursor call :listing)))
@@ -219,10 +219,11 @@
   (testing "top and bottom jump to the first and last row"
     (is (= :heading (cursor (walk state :listing :top) :listing)))
     (is (= [2 0] (cursor (walk state :listing :bottom) :listing))))
-  (testing "a heading has no parent and no siblings"
+  (testing "a heading has no parent, and no sibling to step up to"
     (is (identical? state (walk state :listing :left)))
     (is (identical? state (walk state :listing :up)))
-    (is (identical? state (walk state :listing :down)))))
+    (testing "down falls back to the first row"
+      (is (= [0] (cursor (walk state :listing :down) :listing))))))
 
 (deftest messages-pane-navigation
   (let [st (walk (walk state :parents :right) :listing :right)]
@@ -290,6 +291,29 @@
     (testing "from the heading next reaches the oldest message"
       (is (= "01WASHOLD"
              (cursor (walk st :messages :prev :prev :next) :messages))))))
+
+(deftest up-and-down-fall-back-to-visual-rows-without-siblings
+  (testing "down from a last child with children reaches its first child"
+    (is (= [0 1 0] (cursor (walk state :listing :right :right :down :down)
+                           :listing))))
+  (testing "down from a childless last child reaches the uncle row"
+    (is (= [1] (cursor (walk state :listing :right :right :down :down :down)
+                       :listing))))
+  (testing "up from a first child reaches its parent"
+    (is (= [0] (cursor (walk state :listing :right :right :up) :listing))))
+  (testing "up on the heading, down on the last row: nowhere to fall back"
+    (is (identical? state (walk state :listing :up)))
+    (let [bottom (walk state :listing :bottom)]
+      (is (= [2 0] (cursor bottom :listing)))
+      (is (identical? bottom (walk bottom :listing :down)))))
+  (testing "a fallback that moves an ancestor resets the panes below it"
+    (let [boil (walk state :listing :right :right :down :right)
+          table (walk boil :listing :down)]
+      (is (= [0 1 0] (cursor boil :listing)))
+      (is (= "01BOIL" (cursor boil :messages)))
+      (is (= [1] (cursor table :listing)))
+      (is (= :heading (cursor table :messages)))
+      (is (= :heading (cursor table :parents))))))
 
 (deftest next-and-prev-reset-the-panes-below-their-own
   (testing "moving the parents cursor with next resets listing and messages"

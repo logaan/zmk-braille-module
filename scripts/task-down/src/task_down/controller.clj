@@ -18,8 +18,9 @@
 
 (def ^:private key-actions
   "The controller action for each key; a key absent here is ignored.
-  `j`/`k` follow the visual row order, `{`/`}` step siblings (Amendment 4);
-  `:await-g` is the first half of the two-key jump to the top."
+  `j`/`k` follow the visual row order; `{`/`}` step siblings, falling back
+  to the visual row when there is none (Amendments); `:await-g` is the first
+  half of the two-key jump to the top."
   {\j :next \k :prev \{ :up \} :down \h :left \l :right
    \g :await-g \G :bottom
    :enter :focus-left :escape :focus-right})

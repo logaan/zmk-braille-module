@@ -162,7 +162,10 @@
     (is (= [0] (cursor :parents))))
   (testing "in the listing pane they skip descendants where j enters them"
     (driven [{:key :escape} {:key \j} {:key \}} {:key \q}])
-    (is (= [1] (cursor :listing)))))
+    (is (= [1] (cursor :listing))))
+  (testing "without a sibling } falls back to the next visual row"
+    (driven [{:key \j} {:key \j} {:key \}} {:key \q}])
+    (is (= [2] (cursor :parents)))))
 
 (deftest j-and-k-follow-the-visual-row-order
   (testing "j moves to whatever row is below: child, then a parent's sibling"

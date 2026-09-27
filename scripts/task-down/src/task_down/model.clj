@@ -84,8 +84,9 @@
        (= (parent-path (:row/path a)) (parent-path (:row/path b)))))
 
 (defn- peer-cursors
-  "Cursors up and down step between: every row of the messages pane, or the
-  siblings of a task row. A task pane heading has no peers."
+  "The cursors a sibling step moves between: every row of the messages pane,
+  or the siblings of a task row. A task pane heading has no peers, and a step
+  that finds no peer falls back to visual movement."
   [rows index pane]
   (if (= :messages pane)
     (mapv row-cursor rows)
@@ -99,12 +100,6 @@
                      (= (parent-path (:row/path %)) path))]
     (first (filter child? (drop (inc index) rows)))))
 
-(defn- vertical-cursor
-  "The cursor after moving step rows among a row's peers."
-  [rows index pane step]
-  (let [cursor (row-cursor (nth rows index))]
-    (or (offset-cursor (peer-cursors rows index pane) cursor step) noop)))
-
 (defn- visual-cursor
   "The cursor of the row step rows from index in flat row order, heading
   included; noop past either end. Follows rows, not the raw tree, so pruned
@@ -112,6 +107,14 @@
   [rows index step]
   (let [row (nth rows (+ index step) nil)]
     (if row (row-cursor row) noop)))
+
+(defn- vertical-cursor
+  "The cursor after moving step rows among a row's peers, or - when no peer
+  is there - the visual row step rows away: the sibling fallback."
+  [rows index pane step]
+  (let [cursor (row-cursor (nth rows index))
+        peer (offset-cursor (peer-cursors rows index pane) cursor step)]
+    (or peer (visual-cursor rows index step))))
 
 (defn- left-cursor
   "The cursor of a row's parent; :heading for a depth 0 task or a message."
@@ -196,14 +199,15 @@
       :else moved)))
 
 (defn move-cursor
-  "The state with a pane's cursor moved in a direction: :up :down (siblings, or
-  messages in the messages pane), :next :prev (the row visually below or above
-  in flat row order, heading included, stepping over pruned siblings), :left
-  (parent), :right (first child), :top and :bottom (first and last row). A
-  direction with nothing to move to returns the state unchanged, as does one
-  that lands on the cursor's own row. Moving the parents cursor resets the
-  listing cursor to :heading; moving the listing cursor resets the messages
-  cursor to the newest message, or :heading."
+  "The state with a pane's cursor moved in a direction: :up :down (the
+  previous and next sibling - message in the messages pane - falling back to
+  the visual row when the sibling does not exist), :next :prev (the row
+  visually below or above in flat row order, heading included, stepping over
+  pruned siblings), :left (parent), :right (first child), :top and :bottom
+  (first and last row). A direction with nothing to move to returns the state
+  unchanged, as does one that lands on the cursor's own row. Moving the
+  parents cursor resets the listing cursor to :heading; moving the listing
+  cursor resets the messages cursor to the newest message, or :heading."
   [state pane direction]
   (let [cursor (moved-cursor state pane direction)]
     (if (or (= noop cursor) (= cursor (get-in state [:state/cursors pane])))
