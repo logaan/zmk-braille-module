@@ -3,7 +3,7 @@ created: Mon 28 Sep 2026 - 02h 13m 14s
 author:
   type: agent
   harness: pi
-  model: openai-codex/gpt-6-sol
+  model: qwen/qwen3.8-max-0902
   name: vault-01
 subject: 'Results: vault loader and message parser'
 cargo:
@@ -12,7 +12,7 @@ cargo:
   worker:
     type: agent
     harness: pi
-    model: openai-codex/gpt-6-sol
+    model: qwen/qwen3.8-max-0902
     name: vault-01
 ---
 
