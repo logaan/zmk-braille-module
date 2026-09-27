@@ -18,9 +18,10 @@ AUTO_STATUS = {"draft": "ready", "ready": "started", "started": "delivered",
                "delivered": "done", "done": "done", "blocked": "blocked",
                "cancelled": "cancelled"}
 AUTO_MODES = {f"auto-{s}" for s in AUTO_STATUS}
-NO_BODY_MODES = {"no-body", "prefilled-body-no", "blocked-default", "delivered-default",
-                 "draft-no-body", "state-change", "same-status", "explicit-subject",
-                 "delivered-done-default", "auto-empty", "auto-override", "auto-chosen"} | AUTO_MODES
+NO_BODY_MODES = {"no-body", "prefilled-body-no", "no-color", "blocked-default",
+                 "delivered-default", "draft-no-body", "state-change", "same-status",
+                 "explicit-subject", "delivered-done-default", "auto-empty",
+                 "auto-override", "auto-chosen"} | AUTO_MODES
 
 
 def run_flow(mode):
@@ -121,6 +122,9 @@ PY
         env = os.environ.copy()
         env.update(EDITOR=f"sh {editor} --test-flag", WIZARD_EDITOR_ARGS=str(root / "editor-args"),
                    WIZARD_MODE=mode, TERM="xterm-256color")
+        env.pop("NO_COLOR", None)
+        if mode == "no-color":
+            env["NO_COLOR"] = "1"
 
         cmd = [str(root / "scripts/td"), "message", "new", "-i"]
         if mode == "prefill":
@@ -129,7 +133,7 @@ PY
                     "--model", "gpt-6-sol", "--worker", "agent",
                     "--worker-model", "gpt-6-sol", "--worker-name", "worker-1",
                     "--created", "Sun 27 Sep 2006 - 16h 03m 32s", "--body-file", "body.md"]
-        elif mode in ("no-body", "prefilled-body-no"):
+        elif mode in ("no-body", "prefilled-body-no", "no-color"):
             cmd += ["--task", "example", "--subject", "No body", "--type", "task",
                     "--status", "ready"]
             if mode == "prefilled-body-no":
@@ -195,28 +199,37 @@ PY
             output = output[index + len(needle):]
             return before
 
+        def wait_for_label(text):
+            label = f"{text}:".encode()
+            if mode != "no-color":
+                label = b"\x1b[100;97m " + label + b" \x1b[0m"
+            before = wait_for(label.decode())
+            if mode == "no-color":
+                assert b"\x1b[100;97m" not in before, before
+            return before
+
         try:
-            wait_for("Task folder (type to filter)")
+            wait_for_label("Task folder (type to filter)")
             os.write(master, b"\x1b[B\r" if mode == "prefill" else b"\r")
-            wait_for("Message type")
+            wait_for_label("Message type")
             os.write(master, b"\r")
             if mode not in ("question", "answer"):
-                wait_for("Status")
+                wait_for_label("Status")
                 os.write(master, b"\x1b[A\r" if mode in ("prefill", "auto-chosen") else b"\r")
-            wait_for("Subject:")
+            wait_for_label("Subject")
             if mode in ("accept", "decline", "failure"):
                 os.write(master, b"Original\r")
             elif mode == "same-status":
                 os.write(master, b"\r")
                 # The pod keeps asking when no default is available.
-                wait_for("Subject:")
+                wait_for_label("Subject")
                 os.write(master, b"Same status\r")
             elif mode in ("auto-empty", "auto-done", "auto-blocked", "auto-cancelled",
                           "auto-chosen"):
                 os.write(master, b"Manual subject\r")
             else:
                 os.write(master, b"\r")
-            wait_for("Enter a body message:")
+            wait_for_label("Enter a body message")
             os.write(master, b"y\r" if mode == "delivered-done-yes" else
                      b"n\r" if mode in ("draft-no-body", "prefilled-body-no", "auto-empty",
                                       "auto-cancelled") else b"\r")
@@ -234,7 +247,7 @@ PY
                 wait_for("Editor exited with status 9")
                 assert b"Create this message:" not in output
             else:
-                wait_for("Create this message:")
+                wait_for_label("Create this message")
                 assert set((root / "tasks/example").rglob("*.md")) == existing_files
                 os.write(master, b"n\r" if mode == "decline" else b"\r")
 
@@ -265,7 +278,7 @@ PY
                     assert file.parent.name == "nested", file
                     assert "subject: From editor" in content and "status: draft" in content, content
                     assert "1. Edited body." in content, content
-                if mode in ("no-body", "prefilled-body-no"):
+                if mode in ("no-body", "prefilled-body-no", "no-color"):
                     assert "subject: No body\n" in content and content.endswith("---\n"), content
                 if mode == "question":
                     assert "How?" in content and "Why?\n" not in content, content
@@ -321,7 +334,7 @@ for mode in ("accept", "decline", "failure", "prefill", "no-body", "question",
              "answer", "cancelled", "import", "invalid", "state-change",
              "same-status", "explicit-subject", "delivered-done-default",
              "delivered-done-yes", "blocked-default", "delivered-default",
-             "draft-no-body", "prefilled-body-no", "auto-empty",
+             "draft-no-body", "prefilled-body-no", "no-color", "auto-empty",
              "auto-override", "auto-chosen", *(f"auto-{s}" for s in AUTO_STATUS)):
     run_flow(mode)
 print("td interactive editor tests passed")
