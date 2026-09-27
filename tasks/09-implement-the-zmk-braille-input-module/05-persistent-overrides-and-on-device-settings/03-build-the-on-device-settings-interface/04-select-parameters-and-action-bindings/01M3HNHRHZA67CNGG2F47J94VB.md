@@ -9,4 +9,6 @@ cargo:
 
 # Select parameters and action bindings
 
-1. Offer key presses, modifier combinations and Bluetooth profile commands; include a second step for parameters, excluding behaviors lacking a workable editor.
+1. Offer at least common key presses, modifier combinations, and Bluetooth profile commands among the compiled selectable behaviors.
+2. Provide a second selection/entry step for required parameters and preserve their order; omit behaviors whose parameters cannot be edited safely.
+3. Save ordinary common-model bindings; the limited editor must not restrict persistence or dispatch to a separate custom-action type.

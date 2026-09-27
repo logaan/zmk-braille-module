@@ -9,5 +9,5 @@ cargo:
 
 # When does UEB numeric mode terminate or resume?
 
-1. When does UEB numeric mode terminate or resume?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Research numeric-mode entry, continuation, termination, and interactions with punctuation and letters in the pinned ICEB rulebook.
+2. Record normative context transitions and example fixtures for the common-model decision and Grade 1 implementation; this is not a user-preference choice.

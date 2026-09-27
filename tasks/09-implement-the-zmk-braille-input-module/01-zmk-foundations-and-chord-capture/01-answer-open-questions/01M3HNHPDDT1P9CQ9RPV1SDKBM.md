@@ -9,4 +9,6 @@ cargo:
 
 # Answer open questions
 
-1. Record one decision per question before implementing this phase; do not assume an answer not given in the spec.
+1. Resolve each prerequisite before making its dependent implementation task ready; unrelated work need not wait for every question in the phase.
+2. Derive normative answers from the spec and pinned ICEB rulebook; distinguish that research from choices the references leave open.
+3. Record the result and affected tasks here; do not silently assume unresolved policies.

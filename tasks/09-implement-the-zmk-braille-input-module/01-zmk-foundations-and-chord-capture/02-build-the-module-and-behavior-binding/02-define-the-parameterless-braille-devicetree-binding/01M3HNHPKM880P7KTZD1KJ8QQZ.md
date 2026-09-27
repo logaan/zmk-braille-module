@@ -9,4 +9,5 @@ cargo:
 
 # Define the parameterless Braille devicetree binding
 
-1. Add `dts/bindings/behaviors/` for `zmk,behavior-braille`: `#binding-cells = <0>`, dot-one through dot-eight, space-key, 50 ms default timeout, and default mode `ueb1`.
+1. Add the `zmk,behavior-braille` binding under `dts/bindings/behaviors/` with `#binding-cells = <0>`.
+2. Configure nine physical roles, `dot-one` through `dot-eight` and `space-key`, plus per-keyboard `timeout-ms` (default 50) and named `mode` (default `ueb1`).

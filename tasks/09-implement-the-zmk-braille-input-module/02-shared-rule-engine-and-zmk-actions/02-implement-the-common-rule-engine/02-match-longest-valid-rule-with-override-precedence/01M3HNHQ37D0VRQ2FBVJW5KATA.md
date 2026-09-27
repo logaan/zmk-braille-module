@@ -9,4 +9,8 @@ cargo:
 
 # Match longest valid rule with override precedence
 
-1. Create `braille_engine.c`; combine selected character table, always-on navigation table and user overrides; enforce no factory collisions per mode and fall back to shorter matches.
+1. Create `braille_engine.c`; match the selected character table, always-active navigation table, and user override layer through the same nine-bit input path.
+2. Prefer the longest valid sequence; for the same input, prefer the applicable user override over the factory rule.
+3. Fall back to shorter valid matches and process any remaining cells exactly once under the agreed unmatched-input policy.
+4. Reject conflicting factory mappings within a mode; intentional shorter/longer prefixes and distinguishable context rules are not automatically collisions.
+5. Treat space-only, dots-only, and space-plus-dot identically; do not branch on individual characters or commands.

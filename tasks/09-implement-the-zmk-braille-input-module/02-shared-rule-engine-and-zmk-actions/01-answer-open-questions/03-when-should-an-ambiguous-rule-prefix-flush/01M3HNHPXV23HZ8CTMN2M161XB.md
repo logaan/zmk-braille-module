@@ -9,5 +9,6 @@ cargo:
 
 # When should an ambiguous rule prefix flush?
 
-1. When should an ambiguous rule prefix flush?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Define bounded pending-input/latency behavior for complete matches that are also prefixes, incomplete sequences, unmatched input, and buffer exhaustion.
+2. Keep inter-chord matching policy distinct from the physical chord's `timeout-ms` collection window.
+3. Coordinate with the word-end and transition questions; preserve longest-valid matching and shorter fallback without losing subsequent cells.

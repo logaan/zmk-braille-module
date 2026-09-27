@@ -9,5 +9,6 @@ cargo:
 
 # Register extensible named character tables
 
-1. Select exactly one named character table at a time: `ueb1`, `computer8`, or optional `ueb2`.
-2. Make later languages pluggable as tables without changing capture, matching, or navigation.
+1. Select exactly one compiled character table by name: initially `ueb1` or `computer8`, with `ueb2` exposed only when its rules are included.
+2. Preserve navigation and the user override layer in every character mode; use the same selection mechanism for devicetree defaults and later settings changes.
+3. Allow future named language tables through the common representation without changing capture, matching, or navigation; no non-English table or dynamic plugin framework is required now.

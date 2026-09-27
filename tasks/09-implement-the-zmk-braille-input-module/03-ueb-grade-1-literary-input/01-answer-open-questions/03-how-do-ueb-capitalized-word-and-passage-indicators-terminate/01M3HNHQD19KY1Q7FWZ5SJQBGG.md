@@ -9,5 +9,5 @@ cargo:
 
 # How do UEB capitalized word and passage indicators terminate?
 
-1. How do UEB capitalized word and passage indicators terminate?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Derive letter, word, and passage capitalization scope and termination from the pinned ICEB rulebook.
+2. Record context requirements and fixtures before the shared schema is fixed; do not substitute independently chosen capitalization rules.

@@ -9,4 +9,6 @@ cargo:
 
 # Smoke-build a ZMK keymap using the binding
 
-1. Check configurable physical positions and per-keyboard timeout and mode overrides in a real west build; retain normal keymap behavior when disabled.
+1. Use the selected baseline to check module discovery, the enable option, and parameterless binding in a real west build.
+2. Check physical-role properties, the 50 ms/default-ueb1 configuration, and configurable timeout/mode values at the build/configuration boundary.
+3. Do not require completed character tables or settings screens for this smoke build; verify runtime routing in the capture tests and actual modes in phases 03–06.

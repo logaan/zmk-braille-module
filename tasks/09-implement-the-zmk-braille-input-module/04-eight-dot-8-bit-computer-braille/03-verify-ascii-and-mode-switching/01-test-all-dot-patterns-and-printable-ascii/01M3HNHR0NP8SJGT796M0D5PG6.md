@@ -9,5 +9,7 @@ cargo:
 
 # Test all dot patterns and printable ASCII
 
-1. Assert every 8-bit pattern is mapped or reserved, printable non-space US ASCII has one cell per character, and space follows the documented zero-dot/space-only policy.
-2. Verify backtick and vertical bar are available in computer8.
+1. Assert every eight-bit dot pattern is explicitly mapped or reserved, including the zero-dot entry.
+2. Verify all 95 printable ASCII characters: 94 non-space characters have one-cell input, and Braille-space-only emits literal space.
+3. Include backtick, vertical bar, case, shifted symbols, and independence of dots 7 and 8; reserved input must follow the documented policy.
+4. Check the real computer8 and Grade 1 tables against shared navigation/noncharacter data for conflicting factory inputs.

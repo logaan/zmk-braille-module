@@ -9,4 +9,6 @@ cargo:
 
 # Persist stable behavior bindings
 
-1. Use a dedicated ZMK/Zephyr settings key; serialize stable identifiers and up to two parameters per action rather than device pointers, then resolve devices on load.
+1. Use a dedicated ZMK/Zephyr settings key; serialize stable behavior identifiers and up to two parameters per action, never device pointers.
+2. Persist the full common rule shape, including chord sequences, constraints, and ordered actions; resolve identifiers to live compiled devices on load.
+3. Apply the agreed invalid-record policy and report save failure to the UI rather than presenting an unsaved edit as durable.

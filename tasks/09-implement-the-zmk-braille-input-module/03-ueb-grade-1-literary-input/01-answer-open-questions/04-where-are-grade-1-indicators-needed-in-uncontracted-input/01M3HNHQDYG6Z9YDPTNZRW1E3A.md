@@ -9,5 +9,5 @@ cargo:
 
 # Where are grade 1 indicators needed in uncontracted input?
 
-1. Where are grade 1 indicators needed in uncontracted input?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Derive applicable grade 1 indicator scope and interactions with numeric/capitalization state from the pinned ICEB rulebook.
+2. Supply context requirements and fixtures to phase 02 and the Grade 1 implementation; uncontracted input does not eliminate these indicators.

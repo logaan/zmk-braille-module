@@ -9,4 +9,5 @@ cargo:
 
 # Initial-feature integration and documentation
 
-1. Ship the initial Grade 1/computer8, navigation and on-device-binding feature set before optional Grade 2 (spec §1).
+1. Accept the initial Grade 1/computer8, navigation, display, and on-device-binding feature set after phases 01–05, independently of optional Grade 2 (spec §1).
+2. Reuse the early baseline, coverage checklist, and component test evidence; focus here on cross-component and host-visible behavior.

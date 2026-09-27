@@ -9,5 +9,5 @@ cargo:
 
 # What is the maximum number of actions per rule?
 
-1. What is the maximum number of actions per rule?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Choose a bounded ordered-action capacity sufficient for required text and keyboard actions.
+2. Keep the rule, dispatcher, and persisted representation consistent; do not equate the UI's editor subset with the underlying action capacity.

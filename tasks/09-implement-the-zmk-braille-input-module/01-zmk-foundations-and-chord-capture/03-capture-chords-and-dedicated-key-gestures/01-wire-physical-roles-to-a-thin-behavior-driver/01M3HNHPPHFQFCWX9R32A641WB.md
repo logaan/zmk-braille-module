@@ -9,4 +9,6 @@ cargo:
 
 # Wire physical roles to a thin behavior driver
 
-1. Implement `src/behavior_braille.c`; accept eight dot keys and the distinct Braille space key from arbitrary positions.
+1. Implement `src/behavior_braille.c` using ZMK behavior APIs and the physical-routing decision; accept eight dots and a distinct Braille space key at arbitrary positions.
+2. Keep conventional space separate from the Braille space bit and leave non-role keys usable in the hybrid keymap.
+3. Preserve conventional keymap operation when Braille input is disabled; do not mix chord collection with character/command dispatch.

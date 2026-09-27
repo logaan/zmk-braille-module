@@ -9,4 +9,7 @@ cargo:
 
 # Test optional ueb2 integration
 
-1. Confirm ueb2 selection only when included, shared navigation and overrides, pending-cell display, bounded latency and switching back to ueb1/computer8.
+1. Confirm `ueb2` is selectable only when its rules are included, through both devicetree configuration and the existing on-device mode selector.
+2. Verify shared navigation/overrides, contraction and fallback output, pending-cell display, capacity/latency limits, and switching back to `ueb1`/`computer8`.
+3. Re-run initial-mode regressions with Grade 2 included and omitted; the initial feature set must not depend on it.
+4. Document the extension's implemented rule coverage, indicator/context behavior, and bounds alongside its tests; do not claim unsupported contractions.

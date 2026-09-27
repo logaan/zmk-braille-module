@@ -9,5 +9,5 @@ cargo:
 
 # Which chords provide the noncharacter keyboard functions?
 
-1. Which chords provide the noncharacter keyboard functions?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Assign factory bindings for spec §1.4 and §6.3 functions using the host-capability result, not literary UEB signs.
+2. Check allocation against both character tables and shared navigation; do not consume required printable computer8 mappings.

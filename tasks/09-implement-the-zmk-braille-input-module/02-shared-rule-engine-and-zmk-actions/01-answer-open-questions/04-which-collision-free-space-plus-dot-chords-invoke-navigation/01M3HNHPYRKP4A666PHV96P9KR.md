@@ -9,5 +9,5 @@ cargo:
 
 # Which collision-free space-plus-dot chords invoke navigation?
 
-1. Which collision-free space-plus-dot chords invoke navigation?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Assign factory chords for left/right, line beginning/end, and previous/next UI element using the selected host's VoiceOver-style behaviors.
+2. Coordinate with the noncharacter assignments and computer8 mapping before finalizing factory data; navigation must remain usable in every character mode.

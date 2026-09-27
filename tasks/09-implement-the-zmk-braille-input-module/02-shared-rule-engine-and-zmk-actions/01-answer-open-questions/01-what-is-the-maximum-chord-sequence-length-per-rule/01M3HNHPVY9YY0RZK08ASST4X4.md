@@ -9,5 +9,5 @@ cargo:
 
 # What is the maximum chord-sequence length per rule?
 
-1. What is the maximum chord-sequence length per rule?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Choose a bound that accommodates the required Grade 1 multi-cell signs and short user sequences.
+2. Use the same bound in matching, settings capture, and persistence; record any later Grade 2 implications without requiring its data now.

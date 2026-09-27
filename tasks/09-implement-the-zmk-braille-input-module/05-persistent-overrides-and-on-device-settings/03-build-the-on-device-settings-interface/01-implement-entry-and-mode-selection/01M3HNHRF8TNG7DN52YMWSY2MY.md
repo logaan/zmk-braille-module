@@ -9,4 +9,6 @@ cargo:
 
 # Implement entry and mode selection
 
-1. Long Braille-key gesture enters/exits settings; present modes and apply selection immediately without a confirmation prompt.
+1. Connect phase 01's long-press entry/exit hooks to settings; do not implement a second gesture detector.
+2. Present only compiled character modes and apply selection immediately without a confirmation prompt.
+3. Apply the shared pending-input/transition policy and isolate settings capture from host typing; do not confuse character-mode selection with Braille input on/off.

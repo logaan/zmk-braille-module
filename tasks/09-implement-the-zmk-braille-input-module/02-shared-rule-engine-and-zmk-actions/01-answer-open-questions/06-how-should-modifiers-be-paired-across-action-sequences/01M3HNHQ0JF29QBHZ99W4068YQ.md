@@ -9,5 +9,5 @@ cargo:
 
 # How should modifiers be paired across action sequences?
 
-1. How should modifiers be paired across action sequences?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Resolve appropriate ZMK event lifecycles for modifier combinations and standalone modifier functions after a physical chord has been released.
+2. Account for ordered invocations and behaviors that manage their own state; avoid stuck keys without requiring a new command-specific dispatcher.

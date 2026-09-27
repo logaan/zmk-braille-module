@@ -9,5 +9,6 @@ cargo:
 
 # Implement the computer8 character table
 
-1. Add `braille_rules_computer8.c` with one cell per printable non-space ASCII character; use the shared behavior action representation for host output.
-2. Handle ASCII space according to the zero-dot/space-only decision.
+1. Add `braille_rules_computer8.c` with one cell per printable non-space ASCII character, using the common behavior-action representation.
+2. Cover literal ASCII space through the shared space-only rule and account for the selected map's zero-dot entry.
+3. Keep all mapped/reserved dot entries consistent with the published table and free of conflicts with always-active factory actions.

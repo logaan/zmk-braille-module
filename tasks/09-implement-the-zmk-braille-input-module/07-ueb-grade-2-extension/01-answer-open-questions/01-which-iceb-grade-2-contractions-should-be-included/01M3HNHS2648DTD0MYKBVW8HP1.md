@@ -9,5 +9,5 @@ cargo:
 
 # Which ICEB Grade 2 contractions should be included?
 
-1. Which ICEB Grade 2 contractions should be included?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Inventory the pinned rulebook data for the classes required by spec §8.1: alphabetic wordsigns, strong contractions/wordsigns, groupsigns, and short-form words.
+2. Record source sections and fixtures for the extension's rule data; these required classes are not an invitation to choose an arbitrary smaller demo subset.

@@ -9,5 +9,6 @@ cargo:
 
 # Which ICEB signs beyond the spec complete literary scope?
 
-1. Which ICEB signs beyond the spec complete literary scope?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Inventory the rulebook-defined signs needed to complete the spec's US keyboard literary coverage, including quotation marks.
+2. Treat the spec's alphabet, indicators, punctuation, and multi-cell signs as required; do not choose a smaller replacement set.
+3. Record authoritative sections and test examples; do not expand this task to every sign in the ICEB book or invent UEB signs for backtick/vertical bar.

@@ -9,4 +9,6 @@ cargo:
 
 # Capture and review rule input
 
-1. Use the normal detector for a chord or short sequence; show dots/space; for existing factory/user mappings offer override, re-record and cancel.
+1. Use the normal detector to capture a chord or bounded short sequence and show its detected dot/space combinations.
+2. Apply the resolved UI control for completing capture; distinguish it from keys belonging to the recorded input.
+3. For an existing factory/user mapping, offer override, re-record, and cancel before changing any saved rule.

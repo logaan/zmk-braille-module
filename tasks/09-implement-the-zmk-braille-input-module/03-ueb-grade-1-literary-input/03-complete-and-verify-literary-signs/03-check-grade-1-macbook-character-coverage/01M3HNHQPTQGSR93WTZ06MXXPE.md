@@ -9,4 +9,6 @@ cargo:
 
 # Check Grade 1 MacBook character coverage
 
-1. Compare literary mappings to `references/01-mba-keys.yaml`; document computer8/custom-action coverage for backtick, vertical bar and any nonliterary keys; leave dots 7/8 available for custom input.
+1. Start the shared coverage checklist from spec §1.4 and the supporting `references/01-mba-keys.yaml` inventory.
+2. Record implemented literary mappings and planned computer8/action coverage for nonliterary keys; verify those routes in phases 04 and 06 rather than claiming they work yet.
+3. Preserve backtick/vertical-bar availability without invented UEB signs, distinguish the grave diacritic, and test dots 7/8 as available nonliterary/custom inputs in `ueb1`.
