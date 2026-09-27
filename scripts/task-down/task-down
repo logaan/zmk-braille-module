@@ -1,0 +1,19 @@
+#!/usr/bin/env bb
+;; Launcher for the read-only three-pane TaskDown TUI.
+;;
+;; From the repository root:
+;;
+;;     scripts/task-down/task-down [vault-dir]
+;;
+;; The vault directory is relative to the current directory and defaults to
+;; `tasks`, so this script deliberately does not change directory: it puts its
+;; own `src` on the classpath and calls `task-down.main/-main` in this process.
+;; Staying in-process keeps the controlling tty, which the UI needs.
+
+(require '[babashka.classpath :as cp]
+         '[babashka.fs :as fs])
+
+(let [src (-> (fs/real-path *file*) fs/parent (fs/path "src") str)]
+  (cp/add-classpath src)
+  (require '[task-down.main :as main])
+  (apply main/-main *command-line-args*))
