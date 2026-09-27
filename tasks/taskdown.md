@@ -122,16 +122,16 @@ A `Status` value must be one of:
         2.  Always `agent`.
     2.  `harness`
         1.  Optional.
-        2.  Made up of `a-z`, `0-9`, and `-` characters.
+        2.  Must match the regex `^[a-z0-9./-]+$`.
         3.  Eg. `pi`
     3.  `model`
         1.  Required.
-        2.  Made up of `a-z`, `0-9`, and `-` characters.
-        3.  Eg. `claude-opus-5.5`
+        2.  Must match the regex `^[a-z0-9./-]+$`.
+        3.  Eg. `claude-opus-5.5`, or `qwen/qwen3.8-max-0902`
     4.  `name`
         1.  Optional.
         2.  Used to identify agents and subagents.
-        3.  Made up of `a-z`, `0-9`, and `-` characters.
+        3.  Must match the regex `^[a-z0-9./-]+$`.
         4.  Eg. `coordinator`, or `researcher-01`
 
 ## 4. Numbered Report Style
