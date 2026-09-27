@@ -1,0 +1,353 @@
+# VoiceOver braille commands that still make sense without a screen reader.
+# Research record for the Braille module plan (phase 02 research-per-mode-command-chords).
+
+question: >-
+  Which VoiceOver braille commands stand for an action that keeps its meaning when the chord
+  simply sends ordinary keystrokes to a host with no screen reader: modifiers, arrows, Home and
+  End, Page Up and Page Down, Tab, Return, Delete, Escape, and the editing shortcuts?
+
+status: unverified
+verification: >-
+  Every chord here comes from web-search summaries, not from reading the pages themselves:
+  support.apple.com and the other sources below are blocked by this environment's network
+  policy (curl gets a proxy 403, WebFetch gets EGRESS_BLOCKED). A summary can misquote its
+  page, so check each chord against the page named in its `sources` before phase 02 uses it,
+  then set that command's `verified` to true.
+retrieved: 2026-09-27
+
+notation:
+  chord: >-
+    `dots` lists the Braille keys pressed together; `space: true` adds the Braille space key.
+    A chord with `space: false` is dot-only. The sources write a chord as "dots 1-7" or
+    "Dot 1 + Dot 7": both mean dots 1 and 7, not a range.
+  platform: >-
+    `mac` is VoiceOver on macOS with a braille display or Braille Keyboard Input; `ios` is
+    VoiceOver on iPhone and iPad with a braille display. Where only one platform's chord was
+    found, the other is not claimed to differ.
+  keys: >-
+    What the command does on an ordinary keyboard, named by the US MacBook key
+    (`references/01-mba-keys.yaml`), with the equivalent on other hosts where the name differs.
+  zmk: >-
+    A suggested ZMK binding for phase 02, written from ZMK's documented keycodes and behaviours;
+    not built or tested.
+  selection_rule: >-
+    VoiceOver's own keyboard command for each kept action is its VO modifier plus an ordinary
+    key or shortcut. The kept commands are the ones whose meaning survives with the VO modifier
+    removed; commands that only drive VoiceOver itself are listed under `left_out`.
+
+sources:
+  - id: apple_mac
+    title: Common braille commands for VoiceOver on Mac
+    url: https://support.apple.com/en-us/103560
+    also: https://support.apple.com/HT209138
+    read_directly: false
+  - id: apple_ios
+    title: Common braille commands for VoiceOver on your iPhone, iPad, and iPod touch
+    url: https://support.apple.com/en-us/118665
+    also: https://support.apple.com/HT202132
+    read_directly: false
+  - id: apple_mac_braille_access
+    title: Use Braille Access with a braille display on Mac
+    url: https://support.apple.com/guide/voiceover/use-braille-access-vo16f725f5bc/mac
+    read_directly: false
+  - id: coolblindtech_ios11
+    title: "Complete list of Braille Commands for iOS 11: and How to Customize Them."
+    url: https://coolblindtech.com/all-braille-commands-for-ios-11-and-how-to-customize-them/
+    read_directly: false
+    note: Lists iOS 11's default commands as shown in Settings > Accessibility > VoiceOver > Braille > Braille Commands.
+  - id: hks_ios_2025
+    title: 10 Tips for Braille Display Users of iOS Devices in 2025 (Parts 1 and 2), Helen Keller Services
+    urls:
+      - https://www.helenkeller.org/10-tips-for-braille-display-users-of-ios-devices-in-2025/
+      - https://www.helenkeller.org/10-tips-for-braille-display-users-of-ios-devices-in-2025-part-2/
+    read_directly: false
+
+commands:
+  movement:
+    - id: left
+      voiceover_command: Move to previous item
+      keys: Left Arrow
+      zmk: "&kp LEFT"
+      chords:
+        - {platform: mac, dots: [1], space: true, sources: [apple_mac]}
+      verified: false
+    - id: right
+      voiceover_command: Move to next item
+      keys: Right Arrow
+      zmk: "&kp RIGHT"
+      chords:
+        - {platform: mac, dots: [4], space: true, sources: [apple_mac]}
+      verified: false
+    - id: up
+      voiceover_command: Move up
+      keys: Up Arrow
+      zmk: "&kp UP"
+      chords:
+        - {platform: mac, dots: [3], space: true, sources: [apple_mac]}
+      verified: false
+    - id: down
+      voiceover_command: Move down
+      keys: Down Arrow
+      zmk: "&kp DOWN"
+      chords:
+        - {platform: mac, dots: [6], space: true, sources: [apple_mac]}
+      verified: false
+    - id: home
+      voiceover_command: Go to first item
+      keys: Home (Fn-Left Arrow on a MacBook)
+      zmk: "&kp HOME"
+      chords:
+        - {platform: mac, dots: [1, 2, 3], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [1, 2, 3], space: true, sources: [apple_ios]}
+      note: >-
+        In most macOS text views Home scrolls to the top of the document without moving the
+        insertion point; beginning of line is Command-Left Arrow. Phase 02 decides which the
+        chord sends.
+      verified: false
+    - id: end
+      voiceover_command: Go to last item
+      keys: End (Fn-Right Arrow on a MacBook)
+      zmk: "&kp END"
+      chords:
+        - {platform: mac, dots: [4, 5, 6], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [4, 5, 6], space: true, sources: [apple_ios]}
+      note: >-
+        As for `home`: End scrolls to the bottom in most macOS text views; end of line is
+        Command-Right Arrow.
+      verified: false
+    - id: page_up
+      voiceover_command: Scroll up one page
+      keys: Page Up (Fn-Up Arrow on a MacBook)
+      zmk: "&kp PAGE_UP"
+      chords:
+        - {platform: mac, dots: [3, 4, 5, 6], space: true, sources: [apple_mac]}
+      verified: false
+    - id: page_down
+      voiceover_command: Scroll down one page
+      keys: Page Down (Fn-Down Arrow on a MacBook)
+      zmk: "&kp PAGE_DOWN"
+      chords:
+        - {platform: mac, dots: [1, 4, 5, 6], space: true, sources: [apple_mac]}
+      verified: false
+
+  keys:
+    - id: escape
+      voiceover_command: Escape
+      keys: Escape
+      zmk: "&kp ESCAPE"
+      chords:
+        - {platform: mac, dots: [1, 2], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [1, 2], space: true, sources: [apple_ios]}
+      verified: false
+    - id: tab
+      voiceover_command: Tab
+      keys: Tab
+      zmk: "&kp TAB"
+      chords:
+        - {platform: mac, dots: [2, 3, 4, 5], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [2, 3, 4, 5], space: true, sources: [apple_ios]}
+      verified: false
+    - id: shift_tab
+      voiceover_command: Shift Tab
+      keys: Shift-Tab
+      zmk: "&kp LS(TAB)"
+      chords:
+        - {platform: ios, dots: [1, 2, 5, 6], space: true, sources: [apple_ios, coolblindtech_ios11]}
+      verified: false
+    - id: return
+      voiceover_command: Return key
+      keys: Return (Enter on other hosts)
+      zmk: "&kp RETURN"
+      chords:
+        - {platform: mac, dots: [1, 5], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [1, 5], space: true, sources: [coolblindtech_ios11]}
+        - {platform: ios, dots: [8], space: false, sources: [coolblindtech_ios11]}
+        - {platform: ios, dots: [8], space: true, sources: [coolblindtech_ios11]}
+      note: >-
+        One summary also gives dot 8 with space as Return for eight-dot braille on Mac, and
+        another attributes it to Apple Watch; neither attribution is confirmed.
+      verified: false
+    - id: delete
+      voiceover_command: Delete key
+      keys: Delete, which erases the character before the cursor (Backspace on other hosts)
+      zmk: "&kp BACKSPACE"
+      chords:
+        - {platform: mac, dots: [1, 4, 5], space: true, sources: [apple_mac]}
+        - {platform: ios, dots: [1, 4, 5], space: true, sources: [coolblindtech_ios11]}
+        - {platform: ios, dots: [7], space: false, sources: [coolblindtech_ios11]}
+        - {platform: ios, dots: [7], space: true, sources: [coolblindtech_ios11]}
+      note: As for `return`, a Mac eight-dot dot 7 with space chord is reported but unconfirmed.
+      verified: false
+
+  modifiers:
+    note: >-
+      The summaries describe two forms. Space with dot 7 applies the modifier to the next key
+      (a sticky modifier); hks_ios_2025 suggests it waits only briefly for that key. Space with
+      dot 8 in place of dot 7 holds the modifier down until the same chord releases it. Both
+      come from iOS sources; no Mac modifier chords were found.
+    one_shot:
+      - id: command
+        voiceover_command: Command
+        keys: Command (the GUI key, which is the Windows key or Super on other hosts)
+        zmk: "&sk LGUI"
+        chords:
+          - {platform: ios, dots: [1, 7], space: true, sources: [hks_ios_2025, coolblindtech_ios11]}
+        verified: false
+      - id: option
+        voiceover_command: Option
+        keys: Option (Alt on other hosts)
+        zmk: "&sk LALT"
+        chords:
+          - {platform: ios, dots: [2, 7], space: true, sources: [hks_ios_2025, coolblindtech_ios11]}
+        verified: false
+      - id: control
+        voiceover_command: Control
+        keys: Control
+        zmk: "&sk LCTRL"
+        chords:
+          - {platform: ios, dots: [3, 7], space: true, sources: [hks_ios_2025, coolblindtech_ios11]}
+        verified: false
+      - id: shift
+        voiceover_command: Shift
+        keys: Shift
+        zmk: "&sk LSHIFT"
+        chords:
+          - {platform: ios, dots: [4, 7], space: true, sources: [hks_ios_2025, coolblindtech_ios11]}
+        verified: false
+      - id: fn
+        voiceover_command: Fn
+        keys: Fn/Globe (no equivalent on most other hosts)
+        zmk: "&sk GLOBE"
+        chords:
+          - {platform: ios, dots: [5, 7], space: true, sources: [hks_ios_2025]}
+        note: "`zmk-globe-fn-and-media-actions.yaml` records which Globe shortcuts work from ZMK."
+        verified: false
+    held:
+      - id: command_held
+        voiceover_command: Command (held)
+        keys: Command, held until the chord is pressed again
+        zmk: "&kt LGUI"
+        chords:
+          - {platform: ios, dots: [1, 8], space: true, sources: [hks_ios_2025]}
+        verified: false
+      - id: option_held
+        voiceover_command: Option (held)
+        keys: Option, held until the chord is pressed again
+        zmk: "&kt LALT"
+        chords:
+          - {platform: ios, dots: [2, 8], space: true, sources: [hks_ios_2025]}
+        note: Inferred from the summary's rule "dot 8 instead of dot 7"; only Command's chord was quoted.
+        verified: false
+      - id: control_held
+        voiceover_command: Control (held)
+        keys: Control, held until the chord is pressed again
+        zmk: "&kt LCTRL"
+        chords:
+          - {platform: ios, dots: [3, 8], space: true, sources: [hks_ios_2025]}
+        note: Inferred, as for option_held.
+        verified: false
+      - id: shift_held
+        voiceover_command: Shift (held)
+        keys: Shift, held until the chord is pressed again
+        zmk: "&kt LSHIFT"
+        chords:
+          - {platform: ios, dots: [4, 8], space: true, sources: [hks_ios_2025]}
+        note: Inferred, as for option_held.
+        verified: false
+
+  editing:
+    note: >-
+      Each sends the host's own shortcut: Command plus the letter on macOS, Control plus the
+      letter on Windows and Linux. The chords are the letter's cell with space (c, x, v, z), except
+      Select All and Redo.
+    commands:
+      - id: copy
+        voiceover_command: Copy
+        keys: Command-C (Control-C on other hosts)
+        zmk: "&kp LG(C)"
+        chords:
+          - {platform: mac, dots: [1, 4], space: true, sources: [apple_mac]}
+          - {platform: ios, dots: [1, 4], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+      - id: cut
+        voiceover_command: Cut
+        keys: Command-X (Control-X on other hosts)
+        zmk: "&kp LG(X)"
+        chords:
+          - {platform: mac, dots: [1, 3, 4, 6], space: true, sources: [apple_mac]}
+          - {platform: ios, dots: [1, 3, 4, 6], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+      - id: paste
+        voiceover_command: Paste
+        keys: Command-V (Control-V on other hosts)
+        zmk: "&kp LG(V)"
+        chords:
+          - {platform: mac, dots: [1, 2, 3, 6], space: true, sources: [apple_mac]}
+          - {platform: ios, dots: [1, 2, 3, 6], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+      - id: select_all
+        voiceover_command: Select all
+        keys: Command-A (Control-A on other hosts)
+        zmk: "&kp LG(A)"
+        chords:
+          - {platform: ios, dots: [2, 3, 5, 6], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+      - id: undo
+        voiceover_command: Undo
+        keys: Command-Z (Control-Z on other hosts)
+        zmk: "&kp LG(Z)"
+        chords:
+          - {platform: ios, dots: [1, 3, 5, 6], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+      - id: redo
+        voiceover_command: Redo
+        keys: Shift-Command-Z (Control-Y or Shift-Control-Z on other hosts)
+        zmk: "&kp LS(LG(Z))"
+        chords:
+          - {platform: ios, dots: [2, 3, 4, 6], space: true, sources: [coolblindtech_ios11]}
+        verified: false
+
+not_found:
+  note: No VoiceOver chord turned up in the summaries for these; phase 02 falls back to TalkBack, then Hable One.
+  items:
+    - Beginning and end of line (Command-Left and Command-Right Arrow on macOS)
+    - Forward Delete
+    - Caps Lock
+    - F1 to F12
+    - Media and system keys (brightness, Mission Control, Spotlight, tracks, volume)
+    - Mac chords for the modifiers, Shift-Tab, Select All, Undo and Redo
+    - iOS chords for the arrow keys (coolblindtech_ios11 lists Left, Right and Down Arrow with no assigned braille keys)
+    - iOS chords for Page Up and Page Down
+
+left_out:
+  note: >-
+    Commands found in the same sources that only drive VoiceOver or the device, so they have no
+    meaning as ordinary keystrokes.
+  items:
+    - {voiceover_command: Start interacting, platform: mac, dots: [2, 3, 6], space: true, sources: [apple_mac]}
+    - {voiceover_command: Stop interacting, platform: mac, dots: [3, 5, 6], space: true, sources: [apple_mac]}
+    - {voiceover_command: Scroll left one page, platform: mac, dots: [2, 4, 6], space: true, sources: [apple_mac]}
+    - {voiceover_command: Scroll right one page, platform: mac, dots: [1, 3, 5], space: true, sources: [apple_mac]}
+    - {voiceover_command: Toggle Braille Access, platform: mac, dots: [7, 8], space: false, sources: [apple_mac_braille_access], note: dots 7-8 with space when an eight-dot table is in use}
+    - {voiceover_command: Item chooser, platform: ios, dots: [2, 4], space: true, sources: [apple_ios]}
+    - {voiceover_command: Home button, platform: ios, dots: [1, 2, 5], space: true, sources: [apple_ios]}
+    - {voiceover_command: Simple tap, platform: ios, dots: [3, 6], space: true, sources: [apple_ios]}
+    - {voiceover_command: Status bar, platform: ios, dots: [2, 3, 4], space: true, sources: [hks_ios_2025]}
+    - {voiceover_command: Control Center, platform: ios, dots: [2, 5], space: true, sources: [hks_ios_2025], note: Perkins-style keyboard}
+    - {voiceover_command: Notification Center, platform: ios, dots: [4, 6], space: true, sources: [hks_ios_2025], note: Perkins-style keyboard}
+    - {voiceover_command: Rotor, platform: mac, note: chords not captured}
+    - {voiceover_command: Help, platform: ios, note: "K (dots 1-3) with space, per one summary"}
+
+conflicts:
+  note: >-
+    Every kept chord with space collides with no character in any mode, since characters are
+    entered without the Braille space key. The dot-only chords are checked here.
+  items:
+    - chords:
+        - {dots: [7], space: false}
+        - {dots: [8], space: false}
+      between: "`delete` and `return` against the character tables"
+      note: >-
+        Dot 7 alone, dot 8 alone and dots 7-8 map to no character in the computer8 table
+        (tests/braille/computer8/reserved.yaml leaves them out for this reason), and the six-dot
+        modes use no dot 7 or 8, so neither chord collides with a character.
