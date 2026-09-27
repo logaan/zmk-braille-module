@@ -263,6 +263,7 @@
    [:name           {:coerce :string :desc "Author agent name"}]
    [:body           {:coerce :string :desc "Markdown body"}]
    [:body-file      {:coerce :string :desc "Read markdown body from a file"}]
+   [:file           {:coerce :string :desc "Import a complete Markdown message verbatim (only with --task)"}]
    [:created        {:coerce :string :desc "Creation datetime: Sun 27 Sep 13h23 (default: now)"}]])
 
 (defn resolve-task-dir
@@ -292,11 +293,38 @@
       name    (assoc :name name))
     who))
 
+(defn run-new-file [{:keys [task file] :as opts}]
+  (let [task-result (when task (resolve-task-dir task))
+        extra-flags (sort (remove #{:task :file} (keys opts)))
+        {:keys [frontmatter body error]}
+        (when (fs/regular-file? file) (parse-message-file file))
+        problems (cond-> []
+                   (nil? task) (conj "missing required flag: --task <folder>")
+                   (:error task-result) (conj (:error task-result))
+                   (seq extra-flags) (conj (str "--file may only be used with --task (also got: "
+                                                (str/join ", " (map #(str "--" (name %)) extra-flags)) ")"))
+                   (not (fs/regular-file? file)) (conj (str "message file not found: " file))
+                   error (conj error)
+                   (and frontmatter (not error)) (into (validate-message-data frontmatter body)))]
+    (if (seq problems)
+      (do (binding [*out* *err*]
+            (println "Cannot create message:")
+            (doseq [e problems] (println " " "-" e))
+            (println "See 'td message new --help'."))
+          (System/exit 1))
+      (let [id (gen-ulid)
+            target (fs/path (:dir task-result) (str id ".md"))]
+        ;; Keep the edited YAML, body, and formatting exactly as they were.
+        (fs/copy file target)
+        (println (str "tasks/" (:name task-result) "/" id ".md"))))))
+
 (defn run-new [{:keys [opts]}]
-  (let [{:keys [task created author harness model subject type status
-                worker worker-harness worker-model worker-name regarding
-                body body-file]
-         agent-name :name} opts
+  (if (contains? opts :file)
+    (run-new-file opts)
+    (let [{:keys [task created author harness model subject type status
+                  worker worker-harness worker-model worker-name regarding
+                  body body-file]
+           agent-name :name} opts
         author (or author "user")
         errors (atom [])
         err! (fn [msg] (swap! errors conj msg))
@@ -366,7 +394,7 @@
                            (when-not (str/blank? body-text)
                              (str "\n" (str/trim body-text) "\n")))]
           (spit (str file) content)
-          (println (str "tasks/" (:name task-result) "/" id ".md")))))))
+          (println (str "tasks/" (:name task-result) "/" id ".md"))))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Validate command
@@ -402,7 +430,8 @@
        "  td message new --task 02-td-script --subject 'Keyboard keys' \\\n"
        "      --type task --status ready\n"
        "  td message new --task 02-td-script --subject 'Which clock?' \\\n"
-       "      --type question --body 'Should we pin the clock in tests?'"))
+       "      --type question --body 'Should we pin the clock in tests?'\n"
+       "  td message new --task 02-td-script --file /tmp/edited-message.md"))
 
 (def validate-help-epilog
   "The optional id is a ULID (with or without .md) or a unique prefix.
