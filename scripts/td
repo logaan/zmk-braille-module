@@ -443,7 +443,7 @@
   (str "Task statuses: " (str/join ", " (sort statuses)) "\n"
        "Questions must have a body with one question mark.\n\n"
        "Examples:\n"
-       "  td message new --task 02-td-script --subject 'Keyboard keys' \\\n"
+       "  td message new --task 02-td-script --subject 'draft -> ready' \\\n"
        "      --type task --status ready\n"
        "  td message new --task 02-td-script --subject 'Which clock?' \\\n"
        "      --type question --body 'Should we pin the clock in tests?'\n"
@@ -523,9 +523,11 @@ The TaskDown system reference is built into td; no project file is required.
     3.  `subject`
         1.  Required.
         2.  A string of `64` characters or less.
-        3.  Briefly describing the subject of the message.
+        3.  A brief summary of the message, not the task as a whole.
         4.  This will be shown in listing to help users navigate the
             conversation history.
+        5.  For a message that only changes task status, use
+            `OldStatus -> NewStatus` (eg: `draft -> ready`).
     4.  `cargo`
         1.  Required.
         2.  Must be one of `3.1.1. Task`, `3.1.2. Question`, or `3.1.3. Answer`
@@ -642,7 +644,7 @@ A `Status` value must be one of:
       ---
       created: Sun 27 Sep 2006 - 13h 24m 00s
       author: user
-      subject: Keyboard keys
+      subject: draft -> ready
       cargo:
         type: task
         status: ready
@@ -658,7 +660,7 @@ A `Status` value must be one of:
         type: agent
         harness: pi
         model: kimi-k3
-      subject: Keyboard keys
+      subject: ready -> started
       cargo:
         type: task
         status: started
@@ -692,7 +694,7 @@ A `Status` value must be one of:
       ---
       created: Mon 28 Sep 2006 - 09h 12m 00s
       author: user
-      subject: Keyboard keys
+      subject: delivered -> done
       cargo:
         type: task
         status: done
