@@ -1,0 +1,100 @@
+# ueb1 punctuation and symbols
+#
+# ueb1: every punctuation mark, quotation mark and multi-cell symbol of the keyboard scope, the
+# space, and the cases of references/research/ueb-literary-signs.yaml.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: ueb1
+cases:
+  - {name: "comma ,", inputs: [[1], [2]], outputs: ["a", ","], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "semicolon ;", inputs: [[1], [2, 3]], outputs: ["a", ";"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "colon :", inputs: [[1], [2, 5]], outputs: ["a", ":"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "exclamation mark !", inputs: [[1], [2, 3, 5]], outputs: ["a", "!"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "apostrophe '", inputs: [[1], [3]], outputs: ["a", "'"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "hyphen -", inputs: [[1], [3, 6]], outputs: ["a", "-"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "full stop .", inputs: [[1], [2, 5, 6]], outputs: ["a", "."], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "question mark after a letter", inputs: [[1], [2, 3, 6]], outputs: ["a", "?"], source: "rulebook 7.5 p.81"}
+  - {name: "ampersand &", inputs: [[4], [1, 2, 3, 4, 6]], outputs: ["&"], source: "rulebook 3.1 p.23"}
+  - {name: "asterisk *", inputs: [[5], [3, 5]], outputs: ["*"], source: "rulebook 3.3 p.23"}
+  - {name: "commercial at @", inputs: [[4], [1]], outputs: ["@"], source: "rulebook 3.7 p.27"}
+  - {name: "caret ^", inputs: [[4], [2, 6]], outputs: ["^"], source: "rulebook 3.6 p.26"}
+  - {name: "number sign #", inputs: [[4, 5, 6], [1, 4, 5, 6]], outputs: ["#"], source: "rulebook 3.19 p.35"}
+  - {name: "dollar sign $", inputs: [[4], [2, 3, 4]], outputs: ["$"], source: "rulebook 3.10 p.28"}
+  - {name: "percent sign %", inputs: [[4, 6], [3, 5, 6]], outputs: ["%"], source: "rulebook 3.21 p.36"}
+  - {name: "tilde (swung dash) ~", inputs: [[4], [3, 5]], outputs: ["~"], source: "rulebook 3.25 p.38"}
+  - {name: "solidus (forward slash) /", inputs: [[4, 5, 6], [3, 4]], outputs: ["/"], source: "rulebook 7 p.75"}
+  - {name: "low line (underscore) _", inputs: [[4, 6], [3, 6]], outputs: ["_"], source: "rulebook 7 p.76"}
+  - {name: "plus +", inputs: [[5], [2, 3, 5]], outputs: ["+"], source: "rulebook 3.17 p.33"}
+  - {name: "equals =", inputs: [[5], [2, 3, 5, 6]], outputs: ["="], source: "rulebook 3.17 p.33"}
+  - {name: "less-than / opening angle bracket <", inputs: [[4], [1, 2, 6]], outputs: ["<"], source: "rulebook 3.17 p.33"}
+  - {name: "greater-than / closing angle bracket >", inputs: [[4], [3, 4, 5]], outputs: [">"], source: "rulebook 3.17 p.33"}
+  - {name: "opening parenthesis (", inputs: [[5], [1, 2, 6]], outputs: ["("], source: "rulebook 7 p.75"}
+  - {name: "closing parenthesis )", inputs: [[5], [3, 4, 5]], outputs: [")"], source: "rulebook 7 p.75"}
+  - {name: "opening square bracket [", inputs: [[4, 6], [1, 2, 6]], outputs: ["["], source: "rulebook 7 p.75"}
+  - {name: "closing square bracket ]", inputs: [[4, 6], [3, 4, 5]], outputs: ["]"], source: "rulebook 7 p.75"}
+  - {name: "opening curly bracket {", inputs: [[4, 5, 6], [1, 2, 6]], outputs: ["{"], source: "rulebook 7 p.75"}
+  - {name: "closing curly bracket }", inputs: [[4, 5, 6], [3, 4, 5]], outputs: ["}"], source: "rulebook 7 p.75"}
+  - {name: "reverse solidus (backslash) \\", inputs: [[4, 5, 6], [1, 6]], outputs: ["\\"], source: "rulebook 7 p.75"}
+  - {name: "opening double quotation mark at the beginning of a word", inputs: [[2, 3, 6], [1]], outputs: ["\"", "a"], source: "rulebook 7.6.1 p.82"}
+  - {name: "closing double quotation mark", inputs: [[3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.1 p.82"}
+  - {name: "two-cell opening double quotation mark", inputs: [[4, 5], [2, 3, 6]], outputs: ["\""], source: "rulebook 7.6.7 p.85"}
+  - {name: "two-cell closing double quotation mark", inputs: [[4, 5], [3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.7 p.85"}
+  - {name: "opening single quotation mark", inputs: [[6], [2, 3, 6]], outputs: ["'"], source: "rulebook 7.6.2 p.82"}
+  - {name: "closing single quotation mark", inputs: [[6], [3, 5, 6]], outputs: ["'"], source: "rulebook 7.6.2 p.82"}
+  - {name: "nondirectional double quotation mark", inputs: [[6], [2, 3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.5 p.83"}
+  - {name: "nondirectional single quotation mark", inputs: [[1], [3], [1]], outputs: ["a", "'", "a"], source: "rulebook 7.6.5 p.83"}
+  - {name: "vertical line |", inputs: [[4, 5, 6], [1, 2, 5, 6]], outputs: ["|"], source: "rulebook 15.1 p.223"}
+  - {name: "grave accent alone `", inputs: [[4, 6], [1, 6]], outputs: ["`"], source: "rulebook Appendix 3 p.325"}
+  - {name: "Braille space chord: space", inputs: [[]], outputs: [" "], source: "rulebook 3.23 p.37"}
+  - {name: "example \"'Tis late.\"", inputs: [[2, 3, 6], [3], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4], [], [1, 2, 3], [1], [2, 3, 4, 5], [1, 5], [2, 5, 6], [3, 5, 6]], outputs: ["\"", "'", "T", "i", "s", " ", "l", "a", "t", "e", ".", "\""], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \"...", inputs: [[2, 3, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6]], outputs: ["\"", ".", ".", "."], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \":\"", inputs: [[2, 3, 6], [2, 5], [3, 5, 6]], outputs: ["\"", ":", "\""], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ...?\"", inputs: [[2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 3, 6], [3, 5, 6]], outputs: [".", ".", ".", "?", "\""], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example I don't th....\"", inputs: [[6], [2, 4], [], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5], [], [2, 3, 4, 5], [1, 2, 5], [2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6], [3, 5, 6]], outputs: ["I", " ", "d", "o", "n", "'", "t", " ", "t", "h", ".", ".", ".", ".", "\""], source: "rulebook 7.3.1 p.80 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example X' Y\"", inputs: [[5, 6], [6], [1, 3, 4, 6], [3], [], [5, 6], [6], [1, 3, 4, 5, 6], [6], [2, 3, 5, 6]], outputs: ["X", "'", " ", "Y", "\""], source: "rulebook 2.6.3 p.18 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \"yr-123", inputs: [[6], [2, 3, 5, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [3, 6], [3, 4, 5, 6], [1], [1, 2], [1, 4]], outputs: ["\"", "y", "r", "-", "1", "2", "3"], source: "rulebook 2.6.2 p.16 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 4' 11\"", inputs: [[3, 4, 5, 6], [1, 4, 5], [3], [], [3, 4, 5, 6], [1], [1], [6], [2, 3, 5, 6]], outputs: ["4", "'", " ", "1", "1", "\""], source: "rulebook 3.15.1 p.32 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example [?]", inputs: [[4, 6], [1, 2, 6], [5, 6], [2, 3, 6], [4, 6], [3, 4, 5]], outputs: ["[", "?", "]"], source: "rulebook 2.6.5 p.19 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ?-1750", inputs: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], outputs: ["?", "-", "1", "7", "5", "0"], source: "rulebook 7.5.4 p.81 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 10:30-?", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], outputs: ["1", "0", ":", "3", "0", "-", "?"], source: "rulebook 7.5.4 p.81 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example don't", inputs: [[1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], outputs: ["d", "o", "n", "'", "t"], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example rock 'n' roll", inputs: [[1, 2, 3, 5], [1, 3, 5], [1, 4], [1, 3], [], [3], [5, 6], [1, 3, 4, 5], [3], [], [1, 2, 3, 5], [1, 3, 5], [1, 2, 3], [1, 2, 3]], outputs: ["r", "o", "c", "k", " ", "'", "n", "'", " ", "r", "o", "l", "l"], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example &c (etc)", inputs: [[4], [1, 2, 3, 4, 6], [1, 4], [], [5], [1, 2, 6], [1, 5], [2, 3, 4, 5], [1, 4], [5], [3, 4, 5]], outputs: ["&", "c", " ", "(", "e", "t", "c", ")"], source: "rulebook 3.1.1 p.23 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example M*A*S*H", inputs: [[6], [1, 3, 4], [5], [3, 5], [6], [1], [5], [3, 5], [6], [2, 3, 4], [5], [3, 5], [6], [1, 2, 5]], outputs: ["M", "*", "A", "*", "S", "*", "H"], source: "rulebook 3.3.1 p.24 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example AT&T", inputs: [[6], [6], [1], [2, 3, 4, 5], [4], [1, 2, 3, 4, 6], [6], [2, 3, 4, 5]], outputs: ["A", "T", "&", "T"], source: "rulebook 3.1.1 p.23 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Apt. #D", inputs: [[6], [1], [1, 2, 3, 4], [2, 3, 4, 5], [2, 5, 6], [], [4, 5, 6], [1, 4, 5, 6], [6], [1, 4, 5]], outputs: ["A", "p", "t", ".", " ", "#", "D"], source: "rulebook 3.19.1 p.35 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example $19.95", inputs: [[4], [2, 3, 4], [3, 4, 5, 6], [1], [2, 4], [2, 5, 6], [2, 4], [1, 5]], outputs: ["$", "1", "9", ".", "9", "5"], source: "rulebook 3.10.1 p.28 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 2.5%", inputs: [[3, 4, 5, 6], [1, 2], [2, 5, 6], [1, 5], [4, 6], [3, 5, 6]], outputs: ["2", ".", "5", "%"], source: "rulebook 7.1.1 p.76 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ~s", inputs: [[4], [3, 5], [2, 3, 4]], outputs: ["~", "s"], source: "rulebook 2.6.2 p.17 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example {k-p}", inputs: [[4, 5, 6], [1, 2, 6], [5, 6], [1, 3], [3, 6], [5, 6], [1, 2, 3, 4], [4, 5, 6], [3, 4, 5]], outputs: ["{", "k", "-", "p", "}"], source: "rulebook 2.6.3 p.17 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ab/cd", inputs: [[1], [1, 2], [4, 5, 6], [3, 4], [1, 4], [1, 4, 5]], outputs: ["a", "b", "/", "c", "d"], source: "rulebook 2.6.3 p.18 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example c:\\desktop", inputs: [[1, 4], [2, 5], [4, 5, 6], [1, 6], [1, 4, 5], [1, 5], [2, 3, 4], [1, 3], [2, 3, 4, 5], [1, 3, 5], [1, 2, 3, 4]], outputs: ["c", ":", "\\", "d", "e", "s", "k", "t", "o", "p"], source: "rulebook 7.1.1 p.77 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example jim@take2.com", inputs: [[2, 4, 5], [2, 4], [1, 3, 4], [4], [1], [2, 3, 4, 5], [1], [1, 3], [1, 5], [3, 4, 5, 6], [1, 2], [2, 5, 6], [5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["j", "i", "m", "@", "t", "a", "k", "e", "2", ".", "c", "o", "m"], source: "rulebook 5.2.1 p.58 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 7(b)", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], outputs: ["7", "(", "b", ")"], source: "rulebook 6.3.1 p.67 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example idea(s)", inputs: [[2, 4], [1, 4, 5], [1, 5], [1], [5], [1, 2, 6], [2, 3, 4], [5], [3, 4, 5]], outputs: ["i", "d", "e", "a", "(", "s", ")"], source: "rulebook 10.6.5 p.131 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example [be]hold", inputs: [[4, 6], [1, 2, 6], [1, 2], [1, 5], [4, 6], [3, 4, 5], [1, 2, 5], [1, 3, 5], [1, 2, 3], [1, 4, 5]], outputs: ["[", "b", "e", "]", "h", "o", "l", "d"], source: "rulebook 10.6.2 p.128 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Jan/Feb", inputs: [[6], [2, 4, 5], [1], [1, 3, 4, 5], [4, 5, 6], [3, 4], [6], [1, 2, 4], [1, 5], [1, 2]], outputs: ["J", "a", "n", "/", "F", "e", "b"], source: "rulebook 7.1.1 p.77 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Ai!!ams", inputs: [[6], [1], [2, 4], [5, 6], [2, 3, 5], [2, 3, 5], [1], [1, 3, 4], [2, 3, 4]], outputs: ["A", "i", "!", "!", "a", "m", "s"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example lang:uk", inputs: [[1, 2, 3], [1], [1, 3, 4, 5], [1, 2, 4, 5], [5, 6], [2, 5], [1, 3, 6], [1, 3]], outputs: ["l", "a", "n", "g", ":", "u", "k"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example a:o", inputs: [[1], [5, 6], [2, 5], [1, 3, 5]], outputs: ["a", ":", "o"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example .doc", inputs: [[5, 6], [2, 5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], outputs: [".", "d", "o", "c"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example U.S.A.", inputs: [[6], [1, 3, 6], [2, 5, 6], [6], [2, 3, 4], [2, 5, 6], [6], [1], [2, 5, 6]], outputs: ["U", ".", "S", ".", "A", "."], source: "rulebook 7.1.1 p.76 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "case 'hi'", inputs: [[6], [2, 3, 6], [1, 2, 5], [2, 4], [6], [3, 5, 6]], outputs: ["'", "h", "i", "'"], source: "constructed in references/research/ueb-literary-signs.yaml: single quotation marks, 7.6.2"}
+  - {name: "case \"hi\"", inputs: [[4, 5], [2, 3, 6], [1, 2, 5], [2, 4], [4, 5], [3, 5, 6]], outputs: ["\"", "h", "i", "\""], source: "constructed in references/research/ueb-literary-signs.yaml: two-cell double quotation marks, 7.6.7"}
+  - {name: "case say \"hi\"", inputs: [[2, 3, 4], [1], [1, 3, 4, 5, 6], [], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6]], outputs: ["s", "a", "y", " ", "\"", "h", "i", "\""], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ begins a word: opening quote"}
+  - {name: "case hi?", inputs: [[1, 2, 5], [2, 4], [2, 3, 6]], outputs: ["h", "i", "?"], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ inside a word: question mark"}
+  - {name: "case (\"hi\")", inputs: [[5], [1, 2, 6], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6], [5], [3, 4, 5]], outputs: ["(", "\"", "h", "i", "\"", ")"], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ after an opening parenthesis still begins the word, 2.6.2"}
+  - {name: "case a|b", inputs: [[1], [4, 5, 6], [1, 2, 5, 6], [1, 2]], outputs: ["a", "|", "b"], source: "constructed in references/research/ueb-literary-signs.yaml: vertical line, 15.1"}
+  - {name: "case `a`", inputs: [[4, 6], [1, 6], [1], [4, 6], [1, 6]], outputs: ["`", "a", "`"], source: "constructed in references/research/ueb-literary-signs.yaml: grave accent alone, Appendix 3"}
+  - {name: "case <a>", inputs: [[4], [1, 2, 6], [1], [4], [3, 4, 5]], outputs: ["<", "a", ">"], source: "constructed in references/research/ueb-literary-signs.yaml: angle brackets, 7"}

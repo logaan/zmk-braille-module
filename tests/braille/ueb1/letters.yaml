@@ -1,0 +1,123 @@
+# ueb1 letters
+#
+# ueb1: every lowercase letter, capital letter, and letter in capitals word and passage mode.
+# Signs from references/research/ueb-literary-signs.yaml and ueb-capitalisation.yaml.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: ueb1
+cases:
+  - {name: "letter a", inputs: [[1]], outputs: ["a"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter b", inputs: [[1, 2]], outputs: ["b"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter c", inputs: [[1, 4]], outputs: ["c"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter d", inputs: [[1, 4, 5]], outputs: ["d"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter e", inputs: [[1, 5]], outputs: ["e"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter f", inputs: [[1, 2, 4]], outputs: ["f"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter g", inputs: [[1, 2, 4, 5]], outputs: ["g"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter h", inputs: [[1, 2, 5]], outputs: ["h"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter i", inputs: [[2, 4]], outputs: ["i"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter j", inputs: [[2, 4, 5]], outputs: ["j"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter k", inputs: [[1, 3]], outputs: ["k"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter l", inputs: [[1, 2, 3]], outputs: ["l"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter m", inputs: [[1, 3, 4]], outputs: ["m"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter n", inputs: [[1, 3, 4, 5]], outputs: ["n"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter o", inputs: [[1, 3, 5]], outputs: ["o"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter p", inputs: [[1, 2, 3, 4]], outputs: ["p"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter q", inputs: [[1, 2, 3, 4, 5]], outputs: ["q"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter r", inputs: [[1, 2, 3, 5]], outputs: ["r"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter s", inputs: [[2, 3, 4]], outputs: ["s"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter t", inputs: [[2, 3, 4, 5]], outputs: ["t"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter u", inputs: [[1, 3, 6]], outputs: ["u"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter v", inputs: [[1, 2, 3, 6]], outputs: ["v"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter w", inputs: [[2, 4, 5, 6]], outputs: ["w"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter x", inputs: [[1, 3, 4, 6]], outputs: ["x"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter y", inputs: [[1, 3, 4, 5, 6]], outputs: ["y"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter z", inputs: [[1, 3, 5, 6]], outputs: ["z"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "capital letter A", inputs: [[6], [1]], outputs: ["A"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter B", inputs: [[6], [1, 2]], outputs: ["B"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter C", inputs: [[6], [1, 4]], outputs: ["C"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter D", inputs: [[6], [1, 4, 5]], outputs: ["D"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter E", inputs: [[6], [1, 5]], outputs: ["E"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter F", inputs: [[6], [1, 2, 4]], outputs: ["F"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter G", inputs: [[6], [1, 2, 4, 5]], outputs: ["G"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter H", inputs: [[6], [1, 2, 5]], outputs: ["H"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter I", inputs: [[6], [2, 4]], outputs: ["I"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter J", inputs: [[6], [2, 4, 5]], outputs: ["J"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter K", inputs: [[6], [1, 3]], outputs: ["K"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter L", inputs: [[6], [1, 2, 3]], outputs: ["L"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter M", inputs: [[6], [1, 3, 4]], outputs: ["M"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter N", inputs: [[6], [1, 3, 4, 5]], outputs: ["N"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter O", inputs: [[6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter P", inputs: [[6], [1, 2, 3, 4]], outputs: ["P"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Q", inputs: [[6], [1, 2, 3, 4, 5]], outputs: ["Q"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter R", inputs: [[6], [1, 2, 3, 5]], outputs: ["R"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter S", inputs: [[6], [2, 3, 4]], outputs: ["S"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter T", inputs: [[6], [2, 3, 4, 5]], outputs: ["T"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter U", inputs: [[6], [1, 3, 6]], outputs: ["U"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter V", inputs: [[6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter W", inputs: [[6], [2, 4, 5, 6]], outputs: ["W"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter X", inputs: [[6], [1, 3, 4, 6]], outputs: ["X"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Y", inputs: [[6], [1, 3, 4, 5, 6]], outputs: ["Y"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Z", inputs: [[6], [1, 3, 5, 6]], outputs: ["Z"], source: "rulebook 8.3.1 p.89"}
+  - {name: "letter a in a capitalised word", inputs: [[6], [6], [1]], outputs: ["A"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter b in a capitalised word", inputs: [[6], [6], [1, 2]], outputs: ["B"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter c in a capitalised word", inputs: [[6], [6], [1, 4]], outputs: ["C"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter d in a capitalised word", inputs: [[6], [6], [1, 4, 5]], outputs: ["D"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter e in a capitalised word", inputs: [[6], [6], [1, 5]], outputs: ["E"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter f in a capitalised word", inputs: [[6], [6], [1, 2, 4]], outputs: ["F"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter g in a capitalised word", inputs: [[6], [6], [1, 2, 4, 5]], outputs: ["G"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter h in a capitalised word", inputs: [[6], [6], [1, 2, 5]], outputs: ["H"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter i in a capitalised word", inputs: [[6], [6], [2, 4]], outputs: ["I"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter j in a capitalised word", inputs: [[6], [6], [2, 4, 5]], outputs: ["J"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter k in a capitalised word", inputs: [[6], [6], [1, 3]], outputs: ["K"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter l in a capitalised word", inputs: [[6], [6], [1, 2, 3]], outputs: ["L"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter m in a capitalised word", inputs: [[6], [6], [1, 3, 4]], outputs: ["M"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter n in a capitalised word", inputs: [[6], [6], [1, 3, 4, 5]], outputs: ["N"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter o in a capitalised word", inputs: [[6], [6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter p in a capitalised word", inputs: [[6], [6], [1, 2, 3, 4]], outputs: ["P"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter q in a capitalised word", inputs: [[6], [6], [1, 2, 3, 4, 5]], outputs: ["Q"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter r in a capitalised word", inputs: [[6], [6], [1, 2, 3, 5]], outputs: ["R"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter s in a capitalised word", inputs: [[6], [6], [2, 3, 4]], outputs: ["S"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter t in a capitalised word", inputs: [[6], [6], [2, 3, 4, 5]], outputs: ["T"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter u in a capitalised word", inputs: [[6], [6], [1, 3, 6]], outputs: ["U"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter v in a capitalised word", inputs: [[6], [6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter w in a capitalised word", inputs: [[6], [6], [2, 4, 5, 6]], outputs: ["W"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter x in a capitalised word", inputs: [[6], [6], [1, 3, 4, 6]], outputs: ["X"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter y in a capitalised word", inputs: [[6], [6], [1, 3, 4, 5, 6]], outputs: ["Y"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter z in a capitalised word", inputs: [[6], [6], [1, 3, 5, 6]], outputs: ["Z"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter a in a capitalised passage", inputs: [[6], [6], [6], [1], [], [1]], outputs: ["A", " ", "A"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter b in a capitalised passage", inputs: [[6], [6], [6], [1, 2], [], [1, 2]], outputs: ["B", " ", "B"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter c in a capitalised passage", inputs: [[6], [6], [6], [1, 4], [], [1, 4]], outputs: ["C", " ", "C"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter d in a capitalised passage", inputs: [[6], [6], [6], [1, 4, 5], [], [1, 4, 5]], outputs: ["D", " ", "D"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter e in a capitalised passage", inputs: [[6], [6], [6], [1, 5], [], [1, 5]], outputs: ["E", " ", "E"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter f in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 4], [], [1, 2, 4]], outputs: ["F", " ", "F"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter g in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 4, 5], [], [1, 2, 4, 5]], outputs: ["G", " ", "G"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter h in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 5], [], [1, 2, 5]], outputs: ["H", " ", "H"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter i in a capitalised passage", inputs: [[6], [6], [6], [2, 4], [], [2, 4]], outputs: ["I", " ", "I"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter j in a capitalised passage", inputs: [[6], [6], [6], [2, 4, 5], [], [2, 4, 5]], outputs: ["J", " ", "J"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter k in a capitalised passage", inputs: [[6], [6], [6], [1, 3], [], [1, 3]], outputs: ["K", " ", "K"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter l in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3], [], [1, 2, 3]], outputs: ["L", " ", "L"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter m in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4], [], [1, 3, 4]], outputs: ["M", " ", "M"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter n in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 5], [], [1, 3, 4, 5]], outputs: ["N", " ", "N"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter o in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 5], [], [1, 3, 5]], outputs: ["O", " ", "O"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter p in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 4], [], [1, 2, 3, 4]], outputs: ["P", " ", "P"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter q in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 4, 5], [], [1, 2, 3, 4, 5]], outputs: ["Q", " ", "Q"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter r in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 5], [], [1, 2, 3, 5]], outputs: ["R", " ", "R"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter s in a capitalised passage", inputs: [[6], [6], [6], [2, 3, 4], [], [2, 3, 4]], outputs: ["S", " ", "S"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter t in a capitalised passage", inputs: [[6], [6], [6], [2, 3, 4, 5], [], [2, 3, 4, 5]], outputs: ["T", " ", "T"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter u in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 6], [], [1, 3, 6]], outputs: ["U", " ", "U"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter v in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 6], [], [1, 2, 3, 6]], outputs: ["V", " ", "V"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter w in a capitalised passage", inputs: [[6], [6], [6], [2, 4, 5, 6], [], [2, 4, 5, 6]], outputs: ["W", " ", "W"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter x in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 6], [], [1, 3, 4, 6]], outputs: ["X", " ", "X"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter y in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 5, 6], [], [1, 3, 4, 5, 6]], outputs: ["Y", " ", "Y"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter z in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 5, 6], [], [1, 3, 5, 6]], outputs: ["Z", " ", "Z"], source: "rulebook 8.5.1 p.93"}
