@@ -1,0 +1,83 @@
+# ueb1 capitals indicators
+#
+# ueb1: capitalised word and passage indicators, the capitals terminator, and the
+# rulebook and constructed cases of references/research/ueb-capitalisation.yaml.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: ueb1
+cases:
+  - {name: "capitalised word indicator alone has no output", inputs: [[6], [6]], outputs: [], source: "rulebook 8.4 p.90"}
+  - {name: "capitalised passage indicator alone has no output", inputs: [[6], [6], [6]], outputs: [], source: "rulebook 8.5 p.93"}
+  - {name: "capitals terminator alone has no output", inputs: [[6], [3]], outputs: [], source: "rulebook 8.6 p.96"}
+  - {name: "capitalised word ends at a space", inputs: [[6], [6], [1], [1, 2], [], [1, 4]], outputs: ["A", "B", " ", "c"], source: "rulebook 8.4.2 p.90"}
+  - {name: "capitalised word ends at a hyphen", inputs: [[6], [6], [1], [3, 6], [1, 2]], outputs: ["A", "-", "b"], source: "rulebook 8.4.2 p.91"}
+  - {name: "capitalised word ends at a single capital letter", inputs: [[6], [6], [1], [6], [1, 2], [1, 4]], outputs: ["A", "B", "c"], source: "rulebook 8.4.2 p.90"}
+  - {name: "capitalised word ends at the capitals terminator", inputs: [[6], [6], [1], [1, 2], [6], [3], [1, 4]], outputs: ["A", "B", "c"], source: "rulebook 8.6.3 p.96"}
+  - {name: "capitalised passage continues across spaces until the terminator", inputs: [[6], [6], [6], [1], [], [1, 2], [6], [3], [], [1, 4]], outputs: ["A", " ", "B", " ", "c"], source: "rulebook 8.5.3 p.93"}
+  - {name: "capitalised passage continues across punctuation", inputs: [[6], [6], [6], [1], [2], [], [1, 2], [2, 5, 6], [6], [3]], outputs: ["A", ",", " ", "B", "."], source: "rulebook 8.5.2 p.93"}
+  - {name: "example O", inputs: [[6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example V", inputs: [[5, 6], [6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 20B", inputs: [[3, 4, 5, 6], [1, 2], [2, 4, 5], [6], [1, 2]], outputs: ["2", "0", "B"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B.C.", inputs: [[6], [1, 2], [2, 5, 6], [6], [1, 4], [2, 5, 6]], outputs: ["B", ".", "C", "."], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B-E-L-I-E-V-E", inputs: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3], [3, 6], [6], [2, 4], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3, 6], [3, 6], [6], [1, 5]], outputs: ["B", "-", "E", "-", "L", "-", "I", "-", "E", "-", "V", "-", "E"], source: "rulebook 8.3.1 p.90 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DipTP", inputs: [[6], [1, 4, 5], [2, 4], [1, 2, 3, 4], [6], [6], [2, 3, 4, 5], [1, 2, 3, 4]], outputs: ["D", "i", "p", "T", "P"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example NEW YORK", inputs: [[6], [6], [1, 3, 4, 5], [1, 5], [2, 4, 5, 6], [], [6], [6], [1, 3, 4, 5, 6], [1, 3, 5], [1, 2, 3, 5], [1, 3]], outputs: ["N", "E", "W", " ", "Y", "O", "R", "K"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ANGLO-SAXON", inputs: [[6], [6], [1], [1, 3, 4, 5], [1, 2, 4, 5], [1, 2, 3], [1, 3, 5], [3, 6], [6], [6], [2, 3, 4], [1], [1, 3, 4, 6], [1, 3, 5], [1, 3, 4, 5]], outputs: ["A", "N", "G", "L", "O", "-", "S", "A", "X", "O", "N"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example McGRAW-HILL", inputs: [[6], [1, 3, 4], [1, 4], [6], [6], [1, 2, 4, 5], [1, 2, 3, 5], [1], [2, 4, 5, 6], [3, 6], [6], [6], [1, 2, 5], [2, 4], [1, 2, 3], [1, 2, 3]], outputs: ["M", "c", "G", "R", "A", "W", "-", "H", "I", "L", "L"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example O'SULLIVAN", inputs: [[6], [1, 3, 5], [3], [6], [6], [2, 3, 4], [1, 3, 6], [1, 2, 3], [1, 2, 3], [2, 4], [1, 2, 3, 6], [1], [1, 3, 4, 5]], outputs: ["O", "'", "S", "U", "L", "L", "I", "V", "A", "N"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DON'T", inputs: [[6], [6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [6], [2, 3, 4, 5]], outputs: ["D", "O", "N", "'", "T"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example OK'd", inputs: [[6], [6], [1, 3, 5], [1, 3], [3], [1, 4, 5]], outputs: ["O", "K", "'", "d"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example RSVP or R.S.V.P.", inputs: [[6], [6], [1, 2, 3, 5], [2, 3, 4], [1, 2, 3, 6], [1, 2, 3, 4], [], [1, 3, 5], [1, 2, 3, 5], [], [6], [1, 2, 3, 5], [2, 5, 6], [6], [2, 3, 4], [2, 5, 6], [6], [1, 2, 3, 6], [2, 5, 6], [6], [1, 2, 3, 4], [2, 5, 6]], outputs: ["R", "S", "V", "P", " ", "o", "r", " ", "R", ".", "S", ".", "V", ".", "P", "."], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example HOTELS.COM", inputs: [[6], [6], [1, 2, 5], [1, 3, 5], [2, 3, 4, 5], [1, 5], [1, 2, 3], [2, 3, 4], [2, 5, 6], [6], [6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["H", "O", "T", "E", "L", "S", ".", "C", "O", "M"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example BA(Oxon)", inputs: [[6], [6], [1, 2], [1], [5], [1, 2, 6], [6], [1, 3, 5], [1, 3, 4, 6], [1, 3, 5], [1, 3, 4, 5], [5], [3, 4, 5]], outputs: ["B", "A", "(", "O", "x", "o", "n", ")"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example (R)AC", inputs: [[5], [1, 2, 6], [6], [1, 2, 3, 5], [5], [3, 4, 5], [6], [6], [1], [1, 4]], outputs: ["(", "R", ")", "A", "C"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example I/O", inputs: [[6], [2, 4], [4, 5, 6], [3, 4], [6], [1, 3, 5]], outputs: ["I", "/", "O"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example McDONALD@xyz.com", inputs: [[6], [1, 3, 4], [1, 4], [6], [6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [1], [1, 2, 3], [1, 4, 5], [4], [1], [1, 3, 4, 6], [1, 3, 4, 5, 6], [1, 3, 5, 6], [2, 5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["M", "c", "D", "O", "N", "A", "L", "D", "@", "x", "y", "z", ".", "c", "o", "m"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example SWIFT & CO.", inputs: [[6], [6], [2, 3, 4], [2, 4, 5, 6], [2, 4], [1, 2, 4], [2, 3, 4, 5], [], [4], [1, 2, 3, 4, 6], [], [6], [6], [1, 4], [1, 3, 5], [2, 5, 6]], outputs: ["S", "W", "I", "F", "T", " ", "&", " ", "C", "O", "."], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ABCs", inputs: [[6], [6], [1], [1, 2], [1, 4], [6], [3], [2, 3, 4]], outputs: ["A", "B", "C", "s"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example WASPs", inputs: [[6], [6], [2, 4, 5, 6], [1], [2, 3, 4], [1, 2, 3, 4], [6], [3], [2, 3, 4]], outputs: ["W", "A", "S", "P", "s"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example XXIInd", inputs: [[6], [6], [1, 3, 4, 6], [1, 3, 4, 6], [2, 4], [2, 4], [6], [3], [1, 3, 4, 5], [1, 4, 5]], outputs: ["X", "X", "I", "I", "n", "d"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example VIIb", inputs: [[6], [6], [1, 2, 3, 6], [2, 4], [2, 4], [6], [3], [1, 2]], outputs: ["V", "I", "I", "b"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example (July)", inputs: [[5], [1, 2, 6], [6], [2, 4, 5], [1, 3, 6], [1, 2, 3], [1, 3, 4, 5, 6], [5], [3, 4, 5]], outputs: ["(", "J", "u", "l", "y", ")"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B-U-S", inputs: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 3, 6], [3, 6], [6], [2, 3, 4]], outputs: ["B", "-", "U", "-", "S"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 'TIS", inputs: [[3], [6], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4]], outputs: ["'", "T", "I", "S"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5]], outputs: ["C", "D"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example OK OKd", inputs: [[6], [6], [1, 3, 5], [1, 3], [], [6], [6], [1, 3, 5], [1, 3], [6], [3], [1, 4, 5]], outputs: ["O", "K", " ", "O", "K", "d"], source: "rulebook 8.8.1 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD CDs", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5], [], [6], [6], [1, 4], [1, 4, 5], [6], [3], [2, 3, 4]], outputs: ["C", "D", " ", "C", "D", "s"], source: "rulebook 8.8.1 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example MHz", inputs: [[6], [1, 3, 4], [6], [1, 2, 5], [1, 3, 5, 6]], outputs: ["M", "H", "z"], source: "rulebook 8.8.2 p.99 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ilLOGical", inputs: [[2, 4], [1, 2, 3], [6], [6], [1, 2, 3], [1, 3, 5], [1, 2, 4, 5], [6], [3], [2, 4], [1, 4], [1], [1, 2, 3]], outputs: ["i", "l", "L", "O", "G", "i", "c", "a", "l"], source: "rulebook 4.1.1 p.46 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD-ROM", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5], [3, 6], [6], [6], [1, 2, 3, 5], [1, 3, 5], [1, 3, 4]], outputs: ["C", "D", "-", "R", "O", "M"], source: "rulebook 5.7.2 p.61 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example TEAspoon", inputs: [[6], [6], [2, 3, 4, 5], [1, 5], [1], [6], [3], [2, 3, 4], [1, 2, 3, 4], [1, 3, 5], [1, 3, 5], [1, 3, 4, 5]], outputs: ["T", "E", "A", "s", "p", "o", "o", "n"], source: "rulebook 10.6.6 p.131 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DISlike", inputs: [[6], [6], [1, 4, 5], [2, 4], [2, 3, 4], [6], [3], [1, 2, 3], [2, 4], [1, 3], [1, 5]], outputs: ["D", "I", "S", "l", "i", "k", "e"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example conCUR", inputs: [[1, 4], [1, 3, 5], [1, 3, 4, 5], [6], [6], [1, 4], [1, 3, 6], [1, 2, 3, 5]], outputs: ["c", "o", "n", "C", "U", "R"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DisCORD", inputs: [[6], [1, 4, 5], [2, 4], [2, 3, 4], [6], [6], [1, 4], [1, 3, 5], [1, 2, 3, 5], [1, 4, 5]], outputs: ["D", "i", "s", "C", "O", "R", "D"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example AWful", inputs: [[6], [6], [1], [2, 4, 5, 6], [6], [3], [1, 2, 4], [1, 3, 6], [1, 2, 3]], outputs: ["A", "W", "f", "u", "l"], source: "rulebook 10.8.2 p.144 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ELesson", inputs: [[6], [1, 5], [6], [1, 2, 3], [1, 5], [2, 3, 4], [2, 3, 4], [1, 3, 5], [1, 3, 4, 5]], outputs: ["E", "L", "e", "s", "s", "o", "n"], source: "rulebook 10.8.2 p.145 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example LLC", inputs: [[5, 6], [6], [6], [1, 2, 3], [1, 2, 3], [1, 4]], outputs: ["L", "L", "C"], source: "rulebook 10.9.8 p.152 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example UNSD", inputs: [[5, 6], [5, 6], [6], [6], [1, 3, 6], [1, 3, 4, 5], [2, 3, 4], [1, 4, 5]], outputs: ["U", "N", "S", "D"], source: "rulebook 10.9.9 p.153 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 3B", inputs: [[3, 4, 5, 6], [1, 4], [6], [1, 2]], outputs: ["3", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 4.B", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [6], [1, 2]], outputs: ["4", ".", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example W1N 9LF", inputs: [[6], [2, 4, 5, 6], [3, 4, 5, 6], [1], [6], [1, 3, 4, 5], [], [3, 4, 5, 6], [2, 4], [6], [6], [1, 2, 3], [1, 2, 4]], outputs: ["W", "1", "N", " ", "9", "L", "F"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example N12 7BT", inputs: [[6], [1, 3, 4, 5], [3, 4, 5, 6], [1], [1, 2], [], [3, 4, 5, 6], [1, 2, 4, 5], [6], [6], [1, 2], [2, 3, 4, 5]], outputs: ["N", "1", "2", " ", "7", "B", "T"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example M4G 3E8", inputs: [[6], [1, 3, 4], [3, 4, 5, 6], [1, 4, 5], [6], [1, 2, 4, 5], [], [3, 4, 5, 6], [1, 4], [6], [1, 5], [3, 4, 5, 6], [1, 2, 5]], outputs: ["M", "4", "G", " ", "3", "E", "8"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example Braille4All", inputs: [[6], [1, 2], [1, 2, 3, 5], [1], [2, 4], [1, 2, 3], [1, 2, 3], [1, 5], [3, 4, 5, 6], [1, 4, 5], [6], [1], [1, 2, 3], [1, 2, 3]], outputs: ["B", "r", "a", "i", "l", "l", "e", "4", "A", "l", "l"], source: "rulebook 2.6.3 p.18 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example US$", inputs: [[6], [6], [1, 3, 6], [2, 3, 4], [4], [2, 3, 4]], outputs: ["U", "S", "$"], source: "rulebook 3.10.1 p.29 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example KBr (potassium bromide)", inputs: [[6], [1, 3], [6], [1, 2], [1, 2, 3, 5], [], [5], [1, 2, 6], [1, 2, 3, 4], [1, 3, 5], [2, 3, 4, 5], [1], [2, 3, 4], [2, 3, 4], [2, 4], [1, 3, 6], [1, 3, 4], [], [1, 2], [1, 2, 3, 5], [1, 3, 5], [1, 3, 4], [2, 4], [1, 4, 5], [1, 5], [5], [3, 4, 5]], outputs: ["K", "B", "r", " ", "(", "p", "o", "t", "a", "s", "s", "i", "u", "m", " ", "b", "r", "o", "m", "i", "d", "e", ")"], source: "rulebook 8.8.2 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example A SELF-MADE MAN", inputs: [[6], [6], [6], [1], [], [2, 3, 4], [1, 5], [1, 2, 3], [1, 2, 4], [3, 6], [1, 3, 4], [1], [1, 4, 5], [1, 5], [], [1, 3, 4], [1], [1, 3, 4, 5], [6], [3]], outputs: ["A", " ", "S", "E", "L", "F", "-", "M", "A", "D", "E", " ", "M", "A", "N"], source: "rulebook 8.5.3 p.93 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "case HI THERE! ok", inputs: [[6], [6], [6], [1, 2, 5], [2, 4], [], [2, 3, 4, 5], [1, 2, 5], [1, 5], [1, 2, 3, 5], [1, 5], [2, 3, 5], [6], [3], [], [1, 3, 5], [1, 3]], outputs: ["H", "I", " ", "T", "H", "E", "R", "E", "!", " ", "o", "k"], source: "constructed in references/research/ueb-capitalisation.yaml: passage spans spaces and punctuation until ⠠⠄, 8.5"}
+  - {name: "case 1ST PLACE", inputs: [[6], [6], [6], [3, 4, 5, 6], [1], [2, 3, 4], [2, 3, 4, 5], [], [1, 2, 3, 4], [1, 2, 3], [1], [1, 4], [1, 5], [6], [3]], outputs: ["1", "S", "T", " ", "P", "L", "A", "C", "E"], source: "constructed in references/research/ueb-capitalisation.yaml: digits do not end a passage; letters after them stay capital, 8.5.2"}
+  - {name: "case AB CD Ef", inputs: [[6], [6], [6], [1], [1, 2], [], [6], [6], [1, 4], [1, 4, 5], [], [1, 5], [6], [3], [1, 2, 4]], outputs: ["A", "B", " ", "C", "D", " ", "E", "f"], source: "constructed in references/research/ueb-capitalisation.yaml: word indicator inside a passage keeps the passage (firmware choice); terminator mid-sequence, 8.6.3"}
+  - {name: "case Abc", inputs: [[6], [6], [1], [5, 6], [1, 2], [1, 4]], outputs: ["A", "b", "c"], source: "constructed in references/research/ueb-capitalisation.yaml: grade 1 indicator is non-alphabetic and ends the capitalised word (derived from 2.1)"}
+  - {name: "case a", inputs: [[6], [3], [1]], outputs: ["a"], source: "constructed in references/research/ueb-capitalisation.yaml: terminator with no capitals mode: no output (firmware choice)"}
+  - {name: "case -", inputs: [[6], [3, 6]], outputs: ["-"], source: "constructed in references/research/ueb-capitalisation.yaml: ⠠ forms no sign with ⠤ in ueb1 (dash is excluded): dropped with a notice, then ⠤ is read afresh"}
