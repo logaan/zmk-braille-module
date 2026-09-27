@@ -21,7 +21,7 @@ cargo:
     2. The settings-entry action.
     3. Tab, Return, Delete, Escape, arrows, Caps Lock, and F1–F12.
     4. Shift, Control, Option, and Command, as sticky modifiers.
-    5. The Globe/Fn and media/system functions the host-capability research found representable.
+    5. The media/system functions and Globe listed as supported in `references/research/zmk-globe-fn-and-media-actions.yaml`: display brightness down and up, Mission Control, Spotlight, previous track, play/pause, next track, mute, volume down and up, and Globe as a sticky modifier.
 2. Take each chord from the first source that defines it:
     1. macOS VoiceOver's Braille keyboard commands for that mode: six-dot conventions for `ueb1`, eight-dot for `computer8`.
     2. Android TalkBack.

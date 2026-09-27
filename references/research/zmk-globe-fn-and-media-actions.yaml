@@ -1,0 +1,279 @@
+# Globe/Fn and media/system actions expressible by ZMK on a macOS host.
+# Research record for the Braille module plan (phase 02 factory bindings, phase 06 coverage).
+
+question: >-
+  Which Globe/Fn and media/system functions of a US MacBook Air keyboard can the pinned
+  ZMK release send to a macOS host, with which ZMK bindings, and which are genuine
+  host or ZMK limitations?
+
+baseline:
+  zmk_release: v0.3.0
+  zmk_commit: edf5c0814fd3ea202e43aad2d68fd32e882a518c
+  zephyr: v3.5.0+zmk-fixes (app/west.yml at v0.3.0)
+  host: macOS with VoiceOver, US input layout
+  keyboard_reference: Apple "Magic Keyboard for MacBook Air" user guide (2025 MacBook Air, macOS Tahoe 26)
+
+sources:
+  zmk:
+    - id: keys_h
+      path: app/include/dt-bindings/zmk/keys.h
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/include/dt-bindings/zmk/keys.h
+      lines:
+        F1..F12: 333-366
+        HOME: 387
+        PAGE_UP: 390
+        DELETE: 395
+        END: 399
+        PAGE_DOWN: 402
+        K_VOLUME_UP: 601
+        K_PLAY_PAUSE: 820
+        C_POWER: 887
+        C_BRIGHTNESS_INC: 963
+        C_BRIGHTNESS_DEC: 969
+        C_FAST_FORWARD: 1083
+        C_REWIND: 1087
+        C_NEXT: 1091
+        C_PREVIOUS: 1095
+        C_PLAY_PAUSE: 1122
+        C_VOICE_COMMAND: 1127
+        C_MUTE: 1130
+        C_VOLUME_UP: 1137
+        C_VOLUME_DOWN: 1142
+        C_AC_SEARCH: 1337
+        C_AC_DESKTOP_SHOW_ALL_WINDOWS: 1406
+        C_AC_DESKTOP_SHOW_ALL_APPLICATIONS: 1410
+        GLOBE: 1444-1445
+    - id: hid_os_table
+      path: docs/src/data/hid.js
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/docs/src/data/hid.js
+      note: ZMK's per-OS keycode support table; `os.macos` is true, false, or null (untested).
+      lines:
+        F1: 1702
+        F12: 1933
+        K_VOLUME_UP: 3227
+        K_PLAY_PAUSE: 4255
+        C_BRIGHTNESS_INC: 5160
+        C_BRIGHTNESS_DEC: 5181
+        C_FAST_FORWARD: 5832
+        C_REWIND: 5853
+        C_NEXT: 5874
+        C_PREVIOUS: 5895
+        C_PLAY_PAUSE: 6042
+        C_VOICE_COMMAND: 6063
+        C_MUTE: 6084
+        C_VOLUME_UP: 6126
+        C_VOLUME_DOWN: 6147
+        C_AC_SEARCH: 7239
+        C_AC_DESKTOP_SHOW_ALL_WINDOWS: 7701
+        C_AC_DESKTOP_SHOW_ALL_APPLICATIONS: 7722
+        GLOBE: 7869
+    - id: globe_footnote
+      path: docs/docs/keymaps/_footnotes/globe.mdx
+      text: >-
+        Does not exactly replicate original key behavior on macOS, works for Globe+key
+        modifiers but not Fn+key.
+    - id: globe_test
+      url: https://github.com/zmkfirmware/zmk/pull/1938#issuecomment-1744579039
+      note: >-
+        macOS Sonoma 14.0 test of `GLOBE`: Globe-n, -q, -h, -e, -f work; Globe-Backspace and
+        Globe-arrows are not transformed; the built-in Fn key reports Apple vendor usage page
+        0x00FF usage 0x0003, while ZMK sends Consumer page usage 0x029D; spoofing Apple VID/PID
+        changed nothing.
+    - id: hid_h
+      path: app/include/zmk/hid.h
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/include/zmk/hid.h
+      lines:
+        consumer_max_usage: 28-31
+        report_descriptor_pages: 105-208
+      note: >-
+        The HID report descriptor declares only the Keyboard/Keypad, LED, Consumer and (optional)
+        mouse pages; there is no Apple vendor page and no Generic Desktop system-control collection.
+    - id: hid_c_press
+      path: app/src/hid.c
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/src/hid.c
+      lines: 346-368
+      note: zmk_hid_press/release/is_pressed handle only HID_USAGE_KEY and HID_USAGE_CONSUMER.
+    - id: consumer_kconfig
+      path: app/Kconfig
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/Kconfig
+      lines: 90-105
+      note: >-
+        Choice ZMK_HID_CONSUMER_REPORT_USAGES has no explicit default, so Kconfig selects its first
+        entry, ZMK_HID_CONSUMER_REPORT_USAGES_FULL (usages up to 0xFFF). BASIC limits usages to 0xFF.
+    - id: sticky_key
+      path: app/src/behaviors/behavior_sticky_key.c
+      url: https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/src/behaviors/behavior_sticky_key.c
+      lines: 252-328
+      note: >-
+        The sticky-key listener compares usage page and ID, so `&sk` holds a Consumer usage such as
+        GLOBE until the next key release; `ignore-modifiers` lets stacked sticky modifiers combine.
+    - id: sticky_key_dtsi
+      path: app/dts/behaviors/sticky_key.dtsi
+      note: Default `&sk` node sets `release-after-ms = <1000>`.
+    - id: omit_if_no_ref
+      paths:
+        - app/include/dt-bindings/zmk/behaviors.h (lines 7-9)
+        - app/dts/behaviors/key_press.dtsi
+        - app/dts/behaviors/sticky_key.dtsi
+        - docs/docs/features/studio.md (line 109)
+      note: >-
+        Built-in behavior nodes are marked `/omit-if-no-ref/` unless ZMK_BEHAVIORS_KEEP_<NAME> or
+        ZMK_BEHAVIORS_KEEP_ALL is defined; unreferenced behaviors are not built.
+  apple:
+    - id: mba_keyboard_guide
+      url: https://support.apple.com/guide/macbook-air/apdab672d5e9/2025/mac/26
+      note: >-
+        F1/F2 display brightness, F3 Mission Control, F4 Spotlight, F5 Dictation/Siri, F6 Do Not
+        Disturb, F7/F8/F9 rewind / play-pause / fast-forward, F10 mute, F11/F12 volume, Touch ID
+        power button; hold Fn/Globe with a function key for the standard F-key.
+    - id: function_keys
+      url: https://support.apple.com/en-us/102439
+      note: >-
+        "Press and hold the Function (Fn)/Globe key while pressing a function key" for standard
+        F-keys; setting "Use F1, F2, etc. keys as standard function keys" swaps the default.
+
+# Verified facts: taken from the ZMK v0.3.0 source/docs and Apple documentation listed above.
+verified:
+  consumer_report_default: >-
+    ZMK_HID_CONSUMER_REPORT_USAGES_FULL is the default; every consumer usage below (max 0x29F)
+    fits. A keyboard config that sets ZMK_HID_CONSUMER_REPORT_USAGES_BASIC cannot send usages
+    above 0xFF (GLOBE, C_AC_SEARCH, C_AC_DESKTOP_SHOW_ALL_WINDOWS).
+  k_prefixed_media_usages: >-
+    Keyboard-page media usages (K_VOLUME_UP, K_PLAY_PAUSE, K_NEXT, K_PREVIOUS, K_EJECT, K_LOCK)
+    are marked macos:false; use the Consumer-page C_ codes.
+  generic_desktop_system_controls: >-
+    SYSTEM_POWER / SYSTEM_SLEEP (Generic Desktop page) exist in keys.h but ZMK's HID descriptor and
+    hid.c do not report that page, so they cannot reach the host.
+  fn_modifier: >-
+    The MacBook Fn modifier is Apple vendor usage page 0x00FF usage 0x0003. ZMK's HID descriptor
+    has no vendor page, so a true Fn key cannot be sent without changing ZMK core (out of scope).
+  globe: >-
+    `GLOBE` (Consumer 0x029D, AC Next Keyboard Layout Select) is macos:true with the footnote that
+    it works for Globe+key shortcuts but not as Fn: Globe+Delete and Globe+arrows are not
+    transformed by macOS.
+
+functions:
+  # MacBook Air top row, in physical order.
+  - key: F1
+    function: Display brightness down
+    binding: "&kp C_BRI_DN"   # alias of C_BRIGHTNESS_DEC, Consumer 0x70
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: F2
+    function: Display brightness up
+    binding: "&kp C_BRI_UP"   # alias of C_BRIGHTNESS_INC, Consumer 0x6F
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: F3
+    function: Mission Control
+    binding: "&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS"   # Consumer 0x29F
+    supported: "yes"
+    evidence: hid.js macos:true; requires FULL consumer usages (default)
+  - key: F4
+    function: Spotlight
+    binding: "&kp C_AC_SEARCH"   # Consumer 0x221
+    supported: "yes"
+    evidence: hid.js macos:true; requires FULL consumer usages (default)
+  - key: F5
+    function: Dictation / Siri
+    binding: null
+    supported: "no"
+    notes: >-
+      No ZMK keycode is documented as working on macOS. C_VOICE_COMMAND (Consumer 0xCF) is
+      macos:null (untested). Apple's key is not a standard usage. Users can bind a macOS keyboard
+      shortcut they configure for Dictation through a user override.
+  - key: F6
+    function: Do Not Disturb
+    binding: null
+    supported: "no"
+    notes: No standard HID usage; ZMK has no keycode for it. macOS shortcuts for Focus are user-assigned.
+  - key: F7
+    function: Rewind / previous track
+    binding: "&kp C_PREV"   # alias of C_PREVIOUS, Consumer 0xB6
+    supported: "yes"
+    evidence: hid.js macos:true
+    notes: C_REWIND (0xB4) is macos:null; C_PREV is the documented working usage.
+  - key: F8
+    function: Play / pause
+    binding: "&kp C_PP"   # alias of C_PLAY_PAUSE, Consumer 0xCD
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: F9
+    function: Fast-forward / next track
+    binding: "&kp C_NEXT"   # Consumer 0xB5
+    supported: "yes"
+    evidence: hid.js macos:true
+    notes: C_FAST_FORWARD (0xB3) is macos:null; C_NEXT is the documented working usage.
+  - key: F10
+    function: Mute
+    binding: "&kp C_MUTE"   # Consumer 0xE2
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: F11
+    function: Volume down
+    binding: "&kp C_VOL_DN"   # alias of C_VOLUME_DOWN, Consumer 0xEA
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: F12
+    function: Volume up
+    binding: "&kp C_VOL_UP"   # alias of C_VOLUME_UP, Consumer 0xE9
+    supported: "yes"
+    evidence: hid.js macos:true
+  - key: Touch ID / power
+    function: Unlock, lock, power
+    binding: null
+    supported: "no"
+    notes: >-
+      Out of scope in the plan. C_POWER exists (macos:true, sleeps on deliberate press) but is not
+      a factory action; Touch ID cannot be emulated.
+  - key: Fn/Globe (as Globe)
+    function: Globe shortcuts (Globe+E emoji, Globe+F full screen, Globe+Q Quick Note, Globe+N, Globe+H) and the Globe-key action set in System Settings
+    binding: "&sk GLOBE"
+    supported: host-dependent
+    evidence: "hid.js macos:true with globe footnote; PR 1938 test comment for Globe+key shortcuts"
+    notes: >-
+      Sticky, like the other modifiers, so the Globe usage is held while the next Braille output
+      is sent. Whether a lone Globe press triggers the System Settings "Press Globe key to" action
+      is untested in the sources; verify on the host.
+  - key: Fn/Globe (as Fn)
+    function: Fn+Delete forward delete, Fn+arrows Home/End/Page Up/Page Down, Fn+F-key standard F-key
+    binding: null
+    supported: "no"
+    notes: >-
+      Fn is an Apple vendor usage ZMK cannot send. The resulting functions are expressible
+      directly without Fn: forward delete `&kp DELETE`, `&kp HOME`, `&kp END`, `&kp PAGE_UP`,
+      `&kp PAGE_DOWN`, and standard function keys `&kp F1` .. `&kp F12`.
+
+standard_function_keys:
+  bindings: "&kp F1 .. &kp F12"   # Keyboard page 0x3A..0x45
+  supported: "yes"
+  evidence: hid.js macos:true (F1 line 1702, F12 line 1933)
+  notes: >-
+    Expected, not verified in the sources: macOS treats these usages from a non-Apple keyboard as
+    standard function keys, independent of the "Use F1, F2, etc." setting. Phase 06 confirms this
+    on the host.
+
+# Recommendations: derived from the facts above; not stated by the sources.
+recommendations:
+  - >-
+    Factory media/system actions are exactly the `supported: yes` rows: F1, F2, F3, F4, F7, F8,
+    F9, F10, F11, F12 functions, plus Globe as `&sk GLOBE`. Dictation, Do Not Disturb, the Fn
+    modifier, Touch ID and power have no factory action and are documented as host/ZMK limitations.
+  - >-
+    Use Consumer-page C_ keycodes, never the K_ media variants, and keep the ZMK default
+    ZMK_HID_CONSUMER_REPORT_USAGES_FULL. The module's Kconfig or documentation must flag
+    ZMK_HID_CONSUMER_REPORT_USAGES_BASIC as incompatible with GLOBE, Spotlight and Mission Control.
+  - >-
+    Factory rules name behaviors through devicetree node labels (for example
+    `DEVICE_DT_NAME(DT_NODELABEL(kp))` and `DEVICE_DT_NAME(DT_NODELABEL(sk))`) and the module's
+    devicetree references `&kp` and `&sk`, so `/omit-if-no-ref/` cannot drop a behavior the
+    factory tables use and a missing node fails the build instead of the action.
+  - >-
+    Sticky modifiers inherit `release-after-ms = <1000>` from ZMK's default `&sk`. Phase 06 should
+    confirm this is long enough between chords; a module-owned sticky-key node with a longer
+    timeout is the fallback.
+
+host_verification:
+  - "Each `supported: yes` binding produces its macOS function over BLE on both baseline keyboards."
+  - "`&sk GLOBE` followed by Braille `e` opens the emoji picker; a lone `&sk GLOBE` action's effect is recorded."
+  - "`&kp F1` .. `&kp F12` arrive as standard function keys."
