@@ -154,11 +154,32 @@
               (pane-texts ops :messages)))
     (is (some #(str/includes? % "New news") (pane-texts ops :messages)))))
 
-(deftest j-and-k-step-between-siblings
-  (driven [{:key \l} {:key \j} {:key \q}])
-  (is (= [2] (cursor :parents)))
-  (driven [{:key \l} {:key \j} {:key \k} {:key \q}])
-  (is (= [0] (cursor :parents))))
+(deftest braces-step-between-siblings
+  (testing "in the parents pane"
+    (driven [{:key \l} {:key \}} {:key \q}])
+    (is (= [2] (cursor :parents)))
+    (driven [{:key \l} {:key \}} {:key \{} {:key \q}])
+    (is (= [0] (cursor :parents))))
+  (testing "in the listing pane they skip descendants where j enters them"
+    (driven [{:key :escape} {:key \j} {:key \}} {:key \q}])
+    (is (= [1] (cursor :listing)))))
+
+(deftest j-and-k-follow-the-visual-row-order
+  (testing "j moves to whatever row is below: child, then a parent's sibling"
+    (driven [{:key :escape} {:key \j} {:key \j} {:key \q}])
+    (is (= [0 0] (cursor :listing)))
+    (driven [{:key :escape} {:key \j} {:key \j} {:key \j} {:key \j} {:key \q}])
+    (is (= [1] (cursor :listing))))
+  (testing "k moves back up, and stops at the heading"
+    (driven [{:key :escape} {:key \j} {:key \j} {:key \k} {:key \q}])
+    (is (= [0] (cursor :listing)))
+    (driven [{:key :escape} {:key \j} {:key \k} {:key \k} {:key \q}])
+    (is (= :heading (cursor :listing))))
+  (testing "in the parents pane j enters children where } skips them"
+    (driven [{:key \j} {:key \j} {:key \q}])
+    (is (= [0 0] (cursor :parents)))
+    (driven [{:key \j} {:key \j} {:key \j} {:key \q}])
+    (is (= [2] (cursor :parents)))))
 
 (deftest h-and-l-step-between-a-task-and-its-parent
   (driven [{:key \l} {:key \l} {:key \q}])

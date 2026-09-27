@@ -252,8 +252,71 @@
     (let [st (walk state :parents :right)]
       (is (= [:heading] (cursors st :messages)))
       (is (identical? st (walk st :messages :down)))
+      (is (identical? st (walk st :messages :next)))
+      (is (identical? st (walk st :messages :prev)))
       (is (identical? st (walk st :messages :right)))
       (is (identical? st (walk st :messages :bottom))))))
+
+(deftest next-and-prev-follow-the-visual-row-order
+  (testing "in the parents pane they step over pruned tasks"
+    (is (= [0] (cursor (walk state :parents :next) :parents)))
+    (is (= [0 1] (cursor (walk state :parents :next :next) :parents)))
+    (is (= [2] (cursor (walk state :parents :next :next :next) :parents)))
+    (is (= [0 1] (cursor (walk state :parents :next :next :next :prev)
+                         :parents))))
+  (testing "in the listing pane they enter children where down skips them"
+    (is (= [0 0] (cursor (walk state :listing :next :next) :listing)))
+    (is (= [1] (cursor (walk state :listing :right :down) :listing)))
+    (is (= [0 1 0] (cursor (walk state :listing :next :next :next :next)
+                           :listing))))
+  (testing "prev climbs back to the heading and stops there"
+    (is (= :heading (cursor (walk state :listing :next :prev) :listing)))
+    (is (identical? state (walk state :listing :prev)))
+    (is (identical? state (walk state :parents :prev))))
+  (testing "next past the last row goes nowhere"
+    (let [bottom (walk state :parents :bottom)]
+      (is (= [2] (cursor bottom :parents)))
+      (is (identical? bottom (walk bottom :parents :next))))))
+
+(deftest next-and-prev-in-the-messages-pane
+  (let [st (walk (walk state :parents :right) :listing :right)]
+    (testing "prev walks back from the newest message to the heading"
+      (is (= "01WASHOLD" (cursor (walk st :messages :prev) :messages)))
+      (is (= :heading (cursor (walk st :messages :prev :prev) :messages)))
+      (let [heading (walk st :messages :prev :prev)]
+        (is (identical? heading (walk heading :messages :prev)))))
+    (testing "next from the newest message goes nowhere"
+      (is (identical? st (walk st :messages :next))))
+    (testing "from the heading next reaches the oldest message"
+      (is (= "01WASHOLD"
+             (cursor (walk st :messages :prev :prev :next) :messages))))))
+
+(deftest next-and-prev-reset-the-panes-below-their-own
+  (testing "moving the parents cursor with next resets listing and messages"
+    (let [deep (walk (walk (walk state :parents :right) :listing :right)
+                     :messages :prev)
+          reset (walk deep :parents :next)]
+      (is (= "01WASHOLD" (cursor deep :messages)))
+      (is (= [0 1] (cursor reset :parents)))
+      (is (= :heading (cursor reset :listing)))
+      (is (= :heading (cursor reset :messages)))))
+  (testing "moving the listing cursor with next resets the messages cursor"
+    (let [wash (walk (walk state :parents :right) :listing :right)
+          older (walk wash :messages :prev)
+          salt (walk older :listing :next)
+          boil (walk salt :listing :next)]
+      (is (= "01WASHNEW" (cursor wash :messages)))
+      (is (= "01WASHOLD" (cursor older :messages)))
+      (is (= [0 1] (cursor salt :listing)))
+      (is (= :heading (cursor salt :messages)))
+      (is (= [0 1 0] (cursor boil :listing)))
+      (is (= "01BOIL" (cursor boil :messages)))))
+  (testing "moving the messages cursor with prev leaves the rest alone"
+    (let [st (walk (walk state :parents :right) :listing :right)
+          moved (walk st :messages :prev)]
+      (is (= [0] (cursor moved :parents)))
+      (is (= [0 0] (cursor moved :listing)))
+      (is (= "01WASHOLD" (cursor moved :messages))))))
 
 (deftest moving-an-ancestor-cursor-resets-the-panes-below-it
   (testing "moving the parents cursor resets the listing and messages cursors"

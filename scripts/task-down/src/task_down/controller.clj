@@ -18,14 +18,16 @@
 
 (def ^:private key-actions
   "The controller action for each key; a key absent here is ignored.
+  `j`/`k` follow the visual row order, `{`/`}` step siblings (Amendment 4);
   `:await-g` is the first half of the two-key jump to the top."
-  {\j :down \k :up \h :left \l :right
+  {\j :next \k :prev \{ :up \} :down \h :left \l :right
    \g :await-g \G :bottom
    :enter :focus-left :escape :focus-right})
 
 (def ^:private cursor-directions
   "Actions that move the focused pane's cursor, with their model direction."
-  {:down :down :up :up :left :left :right :right :top :top :bottom :bottom})
+  {:next :next :prev :prev :up :up :down :down
+   :left :left :right :right :top :top :bottom :bottom})
 
 (def ^:private focus-directions
   "Actions that move focus between panes, with their model direction."

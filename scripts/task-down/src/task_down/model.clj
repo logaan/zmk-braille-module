@@ -105,6 +105,14 @@
   (let [cursor (row-cursor (nth rows index))]
     (or (offset-cursor (peer-cursors rows index pane) cursor step) noop)))
 
+(defn- visual-cursor
+  "The cursor of the row step rows from index in flat row order, heading
+  included; noop past either end. Follows rows, not the raw tree, so pruned
+  siblings are stepped over."
+  [rows index step]
+  (let [row (nth rows (+ index step) nil)]
+    (if row (row-cursor row) noop)))
+
 (defn- left-cursor
   "The cursor of a row's parent; :heading for a depth 0 task or a message."
   [rows index]
@@ -169,6 +177,8 @@
     (cond
       (= :up direction) (vertical-cursor rows index pane -1)
       (= :down direction) (vertical-cursor rows index pane 1)
+      (= :next direction) (visual-cursor rows index 1)
+      (= :prev direction) (visual-cursor rows index -1)
       (= :left direction) (left-cursor rows index)
       (= :right direction) (right-cursor rows index)
       (= :top direction) (row-cursor (first rows))
@@ -187,11 +197,13 @@
 
 (defn move-cursor
   "The state with a pane's cursor moved in a direction: :up :down (siblings, or
-  messages in the messages pane), :left (parent), :right (first child), :top
-  and :bottom (first and last row). A direction with nothing to move to returns
-  the state unchanged, as does one that lands on the cursor's own row. Moving
-  the parents cursor resets the listing cursor to :heading; moving the listing
-  cursor resets the messages cursor to the newest message, or :heading."
+  messages in the messages pane), :next :prev (the row visually below or above
+  in flat row order, heading included, stepping over pruned siblings), :left
+  (parent), :right (first child), :top and :bottom (first and last row). A
+  direction with nothing to move to returns the state unchanged, as does one
+  that lands on the cursor's own row. Moving the parents cursor resets the
+  listing cursor to :heading; moving the listing cursor resets the messages
+  cursor to the newest message, or :heading."
   [state pane direction]
   (let [cursor (moved-cursor state pane direction)]
     (if (or (= noop cursor) (= cursor (get-in state [:state/cursors pane])))
