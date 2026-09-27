@@ -11,5 +11,5 @@ cargo:
 # Test navigation and failure boundaries
 
 1. Exercise left/right, line start/end, and previous/next UI-element factory navigation with the selected VoiceOver-style host setup in both initial modes.
-2. Verify host-dependent actions and adaptations through overrides, mode/gesture transitions, incomplete prefixes, and no duplicated/lost or unintended host output.
+2. Verify host-dependent actions and adaptations through overrides, mode, layer, and settings transitions, incomplete prefixes, and no duplicated/lost or unintended host output.
 3. Reuse component tests for limits and persistence; add end-to-end checks that pending display, chosen latency bounds, and saved bindings remain consistent after reset/power cycle.

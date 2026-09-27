@@ -36,14 +36,14 @@ cargo:
 
 ## 3. Order and dependencies
 
-1. Phase 01 establishes the build/hardware baseline, module binding, physical routing, and chord/gesture capture.
+1. Phase 01 establishes the build/hardware baseline, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
 2. Phase 02 establishes the common rule, context, matching, and action contracts.
     1. Its UEB-context decision consults the pinned rulebook's indicator rules directly; phase 03's milestone may refine the representation.
 3. Factory chord pools are disjoint, so phase 02 and phase 04 do not block each other.
     1. Dot-only patterns belong to the active character table; Braille-space-only emits a literal space.
     2. Space-plus-dot patterns supply factory navigation and noncharacter functions.
 4. Phase 03 and phase 04 character tables both build on the phase 02 engine and are independent of each other.
-5. Phase 05 storage depends on the common schema; its settings interface also needs phase 01 capture/gesture hooks, Grade 1 search input, and compiled named modes.
+5. Phase 05 storage depends on the common schema; its settings interface also needs phase 01 capture and settings-entry hooks, Grade 1 search input, and compiled named modes.
 6. Phase 06 verifies the combined feature set on the phase 01 baseline and completes user documentation; it is not the first build or test step.
 7. Phase 07 reuses the delivered engine, display, capture, and actions, adding only contraction data and necessary word context.
 

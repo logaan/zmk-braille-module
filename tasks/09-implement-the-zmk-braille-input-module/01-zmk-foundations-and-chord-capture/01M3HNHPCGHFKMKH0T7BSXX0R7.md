@@ -9,6 +9,6 @@ cargo:
 
 # ZMK foundations and chord capture
 
-1. Resolve the decision milestone first, then implement the out-of-tree module, configurable physical roles, timing, and Braille-key gestures (spec §§1–3).
-2. The milestone selects the representative build, display, and host baseline reused by phases 05 and 06.
-3. Deliver chord events and gesture/state integration points here; translation belongs to phase 02 and the settings screens to phase 05.
+1. Resolve the decision milestone first, then pin ZMK, build the out-of-tree module, and implement the Braille keys, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
+2. The milestone chose the QBF Paintbrushes and the Toucan, on one pinned ZMK release, as the baseline that phases 05 and 06 reuse.
+3. Deliver chord events and the settings-entry hook here; translation belongs to phase 02 and the settings screens to phase 05.

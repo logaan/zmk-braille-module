@@ -14,6 +14,6 @@ cargo:
 # Update installation and keymap documentation
 
 1. Replace hello-world claims and stale links in root `README.md`; document module installation through `zmk-config` without core changes and the enable option.
-2. Provide a working parameterless binding/keymap example with arbitrary dot/space positions, the separate Braille key, and the distinct conventional space key.
-3. Explain dot layout, 50 ms timeout default and configuration, `ueb1` default, compiled modes, short/long gestures, and conventional/Braille operation.
+2. Provide working keymap examples for both baselines: `&bc 1`–`&bc 8` and `&bspc` on any positions and layers, the braille-mode-key, and a distinct conventional space key.
+3. Explain the dot layout, release-terminated chords, the `ueb1` default, compiled modes, braille-mode-key hold and tap, the settings chord, and conventional/Braille operation.
 4. Document display/pending feedback, the full binding/search/parameter/confirmation flow, override precedence/capacity, persistent saves, removal, and reset.
