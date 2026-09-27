@@ -86,7 +86,7 @@ cargo:
 
 1. Phase 01 pins the baseline and builds the module, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
 2. Phase 02 builds the common rule, context, matching, and action contracts, and researches and implements per-mode factory command chords against fixture tables.
-    1. Its UEB-context representation consults the rulebook's indicator rules directly; phase 03's rulebook research may refine it.
+    1. Its UEB-context representation is `references/research/ueb-indicator-context.yaml`, derived from phase 03's rulebook research in `references/research/`.
 3. Phases 03 and 04 build the `ueb1` and `computer8` character tables on the phase 02 engine, independently of each other, and check them against the real command tables.
 4. Phase 05 storage depends on the common schema; its settings interface also needs phase 01's capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
 5. Phase 06 verifies the combined feature set on the baseline keyboards and completes user documentation; it is not the first build or test step.
