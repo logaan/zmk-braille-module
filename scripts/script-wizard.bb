@@ -1,5 +1,5 @@
 #!/usr/bin/env bb
-;; Run: ./scripts/examples/message-new-script-wizard.bb
+;; Run: ./scripts/script-wizard.bb
 ;; Requires Babashka; the script-wizard pod (v0.3.0) is loaded from the pod registry.
 ;; Set EDITOR (or VISUAL) to edit the complete Markdown message before confirming.
 ;; Escape/Ctrl-C cancels without creating a message.
@@ -16,9 +16,10 @@
 (pods/load-pod 'enigmacurry/script-wizard "0.3.0")
 (require '[pod.enigmacurry.script-wizard :as sw])
 
-(def root (-> *file* fs/absolutize fs/parent fs/parent fs/parent))
+(def root (-> *file* fs/absolutize fs/parent fs/parent))
 (def statuses ["draft" "ready" "started" "blocked" "delivered" "done" "cancelled"])
-(def created-formatter (DateTimeFormatter/ofPattern "EEE dd MMM yyyy' - 'HH'h' mm'm' ss's'" Locale/ENGLISH))
+(def created-formatter
+  (DateTimeFormatter/ofPattern "EEE dd MMM yyyy' - 'HH'h' mm'm' ss's'" Locale/ENGLISH))
 
 (defn task-folders []
   (->> (fs/glob (fs/path root "tasks") "**")
