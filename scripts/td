@@ -331,6 +331,22 @@
         (fs/copy file target)
         (println (str "tasks/" (:name task-result) "/" id ".md"))))))
 
+(defn read-body-file
+  "Read a regular body file, reporting path and read failures as CLI errors."
+  [path]
+  (try
+    (cond
+      (not (fs/exists? path))
+      {:error (str "body file not found: " path)}
+
+      (not (fs/regular-file? path))
+      {:error (str "body file is not a regular file: " path)}
+
+      :else
+      {:body (slurp path)})
+    (catch Exception e
+      {:error (str "cannot read body file: " path " (" (.getMessage e) ")")})))
+
 (defn run-new-flags [{:keys [opts]}]
   (let [{:keys [task created author harness model subject type status
                 worker worker-harness worker-model worker-name regarding
@@ -360,9 +376,8 @@
       (err! "--regarding only applies when --type answer"))
     (when (and body body-file)
       (err! "use only one of --body and --body-file"))
-    (when (and body-file (not (fs/exists? body-file)))
-      (err! (str "body file not found: " body-file)))
-    (let [regarding-entries (into [] (keep (fn [r]
+    (let [body-file-result (when body-file (read-body-file body-file))
+          regarding-entries (into [] (keep (fn [r]
                                              (let [[k v] (str/split r #"=" 2)]
                                                (if (or (nil? v) (str/blank? k))
                                                  (do (err! (str "--regarding must be <TASKID10>=<subject>, got: "
@@ -370,9 +385,7 @@
                                                      nil)
                                                  [k v]))))
                                   regarding)
-          body-text (cond body body
-                          body-file (when (fs/exists? body-file) (slurp body-file))
-                          :else nil)
+          body-text (or body (:body body-file-result))
           frontmatter (array-map
                        :created (or created (now-created))
                        :author (contributor-value author {:harness harness
@@ -389,7 +402,9 @@
                                                         :name worker-name}))
                                 (and (= type "answer") (seq regarding))
                                 (assoc :regarding (into (array-map) regarding-entries))))
-          problems (into @errors (validate-message-data frontmatter body-text))]
+          problems (into (cond-> @errors
+                           (:error body-file-result) (conj (:error body-file-result)))
+                         (validate-message-data frontmatter body-text))]
       (if (seq problems)
         (do (binding [*out* *err*]
               (println "Cannot create message:")

@@ -77,6 +77,23 @@ fail_if_successful "$td" message new --task example --subject X --type answer --
 fail_if_successful "$td" message new --task example --subject X --type question --body 'No question'
 fail_if_successful "$td" message new --task example --file draft.md --subject 'Ignored'
 fail_if_successful "$td" message new --task example --file missing.md
+fail_if_successful "$td" message new --task example --subject X --type task \
+  --status draft --body-file missing.md
+grep -Fq 'body file not found: missing.md' output.txt
+fail_if_successful "$td" message new --task example --subject X --type task \
+  --status draft --body-file tasks/example
+grep -Fq 'Cannot create message:' output.txt
+grep -Fq 'body file is not a regular file: tasks/example' output.txt
+printf 'Not readable\n' > unreadable.md
+chmod 000 unreadable.md
+# Root can read mode-000 files; exercise the read-failure path when permissions apply.
+if [[ ! -r unreadable.md ]]; then
+  fail_if_successful "$td" message new --task example --subject X --type task \
+    --status draft --body-file unreadable.md
+  grep -Fq 'Cannot create message:' output.txt
+  grep -Fq 'cannot read body file: unreadable.md' output.txt
+fi
+chmod 600 unreadable.md
 printf 'invalid YAML: [\n' > invalid.md
 fail_if_successful "$td" message new --task example --file invalid.md
 printf '%s\n' '---' 'created: Sun 27 Sep 2006 - 13h 23m 00s' 'author: user' \
