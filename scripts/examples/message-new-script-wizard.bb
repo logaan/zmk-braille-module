@@ -42,7 +42,7 @@
                      :cargo (cond-> (array-map :type type)
                               status (assoc :status status)))]
     (str "---\n" (yaml/generate-string frontmatter :dumper-options {:flow-style :block})
-         "---\n\n")))
+         "---\n\n# " subject "\n\n\n")))
 
 (defn edit-draft [draft]
   ;; The pod's editor captures stdout, hiding terminal editors such as vim.

@@ -36,9 +36,11 @@ content = file.read_text()
 assert 'subject: Original' in content
 assert 'author: user' in content
 assert 'status: draft' in content
+assert '---\\n\\n# Original\\n\\n\\n' in content, content
 content = content.replace('subject: Original', 'subject: Edited')
+content = content.replace('# Original\\n\\n\\n', '# Edited\\n\\n\\n')
 content = content.replace('---\\n\\n', 'custom: retained\\n---\\n\\n')
-file.write_text(content + '# Edited body\\n\\n1. Written in the editor.\\n')
+file.write_text(content + '1. Written in the editor.\\n')
 PY
 """)
         editor.chmod(0o755)
@@ -109,8 +111,7 @@ PY
                 assert len(files) == 1, files
                 content = files[0].read_text()
                 assert "subject: Edited\n" in content, content
-                assert "custom: retained\n---\n\n# Edited body" in content, content
-                assert "1. Written in the editor.\n" in content, content
+                assert "custom: retained\n---\n\n# Edited\n\n\n1. Written in the editor.\n" in content, content
                 assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
                                       stdout=subprocess.DEVNULL, check=False).returncode == 0
             else:
