@@ -29,7 +29,8 @@ fail_if_successful() {
 "$td" task new --help > task-help.txt
 grep -Fq -- '--parent' task-help.txt
 grep -Fq 'td task new --subject' task-help.txt
-"$td" message new --help > /dev/null
+"$td" message new --help > message-help.txt
+grep -Fq 'status defaults to the next stage' message-help.txt
 "$td" message validate --help > /dev/null
 "$td" system > system.txt
 grep -Fq 'A brief summary of the message, not the task as a whole.' system.txt

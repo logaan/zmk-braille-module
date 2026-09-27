@@ -462,11 +462,21 @@
                    (:status cargo)))))
        first))
 
+(defn wizard-label [text]
+  ;; script-wizard does not expose Inquire's render configuration. Style the
+  ;; label only, resetting before Inquire renders defaults, input, or answers.
+  ;; Keep it plain when the user has opted out of terminal colors.
+  (let [label (str text ":")]
+    (if (or (some? (System/getenv "NO_COLOR"))
+            (= "dumb" (System/getenv "TERM")))
+      label
+      (str "\u001b[100;97m " label " \u001b[0m"))))
+
 (defn wizard-subject [ask default]
   (loop []
     (let [subject (if (some? default)
-                    (ask "Subject (max 64 characters)" :default default)
-                    (ask "Subject (max 64 characters)"))]
+                    (ask (wizard-label "Subject") :default default)
+                    (ask (wizard-label "Subject")))]
       (if (and (not (str/blank? subject)) (<= (count subject) max-subject-length))
         subject
         (do (println "Subject must be between 1 and 64 characters.")
@@ -492,7 +502,7 @@
 
 (defn confirm-create [confirm*]
   ;; The pod's public confirm exits on Escape, which would leak the temp draft.
-  (try (confirm* "Create this message?" {"default" "yes"})
+  (try (confirm* (wizard-label "Create this message") {"default" "yes"})
        (catch Exception e
          (if (= "canceled" (ex-message e)) false (throw e)))))
 
@@ -501,14 +511,15 @@
         {:keys [frontmatter body]} initial
         original-cargo (:cargo frontmatter)]
     (println "New TaskDown message (Escape/Ctrl-C to cancel)")
-    (let [task (if default-task
-                 (choose "Task folder (type to filter)" folders :default default-task)
-                 (choose "Task folder (type to filter)" folders))
-          type (choose "Message type" ["task" "question" "answer"]
+    (let [task-label (wizard-label "Task folder (type to filter)")
+          task (if default-task
+                 (choose task-label folders :default default-task)
+                 (choose task-label folders))
+          type (choose (wizard-label "Message type") ["task" "question" "answer"]
                        :default (or (:type original-cargo) "task"))
           status (when (= type "task")
-                   (choose "Status" ["draft" "ready" "started" "blocked"
-                                     "delivered" "done" "cancelled"]
+                   (choose (wizard-label "Status") ["draft" "ready" "started" "blocked"
+                                                     "delivered" "done" "cancelled"]
                            :default (or (:status original-cargo) "draft")))
           previous-status (when (= type "task") (task-current-status task))
           subject (wizard-subject ask
@@ -516,7 +527,7 @@
                                       (when (and previous-status (not= previous-status status))
                                         (str previous-status " -> " status))))
           ;; Make body creation an explicit, visible choice before the editor.
-          body? (= "Yes" (choose "Enter a body message?" ["Yes" "No"]
+          body? (= "Yes" (choose (wizard-label "Enter a body message") ["Yes" "No"]
                                :default (if (or (#{"draft" "cancelled"} status)
                                                 (#{"question" "answer"} type))
                                           "Yes" "No")))
