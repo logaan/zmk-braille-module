@@ -14,9 +14,13 @@ import time
 from pathlib import Path
 
 SOURCE = Path(__file__).resolve().parent
+AUTO_STATUS = {"draft": "ready", "ready": "started", "started": "delivered",
+               "delivered": "done", "done": "done", "blocked": "blocked",
+               "cancelled": "cancelled"}
+AUTO_MODES = {f"auto-{s}" for s in AUTO_STATUS}
 NO_BODY_MODES = {"no-body", "prefilled-body-no", "blocked-default", "delivered-default",
                  "draft-no-body", "state-change", "same-status", "explicit-subject",
-                 "delivered-done-default"}
+                 "delivered-done-default", "auto-empty", "auto-override", "auto-chosen"} | AUTO_MODES
 
 
 def run_flow(mode):
@@ -27,10 +31,12 @@ def run_flow(mode):
         shutil.copy2(SOURCE / "td", root / "scripts/td")
         (root / "body.md").write_text("1. From a body file.\n")
         if mode in ("state-change", "same-status", "explicit-subject", "import",
-                    "delivered-done-default", "delivered-done-yes"):
-            # The latest task message is ready (or delivered), despite a newer
+                    "delivered-done-default", "delivered-done-yes", "auto-override",
+                    "auto-chosen") or mode in AUTO_MODES:
+            # The latest task message determines the status, despite a newer
             # answer and a different status in a subtask.
-            current_status = ("delivered" if mode.startswith("delivered-done") else "ready")
+            current_status = (mode.removeprefix("auto-") if mode in AUTO_MODES else
+                              "delivered" if mode.startswith("delivered-done") else "ready")
             for suffix, cargo in (("E", "type: task\n  status: draft"),
                                   ("F", f"type: task\n  status: {current_status}"),
                                   ("G", "type: answer")):
@@ -152,6 +158,10 @@ PY
             cmd += ["--task", "example", "--type", "task", "--status", status]
             if mode == "explicit-subject":
                 cmd += ["--subject", "Manual subject"]
+        elif mode == "auto-override":
+            cmd += ["--task", "example", "--type", "task", "--status", "blocked"]
+        elif mode == "auto-empty" or mode == "auto-chosen" or mode in AUTO_MODES:
+            cmd += ["--task", "example"]
 
         pid, master = pty.fork()
         if pid == 0:
@@ -192,20 +202,24 @@ PY
             os.write(master, b"\r")
             if mode not in ("question", "answer"):
                 wait_for("Status")
-                os.write(master, b"\x1b[A\r" if mode == "prefill" else b"\r")
-            wait_for("Subject (max 64 characters)")
+                os.write(master, b"\x1b[A\r" if mode in ("prefill", "auto-chosen") else b"\r")
+            wait_for("Subject:")
             if mode in ("accept", "decline", "failure"):
                 os.write(master, b"Original\r")
             elif mode == "same-status":
                 os.write(master, b"\r")
                 # The pod keeps asking when no default is available.
-                wait_for("Subject (max 64 characters)")
+                wait_for("Subject:")
                 os.write(master, b"Same status\r")
+            elif mode in ("auto-empty", "auto-done", "auto-blocked", "auto-cancelled",
+                          "auto-chosen"):
+                os.write(master, b"Manual subject\r")
             else:
                 os.write(master, b"\r")
-            wait_for("Enter a body message?")
+            wait_for("Enter a body message:")
             os.write(master, b"y\r" if mode == "delivered-done-yes" else
-                     b"n\r" if mode in ("draft-no-body", "prefilled-body-no") else b"\r")
+                     b"n\r" if mode in ("draft-no-body", "prefilled-body-no", "auto-empty",
+                                      "auto-cancelled") else b"\r")
             if mode in NO_BODY_MODES:
                 before = wait_for("Message to create in tasks/")
                 assert b"Editing message in " not in before, before
@@ -218,9 +232,9 @@ PY
                 wait_for("EDITOR_VISIBLE_ON_STDOUT")
             if mode == "failure":
                 wait_for("Editor exited with status 9")
-                assert b"Create this message?" not in output
+                assert b"Create this message:" not in output
             else:
-                wait_for("Create this message?")
+                wait_for("Create this message:")
                 assert set((root / "tasks/example").rglob("*.md")) == existing_files
                 os.write(master, b"n\r" if mode == "decline" else b"\r")
 
@@ -267,6 +281,22 @@ PY
                     assert "subject: Manual subject\n" in content, content
                 if mode.startswith("delivered-done"):
                     assert "subject: delivered -> done\n" in content, content
+                if mode in AUTO_MODES:
+                    previous = mode.removeprefix("auto-")
+                    target = AUTO_STATUS[previous]
+                    assert f"status: {target}\n" in content, content
+                    subject = (f"{previous} -> {target}" if previous != target
+                               else "Manual subject")
+                    assert f"subject: {subject}\n" in content, content
+                if mode == "auto-empty":
+                    assert "status: draft\n" in content, content
+                    assert "subject: Manual subject\n" in content, content
+                if mode == "auto-override":
+                    assert "status: blocked\n" in content, content
+                    assert "subject: ready -> blocked\n" in content, content
+                if mode == "auto-chosen":
+                    assert "status: ready\n" in content, content
+                    assert "subject: Manual subject\n" in content, content
                 if mode in NO_BODY_MODES:
                     assert content.endswith("---\n"), content
                 assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
@@ -291,6 +321,7 @@ for mode in ("accept", "decline", "failure", "prefill", "no-body", "question",
              "answer", "cancelled", "import", "invalid", "state-change",
              "same-status", "explicit-subject", "delivered-done-default",
              "delivered-done-yes", "blocked-default", "delivered-default",
-             "draft-no-body", "prefilled-body-no"):
+             "draft-no-body", "prefilled-body-no", "auto-empty",
+             "auto-override", "auto-chosen", *(f"auto-{s}" for s in AUTO_STATUS)):
     run_flow(mode)
 print("td interactive editor tests passed")

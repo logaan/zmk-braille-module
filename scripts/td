@@ -462,6 +462,15 @@
                    (:status cargo)))))
        first))
 
+(def next-task-status
+  {"draft" "ready" "ready" "started" "started" "delivered"
+   "delivered" "done"})
+
+(defn suggested-task-status [previous-status]
+  ;; Terminal/out-of-band statuses have no automatic next stage; keep them
+  ;; selected so the user can choose what to do next.
+  (get next-task-status previous-status (or previous-status "draft")))
+
 (defn wizard-label [text]
   ;; script-wizard does not expose Inquire's render configuration. Style the
   ;; label only, resetting before Inquire renders defaults, input, or answers.
@@ -517,11 +526,12 @@
                  (choose task-label folders))
           type (choose (wizard-label "Message type") ["task" "question" "answer"]
                        :default (or (:type original-cargo) "task"))
+          previous-status (when (= type "task") (task-current-status task))
           status (when (= type "task")
                    (choose (wizard-label "Status") ["draft" "ready" "started" "blocked"
                                                      "delivered" "done" "cancelled"]
-                           :default (or (:status original-cargo) "draft")))
-          previous-status (when (= type "task") (task-current-status task))
+                           :default (or (:status original-cargo)
+                                        (suggested-task-status previous-status))))
           subject (wizard-subject ask
                                   (or (:subject frontmatter)
                                       (when (and previous-status (not= previous-status status))
@@ -739,6 +749,8 @@
        "Questions must have a body with one question mark.\n"
        "Use -i/--interactive to choose fields, optionally edit the message in $EDITOR,\n"
        "and confirm saving (defaults to yes). CLI flags prefill the form or editor.\n"
+       "For task messages, the status defaults to the next stage (draft -> ready ->\n"
+       "started -> delivered -> done), or the current status if no next stage exists.\n"
        "The body choice defaults to yes for draft/cancelled tasks, questions and answers;\n"
        "otherwise it defaults to no.\n\n"
        "Examples:\n"
