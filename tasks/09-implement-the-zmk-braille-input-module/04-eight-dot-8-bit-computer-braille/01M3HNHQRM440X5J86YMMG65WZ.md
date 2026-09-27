@@ -9,5 +9,10 @@ cargo:
 
 # Eight-dot (8-bit) computer Braille
 
-1. Resolve the decision milestone first, then provide a separate one-cell, eight-dot mode covering printable US ASCII (spec §6.1).
-2. computer8 has its own factory command table from phase 02's research (VoiceOver's eight-dot conventions first); where a command uses a dot-only chord such as dot 7 or 8, the encoding decision resolves the collision explicitly.
+1. Provide `computer8`, a separate named eight-dot character table covering printable US ASCII with one cell per character.
+    1. It uses the US eight-dot computer Braille table that macOS VoiceOver uses.
+    2. It does not apply UEB indicators, word-position rules, or contraction buffering.
+    3. Dots 7 and 8 are independent bits, not UEB capital or numeric indicators.
+2. Every one of the 256 dot patterns has an explicit mapping or reserved entry.
+    1. A reserved pattern sends nothing to the host and briefly shows as unassigned on the display; user overrides may bind it.
+3. `computer8` has its own factory command table from phase 02's research; collisions between command chords and character cells, such as dot 7 or 8 alone, are resolved explicitly and documented.

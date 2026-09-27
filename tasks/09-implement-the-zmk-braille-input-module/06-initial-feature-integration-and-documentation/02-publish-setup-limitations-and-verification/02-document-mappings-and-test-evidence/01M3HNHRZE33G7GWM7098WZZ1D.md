@@ -13,7 +13,7 @@ cargo:
 
 # Document mappings and test evidence
 
-1. Publish or link the implemented Grade 1 mappings, computer8 mapped/reserved table, navigation/action chords, and the completed keyboard-coverage checklist.
-2. Preserve ICEB edition/provenance/license references from `references/README.md`; secondary guides do not supersede the pinned rulebook.
-3. Record the chosen host layout, Globe/Fn/media limitations, input/buffering/capacity policies, and reproducible build/test evidence.
-4. State that Grade 2 is optional and other language tables, nonvisual feedback, Touch ID, and power are not initial requirements.
+1. Publish or link the implemented Grade 1 mappings, the `computer8` mapped and reserved table, the command chords with their sources, and the completed keyboard-coverage checklist.
+2. Preserve the ICEB edition, provenance, and license references from `references/README.md`; secondary guides do not supersede the pinned rulebook.
+3. Record the host layout, Globe/Fn and media limitations, input, pending-input, and capacity policies, and reproducible build and test evidence.
+4. State that Grade 2 is optional, and that other language tables, nonvisual feedback, Touch ID, and power are out of scope.

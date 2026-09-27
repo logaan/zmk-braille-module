@@ -13,7 +13,7 @@ cargo:
 
 # Display pending cells until committed
 
-1. Use the common engine's pending-state interface to show delayed initial-mode input on the normal compact display, including unresolved Grade 1 sequences.
-2. Update or clear displayed cells in step with commitment, fallback, and discards on layer, key, mode, command, or settings transitions; never show them as already committed host output.
-3. Show brief notices for dropped incomplete prefixes and reserved computer8 patterns.
-4. Test bounded pending-state rendering and notices, and reserve the same interface for optional Grade 2; this is not a separate contraction display implementation.
+1. Use the common engine's pending-state interface to show pending initial-mode input on the normal display, including unresolved Grade 1 sequences.
+2. Update or clear displayed cells in step with commits, fallbacks, and discards on layer, key, mode, command, or settings transitions; never show them as committed host output.
+3. Show brief notices for dropped incomplete prefixes and reserved `computer8` patterns.
+4. Test bounded pending-state rendering and notices; optional Grade 2 reuses this interface rather than a separate contraction display.

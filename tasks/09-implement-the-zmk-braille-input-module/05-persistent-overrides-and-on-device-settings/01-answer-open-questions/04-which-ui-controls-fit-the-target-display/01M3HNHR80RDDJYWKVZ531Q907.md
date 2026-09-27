@@ -10,5 +10,5 @@ cargo:
 
 # Which UI controls fit the target display?
 
-1. Define controls for the selected small display and ten-key input: mode selection, finishing sequence capture, search editing, result selection, confirmation, cancel/re-record, removal, and reset.
-2. Keep capture/search/control input local to settings and separate from ordinary host output; reuse the established chord detector and settings-entry hooks.
+1. Define controls, for the baseline displays and Braille-key input, for: mode selection, finishing sequence capture, search editing, result selection, confirmation, cancel and re-record, removal, reset, and leaving settings.
+2. Keep capture, search, and control input local to settings and separate from host output; reuse the chord detector and settings-entry hooks.

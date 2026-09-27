@@ -13,7 +13,7 @@ cargo:
 
 # Capture and review rule input
 
-1. Use the normal detector to capture a chord or bounded short sequence and show its detected dot/space combinations.
-2. Apply the resolved UI control for completing capture; distinguish it from keys belonging to the recorded input.
-3. For an existing factory/user mapping, offer override, re-record, and cancel before changing any saved rule.
-4. Unit-test capture state alongside the implementation: single chords, bounded sequences, the completion control, and the override/re-record/cancel choices for an existing factory or user mapping.
+1. Use the normal chord detector to capture a chord or a sequence of up to 8 chords, and show the detected dot and space combinations.
+2. Apply the resolved control for completing capture; distinguish it from keys belonging to the recorded input.
+3. For input that already has a factory or user mapping, offer override, re-record, and cancel before changing any saved rule.
+4. Unit-test capture state alongside the implementation: single chords, sequences up to the bound, the completion control, and the override, re-record, and cancel choices.

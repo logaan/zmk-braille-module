@@ -9,57 +9,91 @@ cargo:
 
 # Implement the ZMK Braille input module
 
-## 1. Scope and authority
+## 1. Scope
 
-1. Implement `references/00-design-spec.md` as an out-of-tree module without changes to ZMK core.
-2. Use the pinned ICEB third-edition rulebook for UEB and `references/01-mba-keys.yaml` as a supporting key inventory.
-    1. The spec is the coverage checklist; the YAML omits F1–F12 and Globe/Fn.
-3. Phases 01–06 deliver the initial feature set: `ueb1`, `computer8`, navigation and other actions, persistent on-device bindings, and display feedback.
-4. Phase 07 is the optional Grade 2 extension, not a prerequisite for initial delivery.
-5. Do not add non-English tables, Touch ID, power, sound/haptics, a universal behavior editor, or a host configuration tool to the required scope.
+1. Build chorded Braille input as an out-of-tree ZMK module; keyboards include it through `zmk-config` without changing ZMK core.
+2. Target hybrid keyboards: conventional keymaps with Braille keys on whichever layers the keymap author chooses.
+3. Phases 01–06 deliver the initial feature set:
+    1. `ueb1`: uncontracted Unified English Braille (UEB) Grade 1.
+    2. `computer8`: eight-dot computer Braille.
+    3. Navigation and other ZMK actions.
+    4. Persistent on-device chord bindings.
+    5. Display feedback for settings and pending input.
+4. Phase 07 adds `ueb2` (UEB Grade 2 contractions) as an optional extension; the initial feature set must not depend on it.
+5. Other named Braille systems, such as Japanese or Spanish Braille, must be addable as named character tables without changing chord detection, matching, or navigation; none is required.
+6. The completeness target is the printable characters and ordinary key functions of a US MacBook Air keyboard.
+    1. Letters in both cases, digits, punctuation, and space.
+    2. Tab, Return, Delete, Escape, arrows, Caps Lock, Shift, Control, Option, Command, and F1–F12.
+    3. Globe/Fn where the host and ZMK can represent it.
+    4. Host media and system functions, such as brightness and volume, where ZMK and host behaviors exist; they are actions, not Braille characters.
+    5. Literary UEB signs cover the characters UEB defines; `computer8` and action bindings cover the rest.
+    6. `references/01-mba-keys.yaml` is a supporting inventory only; it omits F1–F12 and Globe/Fn, which remain required.
+7. Intended users are ZMK hobbyists, Braille learners, and sighted users of Perkins-style keyboards; feedback is visual, on an OLED or comparable display.
+8. Out of scope: non-English tables, Touch ID, power, sound or haptics, a universal behavior editor, and a host configuration tool.
 
-## 2. Execution model
+## 2. Authority
+
+1. UEB follows *The Rules of Unified English Braille*, third edition 2024 (ICEB): `references/iceb/rules-of-unified-english-braille-2024.pdf`.
+    1. Its provenance and license are in `references/README.md`.
+    2. The book covers both grades; select uncontracted requirements using its sections 2.5 and 5.11.
+    3. Secondary guides, such as BANA's *ABCs of UEB* and the UEB contractions summary, do not supersede it.
+2. Factory command chords follow macOS VoiceOver's Braille keyboard conventions for each mode, then Android TalkBack, then Hable One; each factory rule carries a comment naming its source.
+
+## 3. Baseline
+
+1. Build, test, and accept on two keyboards.
+    1. QBF Paintbrushes (`../qbf-paintbrushes/basic-zmk`): two Paintbrush PCBs on nice!nano v2 as a wireless split, 16 keys, a 128×32 SSD1306 OLED on each half; primarily a Braille device, with Braille keys on the base layer.
+    2. beekeeb Toucan (`../zmk-keyboard-toucan`): seeeduino_xiao_ble split with a nice!view gem display on the left (central) half; primarily QWERTY, with a braille-mode-key giving home-row Braille for numbers and symbols.
+2. The module and both keyboards use one pinned ZMK revision: the most recent ZMK release.
+3. Both keyboards are splits; the module runs on the central half, and feedback appears on the central half's display.
+4. The host is macOS with VoiceOver and a US input layout.
+
+## 4. Core behavior
+
+1. Keymaps use ten kinds of Braille key.
+    1. `&bc 1` to `&bc 8`: Braille dots 1–8.
+    2. `&bspc`: Braille space, distinct from any conventional space key.
+    3. braille-mode-key(target-layer): hold keeps the target layer active while chording; tap switches to it.
+2. The module is always on: Braille input happens whenever Braille keys are reachable on the active layers.
+3. A chord is the nine-bit mask of every Braille key pressed from the first press until the last release; there is no timer.
+4. A rule matches up to 8 chords and invokes up to 16 ordered ZMK behavior actions, each a behavior device with up to two parameters.
+    1. Letters, space, navigation, and custom actions share this one representation.
+    2. Text is sent as ordinary host keystrokes, not Unicode Braille.
+    3. Rules may carry a word-position constraint: `any`, `word-start`, `word-middle`, or `word-end`.
+5. The engine matches the active character table, that mode's factory command table, and the user override layer.
+    1. It prefers the longest valid sequence; a user override wins over a factory rule with the same input.
+    2. Ambiguous input stays pending until the next chord extends it or rules it out.
+    3. Any layer change, non-Braille key press, character-mode change, command action, or settings entry discards pending input and resets UEB context.
+6. Up to 256 user overrides persist across reset and power cycle and are edited on the keyboard.
+
+## 5. Execution model
 
 1. One agent executes the plan sequentially, phase by phase and task by task; no parallel branches are assumed.
-2. Each phase with open questions begins with an `01-answer-open-questions` decision milestone.
+2. Phases with unresolved questions begin with an `01-answer-open-questions` decision milestone.
     1. Resolve the whole milestone before starting that phase's implementation tasks.
-    2. Phase 06 has no milestone: its prerequisites were decided in phases 01 and 02.
+    2. When a question is answered, update the affected tasks so they read as final requirements, then mark the question done and archive it.
 3. `worker` is set on leaf tasks only; phase and group folders are containers.
-    1. `worker: user` — preference, policy, limit, hardware-baseline, and hardware-in-the-loop acceptance tasks.
-    2. `worker: agent` — implementation, unit tests, documentation, audits, and research derived from the ICEB rulebook or ZMK/Zephyr APIs.
+    1. `worker: user`: preference, policy, limit, and hardware-in-the-loop acceptance tasks.
+    2. `worker: agent`: implementation, unit tests, documentation, audits, and research from the ICEB rulebook, ZMK/Zephyr, or screen-reader documentation.
     3. The user reviews every task and marks it ready; agents do not start draft tasks or mark their own work ready.
 4. Unit tests are written alongside the implementation they cover, inside the same task.
     1. A standalone test task is used only for additional effort that justifies itself: cross-component integration, hardware-in-the-loop, rulebook-example conformance suites, or exploratory testing.
 5. Work may be paused and resumed from the repository and task messages alone.
     1. Do not add handoff notes, progress journals, or status reporting beyond the TaskDown delivery message each task already requires.
-6. A later milestone may refine an earlier decision; record the refinement in the later question task and update affected tasks.
 
-## 3. Order and dependencies
+## 6. Order and dependencies
 
-1. Phase 01 establishes the build/hardware baseline, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
-2. Phase 02 establishes the common rule, context, matching, and action contracts.
-    1. Its UEB-context decision consults the pinned rulebook's indicator rules directly; phase 03's milestone may refine the representation.
-3. Phase 02 researches and implements per-mode factory command chords against fixture tables; phases 03 and 04 check them against the real character tables.
-    1. Braille-space-only emits a literal space in every mode.
-    2. Command chords follow macOS VoiceOver for each mode, then Android TalkBack, then Hable One; they may be dot-only (e.g. dots 7/8), and collisions are resolved explicitly.
-4. Phase 03 and phase 04 character tables both build on the phase 02 engine and are independent of each other.
-5. Phase 05 storage depends on the common schema; its settings interface also needs phase 01 capture and settings-entry hooks, Grade 1 search input, and compiled named modes.
-6. Phase 06 verifies the combined feature set on the phase 01 baseline and completes user documentation; it is not the first build or test step.
-7. Phase 07 reuses the delivered engine, display, capture, and actions, adding only contraction data and necessary word context.
+1. Phase 01 pins the baseline and builds the module, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
+2. Phase 02 builds the common rule, context, matching, and action contracts, and researches and implements per-mode factory command chords against fixture tables.
+    1. Its UEB-context representation consults the rulebook's indicator rules directly; phase 03's rulebook research may refine it.
+3. Phases 03 and 04 build the `ueb1` and `computer8` character tables on the phase 02 engine, independently of each other, and check them against the real command tables.
+4. Phase 05 storage depends on the common schema; its settings interface also needs phase 01's capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
+5. Phase 06 verifies the combined feature set on the baseline keyboards and completes user documentation; it is not the first build or test step.
+6. Phase 07 reuses the delivered engine, display, capture, and actions, adding only contraction data and necessary word context.
 
-## 4. Readiness and completion
+## 7. Readiness and completion
 
-1. All tasks stay draft during plan review; no firmware work is delivered by planning.
-2. Parent tasks summarize their children and require no second implementation of the same work.
-3. Use fixture tables or in-memory overrides where a later component does not exist yet; verify real combinations when both sides are built.
-4. Maintain one key-coverage checklist through phases 03, 04, and 06; record host-dependent exceptions rather than inventing literary signs.
-5. Initial acceptance requires a core-unmodified ZMK build, host-keystroke/key-function coverage, usable display and settings flows, delayed-input feedback, and override survival across reset and power cycle.
-
-## 5. Spec coverage
-
-1. Spec §§1–3: phases 01, 05, and 06 cover hybrid operation, configuration, gestures, modes, and installation.
-2. Spec §4 and §8.2: phase 02 supplies shared rules/actions, matching, source separation, and named-table extensibility without requiring another language.
-3. Spec §5 and §9: phase 03 implements and tests authoritative uncontracted UEB; phase 06 preserves provenance in the documentation.
-4. Spec §6: phase 02 supplies navigation and key actions, phase 04 supplies computer8, and phase 06 verifies complete keyboard coverage.
-5. Spec §7: phase 05 supplies the on-device editing flow, display, capacity, precedence, and persistent bindings.
-6. Spec §8.1: phase 07 covers optional contractions, positional restrictions, fallback, and bounded pending output.
+1. Parent tasks summarize their children; no work is implemented twice.
+2. Use fixture tables or in-memory overrides where a later component does not exist yet; verify real combinations when both sides are built.
+3. Maintain one key-coverage checklist through phases 03, 04, and 06; record host-dependent exceptions rather than inventing literary signs.
+4. Initial acceptance requires a core-unmodified ZMK build, host-keystroke and key-function coverage, usable display and settings flows, pending-input feedback, and override survival across reset and power cycle.

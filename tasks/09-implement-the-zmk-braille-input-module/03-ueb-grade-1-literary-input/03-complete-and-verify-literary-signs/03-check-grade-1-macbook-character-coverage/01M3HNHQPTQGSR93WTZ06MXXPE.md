@@ -13,6 +13,6 @@ cargo:
 
 # Check Grade 1 MacBook character coverage
 
-1. Start the shared coverage checklist from spec §1.4 and the supporting `references/01-mba-keys.yaml` inventory.
-2. Record implemented literary mappings and planned computer8/action coverage for nonliterary keys; verify those routes in phases 04 and 06 rather than claiming they work yet.
-3. Preserve backtick/vertical-bar availability without invented UEB signs, distinguish the grave diacritic, and test dots 7/8 as available nonliterary/custom inputs in `ueb1`.
+1. Start the shared coverage checklist from the root task's completeness target, with `references/01-mba-keys.yaml` as a supporting inventory.
+2. Record the implemented literary mappings and the planned `computer8` or action route for each nonliterary key; phases 04 and 06 verify those routes.
+3. Confirm backtick and vertical bar have non-literary routes, the grave diacritic is distinct, and dots 7 and 8 are free of literary rules in `ueb1`.

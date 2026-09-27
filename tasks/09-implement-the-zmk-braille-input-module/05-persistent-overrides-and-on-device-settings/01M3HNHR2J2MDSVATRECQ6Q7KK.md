@@ -9,6 +9,7 @@ cargo:
 
 # Persistent overrides and on-device settings
 
-1. Resolve the decision milestone first, then support editing rules without a host or reflash, with compact ZMK display widgets on an OLED or comparable display (spec §7 and §3.3).
-2. Storage depends on phase 02's shared schema; the interface additionally uses phase 01 capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
-3. Deliver delayed-input display feedback for the initial modes here; optional Grade 2 later reuses the same pending-cell interface.
+1. Resolve the decision milestone first, then let users create and change chord-to-action bindings on the keyboard, without a host tool or reflash.
+2. Use compact, text-oriented ZMK display widgets on the central half's display: the QBF's 128×32 OLED and the Toucan's nice!view.
+3. Storage depends on phase 02's shared schema; the interface also uses phase 01's capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
+4. Deliver pending-input display feedback for the initial modes here; optional Grade 2 reuses the same interface.

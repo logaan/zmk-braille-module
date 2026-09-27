@@ -13,5 +13,8 @@ cargo:
 
 # Implement other ICEB literary signs
 
-1. Add supported literary signs including quotation marks; distinguish the grave diacritic from a standalone backtick, and do not invent a literary vertical bar.
-2. Unit-test the added literary signs alongside the implementation, including quotation marks, the grave diacritic, and dots 7/8 remaining available for nonliterary or custom chords.
+1. Add the additional literary signs from the milestone inventory, including quotation marks, following the rulebook.
+2. The grave accent is a UEB diacritic (dots 4, 5 then 1, 6); it does not make a standalone literary backtick key.
+3. There is no literary vertical bar; backtick and vertical bar are reached through `computer8` or custom actions, and no UEB sign is invented for either.
+4. Dots 7 and 8 stay free in `ueb1` for nonliterary and custom chords.
+5. Unit-test alongside the implementation: the added signs including quotation marks, the grave diacritic, and dots 7 and 8 unused by literary rules.

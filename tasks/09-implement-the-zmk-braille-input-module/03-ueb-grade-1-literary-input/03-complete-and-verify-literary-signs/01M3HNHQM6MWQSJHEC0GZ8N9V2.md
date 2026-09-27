@@ -10,4 +10,4 @@ cargo:
 # Complete and verify literary signs
 
 1. Use the pinned ICEB rulebook, not inferred ASCII-to-cell mappings.
-2. The rulebook-example conformance suite stays a standalone task because curating authoritative fixtures is substantial effort beyond per-mapping unit tests.
+2. The rulebook-example conformance suite is a standalone task because curating authoritative fixtures is substantial effort beyond per-mapping unit tests.

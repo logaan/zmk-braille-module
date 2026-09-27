@@ -19,7 +19,6 @@ cargo:
     3. It is never a chord bit.
     4. Compose ZMK's hold-tap and layer behaviors if they meet these semantics; otherwise implement it in the module.
 2. Settings-entry action
-    1. A ZMK behavior action invoked by rules; phase 02 allocates its factory default chord, and users can rebind it through overrides.
-    2. On entry, discard any unresolved multi-chord prefix without host output and suspend host typing; expose entry/exit hooks for phase 05.
-3. There are no long-press gestures.
-4. Unit-test alongside the implementation: holding while chording, tap to-layer and returning, exclusion from chord masks, and no host output across settings entry and exit, exercising the hooks rather than the later UI.
+    1. A ZMK behavior action invoked by rules; phase 02's command-chord research gives its factory default chord, and users can rebind it through overrides.
+    2. On entry, discard any unresolved multi-chord input without host output and suspend host typing; expose entry and exit hooks for phase 05.
+3. Unit-test alongside the implementation: holding while chording, tap to-layer and returning, exclusion from chord masks, and no host output across settings entry and exit, exercising the hooks rather than the later UI.

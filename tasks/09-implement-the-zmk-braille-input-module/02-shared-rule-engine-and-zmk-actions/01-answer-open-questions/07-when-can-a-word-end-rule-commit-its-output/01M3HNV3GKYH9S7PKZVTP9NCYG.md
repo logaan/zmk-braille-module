@@ -13,6 +13,6 @@ cargo:
 
 # When can a word-end rule commit its output?
 
-1. Define the evidence needed to satisfy a word-end constraint and the pending-input behavior while that evidence is absent.
-2. Distinguish a semantic boundary from a latency timeout; expiration alone does not establish an ICEB word boundary.
-3. Align the result with longest-valid fallback and the bounded-prefix policy; use fixtures before optional Grade 2 data exists.
+1. Define the evidence that satisfies a word-end constraint and the pending-input behavior while that evidence is absent.
+2. The engine has no timers, and any layer change, non-Braille key, mode change, command action, or settings entry discards pending input; evidence can therefore only come from a following chord.
+3. Align the result with longest-valid matching and shorter fallback; use fixtures before optional Grade 2 data exists.

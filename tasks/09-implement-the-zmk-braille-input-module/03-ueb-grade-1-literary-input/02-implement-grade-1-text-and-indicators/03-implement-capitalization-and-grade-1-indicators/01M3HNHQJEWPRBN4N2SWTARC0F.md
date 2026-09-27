@@ -13,5 +13,6 @@ cargo:
 
 # Implement capitalization and grade 1 indicators
 
-1. Handle dot-6 letter capitalization plus ICEB capitalized words/passages and grade 1 indicators without treating indicators as printable keys.
-2. Unit-test capitalization and indicators alongside the implementation: dot-6 letter capitalization, capitalized words and passages, grade 1 indicators, and no indicator emitted as a printable key.
+1. Dot 6 before a lowercase letter capitalizes that letter.
+2. Follow the rulebook for capitalized words and passages and for grade 1 indicators; indicators are context, never printable keys.
+3. Unit-test alongside the implementation: dot-6 letter capitalization, capitalized words and passages, grade 1 indicators, and no indicator emitted as a printable key.

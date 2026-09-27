@@ -10,5 +10,5 @@ cargo:
 # Shared rule engine and ZMK actions
 
 1. Resolve the decision milestone first, then build one matcher and action path for character tables, per-mode factory commands, and user overrides.
-2. Depend on phase 01's chord-event contract, not on finished character tables or persistent storage.
+2. Depend on phase 01's chord events, not on finished character tables or persistent storage.
 3. Validate the engine with fixture tables; verify real-table combinations in phases 03, 04, and 06.

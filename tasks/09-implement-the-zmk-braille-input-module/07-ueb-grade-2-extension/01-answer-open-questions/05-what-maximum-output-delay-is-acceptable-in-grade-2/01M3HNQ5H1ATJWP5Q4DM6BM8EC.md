@@ -10,5 +10,5 @@ cargo:
 
 # What maximum output delay is acceptable in Grade 2?
 
-1. What maximum output delay is acceptable in Grade 2?
-2. Record the decision and its impact using `references/00-design-spec.md` and the ICEB rulebook.
+1. The engine has no timers: pending input resolves only on the next chord or is discarded by a transition.
+2. Decide whether Grade 2 needs an output-delay bound beyond the pending cell count and, if so, how it is expressed without a timeout committing or dropping input.

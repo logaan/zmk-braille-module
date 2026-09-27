@@ -13,5 +13,5 @@ cargo:
 
 # How can compiled behaviors be listed and fuzzy-searched by name?
 
-1. How can compiled behaviors be listed and fuzzy-searched by name?
-2. Record the decision and its impact using `references/00-design-spec.md` and the applicable reference material.
+1. Determine how firmware on the pinned ZMK release can enumerate its compiled behaviors and their names.
+2. Choose a fuzzy-matching approach that works on-device for short Grade 1 queries and shows results on the small display.
