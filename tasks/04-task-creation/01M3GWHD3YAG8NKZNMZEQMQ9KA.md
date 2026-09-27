@@ -6,7 +6,7 @@ author:
 cargo:
   status: draft
   type: task
-created: Sun 27 Sep 17h33
+created: Sun 27 Sep 2006 - 17h 33m 00s
 subject: Add task creation to ./scripts/td
 ---
 

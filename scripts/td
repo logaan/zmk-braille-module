@@ -13,9 +13,10 @@
          '[clj-yaml.core :as yaml]
          '[clojure.string :as str])
 
-(import '[java.time ZonedDateTime]
-        '[java.time.format DateTimeFormatter]
-        '[java.util Locale])
+(import '[java.time LocalDateTime ZonedDateTime]
+        '[java.time.format DateTimeFormatterBuilder DateTimeParseException ResolverStyle]
+        '[java.time.temporal ChronoField]
+        '[java.util HashSet Locale])
 
 ;; ---------------------------------------------------------------------------
 ;; Spec constants
@@ -32,10 +33,6 @@
 (def truncated-ulid-re
   "A task id truncated to 10 chars, used in answer 'regarding' keys."
   #"^[0-9A-HJKMNP-TV-Z]{10}$")
-
-(def created-re
-  "The spec datetime format, eg: Sun 27 Sep 13h23"
-  #"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) \d{2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{2}h\d{2}$")
 
 (def agent-str-re
   "Agent harness/model/name values."
@@ -73,7 +70,24 @@
          (encode32 (BigInteger. 1 random-bytes) 16))))
 
 (def created-formatter
-  (DateTimeFormatter/ofPattern "EEE dd MMM HH'h'mm" Locale/ENGLISH))
+  (-> (DateTimeFormatterBuilder.)
+      (.appendPattern "EEE dd MMM yyyy' - 'HH'h' mm'm' ss's'")
+      (.parseDefaulting ChronoField/ERA 1)
+      (.toFormatter Locale/ENGLISH)
+      (.withResolverStyle ResolverStyle/STRICT)
+      ;; Legacy messages keep their original weekday when backfilled with 2006.
+      ;; Parse the weekday name, but resolve only the calendar date and time.
+      (.withResolverFields (HashSet. [ChronoField/ERA ChronoField/YEAR_OF_ERA
+                                      ChronoField/MONTH_OF_YEAR ChronoField/DAY_OF_MONTH
+                                      ChronoField/HOUR_OF_DAY ChronoField/MINUTE_OF_HOUR
+                                      ChronoField/SECOND_OF_MINUTE]))))
+
+(defn valid-created? [value]
+  (and (string? value)
+       (try
+         (LocalDateTime/parse value created-formatter)
+         true
+         (catch DateTimeParseException _ false))))
 
 (defn now-created []
   (.format (ZonedDateTime/now) created-formatter))
@@ -214,9 +228,8 @@
           (nil? (:created frontmatter))
           (problem! "created: is required")
 
-          (not (and (string? (:created frontmatter))
-                    (re-matches created-re (:created frontmatter))))
-          (problem! (str "created: must use the format 'Sun 27 Sep 13h23', got: "
+          (not (valid-created? (:created frontmatter)))
+          (problem! (str "created: must be a valid datetime in the format 'Sun 27 Sep 2006 - 16h 03m 32s', got: "
                          (pr-str (:created frontmatter)))))
         (if (nil? (:author frontmatter))
           (problem! "author: is required")
@@ -264,7 +277,7 @@
    [:body           {:coerce :string :desc "Markdown body"}]
    [:body-file      {:coerce :string :desc "Read markdown body from a file"}]
    [:file           {:coerce :string :desc "Import a complete Markdown message verbatim (only with --task)"}]
-   [:created        {:coerce :string :desc "Creation datetime: Sun 27 Sep 13h23 (default: now)"}]])
+   [:created        {:coerce :string :desc "Creation datetime: Sun 27 Sep 2006 - 16h 03m 32s (default: now)"}]])
 
 (defn resolve-task-dir
   "Resolves --task to an existing directory under tasks/."
@@ -500,7 +513,10 @@ The TaskDown system reference is built into td; no project file is required.
 3.  These are the standard ones:
     1.  `created`
         1.  Required.
-        2.  A Datetime in `Sun 27 Sep 13h23` format.
+        2.  A datetime in `Sun 27 Sep 2006 - 16h 03m 32s` format.
+        3.  The date and time must be valid (including leap years).
+        4.  The English weekday name is required but not checked against the
+            date, to preserve weekdays on messages backfilled with year 2006.
     2.  `author`
         1.  Required.
         2.  A `3.2. Contributor` value.
@@ -607,7 +623,7 @@ A `Status` value must be one of:
 
       ``` markdown
       ---
-      created: Sun 27 Sep 13h23
+      created: Sun 27 Sep 2006 - 13h 23m 00s
       author: user
       subject: Keyboard keys
       cargo:
@@ -624,7 +640,7 @@ A `Status` value must be one of:
 
       ``` markdown
       ---
-      created: Sun 27 Sep 13h24
+      created: Sun 27 Sep 2006 - 13h 24m 00s
       author: user
       subject: Keyboard keys
       cargo:
@@ -637,7 +653,7 @@ A `Status` value must be one of:
 
       ``` markdown
       ---
-      created: Sun 27 Sep 13h24
+      created: Sun 27 Sep 2006 - 13h 24m 00s
       author:
         type: agent
         harness: pi
@@ -653,7 +669,7 @@ A `Status` value must be one of:
 
       ``` markdown
       ---
-      created: Sun 27 Sep 13h34
+      created: Sun 27 Sep 2006 - 13h 34m 00s
       author:
         type: agent
         harness: pi
@@ -674,7 +690,7 @@ A `Status` value must be one of:
 
       ``` markdown
       ---
-      created: Mon 28 Sep 09h12
+      created: Mon 28 Sep 2006 - 09h 12m 00s
       author: user
       subject: Keyboard keys
       cargo:

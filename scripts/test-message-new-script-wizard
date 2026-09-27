@@ -4,6 +4,7 @@
 import errno
 import os
 import pty
+import re
 import select
 import shutil
 import signal
@@ -18,9 +19,12 @@ SOURCE = Path(__file__).resolve().parent
 def run_flow(mode):
     with tempfile.TemporaryDirectory(prefix="wizard-test-") as directory:
         root = Path(directory)
-        (root / "scripts/examples").mkdir(parents=True)
+        (root / "scripts").mkdir()
         (root / "tasks/example").mkdir(parents=True)
-        for name in ("td", "examples/message-new-script-wizard.bb"):
+        wizard = ("script-wizard.bb" if (SOURCE / "script-wizard.bb").exists()
+                  else "examples/message-new-script-wizard.bb")
+        (root / "scripts" / wizard).parent.mkdir(parents=True, exist_ok=True)
+        for name in ("td", wizard):
             shutil.copy2(SOURCE / name, root / "scripts" / name)
 
         editor = root / "editor.sh"
@@ -50,8 +54,7 @@ PY
         pid, master = pty.fork()
         if pid == 0:
             os.chdir(root)
-            os.execve(str(root / "scripts/examples/message-new-script-wizard.bb"),
-                      [str(root / "scripts/examples/message-new-script-wizard.bb")], env)
+            os.execve(str(root / "scripts" / wizard), [str(root / "scripts" / wizard)], env)
 
         output = b""
         deadline = time.monotonic() + 40
@@ -111,6 +114,9 @@ PY
                 assert len(files) == 1, files
                 content = files[0].read_text()
                 assert "subject: Edited\n" in content, content
+                assert re.search(
+                    r"^created: [A-Z][a-z]{2} \d{2} [A-Z][a-z]{2} \d{4} - \d{2}h \d{2}m \d{2}s$",
+                    content, re.MULTILINE), content
                 assert "custom: retained\n---\n\n# Edited\n\n\n1. Written in the editor.\n" in content, content
                 assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
                                       stdout=subprocess.DEVNULL, check=False).returncode == 0

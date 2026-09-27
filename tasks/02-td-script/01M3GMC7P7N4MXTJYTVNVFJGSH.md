@@ -3,7 +3,7 @@ author: user
 cargo:
   status: draft
   type: task
-created: Sun 27 Sep 15h11
+created: Sun 27 Sep 2006 - 15h 11m 00s
 subject: TaskDown CLI
 ---
 

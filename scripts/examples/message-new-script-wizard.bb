@@ -18,7 +18,7 @@
 
 (def root (-> *file* fs/absolutize fs/parent fs/parent fs/parent))
 (def statuses ["draft" "ready" "started" "blocked" "delivered" "done" "cancelled"])
-(def created-formatter (DateTimeFormatter/ofPattern "EEE dd MMM HH'h'mm" Locale/ENGLISH))
+(def created-formatter (DateTimeFormatter/ofPattern "EEE dd MMM yyyy' - 'HH'h' mm'm' ss's'" Locale/ENGLISH))
 
 (defn task-folders []
   (->> (fs/glob (fs/path root "tasks") "**")

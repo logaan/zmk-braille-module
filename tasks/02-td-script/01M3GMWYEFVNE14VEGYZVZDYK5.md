@@ -6,6 +6,6 @@ author:
 cargo:
   status: ready
   type: task
-created: Sun 27 Sep 15h20
+created: Sun 27 Sep 2006 - 15h 20m 00s
 subject: TaskDown CLI
 ---

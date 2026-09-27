@@ -3,7 +3,7 @@ author: user
 cargo:
   status: draft
   type: task
-created: Sun 27 Sep 14h42
+created: Sun 27 Sep 2006 - 14h 42m 00s
 subject: Find macbook keys
 ---
 
