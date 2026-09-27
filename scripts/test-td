@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Integration smoke tests for the TaskDown CLI. Run from any directory.
+set -euo pipefail
+
+td="$(cd "$(dirname "$0")" && pwd)/td"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+cd "$tmp"
+mkdir -p tasks/example/nested
+printf 'From a file?\n' > body.md
+
+fail_if_successful() {
+  if "$@" > output.txt 2>&1; then
+    printf 'Expected failure from: %s\n' "$*" >&2
+    exit 1
+  fi
+  if grep -q '^----- Error' output.txt; then
+    printf 'Unexpected exception from: %s\n' "$*" >&2
+    exit 1
+  fi
+}
+
+"$td" > /dev/null
+"$td" --help > /dev/null
+"$td" message > /dev/null
+"$td" message --help > /dev/null
+"$td" message new --help > /dev/null
+"$td" message validate --help > /dev/null
+"$td" system > /dev/null
+"$td" system --help > /dev/null
+
+task=$("$td" message new --task example/nested --subject 'Work' --type task \
+  --status ready --author agent --harness pi --model kimi-k3 \
+  --worker agent --worker-model kimi-k3)
+question=$("$td" message new --task example --subject 'Question' --type question \
+  --body-file body.md)
+answer=$("$td" message new --task example --subject 'Answer' --type answer \
+  --regarding '01JMQ3ZK7V=First' --regarding '01JMQ4B2XD=Second')
+
+"$td" message validate > /dev/null
+"$td" message validate "$(basename "$task" .md)" > /dev/null
+"$td" message validate "$(basename "$question")" > /dev/null
+"$td" message validate "$(basename "$answer" .md)" > /dev/null
+
+fail_if_successful "$td" message new --task example --subject --type task --status ready
+fail_if_successful "$td" message new --task example --subject X --type answer --unknown value
+fail_if_successful "$td" message new --task example --subject X --type answer extra
+fail_if_successful "$td" message new --task example --subject X --type task
+fail_if_successful "$td" message new --task example --subject X --type task --status ready --author agent
+fail_if_successful "$td" message new --task example --subject X --type answer --status ready
+fail_if_successful "$td" message new --task example --subject X --type answer --regarding invalid
+fail_if_successful "$td" message new --task example --subject X --type question --body 'No question'
+fail_if_successful "$td" message validate unknown
+fail_if_successful "$td" message validate abc def
+
+# Creation and file validation must apply the same message rules.
+printf '%s\n' '---' 'created: Sun 27 Sep 13h23' 'author: user' \
+  'subject: Work' 'cargo:' '  type: task' '  status: invalid' '---' \
+  > tasks/example/01JMQ3ZK7VR8TQ4XNB0W2G9F6E.md
+fail_if_successful "$td" message validate 01JMQ3ZK7VR8TQ4XNB0W2G9F6E
+printf 'td smoke tests passed\n'

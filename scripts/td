@@ -8,7 +8,8 @@
 ;;   td message new            - create a new message inside an existing task
 ;;
 
-(require '[babashka.fs :as fs]
+(require '[babashka.cli :as cli]
+         '[babashka.fs :as fs]
          '[clj-yaml.core :as yaml]
          '[clojure.string :as str])
 
@@ -24,9 +25,9 @@
 
 (def cargo-types #{"task" "question" "answer"})
 
-(def ulid-re
-  "Crockford base32 (no I, L, O, U), 26 chars."
-  #"^[0-9A-HJKMNP-TV-Z]{26}$")
+(def message-filename-re
+  "Crockford base32 (no I, L, O, U), 26 chars, followed by .md."
+  #"^[0-9A-HJKMNP-TV-Z]{26}\.md$")
 
 (def truncated-ulid-re
   "A task id truncated to 10 chars, used in answer 'regarding' keys."
@@ -78,41 +79,6 @@
   (.format (ZonedDateTime/now) created-formatter))
 
 ;; ---------------------------------------------------------------------------
-;; Flag parsing
-;;
-;; flag-specs is a map of keyword -> {:type :string | :multi}
-;;   :string  takes a value (--flag value or --flag=value)
-;;   :multi   like :string, but repeatable, collecting values into a vector
-
-(defn parse-flags [args flag-specs]
-  (loop [args args, opts {}, positionals []]
-    (if-let [a (first args)]
-      (cond
-        (= a "--")
-        (recur nil opts (into positionals (rest args)))
-
-        (str/starts-with? a "--")
-        (let [[flag inline-val] (str/split (subs a 2) #"=" 2)
-              k (keyword flag)]
-          (if-not (contains? flag-specs k)
-            (throw (ex-info (str "Unknown flag: --" flag) {:flag flag}))
-            (let [v (or inline-val
-                        (if-let [v (second args)]
-                          v
-                          (throw (ex-info (str "Flag --" flag " requires a value")
-                                          {:flag flag}))))
-                  consumed (if inline-val 1 2)]
-              (case (:type (get flag-specs k))
-                :string (recur (drop consumed args) (assoc opts k v) positionals)
-                :multi  (recur (drop consumed args)
-                               (update opts k (fnil conj []) v)
-                               positionals)))))
-
-        :else
-        (recur (rest args) opts (conj positionals a)))
-      {:opts opts :args positionals})))
-
-;; ---------------------------------------------------------------------------
 ;; Message discovery and parsing
 
 (defn message-files
@@ -124,8 +90,9 @@
                  (> (count (fs/components (fs/relativize "tasks" f))) 1)))
        (sort-by str)))
 
-(defn find-message [id]
+(defn find-message
   "Find a single message file by ULID, ULID without .md, or unique prefix."
+  [id]
   (let [id (str/replace id #"\.md$" "")
         files (message-files)
         exact (filter #(= (str (fs/file-name %)) (str id ".md")) files)
@@ -235,66 +202,68 @@
                       (problem! (str "cargo.regarding " k ": subject must be a string of "
                                      max-subject-length " characters or less")))))))))))))
 
+(defn validate-message-data
+  "Validate parsed or prospective message data. Returns a vector of problems."
+  [frontmatter body]
+  (let [problems (atom [])
+        problem! (fn [msg] (swap! problems conj msg))]
+    (if-not (map? frontmatter)
+      (problem! "frontmatter: must be a YAML map")
+      (do
+        (cond
+          (nil? (:created frontmatter))
+          (problem! "created: is required")
+
+          (not (and (string? (:created frontmatter))
+                    (re-matches created-re (:created frontmatter))))
+          (problem! (str "created: must use the format 'Sun 27 Sep 13h23', got: "
+                         (pr-str (:created frontmatter)))))
+        (if (nil? (:author frontmatter))
+          (problem! "author: is required")
+          (check-contributor (:author frontmatter) "author" problem!))
+        (cond
+          (nil? (:subject frontmatter))
+          (problem! "subject: is required")
+
+          (not (and (string? (:subject frontmatter))
+                    (<= (count (:subject frontmatter)) max-subject-length)))
+          (problem! (str "subject: must be a string of " max-subject-length
+                         " characters or less")))
+        (check-cargo frontmatter body problem!)))
+    @problems))
+
 (defn validate-message
   "Returns a vector of problem strings (empty when valid)."
   [path]
-  (let [problems (atom [])
-        problem! (fn [msg] (swap! problems conj msg))
-        fname (str (fs/file-name path))]
-    (when-not (re-matches #"[0-9A-HJKMNP-TV-Z]{26}\.md" fname)
-      (problem! (str "file name: must be a ULID (<26 base32 chars>.md), got: " fname)))
-    (let [{:keys [frontmatter body error]} (parse-message-file path)]
-      (if error
-        (problem! error)
-        (if-not (map? frontmatter)
-          (problem! "frontmatter: must be a YAML map")
-          (do
-            ;; created
-            (cond
-              (nil? (:created frontmatter))
-              (problem! "created: is required")
-
-              (not (and (string? (:created frontmatter))
-                        (re-matches created-re (:created frontmatter))))
-              (problem! (str "created: must use the format 'Sun 27 Sep 13h23', got: "
-                             (pr-str (:created frontmatter)))))
-            ;; author
-            (if (nil? (:author frontmatter))
-              (problem! "author: is required")
-              (check-contributor (:author frontmatter) "author" problem!))
-            ;; subject
-            (cond
-              (nil? (:subject frontmatter))
-              (problem! "subject: is required")
-
-              (not (and (string? (:subject frontmatter))
-                        (<= (count (:subject frontmatter)) max-subject-length)))
-              (problem! (str "subject: must be a string of " max-subject-length
-                             " characters or less")))
-            ;; cargo
-            (check-cargo frontmatter body problem!)))))
-    @problems))
+  (let [fname (str (fs/file-name path))
+        filename-problems (if (re-matches message-filename-re fname)
+                            []
+                            [(str "file name: must be a ULID (<26 base32 chars>.md), got: " fname)])
+        {:keys [frontmatter body error]} (parse-message-file path)]
+    (into filename-problems
+          (if error [error] (validate-message-data frontmatter body)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Message creation (spec sections 3, 3.1, 3.2)
 
-(def new-flag-specs
-  {:task           {:type :string}
-   :created        {:type :string}
-   :author         {:type :string}
-   :harness        {:type :string}
-   :model          {:type :string}
-   :name           {:type :string}
-   :subject        {:type :string}
-   :type           {:type :string}
-   :status         {:type :string}
-   :worker         {:type :string}
-   :worker-harness {:type :string}
-   :worker-model   {:type :string}
-   :worker-name    {:type :string}
-   :regarding      {:type :multi}
-   :body           {:type :string}
-   :body-file      {:type :string}})
+(def new-option-spec
+  [[:task           {:coerce :string :desc "Existing task folder (required)"}]
+   [:subject        {:coerce :string :desc (str "Message subject, max " max-subject-length
+                                                " characters (required)")}]
+   [:type           {:coerce :string :desc "Cargo type: task, question, or answer (required)"}]
+   [:status         {:coerce :string :desc "Task status (required for a task)"}]
+   [:worker         {:coerce :string :desc "Task worker: user or agent"}]
+   [:worker-harness {:coerce :string :desc "Worker agent harness"}]
+   [:worker-model   {:coerce :string :desc "Worker agent model (required for an agent)"}]
+   [:worker-name    {:coerce :string :desc "Worker agent name"}]
+   [:regarding      {:coerce [:string] :desc "Answer reference: TASKID10=subject (repeatable)"}]
+   [:author         {:coerce :string :desc "Message author: user or agent (default: user)"}]
+   [:harness        {:coerce :string :desc "Author agent harness"}]
+   [:model          {:coerce :string :desc "Author agent model (required for an agent)"}]
+   [:name           {:coerce :string :desc "Author agent name"}]
+   [:body           {:coerce :string :desc "Markdown body"}]
+   [:body-file      {:coerce :string :desc "Read markdown body from a file"}]
+   [:created        {:coerce :string :desc "Creation datetime: Sun 27 Sep 13h23 (default: now)"}]])
 
 (defn resolve-task-dir
   "Resolves --task to an existing directory under tasks/."
@@ -314,163 +283,96 @@
           {:error (str "task folder not found: tasks/" task)})))))
 
 (defn contributor-value
-  "Builds a spec contributor value from CLI parts.
-  who is 'user' or 'agent'."
+  "Build a contributor from CLI parts; leave invalid values for validation."
   [who {:keys [harness model name]}]
-  (if (= who "user")
-    "user"
+  (if (= who "agent")
     (cond-> (array-map :type "agent")
       harness (assoc :harness harness)
       model   (assoc :model model)
-      name    (assoc :name name))))
+      name    (assoc :name name))
+    who))
 
-(defn run-new [args]
-  (let [{:keys [opts args]} (parse-flags args new-flag-specs)
+(defn run-new [{:keys [opts]}]
+  (let [{:keys [task created author harness model subject type status
+                worker worker-harness worker-model worker-name regarding
+                body body-file]
+         agent-name :name} opts
+        author (or author "user")
         errors (atom [])
-        err! (fn [msg] (swap! errors conj msg))]
-    (when (seq args)
-      (err! (str "unexpected arguments: " (str/join " " args))))
-    (let [{:keys [task created author harness model subject type status
-                  worker worker-harness worker-model worker-name regarding
-                  body body-file]
-           agent-name :name} opts
-          author (or author "user")
-          task-result (when task (resolve-task-dir task))]
-      ;; --- task folder
-      (cond
-        (nil? task) (err! "missing required flag: --task <folder>")
-        (:error task-result) (err! (:error task-result)))
-      ;; --- created
-      (when (and created (not (re-matches created-re created)))
-        (err! (str "--created must use the format 'Sun 27 Sep 13h23', got: " (pr-str created))))
-      ;; --- author
-      (if-not (contains? #{"user" "agent"} author)
-        (err! (str "--author must be 'user' or 'agent', got: " (pr-str author)))
-        (if (= author "agent")
-          (do
-            (when (nil? model)
-              (err! "--model is required when --author agent"))
-            (doseq [[flag v] [[:harness harness] [:model model] [:name agent-name]]
-                    :when (some? v)
-                    :when (not (re-matches agent-str-re v))]
-              (err! (str "--" (name flag) " must match " agent-str-re ", got: " (pr-str v)))))
-          (doseq [flag [:harness :model :name]
-                  :when (contains? opts flag)]
-            (err! (str "--" (name flag) " requires --author agent")))))
-      ;; --- subject
-      (cond
-        (nil? subject) (err! "missing required flag: --subject <text>")
-        (> (count subject) max-subject-length)
-        (err! (str "--subject must be " max-subject-length " characters or less ("
-                   (count subject) " given)")))
-      ;; --- cargo type
-      (when (nil? type)
-        (err! "missing required flag: --type <task|question|answer>"))
-      (when (and type (not (contains? cargo-types type)))
-        (err! (str "--type must be one of task, question, answer, got: " (pr-str type))))
-      ;; --- status (task only)
-      (if (= type "task")
-        (cond
-          (nil? status)
-          (err! "--status is required when --type task")
-          (not (contains? statuses status))
-          (err! (str "--status must be one of " (str/join ", " (sort statuses))
-                     ", got: " (pr-str status))))
-        (when status
-          (err! "--status only applies when --type task")))
-      ;; --- worker (task only)
-      (when (and worker (not= type "task"))
-        (err! "--worker only applies when --type task"))
-      (cond
-        (and worker (not (contains? #{"user" "agent"} worker)))
-        (err! (str "--worker must be 'user' or 'agent', got: " (pr-str worker)))
-
-        (= worker "agent")
-        (do
-          (when (nil? worker-model)
-            (err! "--worker-model is required when --worker agent"))
-          (doseq [[flag v] [[:worker-harness worker-harness]
-                            [:worker-model worker-model]
-                            [:worker-name worker-name]]
-                  :when (some? v)
-                  :when (not (re-matches agent-str-re v))]
-            (err! (str "--" (name flag) " must match " agent-str-re ", got: " (pr-str v)))))
-
-        :else
-        (doseq [flag [:worker-harness :worker-model :worker-name]
-                :when (contains? opts flag)]
-          (err! (str "--" (name flag) " requires --worker agent"))))
-      ;; --- regarding (answer only)
-      (when (and (seq regarding) (not= type "answer"))
-        (err! "--regarding only applies when --type answer"))
-      (doseq [r regarding]
-        (let [[k v] (str/split r #"=" 2)]
-          (when (or (nil? v) (str/blank? k))
-            (err! (str "--regarding must be <TASKID10>=<subject>, got: " (pr-str r))))
-          (when (and (not (str/blank? k)) (not (re-matches truncated-ulid-re k)))
-            (err! (str "--regarding key must be a 10 char truncated task id, got: " (pr-str k))))
-          (when (and v (> (count v) max-subject-length))
-            (err! (str "--regarding subject must be " max-subject-length
-                       " characters or less (" (count v) " given)")))))
-      ;; --- body
-      (when (and body body-file)
-        (err! "use only one of --body and --body-file"))
-      (when (and body-file (not (fs/exists? body-file)))
-        (err! (str "body file not found: " body-file)))
-      (let [body-text (cond body body
-                            body-file (when (fs/exists? body-file) (slurp body-file))
-                            :else nil)]
-        (when (= type "question")
-          (let [n (count (re-seq #"\?" (or body-text "")))]
-            (when-not (= 1 n)
-              (err! (str "a question message body must ask just one question (found "
-                         n " question marks); provide it with --body or --body-file")))))
-        ;; --- build and write
-        (if (seq @errors)
-          (do (binding [*out* *err*]
-                (println "Cannot create message:")
-                (doseq [e @errors] (println " " "-" e))
-                (println "See 'td message new --help'."))
-              (System/exit 1))
-          (let [frontmatter (array-map
-                             :created (or created (now-created))
-                             :author (contributor-value author {:harness harness
-                                                                :model model
-                                                                :name agent-name})
-                             :subject subject
-                             :cargo (cond-> (array-map :type type)
-                                      (= type "task")
-                                      (assoc :status status)
-                                      (and (= type "task") worker)
-                                      (assoc :worker (contributor-value
-                                                      worker {:harness worker-harness
-                                                              :model worker-model
-                                                              :name worker-name}))
-                                      (and (= type "answer") (seq regarding))
-                                      (assoc :regarding
-                                             (into (array-map)
-                                                   (map (fn [r]
-                                                          (let [[k v] (str/split r #"=" 2)]
-                                                            [k v])))
-                                                   regarding))))
-                id (gen-ulid)
-                file (fs/path (:dir task-result) (str id ".md"))
-                content (str "---\n"
-                             (yaml/generate-string frontmatter
-                                                   :dumper-options {:flow-style :block})
-                             "---\n"
-                             (when-not (str/blank? body-text)
-                               (str "\n" (str/trim body-text) "\n")))]
-            (spit (str file) content)
-            (println (str "tasks/" (:name task-result) "/" id ".md"))))))))
+        err! (fn [msg] (swap! errors conj msg))
+        task-result (when task (resolve-task-dir task))]
+    ;; These constraints concern CLI flag combinations, not message data.
+    (cond
+      (nil? task) (err! "missing required flag: --task <folder>")
+      (:error task-result) (err! (:error task-result)))
+    (when (not= author "agent")
+      (doseq [flag [:harness :model :name]
+              :when (contains? opts flag)]
+        (err! (str "--" (name flag) " requires --author agent"))))
+    (when (and status (not= type "task"))
+      (err! "--status only applies when --type task"))
+    (when (and worker (not= type "task"))
+      (err! "--worker only applies when --type task"))
+    (when (not= worker "agent")
+      (doseq [flag [:worker-harness :worker-model :worker-name]
+              :when (contains? opts flag)]
+        (err! (str "--" (name flag) " requires --worker agent"))))
+    (when (and (seq regarding) (not= type "answer"))
+      (err! "--regarding only applies when --type answer"))
+    (when (and body body-file)
+      (err! "use only one of --body and --body-file"))
+    (when (and body-file (not (fs/exists? body-file)))
+      (err! (str "body file not found: " body-file)))
+    (let [regarding-entries (into [] (keep (fn [r]
+                                             (let [[k v] (str/split r #"=" 2)]
+                                               (if (or (nil? v) (str/blank? k))
+                                                 (do (err! (str "--regarding must be <TASKID10>=<subject>, got: "
+                                                                (pr-str r)))
+                                                     nil)
+                                                 [k v]))))
+                                  regarding)
+          body-text (cond body body
+                          body-file (when (fs/exists? body-file) (slurp body-file))
+                          :else nil)
+          frontmatter (array-map
+                       :created (or created (now-created))
+                       :author (contributor-value author {:harness harness
+                                                          :model model
+                                                          :name agent-name})
+                       :subject subject
+                       :cargo (cond-> (array-map :type type)
+                                (= type "task")
+                                (assoc :status status)
+                                (and (= type "task") worker)
+                                (assoc :worker (contributor-value
+                                                worker {:harness worker-harness
+                                                        :model worker-model
+                                                        :name worker-name}))
+                                (and (= type "answer") (seq regarding))
+                                (assoc :regarding (into (array-map) regarding-entries))))
+          problems (into @errors (validate-message-data frontmatter body-text))]
+      (if (seq problems)
+        (do (binding [*out* *err*]
+              (println "Cannot create message:")
+              (doseq [e problems] (println " " "-" e))
+              (println "See 'td message new --help'."))
+            (System/exit 1))
+        (let [id (gen-ulid)
+              file (fs/path (:dir task-result) (str id ".md"))
+              content (str "---\n"
+                           (yaml/generate-string frontmatter
+                                                 :dumper-options {:flow-style :block})
+                           "---\n"
+                           (when-not (str/blank? body-text)
+                             (str "\n" (str/trim body-text) "\n")))]
+          (spit (str file) content)
+          (println (str "tasks/" (:name task-result) "/" id ".md")))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Validate command
 
-(defn run-validate [args]
-  (let [{:keys [opts args]} (parse-flags args {})]
-    (when (seq opts)
-      (die "See 'td message validate --help'."))
+(defn run-validate [{:keys [args]}]
+  (let [args (or args [])]
     (when (> (count args) 1)
       (die "td message validate takes at most one message id."))
     (let [files (if-let [id (first args)]
@@ -491,105 +393,21 @@
           (System/exit (if (seq invalid) 1 0)))))))
 
 ;; ---------------------------------------------------------------------------
-;; Help texts
+;; Command help beyond the option descriptions in new-option-spec
 
-(def help-top
-  "td - TaskDown command line tool
+(def new-help-epilog
+  (str "Task statuses: " (str/join ", " (sort statuses)) "\n"
+       "Questions must have a body with one question mark.\n\n"
+       "Examples:\n"
+       "  td message new --task 02-td-script --subject 'Keyboard keys' \\\n"
+       "      --type task --status ready\n"
+       "  td message new --task 02-td-script --subject 'Which clock?' \\\n"
+       "      --type question --body 'Should we pin the clock in tests?'"))
 
-USAGE:
-  td <command> [options]
-  td --help
-
-COMMANDS:
-  system     Learn about the TaskDown system
-  message    Create and validate task messages
-
-OPTIONS:
-  -h, --help    Show this help
-
-See 'td <command> --help' for command-specific help.
-Run 'td system' for the built-in TaskDown system reference.")
-
-(def help-message
-  "td message - Create and validate task messages
-
-USAGE:
-  td message <subcommand> [options]
-  td message --help
-
-SUBCOMMANDS:
-  new         Create a new message inside an existing task
-  validate    Check message file(s) against the TaskDown spec
-
-OPTIONS:
-  -h, --help    Show this help
-
-See 'td message <subcommand> --help' for subcommand-specific help.")
-
-(def help-new
-  "td message new - Create a new message inside an existing task
-
-USAGE:
-  td message new --task <folder> --subject <text> --type <type> [options]
-
-REQUIRED:
-      --task <folder>       Task folder, eg: 02-td-script
-      --subject <text>      Message subject (max 64 chars)
-      --type <type>         Cargo type: task, question, or answer
-
-CARGO OPTIONS:
-      --status <status>     Task status (required when --type task):
-                            draft, ready, started, blocked, delivered,
-                            done, cancelled
-      --worker <who>        Task worker: user or agent (task only)
-      --worker-harness <s>  Worker agent harness (with --worker agent)
-      --worker-model <s>    Worker agent model (required with --worker agent)
-      --worker-name <s>     Worker agent name (with --worker agent)
-      --regarding <k=v>     Answer reference: <TASKID10>=<subject>.
-                            Repeatable. Only valid with --type answer.
-
-AUTHOR OPTIONS:
-      --author <who>        Message author: user or agent (default: user)
-      --harness <s>         Agent harness (with --author agent)
-      --model <s>           Agent model (required with --author agent)
-      --name <s>            Agent name (with --author agent)
-
-BODY OPTIONS:
-      --body <text>         Markdown body. With --type question the body
-                            must ask exactly one question.
-      --body-file <path>    Read the markdown body from a file
-
-OTHER OPTIONS:
-      --created <datetime>  Creation datetime in 'Sun 27 Sep 13h23' format
-                            (default: current time)
-  -h, --help                Show this help
-
-EXAMPLES:
-  td message new --task 02-td-script --subject 'Keyboard keys' \\
-      --type task --status ready
-  td message new --task 02-td-script --author agent --model kimi-k3 \\
-      --subject 'Results' --type task --status delivered \\
-      --body '1. Done. See ./output/keys.yaml'
-  td message new --task 02-td-script --subject 'Which clock?' \\
-      --type question --body '1. Should we pin the clock in tests?'")
-
-(def help-validate
-  "td message validate - Check message file(s) against the TaskDown spec
-
-USAGE:
-  td message validate [id]
-
-ARGUMENTS:
-  id    ULID of a message file (with or without the .md extension),
-        or a unique ULID prefix. When omitted, every message in every
-        task under tasks/ is validated.
-
-OPTIONS:
-  -h, --help    Show this help
-
-EXIT STATUS:
-  0    all checked messages are valid
-  1    one or more messages are invalid, or no message matched")
+(def validate-help-epilog
+  "The optional id is a ULID (with or without .md) or a unique prefix.
+Without an id, every message under tasks/ is checked.
+Exit status: 0 when valid, 1 otherwise.")
 
 ;; ---------------------------------------------------------------------------
 ;; Built-in system reference
@@ -855,47 +673,52 @@ A `Status` value must be one of:
             the of the work done.
 ")
 
-(defn run-system [args]
-  (if (or (empty? args)
-          (= args ["-h"])
-          (= args ["--help"]))
+(defn run-system [{:keys [args]}]
+  (if (empty? args)
     (print system-description)
     (die "td system takes no arguments.\nSee 'td system --help'.")))
 
 ;; ---------------------------------------------------------------------------
 ;; Entry point
 
+(def commands
+  [{:cmds []
+    :doc "TaskDown command line tool"
+    :epilog "Run 'td system' for the built-in TaskDown system reference."}
+   {:cmds ["system"]
+    :doc "Learn about the TaskDown system"
+    :fn run-system
+    :restrict true}
+   {:cmds ["message"]
+    :doc "Create and validate task messages"}
+   {:cmds ["message" "new"]
+    :doc "Create a new message inside an existing task"
+    :fn run-new
+    :spec new-option-spec
+    :restrict true
+    :restrict-args true
+    :repeated-opts true
+    :epilog new-help-epilog}
+   {:cmds ["message" "validate"]
+    :doc "Check message file(s) against the TaskDown spec"
+    :fn run-validate
+    :restrict true
+    :epilog validate-help-epilog}])
+
 (defn -main [& args]
-  (let [[cmd & cmd-args] args
-        [subcmd & more] cmd-args]
-    (cond
-      (or (nil? cmd) (contains? #{"-h" "--help" "help"} cmd))
-      (println help-top)
-
-      (= cmd "system")
-      (run-system cmd-args)
-
-      (not= cmd "message")
-      (die (str "Unknown command: " cmd "\nSee 'td --help'."))
-
-      (or (nil? subcmd) (contains? #{"-h" "--help"} subcmd))
-      (println help-message)
-
-      (= subcmd "new")
-      (if (some #{"-h" "--help"} more)
-        (println help-new)
-        (try (run-new more)
-             (catch clojure.lang.ExceptionInfo e
-               (die (str (.getMessage e) "\nSee 'td message new --help'.")))))
-
-      (= subcmd "validate")
-      (if (some #{"-h" "--help"} more)
-        (println help-validate)
-        (try (run-validate more)
-             (catch clojure.lang.ExceptionInfo e
-               (die (str (.getMessage e) "\nSee 'td message validate --help'.")))))
-
-      :else
-      (die (str "Unknown subcommand: message " subcmd "\nSee 'td message --help'.")))))
+  ;; Keep the no-argument help behavior while letting dispatch render every page.
+  (let [args (cond
+               (or (empty? args) (= args ["help"])) ["--help"]
+               (= args ["message"]) ["message" "--help"]
+               :else args)]
+    (cli/dispatch commands args
+                  {:prog "td"
+                   :help true
+                   :help-fn (fn [{:keys [tree dispatch prog inherit]}]
+                              (if (= dispatch ["system"])
+                                (print system-description)
+                                (println (cli/format-command-help
+                                          {:table tree :cmds dispatch
+                                           :prog prog :inherit inherit}))))})))
 
 (apply -main *command-line-args*)
