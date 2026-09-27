@@ -24,6 +24,11 @@ fail_if_successful() {
 "$td" --help > /dev/null
 "$td" message > /dev/null
 "$td" message --help > /dev/null
+"$td" task > /dev/null
+"$td" task --help > /dev/null
+"$td" task new --help > task-help.txt
+grep -Fq -- '--parent' task-help.txt
+grep -Fq 'td task new --subject' task-help.txt
 "$td" message new --help > /dev/null
 "$td" message validate --help > /dev/null
 "$td" system > system.txt
@@ -162,6 +167,88 @@ for first in 8 Z; do
   grep -Fq 'cargo.regarding: key must be a 10 char truncated task id' output.txt
 done
 [[ $(find tasks -name '*.md' | wc -l | tr -d ' ') == 4 ]]
+
+# Tasks are numbered after the highest sibling, even across gaps or repeated names.
+mkdir -p tasks/02-older tasks/04-existing
+top=$("$td" task new --name top-work --subject 'Top level work' --status ready \
+  --author agent --harness pi --model kimi-k3 --worker agent --worker-model kimi-k3 \
+  --body-file body.md \
+  --created 'Sun 29 Feb 2004 - 23h 59m 59s')
+[[ $top =~ ^tasks/05-top-work/[0-7][0-9A-HJKMNP-TV-Z]{25}\.md$ ]]
+grep -q '^subject: Top level work$' "$top"
+grep -q '^  status: ready$' "$top"
+grep -q '^created: Sun 29 Feb 2004 - 23h 59m 59s$' "$top"
+grep -q '^  worker:$' "$top"
+grep -q 'From a file?' "$top"
+first=$("$td" task new --parent tasks/05-top-work --name first-child \
+  --subject 'First child' --status draft --body $'# First child\n\n1. Work.')
+[[ $first == tasks/05-top-work/01-first-child/*.md ]]
+grep -q '^subject: First child$' "$first"
+grep -q '^  status: draft$' "$first"
+grep -q '^1. Work.$' "$first"
+second=$("$td" task new --parent 05-top-work --subject 'Follow up!' --status started)
+[[ $second == tasks/05-top-work/02-follow-up/*.md ]]
+grep -q '^author: user$' "$second"
+[[ $(tail -1 "$second") == '---' ]]
+nested=$("$td" task new --parent 05-top-work/01-first-child \
+  --subject 'Nested work' --status draft)
+[[ $nested == tasks/05-top-work/01-first-child/01-nested-work/*.md ]]
+next=$("$td" task new --name top-work --subject 'Another top level task' --status done)
+[[ $next == tasks/06-top-work/*.md ]]
+mkdir tasks/05-top-work/99-last
+hundred=$("$td" task new --parent 05-top-work --subject 'Past ninety-nine' --status draft)
+[[ $hundred == tasks/05-top-work/100-past-ninety-nine/*.md ]]
+"$td" message validate > /dev/null
+
+# Invalid input must be rejected before creating any folder or message.
+find tasks -type d | sort > dirs-before.txt
+find tasks -name '*.md' | sort > messages-before.txt
+fail_if_successful "$td" task new --name missing-subject --status draft
+fail_if_successful "$td" task new --subject '  ' --status draft
+fail_if_successful "$td" task new --subject "$(printf '%065d' 0)" --status draft
+fail_if_successful "$td" task new --subject 'Only a subject'
+fail_if_successful "$td" task new --subject Bad --status invalid
+fail_if_successful "$td" task new --subject '!!!' --status ready
+grep -Fq 'use --name if the subject cannot form one' output.txt
+for bad_name in '../outside' 'Two Words' '-leading' 'trailing-' 'double--hyphen' \
+  "$(printf 'x%.0s' {1..65})" ''; do
+  fail_if_successful "$td" task new --name "$bad_name" --subject Valid --status draft
+done
+fail_if_successful "$td" task new --subject Work --status ready --parent 99-missing
+grep -Fq 'task folder not found: tasks/99-missing' output.txt
+for bad_parent in ../outside /tmp tasks/05-top-work/../02-older example tasks/; do
+  fail_if_successful "$td" task new --subject Work --status ready --parent "$bad_parent"
+done
+mkdir -p outside
+ln -s "$tmp/outside" tasks/05-top-work/03-outside
+fail_if_successful "$td" task new --subject Work --status ready \
+  --parent 05-top-work/03-outside
+grep -Fq 'parent must be inside tasks/' output.txt
+[[ -z $(find outside -mindepth 1 -print) ]]
+fail_if_successful "$td" task new --subject Work --status draft --body 'One' --body-file body.md
+fail_if_successful "$td" task new --subject Work --status draft --body-file missing.md
+grep -Fq 'body file not found: missing.md' output.txt
+fail_if_successful "$td" task new --subject Work --status draft --body-file tasks/05-top-work
+fail_if_successful "$td" task new --subject Work --status draft --created 'Sun 29 Feb 2006 - 16h 03m 32s'
+fail_if_successful "$td" task new --subject Work --status ready --author agent
+fail_if_successful "$td" task new --subject Work --status ready --unknown value
+fail_if_successful "$td" task new --subject Work --status ready extra
+# A write failure after mkdir must remove the new, empty task folder too.
+# Root can write to mode-000 directories, so this only applies to non-root runs.
+if [[ $(id -u) != 0 ]]; then
+  (umask 0777
+    fail_if_successful "$td" task new --name no-write --subject Work --status draft)
+  grep -Fq 'Cannot create task:' output.txt
+fi
+find tasks -type d | sort > dirs-after.txt
+find tasks -name '*.md' | sort > messages-after.txt
+cmp dirs-before.txt dirs-after.txt
+cmp messages-before.txt messages-after.txt
+mkdir missing-root
+(cd missing-root
+  fail_if_successful "$td" task new --subject Work --status draft
+  grep -Fq 'tasks/ folder not found' output.txt
+  [[ -z $(find . -name '*.md' -print) ]])
 
 # Creation and file validation must apply the same message rules.
 printf '%s\n' '---' 'created: Sun 27 Sep 2006 - 13h 23m 00s' 'author: user' \

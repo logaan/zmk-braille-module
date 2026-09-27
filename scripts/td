@@ -6,6 +6,7 @@
 ;;   td system                 - print the built-in system reference
 ;;   td message validate [id]  - check message file(s) against the spec
 ;;   td message new            - create a new message inside an existing task
+;;   td task new               - create a numbered task (or subtask) with its first message
 ;;
 
 (require '[babashka.cli :as cli]
@@ -15,7 +16,8 @@
          '[clj-yaml.core :as yaml]
          '[clojure.string :as str])
 
-(import '[java.time LocalDateTime ZonedDateTime]
+(import '[java.nio.file FileAlreadyExistsException]
+        '[java.time LocalDateTime ZonedDateTime]
         '[java.time.format DateTimeFormatterBuilder DateTimeParseException ResolverStyle]
         '[java.time.temporal ChronoField]
         '[java.util HashSet Locale])
@@ -568,6 +570,113 @@
     (when-not (zero? exit) (System/exit exit))))
 
 ;; ---------------------------------------------------------------------------
+;; Task creation
+
+(def task-folder-re #"^[0-9]+(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$")
+(def task-name-re #"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+(def task-new-option-spec
+  (into [[:parent {:coerce :string :desc "Existing task folder for a subtask (default: tasks/ root)"}]
+         [:name {:coerce :string :desc "Folder name: lowercase kebab-case (default: derived from subject)"}]]
+        (filter (fn [[flag _]]
+                  (contains? #{:subject :status :worker :worker-harness :worker-model
+                               :worker-name :author :harness :model :body :body-file :created}
+                             flag))
+                new-option-spec)))
+
+(defn task-name-from-subject [subject]
+  (when (string? subject)
+    (-> subject str/lower-case
+        (str/replace #"[^a-z0-9]+" "-")
+        (str/replace #"^-|-$" ""))))
+
+(defn resolve-new-parent [parent]
+  (let [root (fs/path "tasks")]
+    (cond
+      (not (fs/directory? root))
+      {:error "tasks/ folder not found"}
+
+      (nil? parent)
+      {:dir root :name ""}
+
+      :else
+      (let [relative (-> parent (str/replace #"^tasks/" "")
+                         (str/replace #"/+$" ""))]
+        (cond
+          (or (str/blank? relative) (fs/absolute? relative)
+              (not-every? #(re-matches task-folder-re %) (str/split relative #"/")))
+          {:error (str "parent must be a numbered task folder inside tasks/, got: " parent)}
+
+          :else
+          (let [{:keys [dir error] :as result} (resolve-task-dir relative)]
+            (cond
+              error result
+              (not (fs/starts-with? (fs/real-path dir) (fs/real-path root)))
+              {:error (str "parent must be inside tasks/, got: " parent)}
+              :else result)))))))
+
+(defn next-task-number [parent]
+  ;; Use the highest existing sibling number, regardless of name. In particular,
+  ;; gaps and duplicate names must not cause an existing number to be reused.
+  (inc (apply max 0 (keep (fn [path]
+                            (when-let [[_ n] (re-matches #"^([0-9]+)(?:-.*)?$"
+                                                          (str (fs/file-name path)))]
+                              (bigint n)))
+                          (fs/list-dir parent)))))
+
+(defn create-task-message [parent parent-name task-name frontmatter body]
+  (let [content (message-content frontmatter body)]
+    (loop [number (next-task-number parent)]
+      (let [folder (str (when (< number 10) "0") number "-" task-name)
+            dir (fs/path parent folder)
+            claimed? (try (fs/create-dir dir) true
+                          (catch FileAlreadyExistsException _ false))]
+        (if-not claimed?
+          (recur (inc number))
+          (let [file (fs/path dir (str (gen-ulid) ".md"))]
+            (try
+              (fs/create-file file)
+              (try
+                (spit (str file) content)
+                (catch Exception e
+                  (fs/delete-if-exists file)
+                  (throw e)))
+              (catch Exception e
+                ;; A failed write must not leave an empty task folder behind.
+                (fs/delete-if-exists dir)
+                (throw e)))
+            (let [path (str "tasks/" (when (seq parent-name) (str parent-name "/"))
+                            folder "/" (fs/file-name file))]
+              (println path)
+              path)))))))
+
+(defn run-task-new [{:keys [opts]}]
+  (let [{:keys [subject parent name]} opts
+        task-name (if (contains? opts :name) name (task-name-from-subject subject))
+        {:keys [frontmatter body errors]} (new-flags-data
+                                            (assoc (dissoc opts :parent :name) :type "task"))
+        parent-result (resolve-new-parent parent)
+        problems (cond-> (into errors (validate-message-data frontmatter body))
+                   (and (string? subject) (str/blank? subject))
+                   (conj "subject: must not be blank")
+                   (not (and (string? task-name) (<= 1 (count task-name) 64)
+                             (re-matches task-name-re task-name)))
+                   (conj "name: must be 1-64 lowercase kebab-case characters (use --name if the subject cannot form one)")
+                   (:error parent-result) (conj (:error parent-result)))]
+    (if (seq problems)
+      (do
+        (binding [*out* *err*]
+          (println "Cannot create task:")
+          (doseq [problem problems] (println "  -" problem))
+          (println "See 'td task new --help'."))
+        (System/exit 1))
+      (try
+        (create-task-message (:dir parent-result) (:name parent-result)
+                             task-name frontmatter body)
+        (catch Exception e
+          (die "Cannot create task:" (.getMessage e)))))))
+
+;; ---------------------------------------------------------------------------
 ;; Validate command
 
 (defn run-validate [{:keys [args]}]
@@ -606,6 +715,16 @@
        "      --type question --body 'Should we pin the clock in tests?'\n"
        "  td message new -i --task 02-td-script --type task --status draft\n"
        "  td message new --task 02-td-script --file /tmp/edited-message.md"))
+
+(def task-new-help-epilog
+  (str "Creates the next numbered folder under tasks/ or --parent, with a valid first\n"
+       "TaskDown task message. Prints the new message path. Names use lowercase letters,\n"
+       "digits and hyphens; --name overrides the name derived from --subject.\n"
+       "Task statuses: " (str/join ", " (sort statuses)) "\n\n"
+       "Examples:\n"
+       "  td task new --subject 'Add task creation' --status ready --body-file plan.md\n"
+       "  td task new --parent 04-task-creation --name tests \\\n"
+       "      --subject 'Cover the CLI' --status draft --body '1. Add tests.'"))
 
 (def validate-help-epilog
   "The optional id is a ULID (with or without .md) or a unique prefix.
@@ -897,6 +1016,15 @@ A `Status` value must be one of:
     :doc "Learn about the TaskDown system"
     :fn run-system
     :restrict true}
+   {:cmds ["task"]
+    :doc "Create numbered tasks and subtasks"}
+   {:cmds ["task" "new"]
+    :doc "Create a task with its initial message"
+    :fn run-task-new
+    :spec task-new-option-spec
+    :restrict true
+    :restrict-args true
+    :epilog task-new-help-epilog}
    {:cmds ["message"]
     :doc "Create and validate task messages"}
    {:cmds ["message" "new"]
@@ -918,6 +1046,7 @@ A `Status` value must be one of:
   (let [args (cond
                (or (empty? args) (= args ["help"])) ["--help"]
                (= args ["message"]) ["message" "--help"]
+               (= args ["task"]) ["task" "--help"]
                :else args)]
     (cli/dispatch commands args
                   {:prog "td"
