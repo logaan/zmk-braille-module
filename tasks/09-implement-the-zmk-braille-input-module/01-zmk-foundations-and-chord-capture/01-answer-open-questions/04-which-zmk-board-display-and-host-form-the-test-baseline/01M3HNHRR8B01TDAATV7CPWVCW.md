@@ -5,6 +5,7 @@ subject: Which ZMK, board, display and host form the test baseline?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Which ZMK, board, display and host form the test baseline?

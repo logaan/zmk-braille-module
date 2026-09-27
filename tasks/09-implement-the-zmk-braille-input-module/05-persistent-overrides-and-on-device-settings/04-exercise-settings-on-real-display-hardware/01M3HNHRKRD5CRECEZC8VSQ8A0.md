@@ -10,3 +10,4 @@ cargo:
 # Exercise settings on real display hardware
 
 1. Verify interaction and persistence end to end on a small-screen ZMK build.
+2. These are hardware-in-the-loop tasks: the agent prepares builds, fixtures, and checklists, and the user performs and records the physical verification.

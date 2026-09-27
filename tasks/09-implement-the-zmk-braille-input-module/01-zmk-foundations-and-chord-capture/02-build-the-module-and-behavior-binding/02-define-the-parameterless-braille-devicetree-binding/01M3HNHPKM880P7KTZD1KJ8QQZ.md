@@ -5,6 +5,10 @@ subject: Define the parameterless Braille devicetree binding
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Define the parameterless Braille devicetree binding

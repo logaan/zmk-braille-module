@@ -5,6 +5,7 @@ subject: How should incomplete UEB indicator or symbol prefixes flush?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # How should incomplete UEB indicator or symbol prefixes flush?

@@ -5,6 +5,7 @@ subject: Test capture, search and confirmation flows
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Test capture, search and confirmation flows

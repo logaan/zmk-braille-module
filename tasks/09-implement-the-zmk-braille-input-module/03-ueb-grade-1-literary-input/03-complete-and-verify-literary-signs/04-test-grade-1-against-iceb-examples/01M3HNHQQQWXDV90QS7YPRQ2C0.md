@@ -5,10 +5,14 @@ subject: Test Grade 1 against ICEB examples
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Test Grade 1 against ICEB examples
 
-1. Test all 26 letters, digit runs, letter/word/passage capitalization, grade 1 indicators, eight core punctuation signs, and every specified multi-cell symbol.
-2. Use rulebook-derived fixtures for quotations, indicator interactions/termination, multi-cell ambiguity, boundaries, and incomplete input; record the source sections.
-3. Assert ordinary host-keystroke output and check the actual Grade 1 table against available shared factory rules and override fixtures.
+1. Build a rulebook-derived conformance suite beyond the per-mapping unit tests, covering cross-rule behavior: indicator interactions and termination, digit runs, multi-cell ambiguity, word boundaries, incomplete input, and uncontracted fallback.
+2. Record the authoritative rulebook sections for each fixture; treat the PDF as authoritative over text extraction.
+3. Assert ordinary host-keystroke output, and check the real Grade 1 table against shared navigation and noncharacter factory data for conflicting inputs.

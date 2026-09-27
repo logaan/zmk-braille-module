@@ -5,6 +5,10 @@ subject: When can a word-end rule commit its output?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # When can a word-end rule commit its output?

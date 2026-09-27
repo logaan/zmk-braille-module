@@ -5,6 +5,7 @@ subject: What maximum pending cell count is acceptable in Grade 2?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What maximum pending cell count is acceptable in Grade 2?

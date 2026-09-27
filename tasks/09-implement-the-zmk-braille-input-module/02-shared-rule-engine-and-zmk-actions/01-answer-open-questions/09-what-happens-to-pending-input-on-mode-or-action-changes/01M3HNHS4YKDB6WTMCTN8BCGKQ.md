@@ -5,6 +5,7 @@ subject: What happens to pending input on mode or action changes?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What happens to pending input on mode or action changes?

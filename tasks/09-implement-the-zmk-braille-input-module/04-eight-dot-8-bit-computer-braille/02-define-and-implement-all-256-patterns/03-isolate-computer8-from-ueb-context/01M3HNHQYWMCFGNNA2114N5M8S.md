@@ -5,6 +5,10 @@ subject: Isolate computer8 from UEB context
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Isolate computer8 from UEB context
@@ -12,3 +16,4 @@ cargo:
 1. Do not apply UEB numeric/capital indicators, word-position rules, or contraction buffering to the computer8 character table.
 2. Keep space/navigation and user overrides active; user-defined multi-chord rules still use the common sequence matcher where needed.
 3. Clear or resolve prior UEB pending context according to the shared transition policy rather than reinterpreting it as computer8 input.
+4. Unit-test isolation alongside the implementation: UEB numeric/capital indicators, word-position rules, and contraction buffering do not apply, while space, navigation, and user overrides remain active.

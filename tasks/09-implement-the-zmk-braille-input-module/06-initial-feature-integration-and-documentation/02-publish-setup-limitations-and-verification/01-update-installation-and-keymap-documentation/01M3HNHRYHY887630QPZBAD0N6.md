@@ -5,6 +5,10 @@ subject: Update installation and keymap documentation
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Update installation and keymap documentation

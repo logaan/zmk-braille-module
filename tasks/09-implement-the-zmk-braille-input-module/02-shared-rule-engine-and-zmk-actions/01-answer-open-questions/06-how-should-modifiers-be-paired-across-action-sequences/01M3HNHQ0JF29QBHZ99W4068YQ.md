@@ -5,6 +5,10 @@ subject: How should modifiers be paired across action sequences?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # How should modifiers be paired across action sequences?

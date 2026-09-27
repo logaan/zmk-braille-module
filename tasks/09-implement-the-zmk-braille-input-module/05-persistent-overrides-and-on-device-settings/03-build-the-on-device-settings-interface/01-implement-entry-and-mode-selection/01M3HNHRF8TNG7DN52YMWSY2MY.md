@@ -5,6 +5,10 @@ subject: Implement entry and mode selection
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Implement entry and mode selection
@@ -12,3 +16,4 @@ cargo:
 1. Connect phase 01's long-press entry/exit hooks to settings; do not implement a second gesture detector.
 2. Present only compiled character modes and apply selection immediately without a confirmation prompt.
 3. Apply the shared pending-input/transition policy and isolate settings capture from host typing; do not confuse character-mode selection with Braille input on/off.
+4. Unit-test entry and mode selection alongside the implementation: long-press entry/exit, immediate application without confirmation, listing compiled modes only, and pending-input handling on entry and exit.

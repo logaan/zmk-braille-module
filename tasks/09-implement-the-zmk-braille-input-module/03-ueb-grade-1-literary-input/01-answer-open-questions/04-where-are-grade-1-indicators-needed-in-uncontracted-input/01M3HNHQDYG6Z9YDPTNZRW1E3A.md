@@ -5,6 +5,10 @@ subject: Where are grade 1 indicators needed in uncontracted input?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Where are grade 1 indicators needed in uncontracted input?

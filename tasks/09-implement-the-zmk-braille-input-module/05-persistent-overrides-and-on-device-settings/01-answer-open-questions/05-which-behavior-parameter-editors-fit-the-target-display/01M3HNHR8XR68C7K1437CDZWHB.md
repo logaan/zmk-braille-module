@@ -5,6 +5,7 @@ subject: Which behavior parameter editors fit the target display?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Which behavior parameter editors fit the target display?

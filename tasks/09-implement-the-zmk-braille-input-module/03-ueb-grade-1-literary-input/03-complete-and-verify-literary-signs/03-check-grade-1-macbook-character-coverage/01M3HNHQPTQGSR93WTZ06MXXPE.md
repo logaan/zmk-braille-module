@@ -5,6 +5,10 @@ subject: Check Grade 1 MacBook character coverage
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Check Grade 1 MacBook character coverage

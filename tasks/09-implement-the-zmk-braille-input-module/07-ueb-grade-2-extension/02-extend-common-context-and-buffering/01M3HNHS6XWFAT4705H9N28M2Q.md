@@ -10,4 +10,4 @@ cargo:
 # Extend common context and buffering
 
 1. Extend phase 02 only with the word/word-part context needed for ICEB Grade 2, not a new capture, matching, or dispatch path.
-2. Reuse phase 05's pending-cell display and the common transition policy; validate their longer contraction cases in the extension tests.
+2. Write each extension unit test alongside its implementation task; reuse phase 05's pending-cell display and the common transition policy.

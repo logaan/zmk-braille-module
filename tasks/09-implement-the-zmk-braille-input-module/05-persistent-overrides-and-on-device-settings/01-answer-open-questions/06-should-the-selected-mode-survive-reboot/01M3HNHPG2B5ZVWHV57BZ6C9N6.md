@@ -5,6 +5,7 @@ subject: Should the selected mode survive reboot?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Should the selected mode survive reboot?

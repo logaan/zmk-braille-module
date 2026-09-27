@@ -5,6 +5,7 @@ subject: What happens to a pending chord when Braille input is disabled?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What happens to a pending chord when Braille input is disabled?

@@ -5,6 +5,7 @@ subject: Build and exercise representative firmware
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Build and exercise representative firmware

@@ -5,6 +5,10 @@ subject: Match longest valid rule with override precedence
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Match longest valid rule with override precedence
@@ -14,3 +18,4 @@ cargo:
 3. Fall back to shorter valid matches and process any remaining cells exactly once under the agreed unmatched-input policy.
 4. Reject conflicting factory mappings within a mode; intentional shorter/longer prefixes and distinguishable context rules are not automatically collisions.
 5. Treat space-only, dots-only, and space-plus-dot identically; do not branch on individual characters or commands.
+6. Unit-test matching alongside the implementation with fixture tables and in-memory overrides: longest valid sequence, shorter fallback with remaining input processed once, override precedence for identical inputs, a shorter override not defeating a longer valid sequence, and rejection of real factory collisions.

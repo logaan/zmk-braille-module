@@ -9,6 +9,7 @@ cargo:
 
 # Answer open questions
 
-1. Resolve each prerequisite before making its dependent implementation task ready; unrelated work need not wait for every question in the phase.
-2. Derive normative answers from the spec and pinned ICEB rulebook; distinguish that research from choices the references leave open.
-3. Record the result and affected tasks here; do not silently assume unresolved policies.
+1. This is the phase's decision milestone: resolve every question below before starting this phase's implementation tasks.
+2. The user answers preference, policy, limit, and hardware questions; the agent researches rulebook or ZMK/Zephyr questions and records the result for review.
+3. Derive normative answers from `references/00-design-spec.md` and the pinned ICEB rulebook, and distinguish that research from choices the references leave open.
+4. Record each answer and its impact in its question task; a later milestone may refine an earlier decision.

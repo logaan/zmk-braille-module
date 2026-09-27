@@ -5,6 +5,10 @@ subject: How do UEB capitalized word and passage indicators terminate?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # How do UEB capitalized word and passage indicators terminate?

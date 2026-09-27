@@ -5,6 +5,7 @@ subject: How should non-ASCII and unused dot patterns be handled?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # How should non-ASCII and unused dot patterns be handled?

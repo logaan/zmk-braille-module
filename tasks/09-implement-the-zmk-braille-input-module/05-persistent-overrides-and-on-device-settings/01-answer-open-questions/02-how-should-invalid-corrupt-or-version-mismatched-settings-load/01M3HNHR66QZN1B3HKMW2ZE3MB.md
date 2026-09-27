@@ -5,6 +5,7 @@ subject: How should invalid, corrupt or version-mismatched settings load?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # How should invalid, corrupt or version-mismatched settings load?

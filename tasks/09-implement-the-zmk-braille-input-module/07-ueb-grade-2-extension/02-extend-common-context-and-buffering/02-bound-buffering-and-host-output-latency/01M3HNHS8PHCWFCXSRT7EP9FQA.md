@@ -5,6 +5,10 @@ subject: Bound buffering and host-output latency
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Bound buffering and host-output latency

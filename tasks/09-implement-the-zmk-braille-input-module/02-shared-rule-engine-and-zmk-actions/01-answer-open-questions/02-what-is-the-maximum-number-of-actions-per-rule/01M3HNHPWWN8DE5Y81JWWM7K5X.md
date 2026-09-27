@@ -5,6 +5,7 @@ subject: What is the maximum number of actions per rule?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What is the maximum number of actions per rule?

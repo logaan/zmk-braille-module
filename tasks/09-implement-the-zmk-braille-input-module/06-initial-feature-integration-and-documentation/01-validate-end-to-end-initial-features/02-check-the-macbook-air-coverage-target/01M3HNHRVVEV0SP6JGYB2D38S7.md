@@ -5,6 +5,7 @@ subject: Check the MacBook Air coverage target
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Check the MacBook Air coverage target

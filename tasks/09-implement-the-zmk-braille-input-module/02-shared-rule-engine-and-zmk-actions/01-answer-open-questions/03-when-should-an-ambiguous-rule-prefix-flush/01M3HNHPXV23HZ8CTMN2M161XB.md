@@ -5,6 +5,7 @@ subject: When should an ambiguous rule prefix flush?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # When should an ambiguous rule prefix flush?

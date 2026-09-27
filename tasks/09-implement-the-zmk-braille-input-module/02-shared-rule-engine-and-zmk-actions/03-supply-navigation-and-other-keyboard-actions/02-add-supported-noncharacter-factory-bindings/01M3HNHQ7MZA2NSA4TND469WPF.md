@@ -5,6 +5,10 @@ subject: Add supported noncharacter factory bindings
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Add supported noncharacter factory bindings

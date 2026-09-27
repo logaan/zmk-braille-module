@@ -5,6 +5,7 @@ subject: Test navigation and failure boundaries
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Test navigation and failure boundaries

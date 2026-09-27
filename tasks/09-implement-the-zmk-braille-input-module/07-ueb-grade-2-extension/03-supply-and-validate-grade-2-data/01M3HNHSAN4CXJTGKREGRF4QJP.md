@@ -9,4 +9,5 @@ cargo:
 
 # Supply and validate Grade 2 data
 
-1. Use ICEB third-edition rules and the same action representation as ueb1.
+1. Use ICEB third-edition rules and the same action representation as `ueb1`.
+2. Write per-rule unit tests alongside the data tasks; the rulebook-example and integration suites remain standalone.

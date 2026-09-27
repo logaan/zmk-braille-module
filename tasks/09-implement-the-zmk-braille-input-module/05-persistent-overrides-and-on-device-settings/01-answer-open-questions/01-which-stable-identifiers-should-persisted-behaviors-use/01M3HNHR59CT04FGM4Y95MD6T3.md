@@ -5,6 +5,10 @@ subject: Which stable identifiers should persisted behaviors use?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Which stable identifiers should persisted behaviors use?

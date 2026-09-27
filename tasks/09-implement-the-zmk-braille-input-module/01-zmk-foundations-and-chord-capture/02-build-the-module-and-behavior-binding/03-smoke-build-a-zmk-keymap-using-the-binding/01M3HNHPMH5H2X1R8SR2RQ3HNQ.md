@@ -5,6 +5,10 @@ subject: Smoke-build a ZMK keymap using the binding
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Smoke-build a ZMK keymap using the binding

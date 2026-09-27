@@ -5,6 +5,10 @@ subject: When does UEB numeric mode terminate or resume?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # When does UEB numeric mode terminate or resume?

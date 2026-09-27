@@ -5,6 +5,7 @@ subject: What hold threshold distinguishes Braille-key gestures?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What hold threshold distinguishes Braille-key gestures?

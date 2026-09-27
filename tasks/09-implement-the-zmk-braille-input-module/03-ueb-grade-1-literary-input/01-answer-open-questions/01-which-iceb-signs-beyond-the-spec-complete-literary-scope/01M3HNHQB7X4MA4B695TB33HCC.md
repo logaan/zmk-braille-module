@@ -5,6 +5,10 @@ subject: Which ICEB signs beyond the spec complete literary scope?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Which ICEB signs beyond the spec complete literary scope?

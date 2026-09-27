@@ -5,6 +5,10 @@ subject: How can compiled behaviors be listed and fuzzy-searched by name?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # How can compiled behaviors be listed and fuzzy-searched by name?

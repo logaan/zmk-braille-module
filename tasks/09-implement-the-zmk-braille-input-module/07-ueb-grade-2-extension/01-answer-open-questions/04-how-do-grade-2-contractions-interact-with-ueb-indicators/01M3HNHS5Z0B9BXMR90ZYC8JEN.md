@@ -5,6 +5,10 @@ subject: How do Grade 2 contractions interact with UEB indicators?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # How do Grade 2 contractions interact with UEB indicators?

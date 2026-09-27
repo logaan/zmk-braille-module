@@ -5,6 +5,10 @@ subject: Define common rule and action data
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Define common rule and action data

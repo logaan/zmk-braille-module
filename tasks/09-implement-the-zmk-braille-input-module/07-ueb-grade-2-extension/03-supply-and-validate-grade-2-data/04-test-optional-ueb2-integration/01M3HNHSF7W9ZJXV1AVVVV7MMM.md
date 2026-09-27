@@ -5,6 +5,10 @@ subject: Test optional ueb2 integration
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Test optional ueb2 integration

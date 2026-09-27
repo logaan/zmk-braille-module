@@ -5,6 +5,10 @@ subject: Which ICEB Grade 2 contractions should be included?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Which ICEB Grade 2 contractions should be included?

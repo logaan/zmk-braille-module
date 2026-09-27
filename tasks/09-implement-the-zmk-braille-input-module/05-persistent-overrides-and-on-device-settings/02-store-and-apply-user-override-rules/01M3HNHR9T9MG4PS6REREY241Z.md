@@ -10,3 +10,4 @@ cargo:
 # Store and apply user override rules
 
 1. Use a separate, empty-by-default override layer; factory tables remain read-only.
+2. Write each storage unit test alongside its implementation task; real-display and post-reboot verification are separate tasks.

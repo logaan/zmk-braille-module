@@ -5,6 +5,7 @@ subject: Test saved action replay after reboot
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # Test saved action replay after reboot

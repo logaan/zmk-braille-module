@@ -5,6 +5,10 @@ subject: How should physical roles map to arbitrary key positions?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # How should physical roles map to arbitrary key positions?

@@ -5,6 +5,10 @@ subject: Document mappings and test evidence
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Document mappings and test evidence

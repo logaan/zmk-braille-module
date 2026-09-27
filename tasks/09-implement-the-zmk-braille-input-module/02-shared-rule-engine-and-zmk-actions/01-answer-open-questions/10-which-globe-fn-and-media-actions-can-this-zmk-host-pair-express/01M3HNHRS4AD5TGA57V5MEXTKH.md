@@ -5,6 +5,10 @@ subject: Which Globe/Fn and media actions can this ZMK/host pair express?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Which Globe/Fn and media actions can this ZMK/host pair express?

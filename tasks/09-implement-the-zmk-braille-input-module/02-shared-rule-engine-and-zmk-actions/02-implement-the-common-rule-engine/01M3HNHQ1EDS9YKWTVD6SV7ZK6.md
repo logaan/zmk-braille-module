@@ -9,4 +9,5 @@ cargo:
 
 # Implement the common rule engine
 
-1. Character, navigation and override tables use the same nine-bit input and ordered behavior actions.
+1. Character, navigation, and override tables use the same nine-bit input and ordered behavior actions.
+2. Write each engine unit test alongside its implementation task, using small fixture tables and in-memory overrides because real tables and persistence arrive later.

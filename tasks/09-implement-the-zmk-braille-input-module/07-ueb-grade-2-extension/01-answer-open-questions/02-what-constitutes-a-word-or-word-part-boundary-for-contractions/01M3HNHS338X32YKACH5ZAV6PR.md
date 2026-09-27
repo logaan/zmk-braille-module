@@ -5,6 +5,10 @@ subject: What constitutes a word or word-part boundary for contractions?
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # What constitutes a word or word-part boundary for contractions?

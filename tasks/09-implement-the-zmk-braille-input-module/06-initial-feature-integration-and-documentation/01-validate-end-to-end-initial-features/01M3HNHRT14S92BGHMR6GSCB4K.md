@@ -11,3 +11,4 @@ cargo:
 
 1. Use the already selected central or non-split baseline and hybrid keymap; do not defer platform choices until this acceptance phase.
 2. Verify the actual character tables, common factory actions, display/settings, and persistent overrides together.
+3. These are acceptance tasks: the agent prepares builds, fixtures, and checklists, and the user performs and records host-visible verification.

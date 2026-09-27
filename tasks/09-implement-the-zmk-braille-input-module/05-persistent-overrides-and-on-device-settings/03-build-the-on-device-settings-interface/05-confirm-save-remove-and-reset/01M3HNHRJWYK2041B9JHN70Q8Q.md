@@ -5,6 +5,10 @@ subject: Confirm, save, remove and reset
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Confirm, save, remove and reset
@@ -12,3 +16,4 @@ cargo:
 1. Show the proposed input sequence and action/parameters for confirmation before saving, unlike immediate character-mode selection.
 2. Return to the normal display after a successful save; cancellation leaves the saved binding unchanged, and failed/capacity-limited saves remain visible as failures.
 3. Expose removal of one override and reset of all overrides to factory defaults without resetting unrelated keyboard settings.
+4. Unit-test confirmation and save state alongside the implementation: confirmation display content, cancel leaving saved rules unchanged, visible save and capacity failures, removal, and reset-to-factory.

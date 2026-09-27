@@ -8,6 +8,7 @@ subject: What happens to presses after the collection window?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What happens to presses after the collection window?

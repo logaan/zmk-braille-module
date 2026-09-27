@@ -5,6 +5,10 @@ subject: Organize the out-of-tree build
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Organize the out-of-tree build

@@ -5,6 +5,7 @@ subject: What is the maximum chord-sequence length per rule?
 cargo:
   type: task
   status: draft
+  worker: user
 ---
 
 # What is the maximum chord-sequence length per rule?

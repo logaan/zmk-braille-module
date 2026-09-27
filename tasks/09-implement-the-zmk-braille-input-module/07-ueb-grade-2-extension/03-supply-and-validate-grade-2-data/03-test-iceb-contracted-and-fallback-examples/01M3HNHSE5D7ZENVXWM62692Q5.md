@@ -5,8 +5,13 @@ subject: Test ICEB contracted and fallback examples
 cargo:
   type: task
   status: draft
+  worker:
+    type: agent
+    harness: pi
+    model: unknown
 ---
 
 # Test ICEB contracted and fallback examples
 
-1. Compare permitted/forbidden contractions and capital/numeric interactions with rulebook examples; verify uncontracted output where no rule applies.
+1. Build a rulebook-derived conformance suite beyond the per-rule unit tests, covering permitted and forbidden contractions, capital and numeric interactions, word-part eligibility, and uncontracted output where no rule applies.
+2. Record the authoritative rulebook sections for each fixture; treat the PDF as authoritative over text extraction.

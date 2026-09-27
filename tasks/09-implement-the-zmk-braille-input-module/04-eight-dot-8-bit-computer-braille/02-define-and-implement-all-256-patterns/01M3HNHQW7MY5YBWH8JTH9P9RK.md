@@ -10,3 +10,4 @@ cargo:
 # Define and implement all 256 patterns
 
 1. Document the chosen map and account explicitly for every dot pattern, including unused entries.
+2. Write the exhaustive pattern and ASCII assertions alongside the table implementation; mode-switching integration is a separate task.
