@@ -1,0 +1,85 @@
+# VoiceOver commands
+#
+# VoiceOver braille commands that keep their meaning outside a screen reader: directions, Home
+# and End, Page Up and Page Down, Escape, Tab, Return, Delete, editing shortcuts and modifiers.
+# Commands that only drive VoiceOver (rotor, interact, item chooser, Braille Access) are left out.
+#
+# Sources: every chord was read from web-search summaries of the pages named in each case's
+# source, because support.apple.com and the other pages are blocked by this environment's
+# network policy. The chords are unverified until checked against those pages:
+#   https://support.apple.com/en-us/103560 (Mac)
+#   https://support.apple.com/en-us/118665 (iPhone and iPad)
+#   https://coolblindtech.com/all-braille-commands-for-ios-11-and-how-to-customize-them/
+#   https://www.helenkeller.org/10-tips-for-braille-display-users-of-ios-devices-in-2025/
+#   https://www.helenkeller.org/10-tips-for-braille-display-users-of-ios-devices-in-2025-part-2/
+# The modifier, Shift-Tab, Select All, Undo, Redo and dot 7 and dot 8 chords are from iOS
+# sources; no Mac chords were found for them.
+#
+# Format
+#   modes: the modes the cases run in; every case gives the same result in each.
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed together:
+#             dot numbers 1-8, and space for the Braille space key.
+#     outputs: what the host receives, in order, one string per keystroke. Each string names a
+#              key, with any modifiers held for it first, joined by +. Key names are those of
+#              references/01-mba-keys.yaml; Home, End, Page Up and Page Down are the standard
+#              keys (Fn with an arrow on a MacBook). Modifiers are named Fn, Control, Option,
+#              Shift and Command, in that order.
+#     source: where the chord comes from.
+# Each case starts from a fresh engine: no pending input, no modifier held or pending, and UEB
+# context at its reset values.
+# Outputs list only keystrokes; a modifier pressed and released with no key in between is not an output.
+
+modes: [ueb1, ueb2, computer8]
+cases:
+  # Directions
+  - {name: "move to previous item: Left Arrow", inputs: [[space, 1]], outputs: ["Left Arrow"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  - {name: "move to next item: Right Arrow", inputs: [[space, 4]], outputs: ["Right Arrow"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  - {name: "move up: Up Arrow", inputs: [[space, 3]], outputs: ["Up Arrow"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  - {name: "move down: Down Arrow", inputs: [[space, 6]], outputs: ["Down Arrow"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  - {name: "go to first item: Home", inputs: [[space, 1, 2, 3]], outputs: ["Home"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665)"}
+  - {name: "go to last item: End", inputs: [[space, 4, 5, 6]], outputs: ["End"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665)"}
+  - {name: "scroll up one page: Page Up", inputs: [[space, 3, 4, 5, 6]], outputs: ["Page Up"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  - {name: "scroll down one page: Page Down", inputs: [[space, 1, 4, 5, 6]], outputs: ["Page Down"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560)"}
+  # Keys
+  - {name: "Escape", inputs: [[space, 1, 2]], outputs: ["Escape"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665)"}
+  - {name: "Tab", inputs: [[space, 2, 3, 4, 5]], outputs: ["Tab"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665)"}
+  - {name: "Shift-Tab", inputs: [[space, 1, 2, 5, 6]], outputs: ["Shift+Tab"], source: "VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Return: dots 1-5 with space", inputs: [[space, 1, 5]], outputs: ["Return"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Return: dot 8 alone", inputs: [[8]], outputs: ["Return"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Return: dot 8 with space", inputs: [[space, 8]], outputs: ["Return"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Delete: dots 1-4-5 with space", inputs: [[space, 1, 4, 5]], outputs: ["Delete"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Delete: dot 7 alone", inputs: [[7]], outputs: ["Delete"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Delete: dot 7 with space", inputs: [[space, 7]], outputs: ["Delete"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  # Editing
+  - {name: "Copy", inputs: [[space, 1, 4]], outputs: ["Command+C"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Cut", inputs: [[space, 1, 3, 4, 6]], outputs: ["Command+X"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Paste", inputs: [[space, 1, 2, 3, 6]], outputs: ["Command+V"], source: "VoiceOver Mac, Common braille commands (support.apple.com/en-us/103560); VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Select All", inputs: [[space, 2, 3, 5, 6]], outputs: ["Command+A"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Undo", inputs: [[space, 1, 3, 5, 6]], outputs: ["Command+Z"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Redo", inputs: [[space, 2, 3, 4, 6]], outputs: ["Shift+Command+Z"], source: "VoiceOver iOS 11 command list (coolblindtech.com)"}
+  # One-shot modifiers: the modifier applies to the next key only
+  - {name: "Command then Left Arrow: beginning of line", inputs: [[space, 1, 7], [space, 1]], outputs: ["Command+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Command then Right Arrow: end of line", inputs: [[space, 1, 7], [space, 4]], outputs: ["Command+Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Command then Up Arrow: beginning of document", inputs: [[space, 1, 7], [space, 3]], outputs: ["Command+Up Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Command then Down Arrow: end of document", inputs: [[space, 1, 7], [space, 6]], outputs: ["Command+Down Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Command then Delete: delete to beginning of line", inputs: [[space, 1, 7], [space, 1, 4, 5]], outputs: ["Command+Delete"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Option then Left Arrow: previous word", inputs: [[space, 2, 7], [space, 1]], outputs: ["Option+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Option then Right Arrow: next word", inputs: [[space, 2, 7], [space, 4]], outputs: ["Option+Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Option then Delete: delete previous word", inputs: [[space, 2, 7], [space, 1, 4, 5]], outputs: ["Option+Delete"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Control then Tab: next tab", inputs: [[space, 3, 7], [space, 2, 3, 4, 5]], outputs: ["Control+Tab"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Shift then Right Arrow: extend selection", inputs: [[space, 4, 7], [space, 4]], outputs: ["Shift+Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Shift then Down Arrow: extend selection by a line", inputs: [[space, 4, 7], [space, 6]], outputs: ["Shift+Down Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "Fn then Left Arrow", inputs: [[space, 5, 7], [space, 1]], outputs: ["Fn+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025"}
+  - {name: "Fn then Delete: forward delete", inputs: [[space, 5, 7], [space, 1, 4, 5]], outputs: ["Fn+Delete"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025"}
+  - {name: "one-shot Shift applies to the next key only", inputs: [[space, 4, 7], [space, 4], [space, 4]], outputs: ["Shift+Right Arrow", "Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "one-shot Shift and Command stack: select to beginning of line", inputs: [[space, 4, 7], [space, 1, 7], [space, 1]], outputs: ["Shift+Command+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "one-shot Option and Shift stack: select next word", inputs: [[space, 2, 7], [space, 4, 7], [space, 4]], outputs: ["Option+Shift+Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
+  - {name: "one-shot Command with a command that has its own Shift", inputs: [[space, 1, 7], [space, 1, 2, 5, 6]], outputs: ["Shift+Command+Tab"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com); VoiceOver iOS, Common braille commands (support.apple.com/en-us/118665)"}
+  # Held modifiers: the modifier stays down until its chord is pressed again
+  - {name: "held Command over two Tabs: app switcher", inputs: [[space, 1, 8], [space, 2, 3, 4, 5], [space, 2, 3, 4, 5], [space, 1, 8]], outputs: ["Command+Tab", "Command+Tab"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025"}
+  - {name: "held Shift over two Right Arrows, then released", inputs: [[space, 4, 8], [space, 4], [space, 4], [space, 4, 8], [space, 4]], outputs: ["Shift+Right Arrow", "Shift+Right Arrow", "Right Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025: inferred from its rule that dot 8 in place of dot 7 holds the modifier"}
+  - {name: "held Option over two Left Arrows", inputs: [[space, 2, 8], [space, 1], [space, 1], [space, 2, 8]], outputs: ["Option+Left Arrow", "Option+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025: inferred from its rule that dot 8 in place of dot 7 holds the modifier"}
+  - {name: "held Control over two Tabs", inputs: [[space, 3, 8], [space, 2, 3, 4, 5], [space, 2, 3, 4, 5], [space, 3, 8]], outputs: ["Control+Tab", "Control+Tab"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025: inferred from its rule that dot 8 in place of dot 7 holds the modifier"}
+  - {name: "held Command with a one-shot Shift", inputs: [[space, 1, 8], [space, 4, 7], [space, 1], [space, 1], [space, 1, 8]], outputs: ["Shift+Command+Left Arrow", "Command+Left Arrow"], source: "VoiceOver iOS, Helen Keller Services braille display tips 2025; VoiceOver iOS 11 command list (coolblindtech.com)"}
