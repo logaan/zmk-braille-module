@@ -156,22 +156,26 @@ functions:
   # MacBook Air top row, in physical order.
   - key: F1
     function: Display brightness down
-    binding: "&kp C_BRI_DN"   # alias of C_BRIGHTNESS_DEC, Consumer 0x70
+    binding: "&kp C_BRI_DN"
+    hid_usage: "alias of C_BRIGHTNESS_DEC, Consumer 0x70"
     supported: "yes"
     evidence: hid.js macos:true
   - key: F2
     function: Display brightness up
-    binding: "&kp C_BRI_UP"   # alias of C_BRIGHTNESS_INC, Consumer 0x6F
+    binding: "&kp C_BRI_UP"
+    hid_usage: "alias of C_BRIGHTNESS_INC, Consumer 0x6F"
     supported: "yes"
     evidence: hid.js macos:true
   - key: F3
     function: Mission Control
-    binding: "&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS"   # Consumer 0x29F
+    binding: "&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS"
+    hid_usage: "Consumer 0x29F"
     supported: "yes"
     evidence: hid.js macos:true; requires FULL consumer usages (default)
   - key: F4
     function: Spotlight
-    binding: "&kp C_AC_SEARCH"   # Consumer 0x221
+    binding: "&kp C_AC_SEARCH"
+    hid_usage: "Consumer 0x221"
     supported: "yes"
     evidence: hid.js macos:true; requires FULL consumer usages (default)
   - key: F5
@@ -189,34 +193,40 @@ functions:
     notes: No standard HID usage; ZMK has no keycode for it. macOS shortcuts for Focus are user-assigned.
   - key: F7
     function: Rewind / previous track
-    binding: "&kp C_PREV"   # alias of C_PREVIOUS, Consumer 0xB6
+    binding: "&kp C_PREV"
+    hid_usage: "alias of C_PREVIOUS, Consumer 0xB6"
     supported: "yes"
     evidence: hid.js macos:true
     notes: C_REWIND (0xB4) is macos:null; C_PREV is the documented working usage.
   - key: F8
     function: Play / pause
-    binding: "&kp C_PP"   # alias of C_PLAY_PAUSE, Consumer 0xCD
+    binding: "&kp C_PP"
+    hid_usage: "alias of C_PLAY_PAUSE, Consumer 0xCD"
     supported: "yes"
     evidence: hid.js macos:true
   - key: F9
     function: Fast-forward / next track
-    binding: "&kp C_NEXT"   # Consumer 0xB5
+    binding: "&kp C_NEXT"
+    hid_usage: "Consumer 0xB5"
     supported: "yes"
     evidence: hid.js macos:true
     notes: C_FAST_FORWARD (0xB3) is macos:null; C_NEXT is the documented working usage.
   - key: F10
     function: Mute
-    binding: "&kp C_MUTE"   # Consumer 0xE2
+    binding: "&kp C_MUTE"
+    hid_usage: "Consumer 0xE2"
     supported: "yes"
     evidence: hid.js macos:true
   - key: F11
     function: Volume down
-    binding: "&kp C_VOL_DN"   # alias of C_VOLUME_DOWN, Consumer 0xEA
+    binding: "&kp C_VOL_DN"
+    hid_usage: "alias of C_VOLUME_DOWN, Consumer 0xEA"
     supported: "yes"
     evidence: hid.js macos:true
   - key: F12
     function: Volume up
-    binding: "&kp C_VOL_UP"   # alias of C_VOLUME_UP, Consumer 0xE9
+    binding: "&kp C_VOL_UP"
+    hid_usage: "alias of C_VOLUME_UP, Consumer 0xE9"
     supported: "yes"
     evidence: hid.js macos:true
   - key: Touch ID / power
@@ -245,7 +255,8 @@ functions:
       `&kp PAGE_DOWN`, and standard function keys `&kp F1` .. `&kp F12`.
 
 standard_function_keys:
-  bindings: "&kp F1 .. &kp F12"   # Keyboard page 0x3A..0x45
+  bindings: "&kp F1 .. &kp F12"
+  hid_usage: "Keyboard page 0x3A..0x45"
   supported: "yes"
   evidence: hid.js macos:true (F1 line 1702, F12 line 1933)
   notes: >-
