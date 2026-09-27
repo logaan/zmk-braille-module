@@ -23,6 +23,22 @@ def run_flow(mode):
         (root / "tasks/example/nested").mkdir(parents=True)
         shutil.copy2(SOURCE / "td", root / "scripts/td")
         (root / "body.md").write_text("1. From a body file.\n")
+        if mode in ("state-change", "same-status", "explicit-subject", "import",
+                    "delivered-done-default", "delivered-done-yes"):
+            # The latest task message is ready (or delivered), despite a newer
+            # answer and a different status in a subtask.
+            current_status = ("delivered" if mode.startswith("delivered-done") else "ready")
+            for suffix, cargo in (("E", "type: task\n  status: draft"),
+                                  ("F", f"type: task\n  status: {current_status}"),
+                                  ("G", "type: answer")):
+                (root / f"tasks/example/01JMQ3ZK7VR8TQ4XNB0W2G9F6{suffix}.md").write_text(
+                    f"---\ncreated: Sun 27 Sep 2006 - 16h 03m 32s\n"
+                    f"author: user\nsubject: Existing\ncargo:\n  {cargo}\n---\n")
+            (root / "tasks/example/nested/01JMQ3ZK7VR8TQ4XNB0W2G9F6H.md").write_text(
+                "---\ncreated: Sun 27 Sep 2006 - 16h 03m 32s\n"
+                "author: user\nsubject: Nested\ncargo:\n  type: task\n"
+                "  status: delivered\n---\n")
+        existing_files = set((root / "tasks/example").rglob("*.md"))
         (root / "import.md").write_text("""---
 created: Sun 27 Sep 2006 - 16h 03m 32s
 author: user
@@ -70,6 +86,9 @@ elif mode == 'no-body':
     assert 'status: ready' in content, content
     assert content.endswith('---\\n'), content  # default answer was no
     content = content.replace('subject: No body', 'subject: Metadata edited')
+elif mode in ('blocked-default', 'delivered-default', 'draft-no-body'):
+    assert f'status: {mode.split("-")[0]}' in content, content
+    assert content.endswith('---\\n'), content
 elif mode == 'question':
     assert 'type: question' in content and 'Why?\\n' in content, content
     content = content.replace('Why?', 'How?')
@@ -86,6 +105,19 @@ elif mode == 'import':
     assert '# Imported' in content, content
     content = content.replace('subject: Imported', 'subject: Edited import')
     content = content.replace('1. Existing body.', '1. Modified import.')
+elif mode == 'state-change':
+    assert 'subject: ready -> started' in content and 'status: started' in content, content
+    assert content.endswith('---\\n'), content
+elif mode == 'same-status':
+    assert 'subject: Same status' in content and 'status: ready' in content, content
+elif mode == 'explicit-subject':
+    assert 'subject: Manual subject' in content and 'status: started' in content, content
+elif mode.startswith('delivered-done'):
+    assert 'subject: delivered -> done' in content and 'status: done' in content, content
+    if mode == 'delivered-done-default':
+        assert content.endswith('---\\n'), content
+    else:
+        assert '---\\n\\n# delivered -> done\\n\\n\\n' in content, content
 elif mode == 'invalid':
     content = content.replace('status: draft', 'status: invalid')
 else:
@@ -108,6 +140,9 @@ PY
         elif mode == "no-body":
             cmd += ["--task", "example", "--subject", "No body", "--type", "task",
                     "--status", "ready"]
+        elif mode in ("blocked-default", "delivered-default", "draft-no-body"):
+            cmd += ["--task", "example", "--subject", "No body", "--type", "task",
+                    "--status", mode.split("-")[0]]
         elif mode == "question":
             cmd += ["--task", "example", "--subject", "Why?", "--type", "question",
                     "--body", "Why?"]
@@ -122,6 +157,13 @@ PY
         elif mode == "invalid":
             cmd += ["--task", "example", "--subject", "Original", "--type", "task",
                     "--status", "draft"]
+        elif mode in ("state-change", "same-status", "explicit-subject",
+                      "delivered-done-default", "delivered-done-yes"):
+            status = ("done" if mode.startswith("delivered-done") else
+                      "ready" if mode == "same-status" else "started")
+            cmd += ["--task", "example", "--type", "task", "--status", status]
+            if mode == "explicit-subject":
+                cmd += ["--subject", "Manual subject"]
 
         pid, master = pty.fork()
         if pid == 0:
@@ -155,15 +197,24 @@ PY
         try:
             wait_for("Task folder (type to filter)")
             os.write(master, b"\x1b[B\r" if mode == "prefill" else b"\r")
-            wait_for("Subject (max 64 characters)")
-            os.write(master, b"Original\r" if mode in ("accept", "decline", "failure") else b"\r")
             wait_for("Message type")
             os.write(master, b"\r")
             if mode not in ("question", "answer"):
                 wait_for("Status")
                 os.write(master, b"\x1b[A\r" if mode == "prefill" else b"\r")
+            wait_for("Subject (max 64 characters)")
+            if mode in ("accept", "decline", "failure"):
+                os.write(master, b"Original\r")
+            elif mode == "same-status":
+                os.write(master, b"\r")
+                # The pod keeps asking when no default is available.
+                wait_for("Subject (max 64 characters)")
+                os.write(master, b"Same status\r")
+            else:
+                os.write(master, b"\r")
             wait_for("Enter a body message?")
-            os.write(master, b"\r")
+            os.write(master, b"y\r" if mode == "delivered-done-yes" else
+                     b"n\r" if mode == "draft-no-body" else b"\r")
             wait_for("Editing message in ")
             while b".md" not in output:
                 read_more()
@@ -174,7 +225,7 @@ PY
                 assert b"Create this message?" not in output
             else:
                 wait_for("Create this message?")
-                assert not list((root / "tasks/example").rglob("*.md"))
+                assert set((root / "tasks/example").rglob("*.md")) == existing_files
                 os.write(master, b"n\r" if mode == "decline" else b"\r")
 
             assert "--test-flag" in (root / "editor-args").read_text()
@@ -185,12 +236,13 @@ PY
                 read_more()
             expected_exit = 1 if mode in ("failure", "invalid") else 0
             assert os.waitstatus_to_exitcode(status) == expected_exit, output[-2000:]
-            files = list((root / "tasks/example").rglob("*.md"))
+            files = set((root / "tasks/example").rglob("*.md")) - existing_files
             if mode in ("decline", "failure", "invalid"):
                 assert not files, files
             else:
                 assert len(files) == 1, files
-                content = files[0].read_text()
+                file = files.pop()
+                content = file.read_text()
                 assert re.search(
                     r"^created: [A-Z][a-z]{2} \d{2} [A-Z][a-z]{2} \d{4} - \d{2}h \d{2}m \d{2}s$",
                     content, re.MULTILINE), content
@@ -198,7 +250,7 @@ PY
                     assert "subject: Edited\n" in content, content
                     assert "custom: retained\n---\n\n# Edited\n\n\n1. Written in the editor.\n" in content, content
                 if mode == "prefill":
-                    assert files[0].parent.name == "nested", files
+                    assert file.parent.name == "nested", file
                     assert "subject: From editor" in content and "status: draft" in content, content
                     assert "1. Edited body." in content, content
                 if mode == "no-body":
@@ -209,6 +261,14 @@ PY
                     assert "1. Answer from editor." in content, content
                 if mode == "import":
                     assert "custom: retained" in content and "1. Modified import." in content, content
+                if mode == "state-change":
+                    assert "subject: ready -> started\n" in content, content
+                if mode == "same-status":
+                    assert "subject: Same status\n" in content, content
+                if mode == "explicit-subject":
+                    assert "subject: Manual subject\n" in content, content
+                if mode.startswith("delivered-done"):
+                    assert "subject: delivered -> done\n" in content, content
                 assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
                                       stdout=subprocess.DEVNULL, check=False).returncode == 0
             assert draft.exists() == (mode in ("failure", "invalid")), draft
@@ -227,6 +287,9 @@ PY
 
 
 for mode in ("accept", "decline", "failure", "prefill", "no-body", "question",
-             "answer", "cancelled", "import", "invalid"):
+             "answer", "cancelled", "import", "invalid", "state-change",
+             "same-status", "explicit-subject", "delivered-done-default",
+             "delivered-done-yes", "blocked-default", "delivered-default",
+             "draft-no-body"):
     run_flow(mode)
 print("td interactive editor tests passed")

@@ -439,7 +439,6 @@
   (require 'pod.enigmacurry.script-wizard)
   {:ask (resolve 'pod.enigmacurry.script-wizard/ask)
    :choose (resolve 'pod.enigmacurry.script-wizard/choose)
-   :confirm (resolve 'pod.enigmacurry.script-wizard/confirm)
    :confirm* (resolve 'pod.enigmacurry.script-wizard/confirm*)})
 
 (defn task-folders []
@@ -447,6 +446,21 @@
        (filter fs/directory?)
        (map #(str (fs/relativize "tasks" %)))
        sort vec))
+
+(defn task-current-status [task]
+  ;; ULID filenames order messages by creation; only this task's messages
+  ;; affect its status (not questions, answers, or messages in subtasks).
+  (->> (fs/list-dir (fs/path "tasks" task))
+       (filter fs/regular-file?)
+       (filter #(re-matches message-filename-re (str (fs/file-name %))))
+       (sort-by #(str (fs/file-name %)))
+       reverse
+       (keep (fn [file]
+               (let [cargo (-> file parse-message-file :frontmatter :cargo)]
+                 (when (and (= "task" (:type cargo))
+                            (contains? statuses (:status cargo)))
+                   (:status cargo)))))
+       first))
 
 (defn wizard-subject [ask default]
   (loop []
@@ -483,24 +497,29 @@
          (if (= "canceled" (ex-message e)) false (throw e)))))
 
 (defn wizard-form [prompts folders initial default-task]
-  (let [{:keys [ask choose confirm confirm*]} prompts
+  (let [{:keys [ask choose confirm*]} prompts
         {:keys [frontmatter body]} initial
         original-cargo (:cargo frontmatter)]
     (println "New TaskDown message (Escape/Ctrl-C to cancel)")
     (let [task (if default-task
                  (choose "Task folder (type to filter)" folders :default default-task)
                  (choose "Task folder (type to filter)" folders))
-          subject (wizard-subject ask (:subject frontmatter))
           type (choose "Message type" ["task" "question" "answer"]
                        :default (or (:type original-cargo) "task"))
           status (when (= type "task")
                    (choose "Status" ["draft" "ready" "started" "blocked"
                                      "delivered" "done" "cancelled"]
                            :default (or (:status original-cargo) "draft")))
-          body? (confirm "Enter a body message?"
-                         :default (if (or (#{"draft" "cancelled"} status)
-                                          (= type "question") (= type "answer"))
-                                    :yes :no))
+          previous-status (when (= type "task") (task-current-status task))
+          subject (wizard-subject ask
+                                  (or (:subject frontmatter)
+                                      (when (and previous-status (not= previous-status status))
+                                        (str previous-status " -> " status))))
+          ;; Make body creation an explicit, visible choice before the editor.
+          body? (= "Yes" (choose "Enter a body message?" ["Yes" "No"]
+                               :default (if (or (#{"draft" "cancelled"} status)
+                                                (#{"question" "answer"} type))
+                                          "Yes" "No")))
           cargo (cond-> (assoc (or original-cargo {}) :type type)
                   (= type "task") (assoc :status status)
                   (not= type "task") (dissoc :status :worker)
@@ -707,7 +726,9 @@
   (str "Task statuses: " (str/join ", " (sort statuses)) "\n"
        "Questions must have a body with one question mark.\n"
        "Use -i/--interactive to choose fields, edit the full message in $EDITOR,\n"
-       "and confirm saving (defaults to yes). CLI flags prefill the form or editor.\n\n"
+       "and confirm saving (defaults to yes). CLI flags prefill the form or editor.\n"
+       "The body choice defaults to yes for draft/cancelled tasks, questions and answers;\n"
+       "otherwise it defaults to no.\n\n"
        "Examples:\n"
        "  td message new --task 02-td-script --subject 'draft -> ready' \\\n"
        "      --type task --status ready\n"
