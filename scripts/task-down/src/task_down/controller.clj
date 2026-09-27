@@ -34,14 +34,12 @@
 (defn- apply-action
   "The state after `action` in the focused pane; an unknown action is a noop."
   [state action]
-  (let [pane (:state/focus state)]
+  (let [pane (get state :state/focus)
+        cursor (get cursor-directions action)
+        focus (get focus-directions action)]
     (cond
-      (get cursor-directions action)
-      (model/move-cursor state pane (get cursor-directions action))
-
-      (get focus-directions action)
-      (model/move-focus state (get focus-directions action))
-
+      cursor (model/move-cursor state pane cursor)
+      focus (model/move-focus state focus)
       :else state)))
 
 (defn- key-action
