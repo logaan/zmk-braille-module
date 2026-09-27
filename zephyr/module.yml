@@ -1,0 +1,4 @@
+name: zmk-feature-braille
+build:
+  cmake: .
+  kconfig: Kconfig

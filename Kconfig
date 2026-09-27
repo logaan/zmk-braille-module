@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_FEATURE_BRAILLE
+    bool "Braille module hello-world stub"
+    default n
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Build the Braille module's startup log message. No Braille input,
+      translation, or HID output is implemented yet.
