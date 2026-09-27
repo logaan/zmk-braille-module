@@ -1,0 +1,332 @@
+# UEB Grade 2 contractions with numeric mode, capitals and grade 1 indicators, for ueb2.
+# Research record for the Braille module plan (phase 07 UEB Grade 2 extension).
+
+question: >-
+  How do contractions interact with numeric mode, with capital letter, word and passage
+  indicators, and with the grade 1 symbol, word and passage indicators and terminator; when does
+  a grade 1 indicator show that a cell is a letter and not a contraction; and when is the
+  uncontracted reading used?
+
+source:
+  rulebook: references/iceb/rules-of-unified-english-braille-2024.pdf
+  edition: The Rules of Unified English Braille, Third Edition 2024 (ICEB)
+  page: printed page number; the PDF page is the printed page + 28
+  verified: >-
+    Dot patterns are decoded from the rulebook's braille characters, each checked against its
+    rendered glyph. Examples printed over several braille lines are joined with a space, since a
+    braille line end is a space (2.1); each joined example was found verbatim in the text layer.
+    A reference back-translator using the context below and the rules of
+    ueb-grade2-word-boundaries.yaml reproduces every fixture in this file.
+
+conventions:
+  dots: list of cells in order; each cell lists its raised dots (1-6); [] is the Braille space chord
+  braille: Unicode braille of the same cells, for reading only; dots is authoritative
+  print: host output as US-layout keystrokes; curly quotes print as straight quotes
+
+related:
+  contractions: references/research/ueb-grade2-contractions.yaml
+  word_boundaries: references/research/ueb-grade2-word-boundaries.yaml
+  grade_1_indicators: references/research/ueb-grade-1-indicators.yaml
+  numeric_mode: references/research/ueb-numeric-mode.yaml
+  capitalisation: references/research/ueb-capitalisation.yaml
+  context_representation: references/research/ueb-indicator-context.yaml
+
+normative:
+  grade_1_mode:
+    meaning: >-
+      Grade 1 is the meaning of a sign that would otherwise be read as a contraction or a numeral.
+      Contractions are not used in grade 1 mode, which exists only when set by a grade 1 indicator
+      or a numeric indicator.
+    refs: [{section: "2.1", page: 7}, {section: "2.5.1", page: 14}, {section: "2.5.3", page: 14}, {section: "5.1.1", page: 57}]
+    extent:
+      - {braille: "⠰", dots: [[5, 6]], name: "grade 1 symbol indicator", effect: "grade 1 mode for the next symbol only", refs: [{section: "5.2.1", page: 57}]}
+      - {braille: "⠰⠰", dots: [[5, 6], [5, 6]], name: "grade 1 word indicator", effect: "grade 1 mode for the next symbols-sequence or the rest of the current one, until a space or the grade 1 terminator", refs: [{section: "5.3.1", page: 58}, {section: "5.3.2", page: 58}]}
+      - {braille: "⠰⠰⠰", dots: [[5, 6], [5, 6], [5, 6]], name: "grade 1 passage indicator", effect: "grade 1 mode for the next passage, across spaces, until the grade 1 terminator", refs: [{section: "5.4.1", page: 58}, {section: "5.4.2", page: 58}]}
+      - {braille: "⠰⠄", dots: [[5, 6], [3]], name: "grade 1 terminator", effect: "ends grade 1 word, passage or numeric-indicator mode, also inside a symbols-sequence", refs: [{section: "5.5.1", page: 59}, {section: "5.5.2", page: 59}, {section: "6.5.1", page: 68}]}
+      - {braille: "⠼", dots: [[3, 4, 5, 6]], name: "numeric indicator", effect: "grade 1 mode as well as numeric mode, until a space, hyphen, dash or the grade 1 terminator", refs: [{section: "5.6.1", page: 59}, {section: "5.6.2", page: 59}, {section: "6.5.1", page: 68}]}
+    placement:
+      - {rule: "A grade 1 indicator precedes a capitals indicator; the symbol it governs is the capital letter after it.", refs: [{section: "5.8.1", page: 61}]}
+      - {rule: "An opening double quotation mark goes before a grade 1 indicator; ⠦ right after one is a question mark.", refs: [{section: "7.6.9", page: 86}]}
+      - {rule: "A grade 1 indicator may be used where it is not required; the reading is the same.", refs: [{section: "5.10.1", page: 63}]}
+  grade_1_indicator_marks_a_letter:
+    summary: A grade 1 indicator shows that the following letter or letters are letters, not a contraction, in these cases.
+    cases:
+      - rule: "A letter standing alone that would read as an alphabetic wordsign; a, i and o need none."
+        refs: [{section: "5.7.1", page: 60}, {section: "5.2.1", page: 57}]
+        fixtures:
+          - {print: "b-1", braille: "⠰⠃⠤⠼⠁", cells: [[5, 6], [1, 2], [3, 6], [3, 4, 5, 6], [1]], ref: {section: "5.7.1", page: 60}}
+          - {print: "viii-x", braille: "⠧⠊⠊⠊⠤⠰⠭", cells: [[1, 2, 3, 6], [2, 4], [2, 4], [2, 4], [3, 6], [5, 6], [1, 3, 4, 6]], ref: {section: "5.7.1", page: 60}}
+          - {print: "p. 7", braille: "⠰⠏⠲ ⠼⠛", cells: [[5, 6], [1, 2, 3, 4], [2, 5, 6], [], [3, 4, 5, 6], [1, 2, 4, 5]], ref: {section: "5.7.1", page: 60}}
+          - {print: "p.7", braille: "⠏⠲⠼⠛", cells: [[1, 2, 3, 4], [2, 5, 6], [3, 4, 5, 6], [1, 2, 4, 5]], ref: {section: "5.7.1", page: 60}}
+          - {print: "Mrs X and Mr O", braille: "⠠⠍⠗⠎ ⠰⠠⠭ ⠯ ⠠⠍⠗ ⠠⠕", cells: [[6], [1, 3, 4], [1, 2, 3, 5], [2, 3, 4], [], [5, 6], [6], [1, 3, 4, 6], [], [1, 2, 3, 4, 6], [], [6], [1, 3, 4], [1, 2, 3, 5], [], [6], [1, 3, 5]], ref: {section: "5.2.1", page: 57}}
+          - {print: "the vowels are: a, e, i, o and u", braille: "⠮ ⠧⠪⠑⠇⠎ ⠜⠑⠒ ⠁⠂ ⠰⠑⠂ ⠊⠂ ⠕ ⠯ ⠰⠥", cells: [[2, 3, 4, 6], [], [1, 2, 3, 6], [2, 4, 6], [1, 5], [1, 2, 3], [2, 3, 4], [], [3, 4, 5], [1, 5], [2, 5], [], [1], [2], [], [5, 6], [1, 5], [2], [], [2, 4], [2], [], [1, 3, 5], [], [1, 2, 3, 4, 6], [], [5, 6], [1, 3, 6]], ref: {section: "5.2.1", page: 57}}
+          - {print: "Sections (h) and (i).", braille: "⠠⠎⠑⠉⠰⠝⠎ ⠐⠣⠰⠓⠐⠜ ⠯ ⠐⠣⠊⠐⠜⠲", cells: [[6], [2, 3, 4], [1, 5], [1, 4], [5, 6], [1, 3, 4, 5], [2, 3, 4], [], [5], [1, 2, 6], [5, 6], [1, 2, 5], [5], [3, 4, 5], [], [1, 2, 3, 4, 6], [], [5], [1, 2, 6], [2, 4], [5], [3, 4, 5], [2, 5, 6]], ref: {section: "5.7.1", page: 60}}
+          - {print: "Did 'e 'n' Ma get to 't?", braille: "⠠⠙⠊⠙ ⠄⠰⠑ ⠄⠰⠝⠄ ⠠⠍⠁ ⠛⠑⠞ ⠞⠕ ⠄⠰⠞⠦", cells: [[6], [1, 4, 5], [2, 4], [1, 4, 5], [], [3], [5, 6], [1, 5], [], [3], [5, 6], [1, 3, 4, 5], [3], [], [6], [1, 3, 4], [1], [], [1, 2, 4, 5], [1, 5], [2, 3, 4, 5], [], [2, 3, 4, 5], [1, 3, 5], [], [3], [5, 6], [2, 3, 4, 5], [2, 3, 6]], ref: {section: "5.7.1", page: 60}}
+      - rule: "A letters-sequence that would read as a shortform: a grade 1 symbol indicator before its first letter; the sequence is then read without shortforms."
+        refs: [{section: "5.7.2", page: 61}, {section: "10.9.7", page: 152}]
+        fixtures:
+          - {print: "ab initio", braille: "⠰⠁⠃ ⠔⠊⠞⠊⠕", cells: [[5, 6], [1], [1, 2], [], [3, 5], [2, 4], [2, 3, 4, 5], [2, 4], [1, 3, 5]], ref: {section: "10.9.7", page: 152}}
+          - {print: "al dente", braille: "⠰⠁⠇ ⠙⠢⠞⠑", cells: [[5, 6], [1], [1, 2, 3], [], [1, 4, 5], [2, 6], [2, 3, 4, 5], [1, 5]], ref: {section: "5.7.2", page: 61}}
+          - {print: "My friends are Fr Ted and Sr Ann.", braille: "⠠⠍⠽ ⠋⠗⠎ ⠜⠑ ⠰⠠⠋⠗ ⠠⠞⠫ ⠯ ⠠⠎⠗ ⠠⠁⠝⠝⠲", cells: [[6], [1, 3, 4], [1, 3, 4, 5, 6], [], [1, 2, 4], [1, 2, 3, 5], [2, 3, 4], [], [3, 4, 5], [1, 5], [], [5, 6], [6], [1, 2, 4], [1, 2, 3, 5], [], [6], [2, 3, 4, 5], [1, 2, 4, 6], [], [1, 2, 3, 4, 6], [], [6], [2, 3, 4], [1, 2, 3, 5], [], [6], [1], [1, 3, 4, 5], [1, 3, 4, 5], [2, 5, 6]], ref: {section: "5.7.2", page: 61}}
+          - {print: "\"Hm, is this Al's CD?\"", braille: "⠦⠰⠠⠓⠍⠂ ⠊⠎ ⠹ ⠰⠠⠁⠇⠄⠎ ⠰⠠⠠⠉⠙⠦⠴", cells: [[2, 3, 6], [5, 6], [6], [1, 2, 5], [1, 3, 4], [2], [], [2, 4], [2, 3, 4], [], [1, 4, 5, 6], [], [5, 6], [6], [1], [1, 2, 3], [3], [2, 3, 4], [], [5, 6], [6], [6], [1, 4], [1, 4, 5], [2, 3, 6], [3, 5, 6]], ref: {section: "10.9.7", page: 152}}
+          - {print: "gd lnch. TM sd yu shd meet me b4 yr mtg 2 read lr. wl b qk. l8r.", braille: "⠰⠛⠙ ⠇⠝⠡⠲ ⠰⠠⠠⠞⠍ ⠰⠎⠙ ⠽⠥ ⠎⠓⠙ ⠍⠑⠑⠞ ⠍⠑ ⠃⠼⠙ ⠰⠽⠗ ⠍⠞⠛ ⠼⠃ ⠗⠂⠙ ⠰⠇⠗⠲ ⠺⠇ ⠰⠃ ⠰⠟⠅⠲ ⠇⠼⠓⠗⠲", cells: [[5, 6], [1, 2, 4, 5], [1, 4, 5], [], [1, 2, 3], [1, 3, 4, 5], [1, 6], [2, 5, 6], [], [5, 6], [6], [6], [2, 3, 4, 5], [1, 3, 4], [], [5, 6], [2, 3, 4], [1, 4, 5], [], [1, 3, 4, 5, 6], [1, 3, 6], [], [2, 3, 4], [1, 2, 5], [1, 4, 5], [], [1, 3, 4], [1, 5], [1, 5], [2, 3, 4, 5], [], [1, 3, 4], [1, 5], [], [1, 2], [3, 4, 5, 6], [1, 4, 5], [], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [], [1, 3, 4], [2, 3, 4, 5], [1, 2, 4, 5], [], [3, 4, 5, 6], [1, 2], [], [1, 2, 3, 5], [2], [1, 4, 5], [], [5, 6], [1, 2, 3], [1, 2, 3, 5], [2, 5, 6], [], [2, 4, 5, 6], [1, 2, 3], [], [5, 6], [1, 2], [], [5, 6], [1, 2, 3, 4, 5], [1, 3], [2, 5, 6], [], [1, 2, 3], [3, 4, 5, 6], [1, 2, 5], [1, 2, 3, 5], [2, 5, 6]], ref: {section: "10.9.7", page: 152}}
+      - rule: "A letters-sequence at the beginning of a word that would read as a longer word containing a shortform."
+        refs: [{section: "10.9.8", page: 152}]
+        fixtures:
+          - {print: "Blvd", braille: "⠰⠠⠃⠇⠧⠙", cells: [[5, 6], [6], [1, 2], [1, 2, 3], [1, 2, 3, 6], [1, 4, 5]], ref: {section: "10.9.8", page: 152}}
+          - {print: "LLC", braille: "⠰⠠⠠⠇⠇⠉", cells: [[5, 6], [6], [6], [1, 2, 3], [1, 2, 3], [1, 4]], ref: {section: "10.9.8", page: 152}}
+          - {print: "Grtsamada", braille: "⠰⠠⠛⠗⠞⠎⠁⠍⠁⠙⠁", cells: [[5, 6], [6], [1, 2, 4, 5], [1, 2, 3, 5], [2, 3, 4, 5], [2, 3, 4], [1], [1, 3, 4], [1], [1, 4, 5], [1]], ref: {section: "10.9.8", page: 152}}
+          - {print: "llama", braille: "⠇⠇⠁⠍⠁", cells: [[1, 2, 3], [1, 2, 3], [1], [1, 3, 4], [1]], ref: {section: "10.9.8", page: 152}}
+      - rule: "A shortform's letters later in a word: a grade 1 word indicator for the whole sequence, with no contractions in it."
+        refs: [{section: "10.9.9", page: 152}]
+        fixtures:
+          - {print: "Dobrljin", braille: "⠰⠰⠠⠙⠕⠃⠗⠇⠚⠊⠝", cells: [[5, 6], [5, 6], [6], [1, 4, 5], [1, 3, 5], [1, 2], [1, 2, 3, 5], [1, 2, 3], [2, 4, 5], [2, 4], [1, 3, 4, 5]], ref: {section: "10.9.9", page: 153}}
+          - {print: "ozbrl (Australian listserve)", braille: "⠰⠰⠕⠵⠃⠗⠇ ⠐⠣⠠⠁⠥⠌⠗⠁⠇⠊⠁⠝ ⠇⠊⠌⠎⠻⠧⠑⠐⠜", cells: [[5, 6], [5, 6], [1, 3, 5], [1, 3, 5, 6], [1, 2], [1, 2, 3, 5], [1, 2, 3], [], [5], [1, 2, 6], [6], [1], [1, 3, 6], [3, 4], [1, 2, 3, 5], [1], [1, 2, 3], [2, 4], [1], [1, 3, 4, 5], [], [1, 2, 3], [2, 4], [3, 4], [2, 3, 4], [1, 2, 4, 5, 6], [1, 2, 3, 6], [1, 5], [5], [3, 4, 5]], ref: {section: "5.7.2", page: 61}}
+          - {print: "UNSD", braille: "⠰⠰⠠⠠⠥⠝⠎⠙", cells: [[5, 6], [5, 6], [6], [6], [1, 3, 6], [1, 3, 4, 5], [2, 3, 4], [1, 4, 5]], ref: {section: "10.9.9", page: 153}}
+      - rule: "A lowercase a-j directly after a digit, full stop or comma in numeric mode."
+        refs: [{section: "6.5.2", page: 68}]
+        fixtures:
+          - {print: "3b", braille: "⠼⠉⠰⠃", cells: [[3, 4, 5, 6], [1, 4], [5, 6], [1, 2]], ref: {section: "6.5.2", page: 68}}
+          - {print: "4.b", braille: "⠼⠙⠲⠰⠃", cells: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [5, 6], [1, 2]], ref: {section: "6.5.2", page: 68}}
+          - {print: "report3.doc", braille: "⠗⠑⠏⠕⠗⠞⠼⠉⠲⠰⠙⠕⠉", cells: [[1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 3, 5], [1, 2, 3, 5], [2, 3, 4, 5], [3, 4, 5, 6], [1, 4], [2, 5, 6], [5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], ref: {section: "6.5.2", page: 68}}
+          - {print: "7ins", braille: "⠼⠛⠰⠊⠝⠎", cells: [[3, 4, 5, 6], [1, 2, 4, 5], [5, 6], [2, 4], [1, 3, 4, 5], [2, 3, 4]], ref: {section: "10.12.2", page: 166}}
+      - rule: "A letter after a hyphen or dash that follows a number, once contractions resume."
+        refs: [{section: "6.5.4", page: 69}]
+        fixtures:
+          - {print: "4-m", braille: "⠼⠙⠤⠰⠍", cells: [[3, 4, 5, 6], [1, 4, 5], [3, 6], [5, 6], [1, 3, 4]], ref: {section: "6.5.4", page: 69}}
+          - {print: "20-yr period", braille: "⠼⠃⠚⠤⠰⠽⠗ ⠏⠻⠊⠕⠙", cells: [[3, 4, 5, 6], [1, 2], [2, 4, 5], [3, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [], [1, 2, 3, 4], [1, 2, 4, 5, 6], [2, 4], [1, 3, 5], [1, 4, 5]], ref: {section: "6.5.4", page: 69}}
+          - {print: "I have a 6-CD boxed set.", braille: "⠠⠊ ⠓ ⠁ ⠼⠋⠤⠰⠠⠠⠉⠙ ⠃⠕⠭⠫ ⠎⠑⠞⠲", cells: [[6], [2, 4], [], [1, 2, 5], [], [1], [], [3, 4, 5, 6], [1, 2, 4], [3, 6], [5, 6], [6], [6], [1, 4], [1, 4, 5], [], [1, 2], [1, 3, 5], [1, 3, 4, 6], [1, 2, 4, 6], [], [2, 3, 4], [1, 5], [2, 3, 4, 5], [2, 5, 6]], ref: {section: "6.5.4", page: 69}}
+      - rule: "Spelled, stammered and fragmentary words."
+        refs: [{section: "10.12.13", page: 171}, {section: "10.12.15", page: 172}, {section: "10.12.16", page: 172}]
+        fixtures:
+          - {print: "t-n", braille: "⠰⠞⠤⠰⠝", cells: [[5, 6], [2, 3, 4, 5], [3, 6], [5, 6], [1, 3, 4, 5]], ref: {section: "10.12.13", page: 171}}
+          - {print: "w-i-n-d-o-w", braille: "⠰⠰⠺⠤⠊⠤⠝⠤⠙⠤⠕⠤⠺", cells: [[5, 6], [5, 6], [2, 4, 5, 6], [3, 6], [2, 4], [3, 6], [1, 3, 4, 5], [3, 6], [1, 4, 5], [3, 6], [1, 3, 5], [3, 6], [2, 4, 5, 6]], ref: {section: "10.12.15", page: 172}}
+          - {print: "d-d-day", braille: "⠰⠙⠤⠰⠙⠤⠐⠙", cells: [[5, 6], [1, 4, 5], [3, 6], [5, 6], [1, 4, 5], [3, 6], [5], [1, 4, 5]], ref: {section: "10.12.16", page: 172}}
+          - {print: "c-c-c-conceive", braille: "⠰⠉⠤⠰⠉⠤⠰⠉⠤⠒⠉⠧", cells: [[5, 6], [1, 4], [3, 6], [5, 6], [1, 4], [3, 6], [5, 6], [1, 4], [3, 6], [2, 5], [1, 4], [1, 2, 3, 6]], ref: {section: "10.12.16", page: 172}}
+          - {print: "g-good", braille: "⠰⠛⠤⠛⠙", cells: [[5, 6], [1, 2, 4, 5], [3, 6], [1, 2, 4, 5], [1, 4, 5]], ref: {section: "10.12.16", page: 172}}
+    later_signs: >-
+      Only the governed symbol is in grade 1 mode; later signs in the same letters-sequence keep
+      their contracted meanings, but the sequence is no longer read as a wordsign or shortform
+      (B-team, d-don't, lllittle).
+    later_signs_refs: [{section: "5.2.1", page: 57}, {section: "5.9.1", page: 62}]
+    later_signs_fixtures:
+      - {print: "B-team", braille: "⠰⠠⠃⠤⠞⠂⠍", cells: [[5, 6], [6], [1, 2], [3, 6], [2, 3, 4, 5], [2], [1, 3, 4]], ref: {section: "5.7.1", page: 60}}
+      - {print: "d-don't", braille: "⠰⠙⠤⠙⠕⠝⠄⠞", cells: [[5, 6], [1, 4, 5], [3, 6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], ref: {section: "5.9.1", page: 62}}
+      - {print: "lllittle", braille: "⠰⠇⠇⠇⠊⠞⠞⠇⠑", cells: [[5, 6], [1, 2, 3], [1, 2, 3], [1, 2, 3], [2, 4], [2, 3, 4, 5], [2, 3, 4, 5], [1, 2, 3], [1, 5]], ref: {section: "10.12.14", page: 172}}
+      - {print: "we-e-ellll", braille: "⠺⠑⠤⠰⠑⠤⠑⠇⠇⠇⠇", cells: [[2, 4, 5, 6], [1, 5], [3, 6], [5, 6], [1, 5], [3, 6], [1, 5], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]], ref: {section: "10.12.14", page: 171}}
+  grade_1_indicator_marks_punctuation:
+    cases:
+      - rule: "A punctuation mark where it would read as a contraction (between letters, or before letters at the start of a word)."
+        refs: [{section: "7.1.3", page: 77}]
+        fixtures:
+          - {print: "lang:uk", braille: "⠇⠁⠝⠛⠰⠒⠥⠅", cells: [[1, 2, 3], [1], [1, 3, 4, 5], [1, 2, 4, 5], [5, 6], [2, 5], [1, 3, 6], [1, 3]], ref: {section: "7.1.3", page: 78}}
+          - {print: "a:o", braille: "⠁⠰⠒⠕", cells: [[1], [5, 6], [2, 5], [1, 3, 5]], ref: {section: "7.1.3", page: 78}}
+          - {print: ".doc", braille: "⠰⠲⠙⠕⠉", cells: [[5, 6], [2, 5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], ref: {section: "7.1.3", page: 78}}
+          - {print: "Ai!!ams", braille: "⠠⠁⠊⠰⠖⠖⠁⠍⠎", cells: [[6], [1], [2, 4], [5, 6], [2, 3, 5], [2, 3, 5], [1], [1, 3, 4], [2, 3, 4]], ref: {section: "7.1.3", page: 78}}
+          - {print: "Replace . with ? where appropriate.", braille: "⠠⠗⠑⠏⠇⠁⠉⠑ ⠲ ⠾ ⠰⠦ ⠐⠱ ⠁⠏⠏⠗⠕⠏⠗⠊⠁⠞⠑⠲", cells: [[6], [1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 2, 3], [1], [1, 4], [1, 5], [], [2, 5, 6], [], [2, 3, 4, 5, 6], [], [5, 6], [2, 3, 6], [], [5], [1, 5, 6], [], [1], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 5], [1, 3, 5], [1, 2, 3, 4], [1, 2, 3, 5], [2, 4], [1], [2, 3, 4, 5], [1, 5], [2, 5, 6]], ref: {section: "7.1.3", page: 78}}
+      - rule: "A question mark that would read as his or as an opening quotation mark: standing alone, or after a space, hyphen or dash."
+        refs: [{section: "7.5.2", page: 81}, {section: "7.5.3", page: 81}, {section: "7.5.4", page: 81}]
+        fixtures:
+          - {print: "?-1750", braille: "⠰⠦⠤⠼⠁⠛⠑⠚", cells: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], ref: {section: "7.5.4", page: 81}}
+          - {print: "10:30-?", braille: "⠼⠁⠚⠒⠼⠉⠚⠤⠰⠦", cells: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], ref: {section: "7.5.4", page: 81}}
+          - {print: "Replace each ? with a letter: ?e??u", braille: "⠠⠗⠑⠏⠇⠁⠉⠑ ⠑⠁⠡ ⠰⠦ ⠾ ⠁ ⠇⠗⠒ ⠰⠦⠑⠦⠦⠥", cells: [[6], [1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 2, 3], [1], [1, 4], [1, 5], [], [1, 5], [1], [1, 6], [], [5, 6], [2, 3, 6], [], [2, 3, 4, 5, 6], [], [1], [], [1, 2, 3], [1, 2, 3, 5], [2, 5], [], [5, 6], [2, 3, 6], [1, 5], [2, 3, 6], [2, 3, 6], [1, 3, 6]], ref: {section: "7.5.4", page: 81}}
+          - {print: "Add either ? or ! to each sentence.", braille: "⠠⠁⠙⠙ ⠑⠊ ⠰⠦ ⠕⠗ ⠖ ⠞⠕ ⠑⠁⠡ ⠎⠢⠞⠰⠑⠲", cells: [[6], [1], [1, 4, 5], [1, 4, 5], [], [1, 5], [2, 4], [], [5, 6], [2, 3, 6], [], [1, 3, 5], [1, 2, 3, 5], [], [2, 3, 5], [], [2, 3, 4, 5], [1, 3, 5], [], [1, 5], [1], [1, 6], [], [2, 3, 4], [2, 6], [2, 3, 4, 5], [5, 6], [1, 5], [2, 5, 6]], ref: {section: "5.2.1", page: 57}}
+      - rule: "A standing-alone single or nondirectional quotation mark, which would read as His, Was or Were."
+        refs: [{section: "7.6.10", page: 86}]
+        fixtures:
+          - {print: "(' ... that is the question.')", braille: "⠐⠣⠰⠠⠦ ⠲⠲⠲ ⠞ ⠊⠎ ⠮ ⠐⠟⠲⠠⠴⠐⠜", cells: [[5], [1, 2, 6], [5, 6], [6], [2, 3, 6], [], [2, 5, 6], [2, 5, 6], [2, 5, 6], [], [2, 3, 4, 5], [], [2, 4], [2, 3, 4], [], [2, 3, 4, 6], [], [5], [1, 2, 3, 4, 5], [2, 5, 6], [6], [3, 5, 6], [5], [3, 4, 5]], ref: {section: "7.6.10", page: 86}}
+          - {print: "('To be or not ... ')", braille: "⠐⠣⠠⠦⠠⠞⠕ ⠆ ⠕⠗ ⠝ ⠲⠲⠲ ⠰⠠⠴⠐⠜", cells: [[5], [1, 2, 6], [6], [2, 3, 6], [6], [2, 3, 4, 5], [1, 3, 5], [], [2, 3], [], [1, 3, 5], [1, 2, 3, 5], [], [1, 3, 4, 5], [], [2, 5, 6], [2, 5, 6], [2, 5, 6], [], [5, 6], [6], [3, 5, 6], [5], [3, 4, 5]], ref: {section: "7.6.10", page: 86}}
+          - {print: "Young writers may forget the ' at the end of a quote.", braille: "⠠⠐⠽ ⠺⠗⠊⠞⠻⠎ ⠍⠁⠽ ⠿⠛⠑⠞ ⠮ ⠰⠠⠴ ⠁⠞ ⠮ ⠢⠙ ⠷ ⠁ ⠟⠥⠕⠞⠑⠲", cells: [[6], [5], [1, 3, 4, 5, 6], [], [2, 4, 5, 6], [1, 2, 3, 5], [2, 4], [2, 3, 4, 5], [1, 2, 4, 5, 6], [2, 3, 4], [], [1, 3, 4], [1], [1, 3, 4, 5, 6], [], [1, 2, 3, 4, 5, 6], [1, 2, 4, 5], [1, 5], [2, 3, 4, 5], [], [2, 3, 4, 6], [], [5, 6], [6], [3, 5, 6], [], [1], [2, 3, 4, 5], [], [2, 3, 4, 6], [], [2, 6], [1, 4, 5], [], [1, 2, 3, 5, 6], [], [1], [], [1, 2, 3, 4, 5], [1, 3, 6], [1, 3, 5], [2, 3, 4, 5], [1, 5], [2, 5, 6]], ref: {section: "7.6.10", page: 86}}
+          - {print: "Use the \" to enclose your string literals.", braille: "⠠⠥⠎⠑ ⠮ ⠰⠠⠶ ⠞⠕ ⠢⠉⠇⠕⠎⠑ ⠽⠗ ⠌⠗⠬ ⠇⠊⠞⠻⠁⠇⠎⠲", cells: [[6], [1, 3, 6], [2, 3, 4], [1, 5], [], [2, 3, 4, 6], [], [5, 6], [6], [2, 3, 5, 6], [], [2, 3, 4, 5], [1, 3, 5], [], [2, 6], [1, 4], [1, 2, 3], [1, 3, 5], [2, 3, 4], [1, 5], [], [1, 3, 4, 5, 6], [1, 2, 3, 5], [], [3, 4], [1, 2, 3, 5], [3, 4, 6], [], [1, 2, 3], [2, 4], [2, 3, 4, 5], [1, 2, 4, 5, 6], [1], [1, 2, 3], [2, 3, 4], [2, 5, 6]], ref: {section: "7.6.10", page: 86}}
+      - rule: "A standing-alone double quotation mark uses the two-cell form instead, since ⠦ and ⠴ would read as his and was."
+        refs: [{section: "7.6.8", page: 85}]
+        fixtures:
+          - {print: "Young writers may forget the \" at the end of a quote.", braille: "⠠⠐⠽ ⠺⠗⠊⠞⠻⠎ ⠍⠁⠽ ⠿⠛⠑⠞ ⠮ ⠘⠴ ⠁⠞ ⠮ ⠢⠙ ⠷ ⠁ ⠟⠥⠕⠞⠑⠲", cells: [[6], [5], [1, 3, 4, 5, 6], [], [2, 4, 5, 6], [1, 2, 3, 5], [2, 4], [2, 3, 4, 5], [1, 2, 4, 5, 6], [2, 3, 4], [], [1, 3, 4], [1], [1, 3, 4, 5, 6], [], [1, 2, 3, 4, 5, 6], [1, 2, 4, 5], [1, 5], [2, 3, 4, 5], [], [2, 3, 4, 6], [], [4, 5], [3, 5, 6], [], [1], [2, 3, 4, 5], [], [2, 3, 4, 6], [], [2, 6], [1, 4, 5], [], [1, 2, 3, 5, 6], [], [1], [], [1, 2, 3, 4, 5], [1, 3, 6], [1, 3, 5], [2, 3, 4, 5], [1, 5], [2, 5, 6]], ref: {section: "7.6.8", page: 86}}
+      - rule: "An opening double quotation mark goes before the grade 1 indicator."
+        refs: [{section: "7.6.9", page: 86}]
+        fixtures:
+          - {print: "Spell \"W-a-l-k\" so the dog stays calm.", braille: "⠠⠎⠏⠑⠇⠇ ⠦⠰⠰⠠⠺⠤⠁⠤⠇⠤⠅⠴ ⠎ ⠮ ⠙⠕⠛ ⠌⠁⠽⠎ ⠉⠁⠇⠍⠲", cells: [[6], [2, 3, 4], [1, 2, 3, 4], [1, 5], [1, 2, 3], [1, 2, 3], [], [2, 3, 6], [5, 6], [5, 6], [6], [2, 4, 5, 6], [3, 6], [1], [3, 6], [1, 2, 3], [3, 6], [1, 3], [3, 5, 6], [], [2, 3, 4], [], [2, 3, 4, 6], [], [1, 4, 5], [1, 3, 5], [1, 2, 4, 5], [], [3, 4], [1], [1, 3, 4, 5, 6], [2, 3, 4], [], [1, 4], [1], [1, 2, 3], [1, 3, 4], [2, 5, 6]], ref: {section: "7.6.9", page: 86}}
+  final_letter_groupsign_or_indicator:
+    rule: >-
+      ⠰ directly after a letter or contraction and before e g l n s t or y is a final-letter
+      groupsign; everywhere else ⠰ is the grade 1 symbol indicator.
+    refs: [{section: "10.8.1", page: 143}, {section: "2.4.3", page: 12}]
+    fixtures:
+      - {print: "baroness", braille: "⠃⠜⠕⠰⠎", cells: [[1, 2], [3, 4, 5], [1, 3, 5], [5, 6], [2, 3, 4]], ref: {section: "10.7.6", page: 140}}
+      - {print: "PARLIAMENT", braille: "⠠⠠⠏⠜⠇⠊⠁⠰⠞", cells: [[6], [6], [1, 2, 3, 4], [3, 4, 5], [1, 2, 3], [2, 4], [1], [5, 6], [2, 3, 4, 5]], ref: {section: "8.4.2", page: 90}}
+      - {print: "Question 3c", braille: "⠠⠟⠥⠑⠎⠞⠊⠕⠝ ⠼⠉⠰⠉", cells: [[6], [1, 2, 3, 4, 5], [1, 3, 6], [1, 5], [2, 3, 4], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [], [3, 4, 5, 6], [1, 4], [5, 6], [1, 4]], ref: {section: "5.11.1", page: 63}}
+      - {print: "-s", braille: "⠤⠰⠎", cells: [[3, 6], [5, 6], [2, 3, 4]], ref: {section: "10.12.5", page: 168}}
+  grade_1_word_and_passage:
+    rule: >-
+      Every sign in grade 1 word or passage mode takes its grade 1 meaning; a hyphen does not end
+      the mode, so contractions resume only after a space (word mode) or the grade 1 terminator.
+    refs: [{section: "5.3.2", page: 58}, {section: "5.4.2", page: 58}, {section: "5.5.2", page: 59}]
+    fixtures:
+      - {print: "I spell it u-n-t-i-d-y.", braille: "⠠⠊ ⠎⠏⠑⠇⠇ ⠭ ⠰⠰⠥⠤⠝⠤⠞⠤⠊⠤⠙⠤⠽⠲", cells: [[6], [2, 4], [], [2, 3, 4], [1, 2, 3, 4], [1, 5], [1, 2, 3], [1, 2, 3], [], [1, 3, 4, 6], [], [5, 6], [5, 6], [1, 3, 6], [3, 6], [1, 3, 4, 5], [3, 6], [2, 3, 4, 5], [3, 6], [2, 4], [3, 6], [1, 4, 5], [3, 6], [1, 3, 4, 5, 6], [2, 5, 6]], ref: {section: "5.3.2", page: 58}}
+      - {print: "s-p-e-l-l-i-n-g", braille: "⠰⠰⠎⠤⠏⠤⠑⠤⠇⠤⠇⠤⠊⠤⠝⠤⠛", cells: [[5, 6], [5, 6], [2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 5], [3, 6], [1, 2, 3], [3, 6], [1, 2, 3], [3, 6], [2, 4], [3, 6], [1, 3, 4, 5], [3, 6], [1, 2, 4, 5]], ref: {section: "5.7.1", page: 61}}
+      - {print: "un-e-mo-tion-al", braille: "⠰⠰⠥⠝⠤⠑⠤⠍⠕⠤⠞⠊⠕⠝⠤⠁⠇", cells: [[5, 6], [5, 6], [1, 3, 6], [1, 3, 4, 5], [3, 6], [1, 5], [3, 6], [1, 3, 4], [1, 3, 5], [3, 6], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [3, 6], [1], [1, 2, 3]], ref: {section: "5.9.1", page: 62}}
+      - {print: "c-h-e-e-s-e", braille: "⠰⠰⠉⠤⠓⠤⠑⠤⠑⠤⠎⠤⠑", cells: [[5, 6], [5, 6], [1, 4], [3, 6], [1, 2, 5], [3, 6], [1, 5], [3, 6], [1, 5], [3, 6], [2, 3, 4], [3, 6], [1, 5]], ref: {section: "5.9.1", page: 62}}
+      - {print: "d-d-d-don't", braille: "⠰⠰⠙⠤⠙⠤⠙⠤⠙⠕⠝⠄⠞", cells: [[5, 6], [5, 6], [1, 4, 5], [3, 6], [1, 4, 5], [3, 6], [1, 4, 5], [3, 6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], ref: {section: "5.9.1", page: 62}}
+      - {print: "about-f-f-f-face", braille: "⠁⠃⠤⠰⠰⠋⠤⠋⠤⠋⠤⠋⠁⠉⠑", cells: [[1], [1, 2], [3, 6], [5, 6], [5, 6], [1, 2, 4], [3, 6], [1, 2, 4], [3, 6], [1, 2, 4], [3, 6], [1, 2, 4], [1], [1, 4], [1, 5]], ref: {section: "5.9.1", page: 62}}
+      - {print: "p-p-p-p-p-p-p-perishing", braille: "⠰⠰⠏⠤⠏⠤⠏⠤⠏⠤⠏⠤⠏⠤⠏⠤⠰⠄⠏⠻⠊⠩⠬", cells: [[5, 6], [5, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [5, 6], [3], [1, 2, 3, 4], [1, 2, 4, 5, 6], [2, 4], [1, 4, 6], [3, 4, 6]], ref: {section: "5.5.2", page: 59}}
+      - {print: "He spelt H-o C-h-i M-i-n-h City.", braille: "⠠⠓⠑ ⠎⠏⠑⠇⠞ ⠰⠰⠰⠠⠓⠤⠕ ⠠⠉⠤⠓⠤⠊ ⠠⠍⠤⠊⠤⠝⠤⠓⠰⠄ ⠠⠉⠰⠽⠲", cells: [[6], [1, 2, 5], [1, 5], [], [2, 3, 4], [1, 2, 3, 4], [1, 5], [1, 2, 3], [2, 3, 4, 5], [], [5, 6], [5, 6], [5, 6], [6], [1, 2, 5], [3, 6], [1, 3, 5], [], [6], [1, 4], [3, 6], [1, 2, 5], [3, 6], [2, 4], [], [6], [1, 3, 4], [3, 6], [2, 4], [3, 6], [1, 3, 4, 5], [3, 6], [1, 2, 5], [5, 6], [3], [], [6], [1, 4], [5, 6], [1, 3, 4, 5, 6], [2, 5, 6]], ref: {section: "5.4.2", page: 58}}
+      - {print: "B-E-L-I-E-V-E", braille: "⠰⠰⠠⠃⠤⠠⠑⠤⠠⠇⠤⠠⠊⠤⠠⠑⠤⠠⠧⠤⠠⠑", cells: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3], [3, 6], [6], [2, 4], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3, 6], [3, 6], [6], [1, 5]], ref: {section: "8.3.1", page: 90}}
+      - {print: "as-s-s-s", braille: "⠵⠤⠰⠰⠎⠤⠎⠤⠎", cells: [[1, 3, 5, 6], [3, 6], [5, 6], [5, 6], [2, 3, 4], [3, 6], [2, 3, 4], [3, 6], [2, 3, 4]], ref: {section: "10.12.14", page: 171}}
+  numeric_mode:
+    grade_1_mode:
+      rule: >-
+        A numeric indicator sets grade 1 mode as well as numeric mode. Grade 1 mode outlasts numeric
+        mode: after letters end numeric mode (6.3.1) it continues to the next space, hyphen, dash or
+        grade 1 terminator, and contractions may not follow the number while it lasts.
+      refs: [{section: "5.6.1", page: 59}, {section: "5.6.2", page: 59}, {section: "6.5.1", page: 68}, {section: "6.5.3", page: 68}]
+      fixtures:
+        - {print: "1st", braille: "⠼⠁⠎⠞", cells: [[3, 4, 5, 6], [1], [2, 3, 4], [2, 3, 4, 5]], ref: {section: "5.6.1", page: 59}}
+        - {print: "shopping4you", braille: "⠩⠕⠏⠏⠬⠼⠙⠽⠕⠥", cells: [[1, 4, 6], [1, 3, 5], [1, 2, 3, 4], [1, 2, 3, 4], [3, 4, 6], [3, 4, 5, 6], [1, 4, 5], [1, 3, 4, 5, 6], [1, 3, 5], [1, 3, 6]], ref: {section: "5.6.1", page: 59}}
+        - {print: "houses4lease", braille: "⠓⠳⠎⠑⠎⠼⠙⠇⠑⠁⠎⠑", cells: [[1, 2, 5], [1, 2, 5, 6], [2, 3, 4], [1, 5], [2, 3, 4], [3, 4, 5, 6], [1, 4, 5], [1, 2, 3], [1, 5], [1], [2, 3, 4], [1, 5]], ref: {section: "6.5.3", page: 68}}
+        - {print: "He came 4th in the race.", braille: "⠠⠓⠑ ⠉⠁⠍⠑ ⠼⠙⠞⠓ ⠔ ⠮ ⠗⠁⠉⠑⠲", cells: [[6], [1, 2, 5], [1, 5], [], [1, 4], [1], [1, 3, 4], [1, 5], [], [3, 4, 5, 6], [1, 4, 5], [2, 3, 4, 5], [1, 2, 5], [], [3, 5], [], [2, 3, 4, 6], [], [1, 2, 3, 5], [1], [1, 4], [1, 5], [2, 5, 6]], ref: {section: "6.5.3", page: 68}}
+        - {print: "2nd", braille: "⠼⠃⠝⠙", cells: [[3, 4, 5, 6], [1, 2], [1, 3, 4, 5], [1, 4, 5]], ref: {section: "6.7.1", page: 71}}
+        - {print: "report3.xls", braille: "⠗⠑⠏⠕⠗⠞⠼⠉⠲⠭⠇⠎", cells: [[1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 3, 5], [1, 2, 3, 5], [2, 3, 4, 5], [3, 4, 5, 6], [1, 4], [2, 5, 6], [1, 3, 4, 6], [1, 2, 3], [2, 3, 4]], ref: {section: "6.5.2", page: 68}}
+        - {print: "3m", braille: "⠼⠉⠍", cells: [[3, 4, 5, 6], [1, 4], [1, 3, 4]], ref: {section: "6.5.2", page: 68}}
+        - {print: "1er", braille: "⠼⠁⠰⠑⠗", cells: [[3, 4, 5, 6], [1], [5, 6], [1, 5], [1, 2, 3, 5]], ref: {section: "6.7.1", page: 71}}
+    resumption:
+      rule: A hyphen, dash, space or grade 1 terminator ends that grade 1 mode, so contractions resume after it.
+      refs: [{section: "6.5.4", page: 69}, {section: "5.6.2", page: 60}, {section: "5.5.2", page: 59}]
+      fixtures:
+        - {print: "3-dimensional", braille: "⠼⠉⠤⠙⠊⠍⠢⠨⠝⠁⠇", cells: [[3, 4, 5, 6], [1, 4], [3, 6], [1, 4, 5], [2, 4], [1, 3, 4], [2, 6], [4, 6], [1, 3, 4, 5], [1], [1, 2, 3]], ref: {section: "5.6.2", page: 60}}
+        - {print: "There are 3 beds in this 4-bed ward.", braille: "⠠⠐⠮ ⠜⠑ ⠼⠉ ⠃⠫⠎ ⠔ ⠹ ⠼⠙⠤⠃⠫ ⠺⠜⠙⠲", cells: [[6], [5], [2, 3, 4, 6], [], [3, 4, 5], [1, 5], [], [3, 4, 5, 6], [1, 4], [], [1, 2], [1, 2, 4, 6], [2, 3, 4], [], [3, 5], [], [1, 4, 5, 6], [], [3, 4, 5, 6], [1, 4, 5], [3, 6], [1, 2], [1, 2, 4, 6], [], [2, 4, 5, 6], [3, 4, 5], [1, 4, 5], [2, 5, 6]], ref: {section: "6.5.4", page: 69}}
+        - {print: "8-cab fleet", braille: "⠼⠓⠤⠉⠁⠃ ⠋⠇⠑⠑⠞", cells: [[3, 4, 5, 6], [1, 2, 5], [3, 6], [1, 4], [1], [1, 2], [], [1, 2, 4], [1, 2, 3], [1, 5], [1, 5], [2, 3, 4, 5]], ref: {section: "6.3.1", page: 67}}
+        - {print: "c:\\personal\\2009finances", braille: "⠉⠒⠸⠡⠏⠻⠎⠕⠝⠁⠇⠸⠡⠼⠃⠚⠚⠊⠰⠄⠋⠔⠨⠑⠎", cells: [[1, 4], [2, 5], [4, 5, 6], [1, 6], [1, 2, 3, 4], [1, 2, 4, 5, 6], [2, 3, 4], [1, 3, 5], [1, 3, 4, 5], [1], [1, 2, 3], [4, 5, 6], [1, 6], [3, 4, 5, 6], [1, 2], [2, 4, 5], [2, 4, 5], [2, 4], [5, 6], [3], [1, 2, 4], [3, 5], [4, 6], [1, 5], [2, 3, 4]], ref: {section: "5.6.2", page: 60}}
+        - {print: "http://www.99chances.com", braille: "⠓⠞⠞⠏⠒⠸⠌⠸⠌⠺⠺⠺⠲⠼⠊⠊⠰⠄⠡⠨⠑⠎⠲⠉⠕⠍", cells: [[1, 2, 5], [2, 3, 4, 5], [2, 3, 4, 5], [1, 2, 3, 4], [2, 5], [4, 5, 6], [3, 4], [4, 5, 6], [3, 4], [2, 4, 5, 6], [2, 4, 5, 6], [2, 4, 5, 6], [2, 5, 6], [3, 4, 5, 6], [2, 4], [2, 4], [5, 6], [3], [1, 6], [4, 6], [1, 5], [2, 3, 4], [2, 5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], ref: {section: "10.12.3", page: 167}}
+        - {print: "c:\\2010DIARY\\March.txt", braille: "⠉⠒⠸⠡⠼⠃⠚⠁⠚⠰⠄⠠⠠⠙⠊⠜⠽⠸⠡⠠⠍⠜⠡⠲⠞⠭⠞", cells: [[1, 4], [2, 5], [4, 5, 6], [1, 6], [3, 4, 5, 6], [1, 2], [2, 4, 5], [1], [2, 4, 5], [5, 6], [3], [6], [6], [1, 4, 5], [2, 4], [3, 4, 5], [1, 3, 4, 5, 6], [4, 5, 6], [1, 6], [6], [1, 3, 4], [3, 4, 5], [1, 6], [2, 5, 6], [2, 3, 4, 5], [1, 3, 4, 6], [2, 3, 4, 5]], ref: {section: "10.12.3", page: 167}}
+        - {print: "4-Hers", braille: "⠼⠙⠤⠠⠓⠻⠎", cells: [[3, 4, 5, 6], [1, 4, 5], [3, 6], [6], [1, 2, 5], [1, 2, 4, 5, 6], [2, 3, 4]], ref: {section: "10.12.2", page: 165}}
+        - {print: "9-in dia.", braille: "⠼⠊⠤⠔ ⠙⠊⠁⠲", cells: [[3, 4, 5, 6], [2, 4], [3, 6], [3, 5], [], [1, 4, 5], [2, 4], [1], [2, 5, 6]], ref: {section: "10.12.2", page: 165}}
+    before_a_number:
+      rule: Contractions before a number are unaffected.
+      refs: [{section: "5.6.1", page: 59}, {section: "10.12.2", page: 165}]
+      fixtures:
+        - {print: "par3", braille: "⠏⠜⠼⠉", cells: [[1, 2, 3, 4], [3, 4, 5], [3, 4, 5, 6], [1, 4]], ref: {section: "10.12.2", page: 165}}
+        - {print: "ch.7", braille: "⠡⠲⠼⠛", cells: [[1, 6], [2, 5, 6], [3, 4, 5, 6], [1, 2, 4, 5]], ref: {section: "10.12.2", page: 165}}
+        - {print: "telephone 1300-vision", braille: "⠞⠑⠇⠑⠏⠓⠐⠕ ⠼⠁⠉⠚⠚⠤⠧⠊⠨⠝", cells: [[2, 3, 4, 5], [1, 5], [1, 2, 3], [1, 5], [1, 2, 3, 4], [1, 2, 5], [5], [1, 3, 5], [], [3, 4, 5, 6], [1], [1, 4], [2, 4, 5], [2, 4, 5], [3, 6], [1, 2, 3, 6], [2, 4], [4, 6], [1, 3, 4, 5]], ref: {section: "6.7.1", page: 71}}
+    numeric_space_or_dot_5_contraction:
+      rule: >-
+        In numeric mode ⠐ with a-j is a numeric space and digit; outside grade 1 mode ⠐⠙ ⠐⠑ ⠐⠋ ⠐⠓
+        are day, ever, father and here. Numeric mode implies grade 1 mode, so the two never compete.
+      refs: [{section: "2.4.2", page: 11}, {section: "6.6.1", page: 70}, {section: "10.7.1", page: 135}]
+  capitalisation:
+    capital_prefix:
+      rule: The dot-6 prefix before a contraction capitalises only its first letter; with it the contraction is a single capital letter.
+      refs: [{section: "8.3.2", page: 90}, {section: "8.4.2", page: 90}]
+      fixtures:
+        - {print: "Father Edmond Anderson", braille: "⠠⠐⠋ ⠠⠫⠍⠕⠝⠙ ⠠⠯⠻⠎⠕⠝", cells: [[6], [5], [1, 2, 4], [], [6], [1, 2, 4, 6], [1, 3, 4], [1, 3, 5], [1, 3, 4, 5], [1, 4, 5], [], [6], [1, 2, 3, 4, 6], [1, 2, 4, 5, 6], [2, 3, 4], [1, 3, 5], [1, 3, 4, 5]], ref: {section: "8.3.2", page: 90}}
+        - {print: "His name is Thomas.", braille: "⠠⠦ ⠐⠝ ⠊⠎ ⠠⠹⠕⠍⠁⠎⠲", cells: [[6], [2, 3, 6], [], [5], [1, 3, 4, 5], [], [2, 4], [2, 3, 4], [], [6], [1, 4, 5, 6], [1, 3, 5], [1, 3, 4], [1], [2, 3, 4], [2, 5, 6]], ref: {section: "8.3.2", page: 90}}
+        - {print: "Today, Mr Will Just visited us.", braille: "⠠⠞⠙⠂ ⠠⠍⠗ ⠠⠺ ⠠⠚ ⠧⠊⠎⠊⠞⠫ ⠥⠲", cells: [[6], [2, 3, 4, 5], [1, 4, 5], [2], [], [6], [1, 3, 4], [1, 2, 3, 5], [], [6], [2, 4, 5, 6], [], [6], [2, 4, 5], [], [1, 2, 3, 6], [2, 4], [2, 3, 4], [2, 4], [2, 3, 4, 5], [1, 2, 4, 6], [], [1, 3, 6], [2, 5, 6]], ref: {section: "8.3.2", page: 90}}
+        - {print: "As You Like It", braille: "⠠⠵ ⠠⠽ ⠠⠇ ⠠⠭", cells: [[6], [1, 3, 5, 6], [], [6], [1, 3, 4, 5, 6], [], [6], [1, 2, 3], [], [6], [1, 3, 4, 6]], ref: {section: "10.1.1", page: 114}}
+        - {print: "When will Will meet us?", braille: "⠠⠱⠢ ⠺ ⠠⠺ ⠍⠑⠑⠞ ⠥⠦", cells: [[6], [1, 5, 6], [2, 6], [], [2, 4, 5, 6], [], [6], [2, 4, 5, 6], [], [1, 3, 4], [1, 5], [1, 5], [2, 3, 4, 5], [], [1, 3, 6], [2, 3, 6]], ref: {section: "10.1.1", page: 113}}
+    word_and_passage:
+      rule: >-
+        Contractions are alphabetic, so a capitalised word or passage covers them and prints them in
+        capitals, and they do not end a capitalised word; a grade 1 indicator, as a non-alphabetic
+        symbol, does.
+      refs: [{section: "2.1", page: 7}, {section: "8.4.1", page: 90}, {section: "8.4.2", page: 90}, {section: "8.5.1", page: 93}]
+      fixtures:
+        - {print: "PARLIAMENT", braille: "⠠⠠⠏⠜⠇⠊⠁⠰⠞", cells: [[6], [6], [1, 2, 3, 4], [3, 4, 5], [1, 2, 3], [2, 4], [1], [5, 6], [2, 3, 4, 5]], ref: {section: "8.4.2", page: 90}}
+        - {print: "MERRY-GO-ROUND", braille: "⠠⠠⠍⠻⠗⠽⠤⠠⠠⠛⠤⠠⠠⠗⠨⠙", cells: [[6], [6], [1, 3, 4], [1, 2, 4, 5, 6], [1, 2, 3, 5], [1, 3, 4, 5, 6], [3, 6], [6], [6], [1, 2, 4, 5], [3, 6], [6], [6], [1, 2, 3, 5], [4, 6], [1, 4, 5]], ref: {section: "8.4.2", page: 91}}
+        - {print: "HIS DOG", braille: "⠠⠠⠦ ⠠⠠⠙⠕⠛", cells: [[6], [6], [2, 3, 6], [], [6], [6], [1, 4, 5], [1, 3, 5], [1, 2, 4, 5]], ref: {section: "10.5.1", page: 123}}
+        - {print: "LITTLE CHILD", braille: "⠠⠠⠇⠇ ⠠⠠⠡", cells: [[6], [6], [1, 2, 3], [1, 2, 3], [], [6], [6], [1, 6]], ref: {section: "2.6.2", page: 16}}
+        - {print: "OUT OF TOWN", braille: "⠠⠠⠠⠳ ⠷ ⠞⠪⠝⠠⠄", cells: [[6], [6], [6], [1, 2, 5, 6], [], [1, 2, 3, 5, 6], [], [2, 3, 4, 5], [2, 4, 6], [1, 3, 4, 5], [6], [3]], ref: {section: "2.6.2", page: 16}}
+        - {print: "CAUTION: WET PAINT!", braille: "⠠⠠⠠⠉⠁⠥⠰⠝⠒ ⠺⠑⠞ ⠏⠁⠔⠞⠖⠠⠄", cells: [[6], [6], [6], [1, 4], [1], [1, 3, 6], [5, 6], [1, 3, 4, 5], [2, 5], [], [2, 4, 5, 6], [1, 5], [2, 3, 4, 5], [], [1, 2, 3, 4], [1], [3, 5], [2, 3, 4, 5], [2, 3, 5], [6], [3]], ref: {section: "8.5.3", page: 93}}
+        - {print: "Please KEEP OFF THE GRASS in this area.", braille: "⠠⠏⠇⠂⠎⠑ ⠠⠠⠠⠅⠑⠑⠏ ⠷⠋ ⠮ ⠛⠗⠁⠎⠎⠠⠄ ⠔ ⠹ ⠜⠑⠁⠲", cells: [[6], [1, 2, 3, 4], [1, 2, 3], [2], [2, 3, 4], [1, 5], [], [6], [6], [6], [1, 3], [1, 5], [1, 5], [1, 2, 3, 4], [], [1, 2, 3, 5, 6], [1, 2, 4], [], [2, 3, 4, 6], [], [1, 2, 4, 5], [1, 2, 3, 5], [1], [2, 3, 4], [2, 3, 4], [6], [3], [], [3, 5], [], [1, 4, 5, 6], [], [3, 4, 5], [1, 5], [1], [2, 5, 6]], ref: {section: "8.5.3", page: 93}}
+        - {print: "THE BBC AFRICA NEWS", braille: "⠠⠠⠠⠮ ⠃⠃⠉ ⠁⠋⠗⠊⠉⠁ ⠝⠑⠺⠎⠠⠄", cells: [[6], [6], [6], [2, 3, 4, 6], [], [1, 2], [1, 2], [1, 4], [], [1], [1, 2, 4], [1, 2, 3, 5], [2, 4], [1, 4], [1], [], [1, 3, 4, 5], [1, 5], [2, 4, 5, 6], [2, 3, 4], [6], [3]], ref: {section: "8.5.3", page: 93}}
+        - {print: "\"GO quickly and TAKE CARE!\"", braille: "⠦⠠⠠⠛ ⠟⠅⠇⠽ ⠯ ⠠⠠⠞⠁⠅⠑ ⠠⠠⠉⠜⠑⠖⠴", cells: [[2, 3, 6], [6], [6], [1, 2, 4, 5], [], [1, 2, 3, 4, 5], [1, 3], [1, 2, 3], [1, 3, 4, 5, 6], [], [1, 2, 3, 4, 6], [], [6], [6], [2, 3, 4, 5], [1], [1, 3], [1, 5], [], [6], [6], [1, 4], [3, 4, 5], [1, 5], [2, 3, 5], [3, 5, 6]], ref: {section: "8.4.2", page: 91}}
+        - {print: "He shouted \"I WILL NOT!\"", braille: "⠠⠓⠑ ⠩⠳⠞⠫ ⠦⠠⠠⠠⠊ ⠺ ⠝⠖⠠⠄⠴", cells: [[6], [1, 2, 5], [1, 5], [], [1, 4, 6], [1, 2, 5, 6], [2, 3, 4, 5], [1, 2, 4, 6], [], [2, 3, 6], [6], [6], [6], [2, 4], [], [2, 4, 5, 6], [], [1, 3, 4, 5], [2, 3, 5], [6], [3], [3, 5, 6]], ref: {section: "8.6.2", page: 96}}
+        - {print: "IT'S A HOAX! (APRIL FOOL!)", braille: "⠠⠠⠠⠭⠄⠎ ⠁ ⠓⠕⠁⠭⠖ ⠐⠣⠁⠏⠗⠊⠇ ⠋⠕⠕⠇⠖⠐⠜⠠⠄", cells: [[6], [6], [6], [1, 3, 4, 6], [3], [2, 3, 4], [], [1], [], [1, 2, 5], [1, 3, 5], [1], [1, 3, 4, 6], [2, 3, 5], [], [5], [1, 2, 6], [1], [1, 2, 3, 4], [1, 2, 3, 5], [2, 4], [1, 2, 3], [], [1, 2, 4], [1, 3, 5], [1, 3, 5], [1, 2, 3], [2, 3, 5], [5], [3, 4, 5], [6], [3]], ref: {section: "8.6.2", page: 96}}
+        - {print: "CHUM Radio", braille: "⠠⠠⠡⠥⠍ ⠠⠗⠁⠙⠊⠕", cells: [[6], [6], [1, 6], [1, 3, 6], [1, 3, 4], [], [6], [1, 2, 3, 5], [1], [1, 4, 5], [2, 4], [1, 3, 5]], ref: {section: "10.12.2", page: 165}}
+    terminator:
+      rule: After the capitals terminator the rest of the word is lowercase and keeps its contractions.
+      refs: [{section: "8.6.3", page: 96}]
+      fixtures:
+        - {print: "WALKing", braille: "⠠⠠⠺⠁⠇⠅⠠⠄⠬", cells: [[6], [6], [2, 4, 5, 6], [1], [1, 2, 3], [1, 3], [6], [3], [3, 4, 6]], ref: {section: "8.6.3", page: 96}}
+        - {print: "unSELFish", braille: "⠥⠝⠠⠠⠎⠑⠇⠋⠠⠄⠊⠩", cells: [[1, 3, 6], [1, 3, 4, 5], [6], [6], [2, 3, 4], [1, 5], [1, 2, 3], [1, 2, 4], [6], [3], [2, 4], [1, 4, 6]], ref: {section: "8.6.3", page: 96}}
+        - {print: "XI XIth", braille: "⠠⠠⠭⠊ ⠠⠠⠭⠊⠠⠄⠹", cells: [[6], [6], [1, 3, 4, 6], [2, 4], [], [6], [6], [1, 3, 4, 6], [2, 4], [6], [3], [1, 4, 5, 6]], ref: {section: "8.8.1", page: 98}}
+        - {print: "XXXI XXXIst", braille: "⠠⠠⠭⠭⠭⠊ ⠠⠠⠭⠭⠭⠊⠠⠄⠌", cells: [[6], [6], [1, 3, 4, 6], [1, 3, 4, 6], [1, 3, 4, 6], [2, 4], [], [6], [6], [1, 3, 4, 6], [1, 3, 4, 6], [1, 3, 4, 6], [2, 4], [6], [3], [3, 4]], ref: {section: "8.8.1", page: 98}}
+        - {print: "PRESent", braille: "⠠⠠⠏⠗⠑⠎⠠⠄⠢⠞", cells: [[6], [6], [1, 2, 3, 4], [1, 2, 3, 5], [1, 5], [2, 3, 4], [6], [3], [2, 6], [2, 3, 4, 5]], ref: {section: "8.8.2", page: 99}}
+        - {print: "preSENT", braille: "⠏⠗⠑⠠⠠⠎⠢⠞", cells: [[1, 2, 3, 4], [1, 2, 3, 5], [1, 5], [6], [6], [2, 3, 4], [2, 6], [2, 3, 4, 5]], ref: {section: "8.8.2", page: 99}}
+        - {print: "The two CEOs met in our CEO's office.", braille: "⠠⠮ ⠞⠺⠕ ⠠⠠⠉⠑⠕⠠⠄⠎ ⠍⠑⠞ ⠔ ⠳⠗ ⠠⠠⠉⠑⠕⠄⠎ ⠷⠋⠊⠉⠑⠲", cells: [[6], [2, 3, 4, 6], [], [2, 3, 4, 5], [2, 4, 5, 6], [1, 3, 5], [], [6], [6], [1, 4], [1, 5], [1, 3, 5], [6], [3], [2, 3, 4], [], [1, 3, 4], [1, 5], [2, 3, 4, 5], [], [3, 5], [], [1, 2, 5, 6], [1, 2, 3, 5], [], [6], [6], [1, 4], [1, 5], [1, 3, 5], [3], [2, 3, 4], [], [1, 2, 3, 5, 6], [1, 2, 4], [2, 4], [1, 4], [1, 5], [2, 5, 6]], ref: {section: "8.6.3", page: 97}}
+    adjacent_indicators:
+      rule: >-
+        A capitals indicator or terminator next to the letters prevents be, con, dis, ea, bb, cc,
+        ff, gg and the final-letter groupsigns (the after-alphabetic and before-alphabetic
+        conditions); it is disregarded when deciding standing alone and the lower wordsigns.
+      refs: [{section: "10.6.3", page: 128}, {section: "10.6.6", page: 131}, {section: "10.8.2", page: 144}, {section: "2.6.2", page: 16}, {section: "2.6.3", page: 17}, {section: "10.5.1", page: 123}]
+      fixtures:
+        - {print: "conCUR", braille: "⠉⠕⠝⠠⠠⠉⠥⠗", cells: [[1, 4], [1, 3, 5], [1, 3, 4, 5], [6], [6], [1, 4], [1, 3, 6], [1, 2, 3, 5]], ref: {section: "10.6.3", page: 128}}
+        - {print: "DISlike", braille: "⠠⠠⠙⠊⠎⠠⠄⠇⠊⠅⠑", cells: [[6], [6], [1, 4, 5], [2, 4], [2, 3, 4], [6], [3], [1, 2, 3], [2, 4], [1, 3], [1, 5]], ref: {section: "10.6.3", page: 128}}
+        - {print: "EggHead", braille: "⠠⠑⠛⠛⠠⠓⠂⠙", cells: [[6], [1, 5], [1, 2, 4, 5], [1, 2, 4, 5], [6], [1, 2, 5], [2], [1, 4, 5]], ref: {section: "10.6.6", page: 131}}
+        - {print: "SeaWorld", braille: "⠠⠎⠑⠁⠠⠸⠺", cells: [[6], [2, 3, 4], [1, 5], [1], [6], [4, 5, 6], [2, 4, 5, 6]], ref: {section: "10.6.6", page: 131}}
+        - {print: "AttenTION!", braille: "⠠⠁⠞⠞⠢⠠⠠⠞⠊⠕⠝⠖", cells: [[6], [1], [2, 3, 4, 5], [2, 3, 4, 5], [2, 6], [6], [6], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [2, 3, 5]], ref: {section: "10.8.2", page: 144}}
+        - {print: "AWful", braille: "⠠⠠⠁⠺⠠⠄⠋⠥⠇", cells: [[6], [6], [1], [2, 4, 5, 6], [6], [3], [1, 2, 4], [1, 3, 6], [1, 2, 3]], ref: {section: "10.8.2", page: 144}}
+        - {print: "BE ALL THAT YOU CAN BE", braille: "⠠⠠⠠⠆ ⠁⠇⠇ ⠞ ⠽ ⠉ ⠆⠠⠄", cells: [[6], [6], [6], [2, 3], [], [1], [1, 2, 3], [1, 2, 3], [], [2, 3, 4, 5], [], [1, 3, 4, 5, 6], [], [1, 4], [], [2, 3], [6], [3]], ref: {section: "10.5.1", page: 123}}
+        - {print: "GO ALL IN", braille: "⠠⠠⠠⠛ ⠁⠇⠇ ⠔⠠⠄", cells: [[6], [6], [6], [1, 2, 4, 5], [], [1], [1, 2, 3], [1, 2, 3], [], [3, 5], [6], [3]], ref: {section: "10.5.3", page: 125}}
+    interior_capitals_and_shortforms:
+      rule: A shortform in a word with an interior capitals indicator or terminator needs the word listed in that format or rule 10.9.3.
+      refs: [{section: "10.9.4", page: 150}]
+      fixtures:
+        - {print: "DeafBlind", braille: "⠠⠙⠂⠋⠠⠃⠇", cells: [[6], [1, 4, 5], [2], [1, 2, 4], [6], [1, 2], [1, 2, 3]], ref: {section: "10.9.4", page: 150}}
+        - {print: "QuickTime", braille: "⠠⠟⠅⠠⠐⠞", cells: [[6], [1, 2, 3, 4, 5], [1, 3], [6], [5], [2, 3, 4, 5]], ref: {section: "10.9.4", page: 150}}
+        - {print: "LetterWriter", braille: "⠠⠇⠗⠠⠺⠗⠊⠞⠻", cells: [[6], [1, 2, 3], [1, 2, 3, 5], [6], [2, 4, 5, 6], [1, 2, 3, 5], [2, 4], [2, 3, 4, 5], [1, 2, 4, 5, 6]], ref: {section: "10.9.4", page: 150}}
+        - {print: "ABOUTface!", braille: "⠠⠠⠁⠃⠳⠞⠠⠄⠋⠁⠉⠑⠖", cells: [[6], [6], [1], [1, 2], [1, 2, 5, 6], [2, 3, 4, 5], [6], [3], [1, 2, 4], [1], [1, 4], [1, 5], [2, 3, 5]], ref: {section: "10.9.4", page: 150}}
+        - {print: "AfterHours", braille: "⠠⠁⠋⠞⠻⠠⠓⠳⠗⠎", cells: [[6], [1], [1, 2, 4], [2, 3, 4, 5], [1, 2, 4, 5, 6], [6], [1, 2, 5], [1, 2, 5, 6], [1, 2, 3, 5], [2, 3, 4]], ref: {section: "10.9.4", page: 150}}
+    grade_1_before_capitals:
+      fixtures:
+        - {print: "CD", braille: "⠰⠠⠠⠉⠙", cells: [[5, 6], [6], [6], [1, 4], [1, 4, 5]], ref: {section: "8.7.1", page: 97}}
+        - {print: "T-SHIRTS FOR SALE", braille: "⠰⠠⠠⠠⠞⠤⠩⠊⠗⠞⠎ ⠿ ⠎⠁⠇⠑⠠⠄", cells: [[5, 6], [6], [6], [6], [2, 3, 4, 5], [3, 6], [1, 4, 6], [2, 4], [1, 2, 3, 5], [2, 3, 4, 5], [2, 3, 4], [], [1, 2, 3, 4, 5, 6], [], [2, 3, 4], [1], [1, 2, 3], [1, 5], [6], [3]], ref: {section: "5.8.1", page: 62}}
+        - {print: "V-NECK SWEATERS FOR SALE!", braille: "⠰⠠⠠⠠⠧⠤⠝⠑⠉⠅ ⠎⠺⠂⠞⠻⠎ ⠿ ⠎⠁⠇⠑⠖⠠⠄", cells: [[5, 6], [6], [6], [6], [1, 2, 3, 6], [3, 6], [1, 3, 4, 5], [1, 5], [1, 4], [1, 3], [], [2, 3, 4], [2, 4, 5, 6], [2], [2, 3, 4, 5], [1, 2, 4, 5, 6], [2, 3, 4], [], [1, 2, 3, 4, 5, 6], [], [2, 3, 4], [1], [1, 2, 3], [1, 5], [2, 3, 5], [6], [3]], ref: {section: "8.7.1", page: 97}}
+        - {print: "NEC (National Executive Committee)", braille: "⠰⠠⠠⠝⠑⠉ ⠐⠣⠠⠝⠁⠰⠝⠁⠇ ⠠⠑⠭⠑⠉⠥⠞⠊⠧⠑ ⠠⠉⠕⠍⠍⠊⠞⠞⠑⠑⠐⠜", cells: [[5, 6], [6], [6], [1, 3, 4, 5], [1, 5], [1, 4], [], [5], [1, 2, 6], [6], [1, 3, 4, 5], [1], [5, 6], [1, 3, 4, 5], [1], [1, 2, 3], [], [6], [1, 5], [1, 3, 4, 6], [1, 5], [1, 4], [1, 3, 6], [2, 3, 4, 5], [2, 4], [1, 2, 3, 6], [1, 5], [], [6], [1, 4], [1, 3, 5], [1, 3, 4], [1, 3, 4], [2, 4], [2, 3, 4, 5], [2, 3, 4, 5], [1, 5], [1, 5], [5], [3, 4, 5]], ref: {section: "5.7.2", page: 61}}
+        - {print: "Use the ALT key.", braille: "⠠⠥⠎⠑ ⠮ ⠰⠠⠠⠁⠇⠞ ⠅⠑⠽⠲", cells: [[6], [1, 3, 6], [2, 3, 4], [1, 5], [], [2, 3, 4, 6], [], [5, 6], [6], [6], [1], [1, 2, 3], [2, 3, 4, 5], [], [1, 3], [1, 5], [1, 3, 4, 5, 6], [2, 5, 6]], ref: {section: "5.7.2", page: 61}}
+      refs: [{section: "5.8.1", page: 61}, {section: "8.7.1", page: 97}]
+  eligibility:
+    - {rule: "A contraction is read only when grade 1 mode is off (the grade1-off condition of ueb-grade2-word-boundaries.yaml).", refs: [{section: "2.5.1", page: 14}]}
+    - {rule: "In grade 1 mode every sign takes its ueb1 meaning. Cells that are only contractions in literary text (⠡ ⠩ ⠹ ⠱ ⠳ ⠌ ⠯ ⠿ ⠷ ⠮ ⠾ ⠣ ⠫ ⠻ ⠪ ⠬ ⠜ ⠢ ⠔, and the two-cell initial-letter and final-letter signs) have grade 1 meanings only in technical notation outside ueb1.", refs: [{section: "2.4.2", page: 11}, {section: "2.4.4", page: 12}]}
+    - {rule: "Where a contraction's other conditions fail, the ueb1 meaning applies (reading_rules in ueb-grade2-word-boundaries.yaml).", refs: [{section: "2.4.3", page: 12}]}
+  grade_1_text_reads_differently:
+    summary: >-
+      A work in grade 1 braille omits grade 1 indicators that contracted braille needs, so the same
+      cells read differently in ueb1 and ueb2. The ueb2 reading below applies 10.1.1 to the
+      rulebook's grade 1 example.
+    ref: {section: "5.11.1", page: 63}
+    cases:
+      - {braille: "⠠⠉ ⠊⠎ ⠋⠕⠗ ⠉⠁⠝⠙⠽⠲", cells: [[6], [1, 4], [], [2, 4], [2, 3, 4], [], [1, 2, 4], [1, 3, 5], [1, 2, 3, 5], [], [1, 4], [1], [1, 3, 4, 5], [1, 4, 5], [1, 3, 4, 5, 6], [2, 5, 6]], ueb1: "C is for candy.", ueb2: "Can is for candy."}
+
+context_representation:
+  summary: >-
+    ueb2 extends the ueb-indicator-context.yaml representation with grade 1 mode; ueb1 keeps
+    ignoring it. The existing effects of grade 1 indicators (numeric off, capitalised word ended,
+    word_start false) are unchanged.
+  fields:
+    grade1: {values: ["off", numeric, word, passage], reset: "off"}
+    grade1_symbol: {values: [true, false], reset: false, meaning: "the next symbol, after any capitals indicators, is in grade 1 mode"}
+  condition:
+    grade1-off: grade1 is off and grade1_symbol is false
+  transitions:
+    - {after: "⠰ (grade1-indicator rule)", effect: "grade1_symbol true", refs: [{section: "5.2.1", page: 57}]}
+    - {after: "⠰⠰ (grade1-indicator rule)", effect: "grade1 word, unless it is passage", refs: [{section: "5.3.1", page: 58}]}
+    - {after: "⠰⠰⠰ (grade1-indicator rule)", effect: "grade1 passage", refs: [{section: "5.4.1", page: 58}]}
+    - {after: "⠰⠄ (grade1-indicator rule)", effect: "grade1 off; grade1_symbol false", refs: [{section: "5.5.2", page: 59}, {section: "6.5.1", page: 68}]}
+    - {after: "a numeric indicator (digit class starting with ⠼)", effect: "grade1 numeric if it is off", refs: [{section: "5.6.1", page: 59}]}
+    - {after: "space, or a Return or Tab chord", effect: "grade1 off unless passage; grade1_symbol false", refs: [{section: "5.3.2", page: 58}, {section: "6.5.1", page: 68}]}
+    - {after: "hyphen or dash", effect: "grade1 off if it is numeric", refs: [{section: "6.5.4", page: 69}]}
+    - {after: "a capitals indicator", effect: "no change; grade1_symbol carries to the capital letter", refs: [{section: "5.8.1", page: 61}]}
+    - {after: "any other sign", effect: "grade1_symbol false after the sign", refs: [{section: "5.2.1", page: 57}]}
+  rule_fields:
+    - grade1-indicator rules carry the grade 1 mode they set, as capitals indicator rules carry theirs
+    - contraction rules have the grade1-off condition; ueb1 rows have none
+
+firmware_choices:
+  - choice: "grade1 and grade1_symbol reset with the other UEB context fields on the common reset events."
+    reason: "The rulebook has no reset; clearing grade 1 mode matches clearing a capitalised passage."
+  - choice: "A grade 1 passage continues across buffered words until ⠰⠄, like a capitalised passage."
+    reason: "5.4.2; the buffer is a firmware unit, not a rulebook one."
+  - choice: "A cell with no reading in grade 1 mode follows the shared pending-input policy, as in ueb1."
+    reason: "Its grade 1 meanings are technical signs outside the literary keyboard scope (ueb-literary-signs.yaml)."
+  - choice: "Numeric mode, digits and capitals keep the ueb1 rules and fixtures unchanged."
+    reason: "The contraction interactions above add conditions but no second indicator implementation."
