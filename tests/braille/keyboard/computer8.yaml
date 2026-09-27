@@ -1,0 +1,115 @@
+# computer8 keyboard characters
+#
+# computer8 keyboard subset: one case for each character of the US MacBook Air keyboard in
+# references/01-mba-keys.yaml (every key marked character: true, unshifted then shifted), in
+# keyboard row order. Each case is copied unchanged from tests/braille/computer8/, which has the full set.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: computer8
+cases:
+  - {name: "symbol `", inputs: [[4]], outputs: ["`"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ~", inputs: [[4, 5]], outputs: ["~"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 1", inputs: [[2]], outputs: ["1"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol !", inputs: [[2, 3, 4, 6]], outputs: ["!"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 2", inputs: [[2, 3]], outputs: ["2"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol @", inputs: [[4, 7]], outputs: ["@"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 3", inputs: [[2, 5]], outputs: ["3"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol #", inputs: [[3, 4, 5, 6]], outputs: ["#"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 4", inputs: [[2, 5, 6]], outputs: ["4"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol $", inputs: [[1, 2, 4, 6]], outputs: ["$"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 5", inputs: [[2, 6]], outputs: ["5"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol %", inputs: [[1, 4, 6]], outputs: ["%"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 6", inputs: [[2, 3, 5]], outputs: ["6"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ^", inputs: [[4, 5, 7]], outputs: ["^"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 7", inputs: [[2, 3, 5, 6]], outputs: ["7"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol &", inputs: [[1, 2, 3, 4, 6]], outputs: ["&"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 8", inputs: [[2, 3, 6]], outputs: ["8"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol *", inputs: [[1, 6]], outputs: ["*"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 9", inputs: [[3, 5]], outputs: ["9"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol (", inputs: [[1, 2, 3, 5, 6]], outputs: ["("], source: "liblouis en-us-comp8.ctb"}
+  - {name: "digit 0", inputs: [[3, 5, 6]], outputs: ["0"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol )", inputs: [[2, 3, 4, 5, 6]], outputs: [")"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol -", inputs: [[3, 6]], outputs: ["-"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol _", inputs: [[4, 5, 6]], outputs: ["_"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol =", inputs: [[1, 2, 3, 4, 5, 6]], outputs: ["="], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol +", inputs: [[3, 4, 6]], outputs: ["+"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter q", inputs: [[1, 2, 3, 4, 5]], outputs: ["q"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter Q", inputs: [[1, 2, 3, 4, 5, 7]], outputs: ["Q"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter w", inputs: [[2, 4, 5, 6]], outputs: ["w"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter W", inputs: [[2, 4, 5, 6, 7]], outputs: ["W"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter e", inputs: [[1, 5]], outputs: ["e"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter E", inputs: [[1, 5, 7]], outputs: ["E"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter r", inputs: [[1, 2, 3, 5]], outputs: ["r"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter R", inputs: [[1, 2, 3, 5, 7]], outputs: ["R"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter t", inputs: [[2, 3, 4, 5]], outputs: ["t"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter T", inputs: [[2, 3, 4, 5, 7]], outputs: ["T"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter y", inputs: [[1, 3, 4, 5, 6]], outputs: ["y"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter Y", inputs: [[1, 3, 4, 5, 6, 7]], outputs: ["Y"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter u", inputs: [[1, 3, 6]], outputs: ["u"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter U", inputs: [[1, 3, 6, 7]], outputs: ["U"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter i", inputs: [[2, 4]], outputs: ["i"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter I", inputs: [[2, 4, 7]], outputs: ["I"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter o", inputs: [[1, 3, 5]], outputs: ["o"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter O", inputs: [[1, 3, 5, 7]], outputs: ["O"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter p", inputs: [[1, 2, 3, 4]], outputs: ["p"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter P", inputs: [[1, 2, 3, 4, 7]], outputs: ["P"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol [", inputs: [[2, 4, 6, 7]], outputs: ["["], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol {", inputs: [[2, 4, 6]], outputs: ["{"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ]", inputs: [[1, 2, 4, 5, 6, 7]], outputs: ["]"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol }", inputs: [[1, 2, 4, 5, 6]], outputs: ["}"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol \\", inputs: [[1, 2, 5, 6, 7]], outputs: ["\\"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol |", inputs: [[1, 2, 5, 6]], outputs: ["|"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter a", inputs: [[1]], outputs: ["a"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter A", inputs: [[1, 7]], outputs: ["A"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter s", inputs: [[2, 3, 4]], outputs: ["s"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter S", inputs: [[2, 3, 4, 7]], outputs: ["S"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter d", inputs: [[1, 4, 5]], outputs: ["d"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter D", inputs: [[1, 4, 5, 7]], outputs: ["D"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter f", inputs: [[1, 2, 4]], outputs: ["f"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter F", inputs: [[1, 2, 4, 7]], outputs: ["F"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter g", inputs: [[1, 2, 4, 5]], outputs: ["g"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter G", inputs: [[1, 2, 4, 5, 7]], outputs: ["G"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter h", inputs: [[1, 2, 5]], outputs: ["h"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter H", inputs: [[1, 2, 5, 7]], outputs: ["H"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter j", inputs: [[2, 4, 5]], outputs: ["j"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter J", inputs: [[2, 4, 5, 7]], outputs: ["J"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter k", inputs: [[1, 3]], outputs: ["k"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter K", inputs: [[1, 3, 7]], outputs: ["K"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter l", inputs: [[1, 2, 3]], outputs: ["l"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter L", inputs: [[1, 2, 3, 7]], outputs: ["L"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ;", inputs: [[5, 6]], outputs: [";"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol :", inputs: [[1, 5, 6]], outputs: [":"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol '", inputs: [[3]], outputs: ["'"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol \"", inputs: [[5]], outputs: ["\""], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter z", inputs: [[1, 3, 5, 6]], outputs: ["z"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter Z", inputs: [[1, 3, 5, 6, 7]], outputs: ["Z"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter x", inputs: [[1, 3, 4, 6]], outputs: ["x"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter X", inputs: [[1, 3, 4, 6, 7]], outputs: ["X"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter c", inputs: [[1, 4]], outputs: ["c"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter C", inputs: [[1, 4, 7]], outputs: ["C"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter v", inputs: [[1, 2, 3, 6]], outputs: ["v"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter V", inputs: [[1, 2, 3, 6, 7]], outputs: ["V"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter b", inputs: [[1, 2]], outputs: ["b"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter B", inputs: [[1, 2, 7]], outputs: ["B"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter n", inputs: [[1, 3, 4, 5]], outputs: ["n"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter N", inputs: [[1, 3, 4, 5, 7]], outputs: ["N"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "lowercase letter m", inputs: [[1, 3, 4]], outputs: ["m"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "uppercase letter M", inputs: [[1, 3, 4, 7]], outputs: ["M"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ,", inputs: [[6]], outputs: [","], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol <", inputs: [[1, 2, 6]], outputs: ["<"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol .", inputs: [[4, 6]], outputs: ["."], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol >", inputs: [[3, 4, 5]], outputs: [">"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol /", inputs: [[3, 4]], outputs: ["/"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "symbol ?", inputs: [[1, 4, 5, 6]], outputs: ["?"], source: "liblouis en-us-comp8.ctb"}
+  - {name: "Braille space chord: space", inputs: [[]], outputs: [" "], source: "phase 04 plan: Braille-space-only emits a literal space"}

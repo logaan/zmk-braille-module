@@ -1,0 +1,117 @@
+# ueb2 keyboard characters
+#
+# ueb2 keyboard subset: one case for each character of the US MacBook Air keyboard in
+# references/01-mba-keys.yaml (every key marked character: true, unshifted then shifted), in
+# keyboard row order. Each case is copied unchanged from tests/braille/ueb2/, which has the full set.
+#
+# Space has no case of its own here: every ueb2 case ends with the Braille space chord, which
+# the host receives as a space after the resolved word.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: ueb2
+cases:
+  - {name: "grave accent alone", inputs: [[4, 6], [1, 6], []], outputs: ["`", " "], source: "rulebook Appendix 3 p.325"}
+  - {name: "tilde (swung dash) ~", inputs: [[4], [3, 5], []], outputs: ["~", " "], source: "rulebook 3.25 p.38"}
+  - {name: "numeric indicator then 1", inputs: [[3, 4, 5, 6], [1], []], outputs: ["1", " "], source: "rulebook 6.1 p.65"}
+  - {name: "exclamation mark after a word", inputs: [[1], [1, 2], [2, 3, 5], []], outputs: ["a", "b", "o", "u", "t", "!", " "], source: "rulebook 2.6.3 p.17"}
+  - {name: "numeric indicator then 2", inputs: [[3, 4, 5, 6], [1, 2], []], outputs: ["2", " "], source: "rulebook 6.1 p.65"}
+  - {name: "commercial at @", inputs: [[4], [1], []], outputs: ["@", " "], source: "rulebook 3.7 p.27"}
+  - {name: "numeric indicator then 3", inputs: [[3, 4, 5, 6], [1, 4], []], outputs: ["3", " "], source: "rulebook 6.1 p.65"}
+  - {name: "number sign #", inputs: [[4, 5, 6], [1, 4, 5, 6], []], outputs: ["#", " "], source: "rulebook 3.19 p.35"}
+  - {name: "numeric indicator then 4", inputs: [[3, 4, 5, 6], [1, 4, 5], []], outputs: ["4", " "], source: "rulebook 6.1 p.65"}
+  - {name: "dollar sign $", inputs: [[4], [2, 3, 4], []], outputs: ["$", " "], source: "rulebook 3.10 p.28"}
+  - {name: "numeric indicator then 5", inputs: [[3, 4, 5, 6], [1, 5], []], outputs: ["5", " "], source: "rulebook 6.1 p.65"}
+  - {name: "percent sign %", inputs: [[4, 6], [3, 5, 6], []], outputs: ["%", " "], source: "rulebook 3.21 p.36"}
+  - {name: "numeric indicator then 6", inputs: [[3, 4, 5, 6], [1, 2, 4], []], outputs: ["6", " "], source: "rulebook 6.1 p.65"}
+  - {name: "caret ^", inputs: [[4], [2, 6], []], outputs: ["^", " "], source: "rulebook 3.6 p.26"}
+  - {name: "numeric indicator then 7", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], []], outputs: ["7", " "], source: "rulebook 6.1 p.65"}
+  - {name: "ampersand &", inputs: [[4], [1, 2, 3, 4, 6], []], outputs: ["&", " "], source: "rulebook 3.1 p.23"}
+  - {name: "numeric indicator then 8", inputs: [[3, 4, 5, 6], [1, 2, 5], []], outputs: ["8", " "], source: "rulebook 6.1 p.65"}
+  - {name: "asterisk *", inputs: [[5], [3, 5], []], outputs: ["*", " "], source: "rulebook 3.3 p.23"}
+  - {name: "numeric indicator then 9", inputs: [[3, 4, 5, 6], [2, 4], []], outputs: ["9", " "], source: "rulebook 6.1 p.65"}
+  - {name: "opening parenthesis (", inputs: [[5], [1, 2, 6], []], outputs: ["(", " "], source: "rulebook 7 p.75"}
+  - {name: "numeric indicator then 0", inputs: [[3, 4, 5, 6], [2, 4, 5], []], outputs: ["0", " "], source: "rulebook 6.1 p.65"}
+  - {name: "closing parenthesis )", inputs: [[5], [3, 4, 5], []], outputs: [")", " "], source: "rulebook 7 p.75"}
+  - {name: "hyphen", inputs: [[1, 2, 5, 6], [3, 6], [1, 2, 3, 4, 6], [3, 6], [1, 2, 5, 6], []], outputs: ["o", "u", "t", "-", "a", "n", "d", "-", "o", "u", "t", " "], source: "rulebook 2.6.1 p.15"}
+  - {name: "low line (underscore) _", inputs: [[4, 6], [3, 6], []], outputs: ["_", " "], source: "rulebook 7 p.76"}
+  - {name: "equals =", inputs: [[5], [2, 3, 5, 6], []], outputs: ["=", " "], source: "rulebook 3.17 p.33"}
+  - {name: "plus +", inputs: [[5], [2, 3, 5], []], outputs: ["+", " "], source: "rulebook 3.17 p.33"}
+  - {name: "letter q after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 3, 4, 5], []], outputs: ["q", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter Q after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 3, 4, 5], []], outputs: ["Q", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter w after a grade 1 symbol indicator", inputs: [[5, 6], [2, 4, 5, 6], []], outputs: ["w", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter W after a grade 1 symbol indicator", inputs: [[5, 6], [6], [2, 4, 5, 6], []], outputs: ["W", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter e after a grade 1 symbol indicator", inputs: [[5, 6], [1, 5], []], outputs: ["e", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter E after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 5], []], outputs: ["E", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter r after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 3, 5], []], outputs: ["r", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter R after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 3, 5], []], outputs: ["R", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter t after a grade 1 symbol indicator", inputs: [[5, 6], [2, 3, 4, 5], []], outputs: ["t", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter T after a grade 1 symbol indicator", inputs: [[5, 6], [6], [2, 3, 4, 5], []], outputs: ["T", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter y after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3, 4, 5, 6], []], outputs: ["y", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter Y after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 4, 5, 6], []], outputs: ["Y", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter u after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3, 6], []], outputs: ["u", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter U after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 6], []], outputs: ["U", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter i standing alone", inputs: [[2, 4], []], outputs: ["i", " "], source: "rulebook 5.2.1 p.57"}
+  - {name: "capital letter I after a grade 1 symbol indicator", inputs: [[5, 6], [6], [2, 4], []], outputs: ["I", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter o standing alone", inputs: [[1, 3, 5], []], outputs: ["o", " "], source: "rulebook 5.2.1 p.57"}
+  - {name: "capital letter O after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 5], []], outputs: ["O", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter p after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 3, 4], []], outputs: ["p", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter P after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 3, 4], []], outputs: ["P", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "opening square bracket [", inputs: [[4, 6], [1, 2, 6], []], outputs: ["[", " "], source: "rulebook 7 p.75"}
+  - {name: "opening curly bracket {", inputs: [[4, 5, 6], [1, 2, 6], []], outputs: ["{", " "], source: "rulebook 7 p.75"}
+  - {name: "closing square bracket ]", inputs: [[4, 6], [3, 4, 5], []], outputs: ["]", " "], source: "rulebook 7 p.75"}
+  - {name: "closing curly bracket }", inputs: [[4, 5, 6], [3, 4, 5], []], outputs: ["}", " "], source: "rulebook 7 p.75"}
+  - {name: "reverse solidus (backslash) \\", inputs: [[4, 5, 6], [1, 6], []], outputs: ["\\", " "], source: "rulebook 7 p.75"}
+  - {name: "vertical line", inputs: [[4, 5, 6], [1, 2, 5, 6], []], outputs: ["|", " "], source: "rulebook 15.1 p.223"}
+  - {name: "letter a standing alone", inputs: [[1], []], outputs: ["a", " "], source: "rulebook 5.2.1 p.57"}
+  - {name: "capital letter A after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1], []], outputs: ["A", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter s after a grade 1 symbol indicator", inputs: [[5, 6], [2, 3, 4], []], outputs: ["s", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter S after a grade 1 symbol indicator", inputs: [[5, 6], [6], [2, 3, 4], []], outputs: ["S", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter d after a grade 1 symbol indicator", inputs: [[5, 6], [1, 4, 5], []], outputs: ["d", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter D after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 4, 5], []], outputs: ["D", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter f after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 4], []], outputs: ["f", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter F after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 4], []], outputs: ["F", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter g after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 4, 5], []], outputs: ["g", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter G after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 4, 5], []], outputs: ["G", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter h after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 5], []], outputs: ["h", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter H after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 5], []], outputs: ["H", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter j after a grade 1 symbol indicator", inputs: [[5, 6], [2, 4, 5], []], outputs: ["j", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter J after a grade 1 symbol indicator", inputs: [[5, 6], [6], [2, 4, 5], []], outputs: ["J", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter k after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3], []], outputs: ["k", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter K after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3], []], outputs: ["K", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter l after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 3], []], outputs: ["l", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter L after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 3], []], outputs: ["L", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "semicolon after a word", inputs: [[1], [1, 2], [2, 3], []], outputs: ["a", "b", "o", "u", "t", ";", " "], source: "rulebook 2.6.3 p.17"}
+  - {name: "colon after a word", inputs: [[1], [1, 2], [2, 5], []], outputs: ["a", "b", "o", "u", "t", ":", " "], source: "rulebook 2.6.3 p.17"}
+  - {name: "apostrophe", inputs: [[1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5], []], outputs: ["d", "o", "n", "'", "t", " "], source: "rulebook 7.6.6 p.84"}
+  - {name: "one-cell double quotation marks", inputs: [[2, 3, 6], [1], [3, 5, 6], []], outputs: ["\"", "a", "\"", " "], source: "rulebook 7.6.1 p.82"}
+  - {name: "letter z after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3, 5, 6], []], outputs: ["z", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter Z after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 5, 6], []], outputs: ["Z", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "example x", inputs: [[5, 6], [1, 3, 4, 6], []], outputs: ["x", " "], source: "rulebook 2.6.1 p.15"}
+  - {name: "capital letter X after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 4, 6], []], outputs: ["X", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter c after a grade 1 symbol indicator", inputs: [[5, 6], [1, 4], []], outputs: ["c", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter C after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 4], []], outputs: ["C", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter v after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2, 3, 6], []], outputs: ["v", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter V after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2, 3, 6], []], outputs: ["V", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter b after a grade 1 symbol indicator", inputs: [[5, 6], [1, 2], []], outputs: ["b", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter B after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 2], []], outputs: ["B", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter n after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3, 4, 5], []], outputs: ["n", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter N after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 4, 5], []], outputs: ["N", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "letter m after a grade 1 symbol indicator", inputs: [[5, 6], [1, 3, 4], []], outputs: ["m", " "], source: "rulebook 5.7.1 p.60"}
+  - {name: "capital letter M after a grade 1 symbol indicator", inputs: [[5, 6], [6], [1, 3, 4], []], outputs: ["M", " "], source: "rulebook 5.8.1 p.61"}
+  - {name: "comma after a word", inputs: [[1], [1, 2], [2], []], outputs: ["a", "b", "o", "u", "t", ",", " "], source: "rulebook 2.6.3 p.17"}
+  - {name: "less-than / opening angle bracket <", inputs: [[4], [1, 2, 6], []], outputs: ["<", " "], source: "rulebook 3.17 p.33"}
+  - {name: "full stop after a word", inputs: [[1], [1, 2], [2, 5, 6], []], outputs: ["a", "b", "o", "u", "t", ".", " "], source: "rulebook 2.6.3 p.17"}
+  - {name: "greater-than / closing angle bracket >", inputs: [[4], [3, 4, 5], []], outputs: [">", " "], source: "rulebook 3.17 p.33"}
+  - {name: "solidus (forward slash) /", inputs: [[4, 5, 6], [3, 4], []], outputs: ["/", " "], source: "rulebook 7 p.75"}
+  - {name: "question mark after a word", inputs: [[1], [1, 2], [2, 3, 6], []], outputs: ["a", "b", "o", "u", "t", "?", " "], source: "rulebook 7.5.1 p.81"}
