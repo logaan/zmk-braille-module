@@ -36,11 +36,29 @@ question=$("$td" message new --task example --subject 'Question' --type question
   --body-file body.md)
 answer=$("$td" message new --task example --subject 'Answer' --type answer \
   --regarding '01JMQ3ZK7V=First' --regarding '01JMQ4B2XD=Second')
+cat > draft.md <<'EOF'
+---
+created: Sun 27 Sep 13h23
+author: user
+subject: Edited in a full message file
+cargo:
+  type: task
+  status: draft
+  custom: preserved
+---
+
+# An edited message
+
+1. Keep the frontmatter and body exactly as written.
+EOF
+imported=$("$td" message new --task example/nested --file draft.md)
+cmp draft.md "$imported"
 
 "$td" message validate > /dev/null
 "$td" message validate "$(basename "$task" .md)" > /dev/null
 "$td" message validate "$(basename "$question")" > /dev/null
 "$td" message validate "$(basename "$answer" .md)" > /dev/null
+"$td" message validate "$(basename "$imported" .md)" > /dev/null
 
 fail_if_successful "$td" message new --task example --subject --type task --status ready
 fail_if_successful "$td" message new --task example --subject X --type answer --unknown value
@@ -50,6 +68,15 @@ fail_if_successful "$td" message new --task example --subject X --type task --st
 fail_if_successful "$td" message new --task example --subject X --type answer --status ready
 fail_if_successful "$td" message new --task example --subject X --type answer --regarding invalid
 fail_if_successful "$td" message new --task example --subject X --type question --body 'No question'
+fail_if_successful "$td" message new --task example --file draft.md --subject 'Ignored'
+fail_if_successful "$td" message new --task example --file missing.md
+printf 'invalid YAML: [\n' > invalid.md
+fail_if_successful "$td" message new --task example --file invalid.md
+printf '%s\n' '---' 'created: Sun 27 Sep 13h23' 'author: user' \
+  'subject: Invalid question' 'cargo:' '  type: question' '---' \
+  '' 'No question mark' > invalid.md
+fail_if_successful "$td" message new --task example --file invalid.md
+[[ $(find tasks -name '*.md' | wc -l | tr -d ' ') == 4 ]]
 fail_if_successful "$td" message validate unknown
 fail_if_successful "$td" message validate abc def
 
