@@ -1,0 +1,182 @@
+# computer8 reserved patterns
+#
+# computer8: every eight-dot pattern that maps to no printable character sends nothing to the host.
+#
+# The phase 04 plan makes these reserved entries: no host output and a brief display notice;
+# user overrides may bind them. The zero-dot pattern is not a chord and cannot be entered.
+# Dot 7 alone, dot 8 alone and dots 7-8 are left out: the phase 02 command research assigns
+# VoiceOver's dot 7 and dot 8 commands (Delete and Return), and phase 04 decides those collisions.
+# Mapped patterns come from the table named in characters.yaml.
+#
+# Format
+#   mode: the character table the cases run in (ueb1, ueb2 or computer8).
+#   cases: each case is one test.
+#     name: what the case checks.
+#     inputs: the chords in order; each chord lists the Braille keys pressed as dot numbers 1-8;
+#             [] is the Braille space chord (the Braille space key alone).
+#     outputs: the characters the host receives, in order, one string per character.
+#     source: where the expected output comes from.
+# Each case starts from a fresh engine: no pending input, and UEB context at its reset values
+# (numeric mode off, no capitals mode, grade 1 mode off, at the beginning of a word).
+# Outputs list only host characters; display notices, such as for a dropped prefix, are not outputs.
+
+mode: computer8
+cases:
+  - {name: "reserved pattern 27", inputs: [[2, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 37", inputs: [[3, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 237", inputs: [[2, 3, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 347", inputs: [[3, 4, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 57", inputs: [[5, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 257", inputs: [[2, 5, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 357", inputs: [[3, 5, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2357", inputs: [[2, 3, 5, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3457", inputs: [[3, 4, 5, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 67", inputs: [[6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 167", inputs: [[1, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 267", inputs: [[2, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1267", inputs: [[1, 2, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 367", inputs: [[3, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2367", inputs: [[2, 3, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 467", inputs: [[4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1467", inputs: [[1, 4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12467", inputs: [[1, 2, 4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3467", inputs: [[3, 4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23467", inputs: [[2, 3, 4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123467", inputs: [[1, 2, 3, 4, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 567", inputs: [[5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1567", inputs: [[1, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2567", inputs: [[2, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3567", inputs: [[3, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23567", inputs: [[2, 3, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123567", inputs: [[1, 2, 3, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 4567", inputs: [[4, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 14567", inputs: [[1, 4, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 34567", inputs: [[3, 4, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 234567", inputs: [[2, 3, 4, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1234567", inputs: [[1, 2, 3, 4, 5, 6, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 18", inputs: [[1, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 28", inputs: [[2, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 128", inputs: [[1, 2, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 38", inputs: [[3, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 138", inputs: [[1, 3, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 238", inputs: [[2, 3, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1238", inputs: [[1, 2, 3, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 48", inputs: [[4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 148", inputs: [[1, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 248", inputs: [[2, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1248", inputs: [[1, 2, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 348", inputs: [[3, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1348", inputs: [[1, 3, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2348", inputs: [[2, 3, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12348", inputs: [[1, 2, 3, 4, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 58", inputs: [[5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 158", inputs: [[1, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 258", inputs: [[2, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1258", inputs: [[1, 2, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 358", inputs: [[3, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1358", inputs: [[1, 3, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2358", inputs: [[2, 3, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12358", inputs: [[1, 2, 3, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 458", inputs: [[4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1458", inputs: [[1, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2458", inputs: [[2, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12458", inputs: [[1, 2, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3458", inputs: [[3, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13458", inputs: [[1, 3, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23458", inputs: [[2, 3, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123458", inputs: [[1, 2, 3, 4, 5, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 68", inputs: [[6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 168", inputs: [[1, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 268", inputs: [[2, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1268", inputs: [[1, 2, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 368", inputs: [[3, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1368", inputs: [[1, 3, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2368", inputs: [[2, 3, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12368", inputs: [[1, 2, 3, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 468", inputs: [[4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1468", inputs: [[1, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2468", inputs: [[2, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12468", inputs: [[1, 2, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3468", inputs: [[3, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13468", inputs: [[1, 3, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23468", inputs: [[2, 3, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123468", inputs: [[1, 2, 3, 4, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 568", inputs: [[5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1568", inputs: [[1, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2568", inputs: [[2, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12568", inputs: [[1, 2, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3568", inputs: [[3, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13568", inputs: [[1, 3, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23568", inputs: [[2, 3, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123568", inputs: [[1, 2, 3, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 4568", inputs: [[4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 14568", inputs: [[1, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 24568", inputs: [[2, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 124568", inputs: [[1, 2, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 34568", inputs: [[3, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 134568", inputs: [[1, 3, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 234568", inputs: [[2, 3, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1234568", inputs: [[1, 2, 3, 4, 5, 6, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 178", inputs: [[1, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 278", inputs: [[2, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1278", inputs: [[1, 2, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 378", inputs: [[3, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1378", inputs: [[1, 3, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2378", inputs: [[2, 3, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12378", inputs: [[1, 2, 3, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 478", inputs: [[4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1478", inputs: [[1, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2478", inputs: [[2, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12478", inputs: [[1, 2, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3478", inputs: [[3, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13478", inputs: [[1, 3, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23478", inputs: [[2, 3, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123478", inputs: [[1, 2, 3, 4, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 578", inputs: [[5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1578", inputs: [[1, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2578", inputs: [[2, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12578", inputs: [[1, 2, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3578", inputs: [[3, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13578", inputs: [[1, 3, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23578", inputs: [[2, 3, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123578", inputs: [[1, 2, 3, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 4578", inputs: [[4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 14578", inputs: [[1, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 24578", inputs: [[2, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 124578", inputs: [[1, 2, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 34578", inputs: [[3, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 134578", inputs: [[1, 3, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 234578", inputs: [[2, 3, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1234578", inputs: [[1, 2, 3, 4, 5, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 678", inputs: [[6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1678", inputs: [[1, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2678", inputs: [[2, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12678", inputs: [[1, 2, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 3678", inputs: [[3, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 13678", inputs: [[1, 3, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 23678", inputs: [[2, 3, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 123678", inputs: [[1, 2, 3, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 4678", inputs: [[4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 14678", inputs: [[1, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 24678", inputs: [[2, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 124678", inputs: [[1, 2, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 34678", inputs: [[3, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 134678", inputs: [[1, 3, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 234678", inputs: [[2, 3, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1234678", inputs: [[1, 2, 3, 4, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 5678", inputs: [[5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 15678", inputs: [[1, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 25678", inputs: [[2, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 125678", inputs: [[1, 2, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 35678", inputs: [[3, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 135678", inputs: [[1, 3, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 235678", inputs: [[2, 3, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1235678", inputs: [[1, 2, 3, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 45678", inputs: [[4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 145678", inputs: [[1, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 245678", inputs: [[2, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1245678", inputs: [[1, 2, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 345678", inputs: [[3, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 1345678", inputs: [[1, 3, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 2345678", inputs: [[2, 3, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
+  - {name: "reserved pattern 12345678", inputs: [[1, 2, 3, 4, 5, 6, 7, 8]], outputs: [], source: "phase 04 plan: reserved entry"}
