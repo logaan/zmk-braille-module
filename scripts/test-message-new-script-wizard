@@ -14,6 +14,9 @@ import time
 from pathlib import Path
 
 SOURCE = Path(__file__).resolve().parent
+NO_BODY_MODES = {"no-body", "prefilled-body-no", "blocked-default", "delivered-default",
+                 "draft-no-body", "state-change", "same-status", "explicit-subject",
+                 "delivered-done-default"}
 
 
 def run_flow(mode):
@@ -82,13 +85,6 @@ elif mode == 'prefill':
     assert '1. From a body file.\\n' in content, content
     content = content.replace('subject: From flag', 'subject: From editor')
     content = content.replace('1. From a body file.', '1. Edited body.')
-elif mode == 'no-body':
-    assert 'status: ready' in content, content
-    assert content.endswith('---\\n'), content  # default answer was no
-    content = content.replace('subject: No body', 'subject: Metadata edited')
-elif mode in ('blocked-default', 'delivered-default', 'draft-no-body'):
-    assert f'status: {mode.split("-")[0]}' in content, content
-    assert content.endswith('---\\n'), content
 elif mode == 'question':
     assert 'type: question' in content and 'Why?\\n' in content, content
     content = content.replace('Why?', 'How?')
@@ -105,19 +101,9 @@ elif mode == 'import':
     assert '# Imported' in content, content
     content = content.replace('subject: Imported', 'subject: Edited import')
     content = content.replace('1. Existing body.', '1. Modified import.')
-elif mode == 'state-change':
-    assert 'subject: ready -> started' in content and 'status: started' in content, content
-    assert content.endswith('---\\n'), content
-elif mode == 'same-status':
-    assert 'subject: Same status' in content and 'status: ready' in content, content
-elif mode == 'explicit-subject':
-    assert 'subject: Manual subject' in content and 'status: started' in content, content
-elif mode.startswith('delivered-done'):
+elif mode == 'delivered-done-yes':
     assert 'subject: delivered -> done' in content and 'status: done' in content, content
-    if mode == 'delivered-done-default':
-        assert content.endswith('---\\n'), content
-    else:
-        assert '---\\n\\n# delivered -> done\\n\\n\\n' in content, content
+    assert '---\\n\\n# delivered -> done\\n\\n\\n' in content, content
 elif mode == 'invalid':
     content = content.replace('status: draft', 'status: invalid')
 else:
@@ -137,9 +123,11 @@ PY
                     "--model", "gpt-6-sol", "--worker", "agent",
                     "--worker-model", "gpt-6-sol", "--worker-name", "worker-1",
                     "--created", "Sun 27 Sep 2006 - 16h 03m 32s", "--body-file", "body.md"]
-        elif mode == "no-body":
+        elif mode in ("no-body", "prefilled-body-no"):
             cmd += ["--task", "example", "--subject", "No body", "--type", "task",
                     "--status", "ready"]
+            if mode == "prefilled-body-no":
+                cmd += ["--body", "1. Pre-filled but declined."]
         elif mode in ("blocked-default", "delivered-default", "draft-no-body"):
             cmd += ["--task", "example", "--subject", "No body", "--type", "task",
                     "--status", mode.split("-")[0]]
@@ -192,7 +180,10 @@ PY
             needle = text.encode()
             while needle not in output:
                 read_more()
-            output = output[output.index(needle) + len(needle):]
+            index = output.index(needle)
+            before = output[:index]
+            output = output[index + len(needle):]
+            return before
 
         try:
             wait_for("Task folder (type to filter)")
@@ -214,12 +205,17 @@ PY
                 os.write(master, b"\r")
             wait_for("Enter a body message?")
             os.write(master, b"y\r" if mode == "delivered-done-yes" else
-                     b"n\r" if mode == "draft-no-body" else b"\r")
-            wait_for("Editing message in ")
-            while b".md" not in output:
-                read_more()
-            draft = Path(output.split(b".md", 1)[0].decode() + ".md")
-            wait_for("EDITOR_VISIBLE_ON_STDOUT")
+                     b"n\r" if mode in ("draft-no-body", "prefilled-body-no") else b"\r")
+            if mode in NO_BODY_MODES:
+                before = wait_for("Message to create in tasks/")
+                assert b"Editing message in " not in before, before
+                assert b"EDITOR_VISIBLE_ON_STDOUT" not in before, before
+            else:
+                wait_for("Editing message in ")
+                while b".md" not in output:
+                    read_more()
+                draft = Path(output.split(b".md", 1)[0].decode() + ".md")
+                wait_for("EDITOR_VISIBLE_ON_STDOUT")
             if mode == "failure":
                 wait_for("Editor exited with status 9")
                 assert b"Create this message?" not in output
@@ -228,7 +224,9 @@ PY
                 assert set((root / "tasks/example").rglob("*.md")) == existing_files
                 os.write(master, b"n\r" if mode == "decline" else b"\r")
 
-            assert "--test-flag" in (root / "editor-args").read_text()
+            assert (root / "editor-args").exists() == (mode not in NO_BODY_MODES)
+            if mode not in NO_BODY_MODES:
+                assert "--test-flag" in (root / "editor-args").read_text()
             while True:
                 child, status = os.waitpid(pid, os.WNOHANG)
                 if child:
@@ -253,8 +251,8 @@ PY
                     assert file.parent.name == "nested", file
                     assert "subject: From editor" in content and "status: draft" in content, content
                     assert "1. Edited body." in content, content
-                if mode == "no-body":
-                    assert "subject: Metadata edited" in content and content.endswith("---\n"), content
+                if mode in ("no-body", "prefilled-body-no"):
+                    assert "subject: No body\n" in content and content.endswith("---\n"), content
                 if mode == "question":
                     assert "How?" in content and "Why?\n" not in content, content
                 if mode == "answer":
@@ -269,9 +267,12 @@ PY
                     assert "subject: Manual subject\n" in content, content
                 if mode.startswith("delivered-done"):
                     assert "subject: delivered -> done\n" in content, content
+                if mode in NO_BODY_MODES:
+                    assert content.endswith("---\n"), content
                 assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
                                       stdout=subprocess.DEVNULL, check=False).returncode == 0
-            assert draft.exists() == (mode in ("failure", "invalid")), draft
+            if draft is not None:
+                assert draft.exists() == (mode in ("failure", "invalid")), draft
             if mode == "invalid":
                 assert b"cargo.status: must be one of" in output, output[-2000:]
         finally:
@@ -290,6 +291,6 @@ for mode in ("accept", "decline", "failure", "prefill", "no-body", "question",
              "answer", "cancelled", "import", "invalid", "state-change",
              "same-status", "explicit-subject", "delivered-done-default",
              "delivered-done-yes", "blocked-default", "delivered-default",
-             "draft-no-body"):
+             "draft-no-body", "prefilled-body-no"):
     run_flow(mode)
 print("td interactive editor tests passed")
