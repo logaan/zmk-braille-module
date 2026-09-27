@@ -15,13 +15,15 @@
    :msg/body "1.  Plenty of salt."})
 
 (def wash-older
-  {:msg/id "01WASHOLD" :msg/path "tasks/01-bake-potatoes/01-wash-potatoes/01WASHOLD.md"
+  {:msg/id "01WASHOLD"
+   :msg/path "tasks/01-bake-potatoes/01-wash-potatoes/01WASHOLD.md"
    :msg/created "Mon 28 Sep 2026 - 01h 00m 00s" :msg/author "user"
    :msg/subject "Get the brush" :msg/cargo {:type "task" :status "draft"}
    :msg/body "1.  It is under the sink."})
 
 (def wash-newer
-  {:msg/id "01WASHNEW" :msg/path "tasks/01-bake-potatoes/01-wash-potatoes/01WASHNEW.md"
+  {:msg/id "01WASHNEW"
+   :msg/path "tasks/01-bake-potatoes/01-wash-potatoes/01WASHNEW.md"
    :msg/created "Mon 28 Sep 2026 - 01h 30m 00s" :msg/author "user"
    :msg/subject "Scrub them" :msg/cargo {:type "task" :status "ready"}
    :msg/body "1.  All of the eyes."})
@@ -35,7 +37,8 @@
      [{:task/name "01 Wash potatoes"
        :task/path "tasks/01-bake-potatoes/01-wash-potatoes"
        :task/messages [wash-older wash-newer] :task/children []}
-      {:task/name "02 Salt water" :task/path "tasks/01-bake-potatoes/02-salt-water"
+      {:task/name "02 Salt water"
+       :task/path "tasks/01-bake-potatoes/02-salt-water"
        :task/messages []
        :task/children
        [{:task/name "01 Boil"
@@ -46,8 +49,11 @@
     {:task/name "03 Serve" :task/path "tasks/03-serve"
      :task/messages []
      :task/children
-     [{:task/name "01 Call everyone" :task/path "tasks/03-serve/01-call-everyone"
+     [{:task/name "01 Call everyone"
+       :task/path "tasks/03-serve/01-call-everyone"
        :task/messages [] :task/children []}]}]})
+
+(def start-cursors {:parents :heading :listing :heading :messages :heading})
 
 (def state (model/initial-state vault size))
 
@@ -72,32 +78,39 @@
 
 (defn- cursor [st pane] (get-in st [:state/cursors pane]))
 
+(defn- ancestor-name [st pane] (:task/name (model/ancestor st pane)))
+
+(defn- focused
+  "The focus after moving it in a direction."
+  [st direction]
+  (:state/focus (model/move-focus st direction)))
+
 (deftest initial-state-uses-the-starting-positions
   (is (= {:state/vault vault
           :state/focus :parents
-          :state/cursors {:parents :heading :listing :heading :messages :heading}
+          :state/cursors start-cursors
           :state/size size
           :state/pending-key nil}
          state)))
 
 (deftest ancestor-follows-the-cursors-up-the-panes
   (testing "with every cursor on a heading all three panes share the root"
-    (is (= "Tasks" (:task/name (model/ancestor state :parents))))
-    (is (= "Tasks" (:task/name (model/ancestor state :listing))))
-    (is (= "Tasks" (:task/name (model/ancestor state :messages)))))
+    (is (= "Tasks" (ancestor-name state :parents)))
+    (is (= "Tasks" (ancestor-name state :listing)))
+    (is (= "Tasks" (ancestor-name state :messages))))
   (testing "the parents cursor is the listing ancestor"
     (let [st (walk state :parents :right)]
       (is (= [0] (cursor st :parents)))
-      (is (= "01 Bake potatoes" (:task/name (model/ancestor st :listing))))
-      (is (= "Tasks" (:task/name (model/ancestor st :parents))))
+      (is (= "01 Bake potatoes" (ancestor-name st :listing)))
+      (is (= "Tasks" (ancestor-name st :parents)))
       (testing "a listing heading means the listing ancestor itself"
         (is (= :heading (cursor st :listing)))
-        (is (= "01 Bake potatoes" (:task/name (model/ancestor st :messages)))))))
+        (is (= "01 Bake potatoes" (ancestor-name st :messages))))))
   (testing "the listing cursor is the messages ancestor"
     (let [st (walk (walk state :parents :right) :listing :right)]
       (is (= [0 0] (cursor st :listing)))
-      (is (= "01 Wash potatoes" (:task/name (model/ancestor st :messages))))
-      (is (= "01 Bake potatoes" (:task/name (model/ancestor st :listing)))))))
+      (is (= "01 Wash potatoes" (ancestor-name st :messages)))
+      (is (= "01 Bake potatoes" (ancestor-name st :listing))))))
 
 (deftest parents-rows-keep-only-tasks-with-children
   (is (= [:heading [0] [0 1] [2]] (cursors state :parents)))
@@ -113,8 +126,8 @@
   (is (= [:heading [0] [0 0] [0 1] [0 1 0] [1] [2] [2 0]]
          (cursors state :listing)))
   (is (= [0 1 1 2 0 0 1] (depths state :listing)))
-  (is (= ["Tasks" "01 Bake potatoes" "01 Wash potatoes" "02 Salt water" "01 Boil"
-          "02 Set table" "03 Serve" "01 Call everyone"]
+  (is (= ["Tasks" "01 Bake potatoes" "01 Wash potatoes" "02 Salt water"
+          "01 Boil" "02 Set table" "03 Serve" "01 Call everyone"]
          (names state :listing)))
   (testing "under an ancestor, depths restart at 0 but paths stay absolute"
     (let [st (walk state :parents :right)]
@@ -131,10 +144,11 @@
            (mapv (comp :msg/subject :row/message) (rest rows))))
     (is (= [nil false true] (mapv :row/expanded? rows)))
     (is (= wash-older (:row/message (second rows))))
-    (is (= "01 Wash potatoes" (:task/name (:row/node (first rows))))))
+    (is (= "01 Wash potatoes" (:task/name (:row/node (first rows)))))
+    (is (= "01 Wash potatoes" (ancestor-name st :messages))))
   (testing "a task with no messages of its own shows only its heading"
     (let [st (walk (walk state :parents :right) :listing :right :down)]
-      (is (= "02 Salt water" (:task/name (model/ancestor st :messages))))
+      (is (= "02 Salt water" (ancestor-name st :messages)))
       (is (= [:heading] (cursors st :messages))))))
 
 (deftest cursor-row-index-locates-the-cursor
@@ -269,7 +283,8 @@
       (is (= size (:state/size moved))))))
 
 (deftest an-empty-vault-has-nothing-to-navigate
-  (let [bare {:task/name "Tasks" :task/path "tasks" :task/messages [] :task/children []}
+  (let [bare {:task/name "Tasks" :task/path "tasks"
+              :task/messages [] :task/children []}
         st (model/initial-state bare size)]
     (is (= [:heading] (cursors st :parents)))
     (is (= [:heading] (cursors st :listing)))
@@ -280,16 +295,14 @@
     (is (identical? st (walk st :messages :down)))))
 
 (deftest move-focus-wraps-around-the-panes
-  (is (= :listing (:state/focus (model/move-focus state :right))))
-  (is (= :messages (:state/focus (model/move-focus state :left))))
-  (is (= :parents (:state/focus
-                   (model/move-focus (assoc state :state/focus :messages) :right))))
-  (is (= :messages (:state/focus
-                    (model/move-focus (assoc state :state/focus :parents) :left))))
-  (is (= :parents (:state/focus
-                   (model/move-focus (assoc state :state/focus :listing) :left))))
+  (is (= :listing (focused state :right)))
+  (is (= :messages (focused state :left)))
+  (is (= :parents (focused (assoc state :state/focus :messages) :right)))
+  (is (= :messages (focused (assoc state :state/focus :parents) :left)))
+  (is (= :parents (focused (assoc state :state/focus :listing) :left)))
   (testing "moving focus leaves the cursors alone"
-    (is (= (:state/cursors state) (:state/cursors (model/move-focus state :right)))))
+    (is (= (:state/cursors state)
+           (:state/cursors (model/move-focus state :right)))))
   (testing "any other direction leaves the focus alone"
-    (is (= :parents (:state/focus (model/move-focus state :down))))
+    (is (= :parents (focused state :down)))
     (is (identical? state (model/move-focus state :sideways)))))

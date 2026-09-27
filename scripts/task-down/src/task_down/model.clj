@@ -24,26 +24,27 @@
 
 (defn- heading-row [node] {:row/kind :heading :row/node node})
 
+(defn- message-row [message expanded?]
+  {:row/kind :message :row/message message :row/expanded? expanded?})
+
 (defn- message-rows
   "Message rows for a node, oldest first, only the newest expanded."
   [node]
   (let [messages (:task/messages node)
         newest (dec (count messages))]
-    (mapv (fn [i m] {:row/kind :message :row/message m :row/expanded? (= i newest)})
-          (range)
-          messages)))
+    (mapv (fn [i m] (message-row m (= i newest))) (range) messages)))
 
 (defn- task-rows
   "Pre-order rows for the children of node that satisfy keep?, whose own
   children are pruned the same way."
   [node path depth keep?]
   (reduce (fn [acc [i child]]
-            (let [child-path (conj path i)
-                  row {:row/kind :task :row/node child
-                       :row/path child-path :row/depth depth}]
-              (if (keep? child)
-                (into acc (cons row (task-rows child child-path (inc depth) keep?)))
-                acc)))
+            (if (keep? child)
+              (let [p (conj path i)
+                    row {:row/kind :task :row/node child
+                         :row/path p :row/depth depth}]
+                (into acc (cons row (task-rows child p (inc depth) keep?))))
+              acc))
           []
           (map-indexed vector (:task/children node))))
 
@@ -93,9 +94,10 @@
 (defn- first-child-row
   "The first displayed child row of the task row at index, or nil."
   [rows index]
-  (let [path (:row/path (nth rows index))]
-    (first (filter #(and (= :task (:row/kind %)) (= (parent-path (:row/path %)) path))
-                   (drop (inc index) rows)))))
+  (let [path (:row/path (nth rows index))
+        child? #(and (= :task (:row/kind %))
+                     (= (parent-path (:row/path %)) path))]
+    (first (filter child? (drop (inc index) rows)))))
 
 (defn- vertical-cursor
   "The cursor after moving step rows among a row's peers."
@@ -176,9 +178,10 @@
 (defn- with-cursor
   "Set a pane cursor, resetting the cursors of the panes it is ancestor of."
   [state pane cursor]
-  (let [moved (assoc-in state [:state/cursors pane] cursor)]
+  (let [moved (assoc-in state [:state/cursors pane] cursor)
+        listing-reset (assoc-in moved [:state/cursors :listing] :heading)]
     (cond
-      (= :parents pane) (with-newest-message (assoc-in moved [:state/cursors :listing] :heading))
+      (= :parents pane) (with-newest-message listing-reset)
       (= :listing pane) (with-newest-message moved)
       :else moved)))
 
