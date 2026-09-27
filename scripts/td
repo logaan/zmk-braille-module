@@ -10,6 +10,8 @@
 
 (require '[babashka.cli :as cli]
          '[babashka.fs :as fs]
+         '[babashka.pods :as pods]
+         '[babashka.process :as p]
          '[clj-yaml.core :as yaml]
          '[clojure.string :as str])
 
@@ -260,7 +262,8 @@
 ;; Message creation (spec sections 3, 3.1, 3.2)
 
 (def new-option-spec
-  [[:task           {:coerce :string :desc "Existing task folder (required)"}]
+  [[:interactive    {:alias :i :coerce :boolean :desc "Fill out and edit the message interactively"}]
+   [:task           {:coerce :string :desc "Existing task folder (required)"}]
    [:subject        {:coerce :string :desc (str "Message subject, max " max-subject-length
                                                 " characters (required)")}]
    [:type           {:coerce :string :desc "Cargo type: task, question, or answer (required)"}]
@@ -306,9 +309,15 @@
       name    (assoc :name name))
     who))
 
+(defn report-new-problems [problems]
+  (binding [*out* *err*]
+    (println "Cannot create message:")
+    (doseq [e problems] (println " " "-" e))
+    (println "See 'td message new --help'.")))
+
 (defn run-new-file [{:keys [task file] :as opts}]
   (let [task-result (when task (resolve-task-dir task))
-        extra-flags (sort (remove #{:task :file} (keys opts)))
+        extra-flags (sort (remove #{:task :file :interactive} (keys opts)))
         {:keys [frontmatter body error]}
         (when (fs/regular-file? file) (parse-message-file file))
         problems (cond-> []
@@ -320,16 +329,13 @@
                    error (conj error)
                    (and frontmatter (not error)) (into (validate-message-data frontmatter body)))]
     (if (seq problems)
-      (do (binding [*out* *err*]
-            (println "Cannot create message:")
-            (doseq [e problems] (println " " "-" e))
-            (println "See 'td message new --help'."))
-          (System/exit 1))
+      (do (report-new-problems problems) 1)
       (let [id (gen-ulid)
             target (fs/path (:dir task-result) (str id ".md"))]
         ;; Keep the edited YAML, body, and formatting exactly as they were.
         (fs/copy file target)
-        (println (str "tasks/" (:name task-result) "/" id ".md"))))))
+        (println (str "tasks/" (:name task-result) "/" id ".md"))
+        0))))
 
 (defn read-body-file
   "Read a regular body file, reporting path and read failures as CLI errors."
@@ -347,19 +353,15 @@
     (catch Exception e
       {:error (str "cannot read body file: " path " (" (.getMessage e) ")")})))
 
-(defn run-new-flags [{:keys [opts]}]
-  (let [{:keys [task created author harness model subject type status
+(defn new-flags-data [opts]
+  (let [{:keys [created author harness model subject type status
                 worker worker-harness worker-model worker-name regarding
                 body body-file]
          agent-name :name} opts
         author (or author "user")
         errors (atom [])
-        err! (fn [msg] (swap! errors conj msg))
-        task-result (when task (resolve-task-dir task))]
+        err! (fn [msg] (swap! errors conj msg))]
     ;; These constraints concern CLI flag combinations, not message data.
-    (cond
-      (nil? task) (err! "missing required flag: --task <folder>")
-      (:error task-result) (err! (:error task-result)))
     (when (not= author "agent")
       (doseq [flag [:harness :model :name]
               :when (contains? opts flag)]
@@ -402,30 +404,168 @@
                                                         :name worker-name}))
                                 (and (= type "answer") (seq regarding))
                                 (assoc :regarding (into (array-map) regarding-entries))))
-          problems (into (cond-> @errors
-                           (:error body-file-result) (conj (:error body-file-result)))
-                         (validate-message-data frontmatter body-text))]
-      (if (seq problems)
-        (do (binding [*out* *err*]
-              (println "Cannot create message:")
-              (doseq [e problems] (println " " "-" e))
-              (println "See 'td message new --help'."))
-            (System/exit 1))
-        (let [id (gen-ulid)
-              file (fs/path (:dir task-result) (str id ".md"))
-              content (str "---\n"
-                           (yaml/generate-string frontmatter
-                                                 :dumper-options {:flow-style :block})
-                           "---\n"
-                           (when-not (str/blank? body-text)
-                             (str "\n" (str/trim body-text) "\n")))]
-          (spit (str file) content)
-          (println (str "tasks/" (:name task-result) "/" id ".md")))))))
+          errors (cond-> @errors
+                   (:error body-file-result) (conj (:error body-file-result)))]
+      {:frontmatter frontmatter :body body-text :errors errors})))
+
+(defn message-content [frontmatter body]
+  (str "---\n"
+       (yaml/generate-string frontmatter :dumper-options {:flow-style :block})
+       "---\n"
+       (when-not (str/blank? body)
+         (str "\n" (str/trim body) "\n"))))
+
+(defn run-new-flags [{:keys [opts]}]
+  (let [{:keys [frontmatter body errors]} (new-flags-data opts)
+        task (:task opts)
+        task-result (when task (resolve-task-dir task))
+        problems (into (cond-> errors
+                         (nil? task) (conj "missing required flag: --task <folder>")
+                         (:error task-result) (conj (:error task-result)))
+                       (validate-message-data frontmatter body))]
+    (if (seq problems)
+      (do (report-new-problems problems) 1)
+      (let [id (gen-ulid)
+            file (fs/path (:dir task-result) (str id ".md"))]
+        (spit (str file) (message-content frontmatter body))
+        (println (str "tasks/" (:name task-result) "/" id ".md"))
+        0))))
+
+;; The pod is loaded only for -i; ordinary CLI creation needs no terminal or pod.
+(defn wizard-prompts []
+  (pods/load-pod 'enigmacurry/script-wizard "0.3.0")
+  (require 'pod.enigmacurry.script-wizard)
+  {:ask (resolve 'pod.enigmacurry.script-wizard/ask)
+   :choose (resolve 'pod.enigmacurry.script-wizard/choose)
+   :confirm (resolve 'pod.enigmacurry.script-wizard/confirm)
+   :confirm* (resolve 'pod.enigmacurry.script-wizard/confirm*)})
+
+(defn task-folders []
+  (->> (fs/glob "tasks" "**")
+       (filter fs/directory?)
+       (map #(str (fs/relativize "tasks" %)))
+       sort vec))
+
+(defn wizard-subject [ask default]
+  (loop []
+    (let [subject (if (some? default)
+                    (ask "Subject (max 64 characters)" :default default)
+                    (ask "Subject (max 64 characters)"))]
+      (if (and (not (str/blank? subject)) (<= (count subject) max-subject-length))
+        subject
+        (do (println "Subject must be between 1 and 64 characters.")
+            (recur))))))
+
+(defn wizard-draft-content [frontmatter body]
+  (str "---\n"
+       (yaml/generate-string frontmatter :dumper-options {:flow-style :block})
+       "---\n"
+       (when-not (str/blank? body)
+         (str "\n" body (when-not (str/ends-with? body "\n") "\n")))))
+
+(defn edit-draft [draft]
+  ;; The pod's editor captures stdout, hiding terminal editors such as vim.
+  (let [editor (or (first (remove str/blank? [(System/getenv "EDITOR")
+                                              (System/getenv "VISUAL")]))
+                   "vi")
+        {:keys [exit]} @(p/process ["/bin/sh" "-c" (str "exec " editor " \"$1\"")
+                                    "editor" (str draft)]
+                                   {:in :inherit :out :inherit :err :inherit})]
+    (when-not (zero? exit)
+      (throw (ex-info (str "Editor exited with status " exit) {:exit exit})))))
+
+(defn confirm-create [confirm*]
+  ;; The pod's public confirm exits on Escape, which would leak the temp draft.
+  (try (confirm* "Create this message?" {"default" "yes"})
+       (catch Exception e
+         (if (= "canceled" (ex-message e)) false (throw e)))))
+
+(defn wizard-form [prompts folders initial default-task]
+  (let [{:keys [ask choose confirm confirm*]} prompts
+        {:keys [frontmatter body]} initial
+        original-cargo (:cargo frontmatter)]
+    (println "New TaskDown message (Escape/Ctrl-C to cancel)")
+    (let [task (if default-task
+                 (choose "Task folder (type to filter)" folders :default default-task)
+                 (choose "Task folder (type to filter)" folders))
+          subject (wizard-subject ask (:subject frontmatter))
+          type (choose "Message type" ["task" "question" "answer"]
+                       :default (or (:type original-cargo) "task"))
+          status (when (= type "task")
+                   (choose "Status" ["draft" "ready" "started" "blocked"
+                                     "delivered" "done" "cancelled"]
+                           :default (or (:status original-cargo) "draft")))
+          body? (confirm "Enter a body message?"
+                         :default (if (or (#{"draft" "cancelled"} status)
+                                          (= type "question") (= type "answer"))
+                                    :yes :no))
+          cargo (cond-> (assoc (or original-cargo {}) :type type)
+                  (= type "task") (assoc :status status)
+                  (not= type "task") (dissoc :status :worker)
+                  (not= type "answer") (dissoc :regarding))
+          frontmatter (assoc frontmatter :subject subject :cargo cargo)
+          body (when body?
+                 (if (str/blank? body) (str "# " subject "\n\n\n") body))
+          draft (fs/create-temp-file {:prefix "taskdown-message-" :suffix ".md"
+                                      :posix-file-permissions "rw-------"})
+          keep? (atom false)]
+      (try
+        (spit (str draft) (wizard-draft-content frontmatter body))
+        (println (str "Editing message in " draft " (save and quit to continue)."))
+        (flush)
+        (edit-draft draft)
+        (println (str "\nMessage to create in tasks/" task ":"))
+        (let [content (slurp (str draft))]
+          (print content)
+          (when-not (str/ends-with? content "\n") (println))
+          (flush))
+        (if (confirm-create confirm*)
+          (let [exit (run-new-file {:task task :file (str draft)})]
+            (when-not (zero? exit) (reset! keep? true))
+            exit)
+          (do (println "Cancelled.") 0))
+        (catch Exception e
+          (reset! keep? true)
+          (binding [*out* *err*] (println (.getMessage e)))
+          1)
+        (finally
+          (if @keep?
+            (binding [*out* *err*] (println (str "Draft kept at " draft)))
+            (fs/delete-if-exists draft)))))))
+
+(defn run-new-interactive [{:keys [task file] :as opts}]
+  (let [task-result (when task (resolve-task-dir task))
+        initial (if file
+                  (let [extra (sort (remove #{:task :file :interactive} (keys opts)))
+                        parsed (when (fs/regular-file? file) (parse-message-file file))]
+                    {:frontmatter (:frontmatter parsed) :body (:body parsed)
+                     :errors (cond-> []
+                               (seq extra) (conj (str "--file may only be used with --task (also got: "
+                                                      (str/join ", " (map #(str "--" (name %)) extra)) ")"))
+                               (not (fs/regular-file? file)) (conj (str "message file not found: " file))
+                               (:error parsed) (conj (:error parsed))
+                               (and parsed (not (map? (:frontmatter parsed))))
+                               (conj "frontmatter: must be a YAML map"))})
+                  (new-flags-data opts))
+        errors (cond-> (:errors initial)
+                 (:error task-result) (conj (:error task-result)))
+        folders (task-folders)]
+    (cond
+      (seq errors) (do (report-new-problems errors) 1)
+      (empty? folders) (do (binding [*out* *err*]
+                             (println "No task folders found under tasks/."))
+                           1)
+      (nil? (System/console)) (do (binding [*out* *err*]
+                                    (println "td message new -i requires an interactive terminal."))
+                                  1)
+      :else (wizard-form (wizard-prompts) folders initial (:name task-result)))))
 
 (defn run-new [{:keys [opts] :as command}]
-  (if (contains? opts :file)
-    (run-new-file opts)
-    (run-new-flags command)))
+  (let [exit (cond
+               (:interactive opts) (run-new-interactive opts)
+               (contains? opts :file) (run-new-file opts)
+               :else (run-new-flags command))]
+    (when-not (zero? exit) (System/exit exit))))
 
 ;; ---------------------------------------------------------------------------
 ;; Validate command
@@ -456,12 +596,15 @@
 
 (def new-help-epilog
   (str "Task statuses: " (str/join ", " (sort statuses)) "\n"
-       "Questions must have a body with one question mark.\n\n"
+       "Questions must have a body with one question mark.\n"
+       "Use -i/--interactive to choose fields, edit the full message in $EDITOR,\n"
+       "and confirm saving (defaults to yes). CLI flags prefill the form or editor.\n\n"
        "Examples:\n"
        "  td message new --task 02-td-script --subject 'draft -> ready' \\\n"
        "      --type task --status ready\n"
        "  td message new --task 02-td-script --subject 'Which clock?' \\\n"
        "      --type question --body 'Should we pin the clock in tests?'\n"
+       "  td message new -i --task 02-td-script --type task --status draft\n"
        "  td message new --task 02-td-script --file /tmp/edited-message.md"))
 
 (def validate-help-epilog

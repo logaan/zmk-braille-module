@@ -32,6 +32,13 @@ grep -Fq '`OldStatus -> NewStatus`' system.txt
 grep -Fq 'subject: draft -> ready' system.txt
 "$td" system --help > /dev/null
 
+# Interactive mode requires a terminal; a redirected stdin fails cleanly.
+fail_if_successful "$td" message new -i --task example --subject X --type task --status draft < /dev/null
+grep -Fq 'td message new -i requires an interactive terminal.' output.txt
+# CLI flag errors are still reported before the terminal check.
+fail_if_successful "$td" message new -i --task missing --subject X --type task --status draft < /dev/null
+grep -Fq 'task folder not found: tasks/missing' output.txt
+
 task=$("$td" message new --task example/nested --subject 'Work' --type task \
   --status ready --author agent --harness pi --model kimi-k3 \
   --worker agent --worker-model kimi-k3 \
