@@ -6,8 +6,8 @@
                    '[clojure.string :as str]
                    '[clojure.test :as t])
 
-          (def clj-suffix (re-pattern "\\.clj$"))
-          (def test-prefix (re-pattern "^test/"))
+          (def clj-suffix "Matches a trailing .clj extension." (re-pattern "\\.clj$"))
+          (def test-prefix "Matches the leading test/ directory." (re-pattern "^test/"))
 
           (defn test-files
             "Every `*_test.clj` file under `test/`, at any depth, sorted."
