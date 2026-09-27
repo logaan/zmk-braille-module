@@ -1,8 +1,10 @@
-# ueb1 keyboard characters
+# ueb1 keyboard subset
 #
-# ueb1 keyboard subset: one case for each character of the US MacBook Air keyboard in
-# references/01-mba-keys.yaml (every key marked character: true, unshifted then shifted), in
-# keyboard row order. Each case is copied unchanged from tests/braille/ueb1/, which has the full set.
+# ueb1 keyboard subset: every case of tests/braille/ueb1/ whose output can be typed with the
+# character keys of the US MacBook Air keyboard in references/01-mba-keys.yaml (the 95 characters
+# of the keys marked character: true, unshifted and shifted). Cases with no output are left out,
+# since they type nothing. Cases are copied unchanged, in the order of the files:
+# letters.yaml, capitals.yaml, numbers.yaml, punctuation.yaml, indicators.yaml, pending.yaml.
 #
 # Format
 #   mode: the character table the cases run in (ueb1, ueb2 or computer8).
@@ -18,98 +20,446 @@
 
 mode: ueb1
 cases:
-  - {name: "grave accent alone `", inputs: [[4, 6], [1, 6]], outputs: ["`"], source: "rulebook Appendix 3 p.325"}
-  - {name: "tilde (swung dash) ~", inputs: [[4], [3, 5]], outputs: ["~"], source: "rulebook 3.25 p.38"}
-  - {name: "numeric indicator then 1", inputs: [[3, 4, 5, 6], [1]], outputs: ["1"], source: "rulebook 6.1 p.65"}
-  - {name: "exclamation mark !", inputs: [[1], [2, 3, 5]], outputs: ["a", "!"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "numeric indicator then 2", inputs: [[3, 4, 5, 6], [1, 2]], outputs: ["2"], source: "rulebook 6.1 p.65"}
-  - {name: "commercial at @", inputs: [[4], [1]], outputs: ["@"], source: "rulebook 3.7 p.27"}
-  - {name: "numeric indicator then 3", inputs: [[3, 4, 5, 6], [1, 4]], outputs: ["3"], source: "rulebook 6.1 p.65"}
-  - {name: "number sign #", inputs: [[4, 5, 6], [1, 4, 5, 6]], outputs: ["#"], source: "rulebook 3.19 p.35"}
-  - {name: "numeric indicator then 4", inputs: [[3, 4, 5, 6], [1, 4, 5]], outputs: ["4"], source: "rulebook 6.1 p.65"}
-  - {name: "dollar sign $", inputs: [[4], [2, 3, 4]], outputs: ["$"], source: "rulebook 3.10 p.28"}
-  - {name: "numeric indicator then 5", inputs: [[3, 4, 5, 6], [1, 5]], outputs: ["5"], source: "rulebook 6.1 p.65"}
-  - {name: "percent sign %", inputs: [[4, 6], [3, 5, 6]], outputs: ["%"], source: "rulebook 3.21 p.36"}
-  - {name: "numeric indicator then 6", inputs: [[3, 4, 5, 6], [1, 2, 4]], outputs: ["6"], source: "rulebook 6.1 p.65"}
-  - {name: "caret ^", inputs: [[4], [2, 6]], outputs: ["^"], source: "rulebook 3.6 p.26"}
-  - {name: "numeric indicator then 7", inputs: [[3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["7"], source: "rulebook 6.1 p.65"}
-  - {name: "ampersand &", inputs: [[4], [1, 2, 3, 4, 6]], outputs: ["&"], source: "rulebook 3.1 p.23"}
-  - {name: "numeric indicator then 8", inputs: [[3, 4, 5, 6], [1, 2, 5]], outputs: ["8"], source: "rulebook 6.1 p.65"}
-  - {name: "asterisk *", inputs: [[5], [3, 5]], outputs: ["*"], source: "rulebook 3.3 p.23"}
-  - {name: "numeric indicator then 9", inputs: [[3, 4, 5, 6], [2, 4]], outputs: ["9"], source: "rulebook 6.1 p.65"}
-  - {name: "opening parenthesis (", inputs: [[5], [1, 2, 6]], outputs: ["("], source: "rulebook 7 p.75"}
-  - {name: "numeric indicator then 0", inputs: [[3, 4, 5, 6], [2, 4, 5]], outputs: ["0"], source: "rulebook 6.1 p.65"}
-  - {name: "closing parenthesis )", inputs: [[5], [3, 4, 5]], outputs: [")"], source: "rulebook 7 p.75"}
-  - {name: "hyphen -", inputs: [[1], [3, 6]], outputs: ["a", "-"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "low line (underscore) _", inputs: [[4, 6], [3, 6]], outputs: ["_"], source: "rulebook 7 p.76"}
-  - {name: "equals =", inputs: [[5], [2, 3, 5, 6]], outputs: ["="], source: "rulebook 3.17 p.33"}
-  - {name: "plus +", inputs: [[5], [2, 3, 5]], outputs: ["+"], source: "rulebook 3.17 p.33"}
-  - {name: "letter q", inputs: [[1, 2, 3, 4, 5]], outputs: ["q"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter Q", inputs: [[6], [1, 2, 3, 4, 5]], outputs: ["Q"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter w", inputs: [[2, 4, 5, 6]], outputs: ["w"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter W", inputs: [[6], [2, 4, 5, 6]], outputs: ["W"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter e", inputs: [[1, 5]], outputs: ["e"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter E", inputs: [[6], [1, 5]], outputs: ["E"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter r", inputs: [[1, 2, 3, 5]], outputs: ["r"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter R", inputs: [[6], [1, 2, 3, 5]], outputs: ["R"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter t", inputs: [[2, 3, 4, 5]], outputs: ["t"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter T", inputs: [[6], [2, 3, 4, 5]], outputs: ["T"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter y", inputs: [[1, 3, 4, 5, 6]], outputs: ["y"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter Y", inputs: [[6], [1, 3, 4, 5, 6]], outputs: ["Y"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter u", inputs: [[1, 3, 6]], outputs: ["u"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter U", inputs: [[6], [1, 3, 6]], outputs: ["U"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter i", inputs: [[2, 4]], outputs: ["i"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter I", inputs: [[6], [2, 4]], outputs: ["I"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter o", inputs: [[1, 3, 5]], outputs: ["o"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter O", inputs: [[6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter p", inputs: [[1, 2, 3, 4]], outputs: ["p"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter P", inputs: [[6], [1, 2, 3, 4]], outputs: ["P"], source: "rulebook 8.3.1 p.89"}
-  - {name: "opening square bracket [", inputs: [[4, 6], [1, 2, 6]], outputs: ["["], source: "rulebook 7 p.75"}
-  - {name: "opening curly bracket {", inputs: [[4, 5, 6], [1, 2, 6]], outputs: ["{"], source: "rulebook 7 p.75"}
-  - {name: "closing square bracket ]", inputs: [[4, 6], [3, 4, 5]], outputs: ["]"], source: "rulebook 7 p.75"}
-  - {name: "closing curly bracket }", inputs: [[4, 5, 6], [3, 4, 5]], outputs: ["}"], source: "rulebook 7 p.75"}
-  - {name: "reverse solidus (backslash) \\", inputs: [[4, 5, 6], [1, 6]], outputs: ["\\"], source: "rulebook 7 p.75"}
-  - {name: "vertical line |", inputs: [[4, 5, 6], [1, 2, 5, 6]], outputs: ["|"], source: "rulebook 15.1 p.223"}
   - {name: "letter a", inputs: [[1]], outputs: ["a"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter A", inputs: [[6], [1]], outputs: ["A"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter s", inputs: [[2, 3, 4]], outputs: ["s"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter S", inputs: [[6], [2, 3, 4]], outputs: ["S"], source: "rulebook 8.3.1 p.89"}
+  - {name: "letter b", inputs: [[1, 2]], outputs: ["b"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter c", inputs: [[1, 4]], outputs: ["c"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
   - {name: "letter d", inputs: [[1, 4, 5]], outputs: ["d"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter D", inputs: [[6], [1, 4, 5]], outputs: ["D"], source: "rulebook 8.3.1 p.89"}
+  - {name: "letter e", inputs: [[1, 5]], outputs: ["e"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
   - {name: "letter f", inputs: [[1, 2, 4]], outputs: ["f"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter F", inputs: [[6], [1, 2, 4]], outputs: ["F"], source: "rulebook 8.3.1 p.89"}
   - {name: "letter g", inputs: [[1, 2, 4, 5]], outputs: ["g"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter G", inputs: [[6], [1, 2, 4, 5]], outputs: ["G"], source: "rulebook 8.3.1 p.89"}
   - {name: "letter h", inputs: [[1, 2, 5]], outputs: ["h"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter H", inputs: [[6], [1, 2, 5]], outputs: ["H"], source: "rulebook 8.3.1 p.89"}
+  - {name: "letter i", inputs: [[2, 4]], outputs: ["i"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
   - {name: "letter j", inputs: [[2, 4, 5]], outputs: ["j"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter J", inputs: [[6], [2, 4, 5]], outputs: ["J"], source: "rulebook 8.3.1 p.89"}
   - {name: "letter k", inputs: [[1, 3]], outputs: ["k"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter K", inputs: [[6], [1, 3]], outputs: ["K"], source: "rulebook 8.3.1 p.89"}
   - {name: "letter l", inputs: [[1, 2, 3]], outputs: ["l"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter m", inputs: [[1, 3, 4]], outputs: ["m"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter n", inputs: [[1, 3, 4, 5]], outputs: ["n"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter o", inputs: [[1, 3, 5]], outputs: ["o"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter p", inputs: [[1, 2, 3, 4]], outputs: ["p"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter q", inputs: [[1, 2, 3, 4, 5]], outputs: ["q"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter r", inputs: [[1, 2, 3, 5]], outputs: ["r"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter s", inputs: [[2, 3, 4]], outputs: ["s"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter t", inputs: [[2, 3, 4, 5]], outputs: ["t"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter u", inputs: [[1, 3, 6]], outputs: ["u"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter v", inputs: [[1, 2, 3, 6]], outputs: ["v"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter w", inputs: [[2, 4, 5, 6]], outputs: ["w"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter x", inputs: [[1, 3, 4, 6]], outputs: ["x"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter y", inputs: [[1, 3, 4, 5, 6]], outputs: ["y"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "letter z", inputs: [[1, 3, 5, 6]], outputs: ["z"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "capital letter A", inputs: [[6], [1]], outputs: ["A"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter B", inputs: [[6], [1, 2]], outputs: ["B"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter C", inputs: [[6], [1, 4]], outputs: ["C"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter D", inputs: [[6], [1, 4, 5]], outputs: ["D"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter E", inputs: [[6], [1, 5]], outputs: ["E"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter F", inputs: [[6], [1, 2, 4]], outputs: ["F"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter G", inputs: [[6], [1, 2, 4, 5]], outputs: ["G"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter H", inputs: [[6], [1, 2, 5]], outputs: ["H"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter I", inputs: [[6], [2, 4]], outputs: ["I"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter J", inputs: [[6], [2, 4, 5]], outputs: ["J"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter K", inputs: [[6], [1, 3]], outputs: ["K"], source: "rulebook 8.3.1 p.89"}
   - {name: "capital letter L", inputs: [[6], [1, 2, 3]], outputs: ["L"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter M", inputs: [[6], [1, 3, 4]], outputs: ["M"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter N", inputs: [[6], [1, 3, 4, 5]], outputs: ["N"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter O", inputs: [[6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter P", inputs: [[6], [1, 2, 3, 4]], outputs: ["P"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Q", inputs: [[6], [1, 2, 3, 4, 5]], outputs: ["Q"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter R", inputs: [[6], [1, 2, 3, 5]], outputs: ["R"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter S", inputs: [[6], [2, 3, 4]], outputs: ["S"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter T", inputs: [[6], [2, 3, 4, 5]], outputs: ["T"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter U", inputs: [[6], [1, 3, 6]], outputs: ["U"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter V", inputs: [[6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter W", inputs: [[6], [2, 4, 5, 6]], outputs: ["W"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter X", inputs: [[6], [1, 3, 4, 6]], outputs: ["X"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Y", inputs: [[6], [1, 3, 4, 5, 6]], outputs: ["Y"], source: "rulebook 8.3.1 p.89"}
+  - {name: "capital letter Z", inputs: [[6], [1, 3, 5, 6]], outputs: ["Z"], source: "rulebook 8.3.1 p.89"}
+  - {name: "letter a in a capitalised word", inputs: [[6], [6], [1]], outputs: ["A"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter b in a capitalised word", inputs: [[6], [6], [1, 2]], outputs: ["B"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter c in a capitalised word", inputs: [[6], [6], [1, 4]], outputs: ["C"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter d in a capitalised word", inputs: [[6], [6], [1, 4, 5]], outputs: ["D"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter e in a capitalised word", inputs: [[6], [6], [1, 5]], outputs: ["E"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter f in a capitalised word", inputs: [[6], [6], [1, 2, 4]], outputs: ["F"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter g in a capitalised word", inputs: [[6], [6], [1, 2, 4, 5]], outputs: ["G"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter h in a capitalised word", inputs: [[6], [6], [1, 2, 5]], outputs: ["H"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter i in a capitalised word", inputs: [[6], [6], [2, 4]], outputs: ["I"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter j in a capitalised word", inputs: [[6], [6], [2, 4, 5]], outputs: ["J"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter k in a capitalised word", inputs: [[6], [6], [1, 3]], outputs: ["K"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter l in a capitalised word", inputs: [[6], [6], [1, 2, 3]], outputs: ["L"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter m in a capitalised word", inputs: [[6], [6], [1, 3, 4]], outputs: ["M"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter n in a capitalised word", inputs: [[6], [6], [1, 3, 4, 5]], outputs: ["N"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter o in a capitalised word", inputs: [[6], [6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter p in a capitalised word", inputs: [[6], [6], [1, 2, 3, 4]], outputs: ["P"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter q in a capitalised word", inputs: [[6], [6], [1, 2, 3, 4, 5]], outputs: ["Q"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter r in a capitalised word", inputs: [[6], [6], [1, 2, 3, 5]], outputs: ["R"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter s in a capitalised word", inputs: [[6], [6], [2, 3, 4]], outputs: ["S"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter t in a capitalised word", inputs: [[6], [6], [2, 3, 4, 5]], outputs: ["T"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter u in a capitalised word", inputs: [[6], [6], [1, 3, 6]], outputs: ["U"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter v in a capitalised word", inputs: [[6], [6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter w in a capitalised word", inputs: [[6], [6], [2, 4, 5, 6]], outputs: ["W"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter x in a capitalised word", inputs: [[6], [6], [1, 3, 4, 6]], outputs: ["X"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter y in a capitalised word", inputs: [[6], [6], [1, 3, 4, 5, 6]], outputs: ["Y"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter z in a capitalised word", inputs: [[6], [6], [1, 3, 5, 6]], outputs: ["Z"], source: "rulebook 8.4.1 p.90"}
+  - {name: "letter a in a capitalised passage", inputs: [[6], [6], [6], [1], [], [1]], outputs: ["A", " ", "A"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter b in a capitalised passage", inputs: [[6], [6], [6], [1, 2], [], [1, 2]], outputs: ["B", " ", "B"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter c in a capitalised passage", inputs: [[6], [6], [6], [1, 4], [], [1, 4]], outputs: ["C", " ", "C"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter d in a capitalised passage", inputs: [[6], [6], [6], [1, 4, 5], [], [1, 4, 5]], outputs: ["D", " ", "D"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter e in a capitalised passage", inputs: [[6], [6], [6], [1, 5], [], [1, 5]], outputs: ["E", " ", "E"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter f in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 4], [], [1, 2, 4]], outputs: ["F", " ", "F"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter g in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 4, 5], [], [1, 2, 4, 5]], outputs: ["G", " ", "G"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter h in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 5], [], [1, 2, 5]], outputs: ["H", " ", "H"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter i in a capitalised passage", inputs: [[6], [6], [6], [2, 4], [], [2, 4]], outputs: ["I", " ", "I"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter j in a capitalised passage", inputs: [[6], [6], [6], [2, 4, 5], [], [2, 4, 5]], outputs: ["J", " ", "J"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter k in a capitalised passage", inputs: [[6], [6], [6], [1, 3], [], [1, 3]], outputs: ["K", " ", "K"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter l in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3], [], [1, 2, 3]], outputs: ["L", " ", "L"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter m in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4], [], [1, 3, 4]], outputs: ["M", " ", "M"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter n in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 5], [], [1, 3, 4, 5]], outputs: ["N", " ", "N"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter o in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 5], [], [1, 3, 5]], outputs: ["O", " ", "O"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter p in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 4], [], [1, 2, 3, 4]], outputs: ["P", " ", "P"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter q in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 4, 5], [], [1, 2, 3, 4, 5]], outputs: ["Q", " ", "Q"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter r in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 5], [], [1, 2, 3, 5]], outputs: ["R", " ", "R"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter s in a capitalised passage", inputs: [[6], [6], [6], [2, 3, 4], [], [2, 3, 4]], outputs: ["S", " ", "S"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter t in a capitalised passage", inputs: [[6], [6], [6], [2, 3, 4, 5], [], [2, 3, 4, 5]], outputs: ["T", " ", "T"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter u in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 6], [], [1, 3, 6]], outputs: ["U", " ", "U"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter v in a capitalised passage", inputs: [[6], [6], [6], [1, 2, 3, 6], [], [1, 2, 3, 6]], outputs: ["V", " ", "V"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter w in a capitalised passage", inputs: [[6], [6], [6], [2, 4, 5, 6], [], [2, 4, 5, 6]], outputs: ["W", " ", "W"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter x in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 6], [], [1, 3, 4, 6]], outputs: ["X", " ", "X"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter y in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 4, 5, 6], [], [1, 3, 4, 5, 6]], outputs: ["Y", " ", "Y"], source: "rulebook 8.5.1 p.93"}
+  - {name: "letter z in a capitalised passage", inputs: [[6], [6], [6], [1, 3, 5, 6], [], [1, 3, 5, 6]], outputs: ["Z", " ", "Z"], source: "rulebook 8.5.1 p.93"}
+  - {name: "capitalised word ends at a space", inputs: [[6], [6], [1], [1, 2], [], [1, 4]], outputs: ["A", "B", " ", "c"], source: "rulebook 8.4.2 p.90"}
+  - {name: "capitalised word ends at a hyphen", inputs: [[6], [6], [1], [3, 6], [1, 2]], outputs: ["A", "-", "b"], source: "rulebook 8.4.2 p.91"}
+  - {name: "capitalised word ends at a single capital letter", inputs: [[6], [6], [1], [6], [1, 2], [1, 4]], outputs: ["A", "B", "c"], source: "rulebook 8.4.2 p.90"}
+  - {name: "capitalised word ends at the capitals terminator", inputs: [[6], [6], [1], [1, 2], [6], [3], [1, 4]], outputs: ["A", "B", "c"], source: "rulebook 8.6.3 p.96"}
+  - {name: "capitalised passage continues across spaces until the terminator", inputs: [[6], [6], [6], [1], [], [1, 2], [6], [3], [], [1, 4]], outputs: ["A", " ", "B", " ", "c"], source: "rulebook 8.5.3 p.93"}
+  - {name: "capitalised passage continues across punctuation", inputs: [[6], [6], [6], [1], [2], [], [1, 2], [2, 5, 6], [6], [3]], outputs: ["A", ",", " ", "B", "."], source: "rulebook 8.5.2 p.93"}
+  - {name: "example O", inputs: [[6], [1, 3, 5]], outputs: ["O"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example V", inputs: [[5, 6], [6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 20B", inputs: [[3, 4, 5, 6], [1, 2], [2, 4, 5], [6], [1, 2]], outputs: ["2", "0", "B"], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B.C.", inputs: [[6], [1, 2], [2, 5, 6], [6], [1, 4], [2, 5, 6]], outputs: ["B", ".", "C", "."], source: "rulebook 8.3.1 p.89 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B-E-L-I-E-V-E", inputs: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3], [3, 6], [6], [2, 4], [3, 6], [6], [1, 5], [3, 6], [6], [1, 2, 3, 6], [3, 6], [6], [1, 5]], outputs: ["B", "-", "E", "-", "L", "-", "I", "-", "E", "-", "V", "-", "E"], source: "rulebook 8.3.1 p.90 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DipTP", inputs: [[6], [1, 4, 5], [2, 4], [1, 2, 3, 4], [6], [6], [2, 3, 4, 5], [1, 2, 3, 4]], outputs: ["D", "i", "p", "T", "P"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example NEW YORK", inputs: [[6], [6], [1, 3, 4, 5], [1, 5], [2, 4, 5, 6], [], [6], [6], [1, 3, 4, 5, 6], [1, 3, 5], [1, 2, 3, 5], [1, 3]], outputs: ["N", "E", "W", " ", "Y", "O", "R", "K"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ANGLO-SAXON", inputs: [[6], [6], [1], [1, 3, 4, 5], [1, 2, 4, 5], [1, 2, 3], [1, 3, 5], [3, 6], [6], [6], [2, 3, 4], [1], [1, 3, 4, 6], [1, 3, 5], [1, 3, 4, 5]], outputs: ["A", "N", "G", "L", "O", "-", "S", "A", "X", "O", "N"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example McGRAW-HILL", inputs: [[6], [1, 3, 4], [1, 4], [6], [6], [1, 2, 4, 5], [1, 2, 3, 5], [1], [2, 4, 5, 6], [3, 6], [6], [6], [1, 2, 5], [2, 4], [1, 2, 3], [1, 2, 3]], outputs: ["M", "c", "G", "R", "A", "W", "-", "H", "I", "L", "L"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example O'SULLIVAN", inputs: [[6], [1, 3, 5], [3], [6], [6], [2, 3, 4], [1, 3, 6], [1, 2, 3], [1, 2, 3], [2, 4], [1, 2, 3, 6], [1], [1, 3, 4, 5]], outputs: ["O", "'", "S", "U", "L", "L", "I", "V", "A", "N"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DON'T", inputs: [[6], [6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [6], [2, 3, 4, 5]], outputs: ["D", "O", "N", "'", "T"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example OK'd", inputs: [[6], [6], [1, 3, 5], [1, 3], [3], [1, 4, 5]], outputs: ["O", "K", "'", "d"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example RSVP or R.S.V.P.", inputs: [[6], [6], [1, 2, 3, 5], [2, 3, 4], [1, 2, 3, 6], [1, 2, 3, 4], [], [1, 3, 5], [1, 2, 3, 5], [], [6], [1, 2, 3, 5], [2, 5, 6], [6], [2, 3, 4], [2, 5, 6], [6], [1, 2, 3, 6], [2, 5, 6], [6], [1, 2, 3, 4], [2, 5, 6]], outputs: ["R", "S", "V", "P", " ", "o", "r", " ", "R", ".", "S", ".", "V", ".", "P", "."], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example HOTELS.COM", inputs: [[6], [6], [1, 2, 5], [1, 3, 5], [2, 3, 4, 5], [1, 5], [1, 2, 3], [2, 3, 4], [2, 5, 6], [6], [6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["H", "O", "T", "E", "L", "S", ".", "C", "O", "M"], source: "rulebook 8.4.2 p.91 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example BA(Oxon)", inputs: [[6], [6], [1, 2], [1], [5], [1, 2, 6], [6], [1, 3, 5], [1, 3, 4, 6], [1, 3, 5], [1, 3, 4, 5], [5], [3, 4, 5]], outputs: ["B", "A", "(", "O", "x", "o", "n", ")"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example (R)AC", inputs: [[5], [1, 2, 6], [6], [1, 2, 3, 5], [5], [3, 4, 5], [6], [6], [1], [1, 4]], outputs: ["(", "R", ")", "A", "C"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example I/O", inputs: [[6], [2, 4], [4, 5, 6], [3, 4], [6], [1, 3, 5]], outputs: ["I", "/", "O"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example McDONALD@xyz.com", inputs: [[6], [1, 3, 4], [1, 4], [6], [6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [1], [1, 2, 3], [1, 4, 5], [4], [1], [1, 3, 4, 6], [1, 3, 4, 5, 6], [1, 3, 5, 6], [2, 5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["M", "c", "D", "O", "N", "A", "L", "D", "@", "x", "y", "z", ".", "c", "o", "m"], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example SWIFT & CO.", inputs: [[6], [6], [2, 3, 4], [2, 4, 5, 6], [2, 4], [1, 2, 4], [2, 3, 4, 5], [], [4], [1, 2, 3, 4, 6], [], [6], [6], [1, 4], [1, 3, 5], [2, 5, 6]], outputs: ["S", "W", "I", "F", "T", " ", "&", " ", "C", "O", "."], source: "rulebook 8.4.2 p.92 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ABCs", inputs: [[6], [6], [1], [1, 2], [1, 4], [6], [3], [2, 3, 4]], outputs: ["A", "B", "C", "s"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example WASPs", inputs: [[6], [6], [2, 4, 5, 6], [1], [2, 3, 4], [1, 2, 3, 4], [6], [3], [2, 3, 4]], outputs: ["W", "A", "S", "P", "s"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example XXIInd", inputs: [[6], [6], [1, 3, 4, 6], [1, 3, 4, 6], [2, 4], [2, 4], [6], [3], [1, 3, 4, 5], [1, 4, 5]], outputs: ["X", "X", "I", "I", "n", "d"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example VIIb", inputs: [[6], [6], [1, 2, 3, 6], [2, 4], [2, 4], [6], [3], [1, 2]], outputs: ["V", "I", "I", "b"], source: "rulebook 8.6.3 p.96 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example (July)", inputs: [[5], [1, 2, 6], [6], [2, 4, 5], [1, 3, 6], [1, 2, 3], [1, 3, 4, 5, 6], [5], [3, 4, 5]], outputs: ["(", "J", "u", "l", "y", ")"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example B-U-S", inputs: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 3, 6], [3, 6], [6], [2, 3, 4]], outputs: ["B", "-", "U", "-", "S"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 'TIS", inputs: [[3], [6], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4]], outputs: ["'", "T", "I", "S"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5]], outputs: ["C", "D"], source: "rulebook 8.7.1 p.97 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example OK OKd", inputs: [[6], [6], [1, 3, 5], [1, 3], [], [6], [6], [1, 3, 5], [1, 3], [6], [3], [1, 4, 5]], outputs: ["O", "K", " ", "O", "K", "d"], source: "rulebook 8.8.1 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD CDs", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5], [], [6], [6], [1, 4], [1, 4, 5], [6], [3], [2, 3, 4]], outputs: ["C", "D", " ", "C", "D", "s"], source: "rulebook 8.8.1 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example MHz", inputs: [[6], [1, 3, 4], [6], [1, 2, 5], [1, 3, 5, 6]], outputs: ["M", "H", "z"], source: "rulebook 8.8.2 p.99 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ilLOGical", inputs: [[2, 4], [1, 2, 3], [6], [6], [1, 2, 3], [1, 3, 5], [1, 2, 4, 5], [6], [3], [2, 4], [1, 4], [1], [1, 2, 3]], outputs: ["i", "l", "L", "O", "G", "i", "c", "a", "l"], source: "rulebook 4.1.1 p.46 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example CD-ROM", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5], [3, 6], [6], [6], [1, 2, 3, 5], [1, 3, 5], [1, 3, 4]], outputs: ["C", "D", "-", "R", "O", "M"], source: "rulebook 5.7.2 p.61 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example TEAspoon", inputs: [[6], [6], [2, 3, 4, 5], [1, 5], [1], [6], [3], [2, 3, 4], [1, 2, 3, 4], [1, 3, 5], [1, 3, 5], [1, 3, 4, 5]], outputs: ["T", "E", "A", "s", "p", "o", "o", "n"], source: "rulebook 10.6.6 p.131 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DISlike", inputs: [[6], [6], [1, 4, 5], [2, 4], [2, 3, 4], [6], [3], [1, 2, 3], [2, 4], [1, 3], [1, 5]], outputs: ["D", "I", "S", "l", "i", "k", "e"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example conCUR", inputs: [[1, 4], [1, 3, 5], [1, 3, 4, 5], [6], [6], [1, 4], [1, 3, 6], [1, 2, 3, 5]], outputs: ["c", "o", "n", "C", "U", "R"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example DisCORD", inputs: [[6], [1, 4, 5], [2, 4], [2, 3, 4], [6], [6], [1, 4], [1, 3, 5], [1, 2, 3, 5], [1, 4, 5]], outputs: ["D", "i", "s", "C", "O", "R", "D"], source: "rulebook 10.6.3 p.128 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example AWful", inputs: [[6], [6], [1], [2, 4, 5, 6], [6], [3], [1, 2, 4], [1, 3, 6], [1, 2, 3]], outputs: ["A", "W", "f", "u", "l"], source: "rulebook 10.8.2 p.144 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example ELesson", inputs: [[6], [1, 5], [6], [1, 2, 3], [1, 5], [2, 3, 4], [2, 3, 4], [1, 3, 5], [1, 3, 4, 5]], outputs: ["E", "L", "e", "s", "s", "o", "n"], source: "rulebook 10.8.2 p.145 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example LLC", inputs: [[5, 6], [6], [6], [1, 2, 3], [1, 2, 3], [1, 4]], outputs: ["L", "L", "C"], source: "rulebook 10.9.8 p.152 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example UNSD", inputs: [[5, 6], [5, 6], [6], [6], [1, 3, 6], [1, 3, 4, 5], [2, 3, 4], [1, 4, 5]], outputs: ["U", "N", "S", "D"], source: "rulebook 10.9.9 p.153 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 3B", inputs: [[3, 4, 5, 6], [1, 4], [6], [1, 2]], outputs: ["3", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example 4.B", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [6], [1, 2]], outputs: ["4", ".", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example W1N 9LF", inputs: [[6], [2, 4, 5, 6], [3, 4, 5, 6], [1], [6], [1, 3, 4, 5], [], [3, 4, 5, 6], [2, 4], [6], [6], [1, 2, 3], [1, 2, 4]], outputs: ["W", "1", "N", " ", "9", "L", "F"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example N12 7BT", inputs: [[6], [1, 3, 4, 5], [3, 4, 5, 6], [1], [1, 2], [], [3, 4, 5, 6], [1, 2, 4, 5], [6], [6], [1, 2], [2, 3, 4, 5]], outputs: ["N", "1", "2", " ", "7", "B", "T"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example M4G 3E8", inputs: [[6], [1, 3, 4], [3, 4, 5, 6], [1, 4, 5], [6], [1, 2, 4, 5], [], [3, 4, 5, 6], [1, 4], [6], [1, 5], [3, 4, 5, 6], [1, 2, 5]], outputs: ["M", "4", "G", " ", "3", "E", "8"], source: "rulebook 6.7.1 p.71 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example Braille4All", inputs: [[6], [1, 2], [1, 2, 3, 5], [1], [2, 4], [1, 2, 3], [1, 2, 3], [1, 5], [3, 4, 5, 6], [1, 4, 5], [6], [1], [1, 2, 3], [1, 2, 3]], outputs: ["B", "r", "a", "i", "l", "l", "e", "4", "A", "l", "l"], source: "rulebook 2.6.3 p.18 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example US$", inputs: [[6], [6], [1, 3, 6], [2, 3, 4], [4], [2, 3, 4]], outputs: ["U", "S", "$"], source: "rulebook 3.10.1 p.29 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example KBr (potassium bromide)", inputs: [[6], [1, 3], [6], [1, 2], [1, 2, 3, 5], [], [5], [1, 2, 6], [1, 2, 3, 4], [1, 3, 5], [2, 3, 4, 5], [1], [2, 3, 4], [2, 3, 4], [2, 4], [1, 3, 6], [1, 3, 4], [], [1, 2], [1, 2, 3, 5], [1, 3, 5], [1, 3, 4], [2, 4], [1, 4, 5], [1, 5], [5], [3, 4, 5]], outputs: ["K", "B", "r", " ", "(", "p", "o", "t", "a", "s", "s", "i", "u", "m", " ", "b", "r", "o", "m", "i", "d", "e", ")"], source: "rulebook 8.8.2 p.98 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "example A SELF-MADE MAN", inputs: [[6], [6], [6], [1], [], [2, 3, 4], [1, 5], [1, 2, 3], [1, 2, 4], [3, 6], [1, 3, 4], [1], [1, 4, 5], [1, 5], [], [1, 3, 4], [1], [1, 3, 4, 5], [6], [3]], outputs: ["A", " ", "S", "E", "L", "F", "-", "M", "A", "D", "E", " ", "M", "A", "N"], source: "rulebook 8.5.3 p.93 (references/research/ueb-capitalisation.yaml)"}
+  - {name: "case HI THERE! ok", inputs: [[6], [6], [6], [1, 2, 5], [2, 4], [], [2, 3, 4, 5], [1, 2, 5], [1, 5], [1, 2, 3, 5], [1, 5], [2, 3, 5], [6], [3], [], [1, 3, 5], [1, 3]], outputs: ["H", "I", " ", "T", "H", "E", "R", "E", "!", " ", "o", "k"], source: "constructed in references/research/ueb-capitalisation.yaml: passage spans spaces and punctuation until ⠠⠄, 8.5"}
+  - {name: "case 1ST PLACE", inputs: [[6], [6], [6], [3, 4, 5, 6], [1], [2, 3, 4], [2, 3, 4, 5], [], [1, 2, 3, 4], [1, 2, 3], [1], [1, 4], [1, 5], [6], [3]], outputs: ["1", "S", "T", " ", "P", "L", "A", "C", "E"], source: "constructed in references/research/ueb-capitalisation.yaml: digits do not end a passage; letters after them stay capital, 8.5.2"}
+  - {name: "case AB CD Ef", inputs: [[6], [6], [6], [1], [1, 2], [], [6], [6], [1, 4], [1, 4, 5], [], [1, 5], [6], [3], [1, 2, 4]], outputs: ["A", "B", " ", "C", "D", " ", "E", "f"], source: "constructed in references/research/ueb-capitalisation.yaml: word indicator inside a passage keeps the passage (firmware choice); terminator mid-sequence, 8.6.3"}
+  - {name: "case Abc", inputs: [[6], [6], [1], [5, 6], [1, 2], [1, 4]], outputs: ["A", "b", "c"], source: "constructed in references/research/ueb-capitalisation.yaml: grade 1 indicator is non-alphabetic and ends the capitalised word (derived from 2.1)"}
+  - {name: "case a", inputs: [[6], [3], [1]], outputs: ["a"], source: "constructed in references/research/ueb-capitalisation.yaml: terminator with no capitals mode: no output (firmware choice)"}
+  - {name: "case -", inputs: [[6], [3, 6]], outputs: ["-"], source: "constructed in references/research/ueb-capitalisation.yaml: ⠠ forms no sign with ⠤ in ueb1 (dash is excluded): dropped with a notice, then ⠤ is read afresh"}
+  - {name: "numeric indicator then 1", inputs: [[3, 4, 5, 6], [1]], outputs: ["1"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 2", inputs: [[3, 4, 5, 6], [1, 2]], outputs: ["2"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 3", inputs: [[3, 4, 5, 6], [1, 4]], outputs: ["3"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 4", inputs: [[3, 4, 5, 6], [1, 4, 5]], outputs: ["4"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 5", inputs: [[3, 4, 5, 6], [1, 5]], outputs: ["5"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 6", inputs: [[3, 4, 5, 6], [1, 2, 4]], outputs: ["6"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 7", inputs: [[3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["7"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 8", inputs: [[3, 4, 5, 6], [1, 2, 5]], outputs: ["8"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 9", inputs: [[3, 4, 5, 6], [2, 4]], outputs: ["9"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then 0", inputs: [[3, 4, 5, 6], [2, 4, 5]], outputs: ["0"], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then ,", inputs: [[3, 4, 5, 6], [2]], outputs: [","], source: "rulebook 6.1 p.65"}
+  - {name: "numeric indicator then .", inputs: [[3, 4, 5, 6], [2, 5, 6]], outputs: ["."], source: "rulebook 6.1 p.65"}
+  - {name: "digit 1 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1]], outputs: ["1", "1"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 2 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 2]], outputs: ["1", "2"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 3 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 4]], outputs: ["1", "3"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 4 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 4, 5]], outputs: ["1", "4"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 5 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 5]], outputs: ["1", "5"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 6 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 2, 4]], outputs: ["1", "6"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 7 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 2, 4, 5]], outputs: ["1", "7"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 8 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [1, 2, 5]], outputs: ["1", "8"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 9 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [2, 4]], outputs: ["1", "9"], source: "rulebook 6.2.1 p.66"}
+  - {name: "digit 0 continuing numeric mode", inputs: [[3, 4, 5, 6], [1], [2, 4, 5]], outputs: ["1", "0"], source: "rulebook 6.2.1 p.66"}
+  - {name: "comma inside a number", inputs: [[3, 4, 5, 6], [1], [2], [1, 5], [2, 4, 5], [2, 4, 5]], outputs: ["1", ",", "5", "0", "0"], source: "rulebook 6.2.1 p.66"}
+  - {name: "full stop inside a number", inputs: [[3, 4, 5, 6], [1, 2], [2, 5, 6], [1, 5]], outputs: ["2", ".", "5"], source: "rulebook 6.2.1 p.66"}
+  - {name: "numeric space then 1", inputs: [[3, 4, 5, 6], [1], [5], [1]], outputs: ["1", " ", "1"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 2", inputs: [[3, 4, 5, 6], [1], [5], [1, 2]], outputs: ["1", " ", "2"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 3", inputs: [[3, 4, 5, 6], [1], [5], [1, 4]], outputs: ["1", " ", "3"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 4", inputs: [[3, 4, 5, 6], [1], [5], [1, 4, 5]], outputs: ["1", " ", "4"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 5", inputs: [[3, 4, 5, 6], [1], [5], [1, 5]], outputs: ["1", " ", "5"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 6", inputs: [[3, 4, 5, 6], [1], [5], [1, 2, 4]], outputs: ["1", " ", "6"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 7", inputs: [[3, 4, 5, 6], [1], [5], [1, 2, 4, 5]], outputs: ["1", " ", "7"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 8", inputs: [[3, 4, 5, 6], [1], [5], [1, 2, 5]], outputs: ["1", " ", "8"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 9", inputs: [[3, 4, 5, 6], [1], [5], [2, 4]], outputs: ["1", " ", "9"], source: "rulebook 6.6.1 p.70"}
+  - {name: "numeric space then 0", inputs: [[3, 4, 5, 6], [1], [5], [2, 4, 5]], outputs: ["1", " ", "0"], source: "rulebook 6.6.1 p.70"}
+  - {name: "a letter k-z ends numeric mode", inputs: [[3, 4, 5, 6], [1, 4], [1, 3, 4]], outputs: ["3", "m"], source: "rulebook 6.5.2 p.68"}
+  - {name: "a space ends numeric mode", inputs: [[3, 4, 5, 6], [1], [], [1]], outputs: ["1", " ", "a"], source: "rulebook 6.3.1 p.67"}
+  - {name: "a hyphen ends numeric mode", inputs: [[3, 4, 5, 6], [2, 4], [3, 6], [3, 4, 5, 6], [1], [2, 4, 5]], outputs: ["9", "-", "1", "0"], source: "rulebook 6.3.1 p.67"}
+  - {name: "a capital letter ends numeric mode", inputs: [[3, 4, 5, 6], [1, 4], [6], [1, 2]], outputs: ["3", "B"], source: "rulebook 6.5.2 p.68"}
+  - {name: "the grade 1 indicator ends numeric mode before a-j", inputs: [[3, 4, 5, 6], [1, 4], [5, 6], [1, 2]], outputs: ["3", "b"], source: "rulebook 6.5.2 p.68"}
+  - {name: "a numeric indicator is needed again after numeric mode ends", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5]], outputs: ["7", ":", "3", "0"], source: "rulebook 6.3.1 p.67"}
+  - {name: "example 62", inputs: [[3, 4, 5, 6], [1, 2, 4], [1, 2]], outputs: ["6", "2"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 1959", inputs: [[3, 4, 5, 6], [1], [2, 4], [1, 5], [2, 4]], outputs: ["1", "9", "5", "9"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 3,500", inputs: [[3, 4, 5, 6], [1, 4], [2], [1, 5], [2, 4, 5], [2, 4, 5]], outputs: ["3", ",", "5", "0", "0"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 8.93", inputs: [[3, 4, 5, 6], [1, 2, 5], [2, 5, 6], [2, 4], [1, 4]], outputs: ["8", ".", "9", "3"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example .7", inputs: [[3, 4, 5, 6], [2, 5, 6], [1, 2, 4, 5]], outputs: [".", "7"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 0.7", inputs: [[3, 4, 5, 6], [2, 4, 5], [2, 5, 6], [1, 2, 4, 5]], outputs: ["0", ".", "7"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 8,93", inputs: [[3, 4, 5, 6], [1, 2, 5], [2], [2, 4], [1, 4]], outputs: ["8", ",", "9", "3"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example ,7", inputs: [[3, 4, 5, 6], [2], [1, 2, 4, 5]], outputs: [",", "7"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 0,7", inputs: [[3, 4, 5, 6], [2, 4, 5], [2], [1, 2, 4, 5]], outputs: ["0", ",", "7"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4 500 000", inputs: [[3, 4, 5, 6], [1, 4, 5], [5], [1, 5], [2, 4, 5], [2, 4, 5], [5], [2, 4, 5], [2, 4, 5], [2, 4, 5]], outputs: ["4", " ", "5", "0", "0", " ", "0", "0", "0"], source: "rulebook 6.2.1 p.66 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example date: 1947 08 31", inputs: [[1, 4, 5], [1], [2, 3, 4, 5], [1, 5], [2, 5], [], [3, 4, 5, 6], [1], [2, 4], [1, 4, 5], [1, 2, 4, 5], [5], [2, 4, 5], [1, 2, 5], [5], [1, 4], [1]], outputs: ["d", "a", "t", "e", ":", " ", "1", "9", "4", "7", " ", "0", "8", " ", "3", "1"], source: "rulebook 6.6.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7:30 a.m.", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [], [1], [2, 5, 6], [1, 3, 4], [2, 5, 6]], outputs: ["7", ":", "3", "0", " ", "a", ".", "m", "."], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 10:12:2009", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1], [1, 2], [2, 5], [3, 4, 5, 6], [1, 2], [2, 4, 5], [2, 4, 5], [2, 4]], outputs: ["1", "0", ":", "1", "2", ":", "2", "0", "0", "9"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 9-10", inputs: [[3, 4, 5, 6], [2, 4], [3, 6], [3, 4, 5, 6], [1], [2, 4, 5]], outputs: ["9", "-", "1", "0"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 2.5-5", inputs: [[3, 4, 5, 6], [1, 2], [2, 5, 6], [1, 5], [3, 6], [3, 4, 5, 6], [1, 5]], outputs: ["2", ".", "5", "-", "5"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 8-cab fleet", inputs: [[3, 4, 5, 6], [1, 2, 5], [3, 6], [1, 4], [1], [1, 2], [], [1, 2, 4], [1, 2, 3], [1, 5], [1, 5], [2, 3, 4, 5]], outputs: ["8", "-", "c", "a", "b", " ", "f", "l", "e", "e", "t"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 1/4 cup", inputs: [[3, 4, 5, 6], [1], [4, 5, 6], [3, 4], [3, 4, 5, 6], [1, 4, 5], [], [1, 4], [1, 3, 6], [1, 2, 3, 4]], outputs: ["1", "/", "4", " ", "c", "u", "p"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example on call 24/7", inputs: [[1, 3, 5], [1, 3, 4, 5], [], [1, 4], [1], [1, 2, 3], [1, 2, 3], [], [3, 4, 5, 6], [1, 2], [1, 4, 5], [4, 5, 6], [3, 4], [3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["o", "n", " ", "c", "a", "l", "l", " ", "2", "4", "/", "7"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7(2)", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [3, 4, 5, 6], [1, 2], [5], [3, 4, 5]], outputs: ["7", "(", "2", ")"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7(b)", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], outputs: ["7", "(", "b", ")"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4..7", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [2, 5, 6], [1, 2, 4, 5]], outputs: ["4", ".", ".", "7"], source: "rulebook 6.3.1 p.67 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 32", inputs: [[3, 4, 5, 6], [1, 4], [1, 2]], outputs: ["3", "2"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 3b", inputs: [[3, 4, 5, 6], [1, 4], [5, 6], [1, 2]], outputs: ["3", "b"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 3B", inputs: [[3, 4, 5, 6], [1, 4], [6], [1, 2]], outputs: ["3", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 3m", inputs: [[3, 4, 5, 6], [1, 4], [1, 3, 4]], outputs: ["3", "m"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4.2", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [1, 2]], outputs: ["4", ".", "2"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4.b", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [5, 6], [1, 2]], outputs: ["4", ".", "b"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4.B", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [6], [1, 2]], outputs: ["4", ".", "B"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4.m", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [1, 3, 4]], outputs: ["4", ".", "m"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example report3.doc", inputs: [[1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 3, 5], [1, 2, 3, 5], [2, 3, 4, 5], [3, 4, 5, 6], [1, 4], [2, 5, 6], [5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], outputs: ["r", "e", "p", "o", "r", "t", "3", ".", "d", "o", "c"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example report3.xls", inputs: [[1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 3, 5], [1, 2, 3, 5], [2, 3, 4, 5], [3, 4, 5, 6], [1, 4], [2, 5, 6], [1, 3, 4, 6], [1, 2, 3], [2, 3, 4]], outputs: ["r", "e", "p", "o", "r", "t", "3", ".", "x", "l", "s"], source: "rulebook 6.5.2 p.68 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 4-m", inputs: [[3, 4, 5, 6], [1, 4, 5], [3, 6], [5, 6], [1, 3, 4]], outputs: ["4", "-", "m"], source: "rulebook 6.5.4 p.69 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7/11/59", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [4, 5, 6], [3, 4], [3, 4, 5, 6], [1], [1], [4, 5, 6], [3, 4], [3, 4, 5, 6], [1, 5], [2, 4]], outputs: ["7", "/", "1", "1", "/", "5", "9"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7.11.59", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [2, 5, 6], [1], [1], [2, 5, 6], [1, 5], [2, 4]], outputs: ["7", ".", "1", "1", ".", "5", "9"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 1960's", inputs: [[3, 4, 5, 6], [1], [2, 4], [1, 2, 4], [2, 4, 5], [3], [2, 3, 4]], outputs: ["1", "9", "6", "0", "'", "s"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example $8.75", inputs: [[4], [2, 3, 4], [3, 4, 5, 6], [1, 2, 5], [2, 5, 6], [1, 2, 4, 5], [1, 5]], outputs: ["$", "8", ".", "7", "5"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example $1,500.00", inputs: [[4], [2, 3, 4], [3, 4, 5, 6], [1], [2], [1, 5], [2, 4, 5], [2, 4, 5], [2, 5, 6], [2, 4, 5], [2, 4, 5]], outputs: ["$", "1", ",", "5", "0", "0", ".", "0", "0"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example R8,75", inputs: [[6], [1, 2, 3, 5], [3, 4, 5, 6], [1, 2, 5], [2], [1, 2, 4, 5], [1, 5]], outputs: ["R", "8", ",", "7", "5"], source: "rulebook 6.7.1 p.70 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 2nd", inputs: [[3, 4, 5, 6], [1, 2], [1, 3, 4, 5], [1, 4, 5]], outputs: ["2", "n", "d"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 2d", inputs: [[3, 4, 5, 6], [1, 2], [5, 6], [1, 4, 5]], outputs: ["2", "d"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 1er", inputs: [[3, 4, 5, 6], [1], [5, 6], [1, 5], [1, 2, 3, 5]], outputs: ["1", "e", "r"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 1st", inputs: [[3, 4, 5, 6], [1], [2, 3, 4], [2, 3, 4, 5]], outputs: ["1", "s", "t"], source: "rulebook 5.6.1 p.59 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example M4G 3E8", inputs: [[6], [1, 3, 4], [3, 4, 5, 6], [1, 4, 5], [6], [1, 2, 4, 5], [], [3, 4, 5, 6], [1, 4], [6], [1, 5], [3, 4, 5, 6], [1, 2, 5]], outputs: ["M", "4", "G", " ", "3", "E", "8"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example W1N 9LF", inputs: [[6], [2, 4, 5, 6], [3, 4, 5, 6], [1], [6], [1, 3, 4, 5], [], [3, 4, 5, 6], [2, 4], [6], [6], [1, 2, 3], [1, 2, 4]], outputs: ["W", "1", "N", " ", "9", "L", "F"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example N12 7BT", inputs: [[6], [1, 3, 4, 5], [3, 4, 5, 6], [1], [1, 2], [], [3, 4, 5, 6], [1, 2, 4, 5], [6], [6], [1, 2], [2, 3, 4, 5]], outputs: ["N", "1", "2", " ", "7", "B", "T"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example (416) 486-2500", inputs: [[5], [1, 2, 6], [3, 4, 5, 6], [1, 4, 5], [1], [1, 2, 4], [5], [3, 4, 5], [], [3, 4, 5, 6], [1, 4, 5], [1, 2, 5], [1, 2, 4], [3, 6], [3, 4, 5, 6], [1, 2], [1, 5], [2, 4, 5], [2, 4, 5]], outputs: ["(", "4", "1", "6", ")", " ", "4", "8", "6", "-", "2", "5", "0", "0"], source: "rulebook 6.7.1 p.71 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 3-D", inputs: [[3, 4, 5, 6], [1, 4], [3, 6], [5, 6], [6], [1, 4, 5]], outputs: ["3", "-", "D"], source: "rulebook 5.6.2 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 5-CD set", inputs: [[3, 4, 5, 6], [1, 5], [3, 6], [5, 6], [6], [6], [1, 4], [1, 4, 5], [], [2, 3, 4], [1, 5], [2, 3, 4, 5]], outputs: ["5", "-", "C", "D", " ", "s", "e", "t"], source: "rulebook 5.6.2 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example b-1", inputs: [[5, 6], [1, 2], [3, 6], [3, 4, 5, 6], [1]], outputs: ["b", "-", "1"], source: "rulebook 5.7.1 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example p.7", inputs: [[1, 2, 3, 4], [2, 5, 6], [3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["p", ".", "7"], source: "rulebook 5.7.1 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example p7", inputs: [[1, 2, 3, 4], [3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["p", "7"], source: "rulebook 5.7.1 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example p. 7", inputs: [[5, 6], [1, 2, 3, 4], [2, 5, 6], [], [3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["p", ".", " ", "7"], source: "rulebook 5.7.1 p.60 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 99c", inputs: [[3, 4, 5, 6], [2, 4], [2, 4], [5, 6], [1, 4]], outputs: ["9", "9", "c"], source: "rulebook 3.10.1 p.28 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example a 4x4 vehicle", inputs: [[1], [], [3, 4, 5, 6], [1, 4, 5], [1, 3, 4, 6], [3, 4, 5, 6], [1, 4, 5], [], [1, 2, 3, 6], [1, 5], [1, 2, 5], [2, 4], [1, 4], [1, 2, 3], [1, 5]], outputs: ["a", " ", "4", "x", "4", " ", "v", "e", "h", "i", "c", "l", "e"], source: "rulebook 3.9.1 p.28 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example Question 3c", inputs: [[6], [1, 2, 3, 4, 5], [1, 3, 6], [1, 5], [2, 3, 4], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [], [3, 4, 5, 6], [1, 4], [5, 6], [1, 4]], outputs: ["Q", "u", "e", "s", "t", "i", "o", "n", " ", "3", "c"], source: "rulebook 5.11.1 p.63 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example Braille4All", inputs: [[6], [1, 2], [1, 2, 3, 5], [1], [2, 4], [1, 2, 3], [1, 2, 3], [1, 5], [3, 4, 5, 6], [1, 4, 5], [6], [1], [1, 2, 3], [1, 2, 3]], outputs: ["B", "r", "a", "i", "l", "l", "e", "4", "A", "l", "l"], source: "rulebook 2.6.3 p.18 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example CH6-1234", inputs: [[6], [6], [1, 4], [1, 2, 5], [3, 4, 5, 6], [1, 2, 4], [3, 6], [3, 4, 5, 6], [1], [1, 2], [1, 4], [1, 4, 5]], outputs: ["C", "H", "6", "-", "1", "2", "3", "4"], source: "rulebook 10.12.1 p.164 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example 7ins", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5, 6], [2, 4], [1, 3, 4, 5], [2, 3, 4]], outputs: ["7", "i", "n", "s"], source: "rulebook 10.12.2 p.166 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example PT109", inputs: [[6], [6], [1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6], [1], [2, 4, 5], [2, 4]], outputs: ["P", "T", "1", "0", "9"], source: "rulebook 9.6.1 p.109 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "example jim@take2.com", inputs: [[2, 4, 5], [2, 4], [1, 3, 4], [4], [1], [2, 3, 4, 5], [1], [1, 3], [1, 5], [3, 4, 5, 6], [1, 2], [2, 5, 6], [5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["j", "i", "m", "@", "t", "a", "k", "e", "2", ".", "c", "o", "m"], source: "rulebook 5.2.1 p.58 (references/research/ueb-numeric-mode.yaml)"}
+  - {name: "case 3l", inputs: [[3, 4, 5, 6], [1, 4], [1, 2, 3]], outputs: ["3", "l"], source: "constructed in references/research/ueb-numeric-mode.yaml: k-z after a digit needs no indicator and ends numeric mode, 6.5.2"}
+  - {name: "case 1(b)", inputs: [[3, 4, 5, 6], [1], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], outputs: ["1", "(", "b", ")"], source: "constructed in references/research/ueb-numeric-mode.yaml: ⠐⠣ is not a numeric space, so it terminates numeric mode, 6.3.1"}
+  - {name: "case 10 00", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [5], [2, 4, 5], [2, 4, 5]], outputs: ["1", "0", " ", "0", "0"], source: "constructed in references/research/ueb-numeric-mode.yaml: numeric space inside one number, 6.6.1"}
+  - {name: "case 2?", inputs: [[3, 4, 5, 6], [1, 2], [2, 3, 6]], outputs: ["2", "?"], source: "constructed in references/research/ueb-numeric-mode.yaml: ⠦ after a digit is not at a word start: question mark"}
+  - {name: "case -", inputs: [[3, 4, 5, 6], [3, 6]], outputs: ["-"], source: "constructed in references/research/ueb-numeric-mode.yaml: ⠼ forms no numeric indicator: dropped with a display notice, then ⠤ is read afresh"}
+  - {name: "comma ,", inputs: [[1], [2]], outputs: ["a", ","], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
   - {name: "semicolon ;", inputs: [[1], [2, 3]], outputs: ["a", ";"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
   - {name: "colon :", inputs: [[1], [2, 5]], outputs: ["a", ":"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "exclamation mark !", inputs: [[1], [2, 3, 5]], outputs: ["a", "!"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
   - {name: "apostrophe '", inputs: [[1], [3]], outputs: ["a", "'"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "closing double quotation mark", inputs: [[3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.1 p.82"}
-  - {name: "letter z", inputs: [[1, 3, 5, 6]], outputs: ["z"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter Z", inputs: [[6], [1, 3, 5, 6]], outputs: ["Z"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter x", inputs: [[1, 3, 4, 6]], outputs: ["x"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter X", inputs: [[6], [1, 3, 4, 6]], outputs: ["X"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter c", inputs: [[1, 4]], outputs: ["c"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter C", inputs: [[6], [1, 4]], outputs: ["C"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter v", inputs: [[1, 2, 3, 6]], outputs: ["v"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter V", inputs: [[6], [1, 2, 3, 6]], outputs: ["V"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter b", inputs: [[1, 2]], outputs: ["b"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter B", inputs: [[6], [1, 2]], outputs: ["B"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter n", inputs: [[1, 3, 4, 5]], outputs: ["n"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter N", inputs: [[6], [1, 3, 4, 5]], outputs: ["N"], source: "rulebook 8.3.1 p.89"}
-  - {name: "letter m", inputs: [[1, 3, 4]], outputs: ["m"], source: "rulebook 4.1 p.45 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "capital letter M", inputs: [[6], [1, 3, 4]], outputs: ["M"], source: "rulebook 8.3.1 p.89"}
-  - {name: "comma ,", inputs: [[1], [2]], outputs: ["a", ","], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "less-than / opening angle bracket <", inputs: [[4], [1, 2, 6]], outputs: ["<"], source: "rulebook 3.17 p.33"}
+  - {name: "hyphen -", inputs: [[1], [3, 6]], outputs: ["a", "-"], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
   - {name: "full stop .", inputs: [[1], [2, 5, 6]], outputs: ["a", "."], source: "rulebook 7 p.75 (references/research/ueb-literary-signs.yaml)"}
-  - {name: "greater-than / closing angle bracket >", inputs: [[4], [3, 4, 5]], outputs: [">"], source: "rulebook 3.17 p.33"}
-  - {name: "solidus (forward slash) /", inputs: [[4, 5, 6], [3, 4]], outputs: ["/"], source: "rulebook 7 p.75"}
   - {name: "question mark after a letter", inputs: [[1], [2, 3, 6]], outputs: ["a", "?"], source: "rulebook 7.5 p.81"}
+  - {name: "ampersand &", inputs: [[4], [1, 2, 3, 4, 6]], outputs: ["&"], source: "rulebook 3.1 p.23"}
+  - {name: "asterisk *", inputs: [[5], [3, 5]], outputs: ["*"], source: "rulebook 3.3 p.23"}
+  - {name: "commercial at @", inputs: [[4], [1]], outputs: ["@"], source: "rulebook 3.7 p.27"}
+  - {name: "caret ^", inputs: [[4], [2, 6]], outputs: ["^"], source: "rulebook 3.6 p.26"}
+  - {name: "number sign #", inputs: [[4, 5, 6], [1, 4, 5, 6]], outputs: ["#"], source: "rulebook 3.19 p.35"}
+  - {name: "dollar sign $", inputs: [[4], [2, 3, 4]], outputs: ["$"], source: "rulebook 3.10 p.28"}
+  - {name: "percent sign %", inputs: [[4, 6], [3, 5, 6]], outputs: ["%"], source: "rulebook 3.21 p.36"}
+  - {name: "tilde (swung dash) ~", inputs: [[4], [3, 5]], outputs: ["~"], source: "rulebook 3.25 p.38"}
+  - {name: "solidus (forward slash) /", inputs: [[4, 5, 6], [3, 4]], outputs: ["/"], source: "rulebook 7 p.75"}
+  - {name: "low line (underscore) _", inputs: [[4, 6], [3, 6]], outputs: ["_"], source: "rulebook 7 p.76"}
+  - {name: "plus +", inputs: [[5], [2, 3, 5]], outputs: ["+"], source: "rulebook 3.17 p.33"}
+  - {name: "equals =", inputs: [[5], [2, 3, 5, 6]], outputs: ["="], source: "rulebook 3.17 p.33"}
+  - {name: "less-than / opening angle bracket <", inputs: [[4], [1, 2, 6]], outputs: ["<"], source: "rulebook 3.17 p.33"}
+  - {name: "greater-than / closing angle bracket >", inputs: [[4], [3, 4, 5]], outputs: [">"], source: "rulebook 3.17 p.33"}
+  - {name: "opening parenthesis (", inputs: [[5], [1, 2, 6]], outputs: ["("], source: "rulebook 7 p.75"}
+  - {name: "closing parenthesis )", inputs: [[5], [3, 4, 5]], outputs: [")"], source: "rulebook 7 p.75"}
+  - {name: "opening square bracket [", inputs: [[4, 6], [1, 2, 6]], outputs: ["["], source: "rulebook 7 p.75"}
+  - {name: "closing square bracket ]", inputs: [[4, 6], [3, 4, 5]], outputs: ["]"], source: "rulebook 7 p.75"}
+  - {name: "opening curly bracket {", inputs: [[4, 5, 6], [1, 2, 6]], outputs: ["{"], source: "rulebook 7 p.75"}
+  - {name: "closing curly bracket }", inputs: [[4, 5, 6], [3, 4, 5]], outputs: ["}"], source: "rulebook 7 p.75"}
+  - {name: "reverse solidus (backslash) \\", inputs: [[4, 5, 6], [1, 6]], outputs: ["\\"], source: "rulebook 7 p.75"}
+  - {name: "opening double quotation mark at the beginning of a word", inputs: [[2, 3, 6], [1]], outputs: ["\"", "a"], source: "rulebook 7.6.1 p.82"}
+  - {name: "closing double quotation mark", inputs: [[3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.1 p.82"}
+  - {name: "two-cell opening double quotation mark", inputs: [[4, 5], [2, 3, 6]], outputs: ["\""], source: "rulebook 7.6.7 p.85"}
+  - {name: "two-cell closing double quotation mark", inputs: [[4, 5], [3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.7 p.85"}
+  - {name: "opening single quotation mark", inputs: [[6], [2, 3, 6]], outputs: ["'"], source: "rulebook 7.6.2 p.82"}
+  - {name: "closing single quotation mark", inputs: [[6], [3, 5, 6]], outputs: ["'"], source: "rulebook 7.6.2 p.82"}
+  - {name: "nondirectional double quotation mark", inputs: [[6], [2, 3, 5, 6]], outputs: ["\""], source: "rulebook 7.6.5 p.83"}
+  - {name: "nondirectional single quotation mark", inputs: [[1], [3], [1]], outputs: ["a", "'", "a"], source: "rulebook 7.6.5 p.83"}
+  - {name: "vertical line |", inputs: [[4, 5, 6], [1, 2, 5, 6]], outputs: ["|"], source: "rulebook 15.1 p.223"}
+  - {name: "grave accent alone `", inputs: [[4, 6], [1, 6]], outputs: ["`"], source: "rulebook Appendix 3 p.325"}
   - {name: "Braille space chord: space", inputs: [[]], outputs: [" "], source: "rulebook 3.23 p.37"}
+  - {name: "example \"'Tis late.\"", inputs: [[2, 3, 6], [3], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4], [], [1, 2, 3], [1], [2, 3, 4, 5], [1, 5], [2, 5, 6], [3, 5, 6]], outputs: ["\"", "'", "T", "i", "s", " ", "l", "a", "t", "e", ".", "\""], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \"...", inputs: [[2, 3, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6]], outputs: ["\"", ".", ".", "."], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \":\"", inputs: [[2, 3, 6], [2, 5], [3, 5, 6]], outputs: ["\"", ":", "\""], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ...?\"", inputs: [[2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 3, 6], [3, 5, 6]], outputs: [".", ".", ".", "?", "\""], source: "rulebook 7.1.4 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example I don't th....\"", inputs: [[6], [2, 4], [], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5], [], [2, 3, 4, 5], [1, 2, 5], [2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6], [3, 5, 6]], outputs: ["I", " ", "d", "o", "n", "'", "t", " ", "t", "h", ".", ".", ".", ".", "\""], source: "rulebook 7.3.1 p.80 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example X' Y\"", inputs: [[5, 6], [6], [1, 3, 4, 6], [3], [], [5, 6], [6], [1, 3, 4, 5, 6], [6], [2, 3, 5, 6]], outputs: ["X", "'", " ", "Y", "\""], source: "rulebook 2.6.3 p.18 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example \"yr-123", inputs: [[6], [2, 3, 5, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [3, 6], [3, 4, 5, 6], [1], [1, 2], [1, 4]], outputs: ["\"", "y", "r", "-", "1", "2", "3"], source: "rulebook 2.6.2 p.16 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 4' 11\"", inputs: [[3, 4, 5, 6], [1, 4, 5], [3], [], [3, 4, 5, 6], [1], [1], [6], [2, 3, 5, 6]], outputs: ["4", "'", " ", "1", "1", "\""], source: "rulebook 3.15.1 p.32 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example [?]", inputs: [[4, 6], [1, 2, 6], [5, 6], [2, 3, 6], [4, 6], [3, 4, 5]], outputs: ["[", "?", "]"], source: "rulebook 2.6.5 p.19 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ?-1750", inputs: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], outputs: ["?", "-", "1", "7", "5", "0"], source: "rulebook 7.5.4 p.81 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 10:30-?", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], outputs: ["1", "0", ":", "3", "0", "-", "?"], source: "rulebook 7.5.4 p.81 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example don't", inputs: [[1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], outputs: ["d", "o", "n", "'", "t"], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example rock 'n' roll", inputs: [[1, 2, 3, 5], [1, 3, 5], [1, 4], [1, 3], [], [3], [5, 6], [1, 3, 4, 5], [3], [], [1, 2, 3, 5], [1, 3, 5], [1, 2, 3], [1, 2, 3]], outputs: ["r", "o", "c", "k", " ", "'", "n", "'", " ", "r", "o", "l", "l"], source: "rulebook 7.6.6 p.84 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example &c (etc)", inputs: [[4], [1, 2, 3, 4, 6], [1, 4], [], [5], [1, 2, 6], [1, 5], [2, 3, 4, 5], [1, 4], [5], [3, 4, 5]], outputs: ["&", "c", " ", "(", "e", "t", "c", ")"], source: "rulebook 3.1.1 p.23 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example M*A*S*H", inputs: [[6], [1, 3, 4], [5], [3, 5], [6], [1], [5], [3, 5], [6], [2, 3, 4], [5], [3, 5], [6], [1, 2, 5]], outputs: ["M", "*", "A", "*", "S", "*", "H"], source: "rulebook 3.3.1 p.24 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example AT&T", inputs: [[6], [6], [1], [2, 3, 4, 5], [4], [1, 2, 3, 4, 6], [6], [2, 3, 4, 5]], outputs: ["A", "T", "&", "T"], source: "rulebook 3.1.1 p.23 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Apt. #D", inputs: [[6], [1], [1, 2, 3, 4], [2, 3, 4, 5], [2, 5, 6], [], [4, 5, 6], [1, 4, 5, 6], [6], [1, 4, 5]], outputs: ["A", "p", "t", ".", " ", "#", "D"], source: "rulebook 3.19.1 p.35 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example $19.95", inputs: [[4], [2, 3, 4], [3, 4, 5, 6], [1], [2, 4], [2, 5, 6], [2, 4], [1, 5]], outputs: ["$", "1", "9", ".", "9", "5"], source: "rulebook 3.10.1 p.28 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 2.5%", inputs: [[3, 4, 5, 6], [1, 2], [2, 5, 6], [1, 5], [4, 6], [3, 5, 6]], outputs: ["2", ".", "5", "%"], source: "rulebook 7.1.1 p.76 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ~s", inputs: [[4], [3, 5], [2, 3, 4]], outputs: ["~", "s"], source: "rulebook 2.6.2 p.17 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example {k-p}", inputs: [[4, 5, 6], [1, 2, 6], [5, 6], [1, 3], [3, 6], [5, 6], [1, 2, 3, 4], [4, 5, 6], [3, 4, 5]], outputs: ["{", "k", "-", "p", "}"], source: "rulebook 2.6.3 p.17 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example ab/cd", inputs: [[1], [1, 2], [4, 5, 6], [3, 4], [1, 4], [1, 4, 5]], outputs: ["a", "b", "/", "c", "d"], source: "rulebook 2.6.3 p.18 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example c:\\desktop", inputs: [[1, 4], [2, 5], [4, 5, 6], [1, 6], [1, 4, 5], [1, 5], [2, 3, 4], [1, 3], [2, 3, 4, 5], [1, 3, 5], [1, 2, 3, 4]], outputs: ["c", ":", "\\", "d", "e", "s", "k", "t", "o", "p"], source: "rulebook 7.1.1 p.77 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example jim@take2.com", inputs: [[2, 4, 5], [2, 4], [1, 3, 4], [4], [1], [2, 3, 4, 5], [1], [1, 3], [1, 5], [3, 4, 5, 6], [1, 2], [2, 5, 6], [5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], outputs: ["j", "i", "m", "@", "t", "a", "k", "e", "2", ".", "c", "o", "m"], source: "rulebook 5.2.1 p.58 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example 7(b)", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], outputs: ["7", "(", "b", ")"], source: "rulebook 6.3.1 p.67 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example idea(s)", inputs: [[2, 4], [1, 4, 5], [1, 5], [1], [5], [1, 2, 6], [2, 3, 4], [5], [3, 4, 5]], outputs: ["i", "d", "e", "a", "(", "s", ")"], source: "rulebook 10.6.5 p.131 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example [be]hold", inputs: [[4, 6], [1, 2, 6], [1, 2], [1, 5], [4, 6], [3, 4, 5], [1, 2, 5], [1, 3, 5], [1, 2, 3], [1, 4, 5]], outputs: ["[", "b", "e", "]", "h", "o", "l", "d"], source: "rulebook 10.6.2 p.128 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Jan/Feb", inputs: [[6], [2, 4, 5], [1], [1, 3, 4, 5], [4, 5, 6], [3, 4], [6], [1, 2, 4], [1, 5], [1, 2]], outputs: ["J", "a", "n", "/", "F", "e", "b"], source: "rulebook 7.1.1 p.77 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example Ai!!ams", inputs: [[6], [1], [2, 4], [5, 6], [2, 3, 5], [2, 3, 5], [1], [1, 3, 4], [2, 3, 4]], outputs: ["A", "i", "!", "!", "a", "m", "s"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example lang:uk", inputs: [[1, 2, 3], [1], [1, 3, 4, 5], [1, 2, 4, 5], [5, 6], [2, 5], [1, 3, 6], [1, 3]], outputs: ["l", "a", "n", "g", ":", "u", "k"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example a:o", inputs: [[1], [5, 6], [2, 5], [1, 3, 5]], outputs: ["a", ":", "o"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example .doc", inputs: [[5, 6], [2, 5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], outputs: [".", "d", "o", "c"], source: "rulebook 7.1.3 p.78 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "example U.S.A.", inputs: [[6], [1, 3, 6], [2, 5, 6], [6], [2, 3, 4], [2, 5, 6], [6], [1], [2, 5, 6]], outputs: ["U", ".", "S", ".", "A", "."], source: "rulebook 7.1.1 p.76 (references/research/ueb-literary-signs.yaml)"}
+  - {name: "case 'hi'", inputs: [[6], [2, 3, 6], [1, 2, 5], [2, 4], [6], [3, 5, 6]], outputs: ["'", "h", "i", "'"], source: "constructed in references/research/ueb-literary-signs.yaml: single quotation marks, 7.6.2"}
+  - {name: "case \"hi\"", inputs: [[4, 5], [2, 3, 6], [1, 2, 5], [2, 4], [4, 5], [3, 5, 6]], outputs: ["\"", "h", "i", "\""], source: "constructed in references/research/ueb-literary-signs.yaml: two-cell double quotation marks, 7.6.7"}
+  - {name: "case say \"hi\"", inputs: [[2, 3, 4], [1], [1, 3, 4, 5, 6], [], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6]], outputs: ["s", "a", "y", " ", "\"", "h", "i", "\""], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ begins a word: opening quote"}
+  - {name: "case hi?", inputs: [[1, 2, 5], [2, 4], [2, 3, 6]], outputs: ["h", "i", "?"], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ inside a word: question mark"}
+  - {name: "case (\"hi\")", inputs: [[5], [1, 2, 6], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6], [5], [3, 4, 5]], outputs: ["(", "\"", "h", "i", "\"", ")"], source: "constructed in references/research/ueb-literary-signs.yaml: ⠦ after an opening parenthesis still begins the word, 2.6.2"}
+  - {name: "case a|b", inputs: [[1], [4, 5, 6], [1, 2, 5, 6], [1, 2]], outputs: ["a", "|", "b"], source: "constructed in references/research/ueb-literary-signs.yaml: vertical line, 15.1"}
+  - {name: "case `a`", inputs: [[4, 6], [1, 6], [1], [4, 6], [1, 6]], outputs: ["`", "a", "`"], source: "constructed in references/research/ueb-literary-signs.yaml: grave accent alone, Appendix 3"}
+  - {name: "case <a>", inputs: [[4], [1, 2, 6], [1], [4], [3, 4, 5]], outputs: ["<", "a", ">"], source: "constructed in references/research/ueb-literary-signs.yaml: angle brackets, 7"}
+  - {name: "grade 1 symbol indicator has no output", inputs: [[5, 6], [1]], outputs: ["a"], source: "rulebook 5.2 p.57"}
+  - {name: "grade 1 word indicator has no output", inputs: [[5, 6], [5, 6], [1]], outputs: ["a"], source: "rulebook 5.3 p.58"}
+  - {name: "grade 1 passage indicator has no output", inputs: [[5, 6], [5, 6], [5, 6], [1]], outputs: ["a"], source: "rulebook 5.4 p.58"}
+  - {name: "grade 1 terminator has no output", inputs: [[1], [5, 6], [3], [1, 2]], outputs: ["a", "b"], source: "rulebook 5.5 p.59"}
+  - {name: "a question mark after a grade 1 indicator", inputs: [[5, 6], [2, 3, 6]], outputs: ["?"], source: "rulebook 7.6.9 p.86"}
+  - {name: "a grade 1 indicator ends a capitalised word", inputs: [[6], [6], [1], [5, 6], [1, 2], [1, 4]], outputs: ["A", "b", "c"], source: "rulebook 8.4.2 p.90"}
+  - {name: "example al", inputs: [[5, 6], [1], [1, 2, 3]], outputs: ["a", "l"], source: "rulebook 2.6.1 p.15 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example e-x-u-d-e", inputs: [[5, 6], [5, 6], [1, 5], [3, 6], [1, 3, 4, 6], [3, 6], [1, 3, 6], [3, 6], [1, 4, 5], [3, 6], [1, 5]], outputs: ["e", "-", "x", "-", "u", "-", "d", "-", "e"], source: "rulebook 2.6.1 p.15 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 5-yrf-678", inputs: [[3, 4, 5, 6], [1, 5], [3, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [1, 2, 4], [3, 6], [3, 4, 5, 6], [1, 2, 4], [1, 2, 4, 5], [1, 2, 5]], outputs: ["5", "-", "y", "r", "f", "-", "6", "7", "8"], source: "rulebook 2.6.1 p.15 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example th--r", inputs: [[2, 3, 4, 5], [1, 2, 5], [3, 6], [3, 6], [5, 6], [1, 2, 3, 5]], outputs: ["t", "h", "-", "-", "r"], source: "rulebook 2.6.1 p.15 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example (c", inputs: [[5], [1, 2, 6], [5, 6], [1, 4]], outputs: ["(", "c"], source: "rulebook 2.6.2 p.16 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example {af", inputs: [[4, 5, 6], [1, 2, 6], [5, 6], [1], [1, 2, 4]], outputs: ["{", "a", "f"], source: "rulebook 2.6.2 p.16 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example \"yr-123", inputs: [[6], [2, 3, 5, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [3, 6], [3, 4, 5, 6], [1], [1, 2], [1, 4]], outputs: ["\"", "y", "r", "-", "1", "2", "3"], source: "rulebook 2.6.2 p.16 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example d:", inputs: [[5, 6], [1, 4, 5], [2, 5]], outputs: ["d", ":"], source: "rulebook 2.6.3 p.17 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example {k-p}", inputs: [[4, 5, 6], [1, 2, 6], [5, 6], [1, 3], [3, 6], [5, 6], [1, 2, 3, 4], [4, 5, 6], [3, 4, 5]], outputs: ["{", "k", "-", "p", "}"], source: "rulebook 2.6.3 p.17 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example X' Y\"", inputs: [[5, 6], [6], [1, 3, 4, 6], [3], [], [5, 6], [6], [1, 3, 4, 5, 6], [6], [2, 3, 5, 6]], outputs: ["X", "'", " ", "Y", "\""], source: "rulebook 2.6.3 p.18 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example [X'll", inputs: [[4, 6], [1, 2, 6], [5, 6], [6], [1, 3, 4, 6], [3], [1, 2, 3], [1, 2, 3]], outputs: ["[", "X", "'", "l", "l"], source: "rulebook 2.6.4 p.19 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example [?]", inputs: [[4, 6], [1, 2, 6], [5, 6], [2, 3, 6], [4, 6], [3, 4, 5]], outputs: ["[", "?", "]"], source: "rulebook 2.6.5 p.19 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example adagio e cantabile", inputs: [[1], [1, 4, 5], [1], [1, 2, 4, 5], [2, 4], [1, 3, 5], [], [5, 6], [1, 5], [], [1, 4], [1], [1, 3, 4, 5], [2, 3, 4, 5], [1], [1, 2], [2, 4], [1, 2, 3], [1, 5]], outputs: ["a", "d", "a", "g", "i", "o", " ", "e", " ", "c", "a", "n", "t", "a", "b", "i", "l", "e"], source: "rulebook 5.2.1 p.57 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 3-D", inputs: [[3, 4, 5, 6], [1, 4], [3, 6], [5, 6], [6], [1, 4, 5]], outputs: ["3", "-", "D"], source: "rulebook 5.6.2 p.60 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 5-CD set", inputs: [[3, 4, 5, 6], [1, 5], [3, 6], [5, 6], [6], [6], [1, 4], [1, 4, 5], [], [2, 3, 4], [1, 5], [2, 3, 4, 5]], outputs: ["5", "-", "C", "D", " ", "s", "e", "t"], source: "rulebook 5.6.2 p.60 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example b-1", inputs: [[5, 6], [1, 2], [3, 6], [3, 4, 5, 6], [1]], outputs: ["b", "-", "1"], source: "rulebook 5.7.1 p.60 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example viii-x", inputs: [[1, 2, 3, 6], [2, 4], [2, 4], [2, 4], [3, 6], [5, 6], [1, 3, 4, 6]], outputs: ["v", "i", "i", "i", "-", "x"], source: "rulebook 5.7.1 p.60 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example p. 7", inputs: [[5, 6], [1, 2, 3, 4], [2, 5, 6], [], [3, 4, 5, 6], [1, 2, 4, 5]], outputs: ["p", ".", " ", "7"], source: "rulebook 5.7.1 p.60 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example s-p-e-l-l-i-n-g", inputs: [[5, 6], [5, 6], [2, 3, 4], [3, 6], [1, 2, 3, 4], [3, 6], [1, 5], [3, 6], [1, 2, 3], [3, 6], [1, 2, 3], [3, 6], [2, 4], [3, 6], [1, 3, 4, 5], [3, 6], [1, 2, 4, 5]], outputs: ["s", "-", "p", "-", "e", "-", "l", "-", "l", "-", "i", "-", "n", "-", "g"], source: "rulebook 5.7.1 p.61 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example CD-ROM", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5], [3, 6], [6], [6], [1, 2, 3, 5], [1, 3, 5], [1, 3, 4]], outputs: ["C", "D", "-", "R", "O", "M"], source: "rulebook 5.7.2 p.61 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example un-e-mo-tion-al", inputs: [[5, 6], [5, 6], [1, 3, 6], [1, 3, 4, 5], [3, 6], [1, 5], [3, 6], [1, 3, 4], [1, 3, 5], [3, 6], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [3, 6], [1], [1, 2, 3]], outputs: ["u", "n", "-", "e", "-", "m", "o", "-", "t", "i", "o", "n", "-", "a", "l"], source: "rulebook 5.9.1 p.62 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example c-h-e-e-s-e", inputs: [[5, 6], [5, 6], [1, 4], [3, 6], [1, 2, 5], [3, 6], [1, 5], [3, 6], [1, 5], [3, 6], [2, 3, 4], [3, 6], [1, 5]], outputs: ["c", "-", "h", "-", "e", "-", "e", "-", "s", "-", "e"], source: "rulebook 5.9.1 p.62 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example br-r-r-r", inputs: [[5, 6], [5, 6], [1, 2], [1, 2, 3, 5], [3, 6], [1, 2, 3, 5], [3, 6], [1, 2, 3, 5], [3, 6], [1, 2, 3, 5]], outputs: ["b", "r", "-", "r", "-", "r", "-", "r"], source: "rulebook 5.9.1 p.62 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example d-don't", inputs: [[5, 6], [1, 4, 5], [3, 6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], outputs: ["d", "-", "d", "o", "n", "'", "t"], source: "rulebook 5.9.1 p.62 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example d-d-d-don't", inputs: [[5, 6], [5, 6], [1, 4, 5], [3, 6], [1, 4, 5], [3, 6], [1, 4, 5], [3, 6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], outputs: ["d", "-", "d", "-", "d", "-", "d", "o", "n", "'", "t"], source: "rulebook 5.9.1 p.62 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Question 3c", inputs: [[6], [1, 2, 3, 4, 5], [1, 3, 6], [1, 5], [2, 3, 4], [2, 3, 4, 5], [2, 4], [1, 3, 5], [1, 3, 4, 5], [], [3, 4, 5, 6], [1, 4], [5, 6], [1, 4]], outputs: ["Q", "u", "e", "s", "t", "i", "o", "n", " ", "3", "c"], source: "rulebook 5.11.1 p.63 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 3b", inputs: [[3, 4, 5, 6], [1, 4], [5, 6], [1, 2]], outputs: ["3", "b"], source: "rulebook 6.5.2 p.68 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 4.b", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [5, 6], [1, 2]], outputs: ["4", ".", "b"], source: "rulebook 6.5.2 p.68 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example report3.doc", inputs: [[1, 2, 3, 5], [1, 5], [1, 2, 3, 4], [1, 3, 5], [1, 2, 3, 5], [2, 3, 4, 5], [3, 4, 5, 6], [1, 4], [2, 5, 6], [5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], outputs: ["r", "e", "p", "o", "r", "t", "3", ".", "d", "o", "c"], source: "rulebook 6.5.2 p.68 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 4-m", inputs: [[3, 4, 5, 6], [1, 4, 5], [3, 6], [5, 6], [1, 3, 4]], outputs: ["4", "-", "m"], source: "rulebook 6.5.4 p.69 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 2d", inputs: [[3, 4, 5, 6], [1, 2], [5, 6], [1, 4, 5]], outputs: ["2", "d"], source: "rulebook 6.7.1 p.71 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 1er", inputs: [[3, 4, 5, 6], [1], [5, 6], [1, 5], [1, 2, 3, 5]], outputs: ["1", "e", "r"], source: "rulebook 6.7.1 p.71 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 99c", inputs: [[3, 4, 5, 6], [2, 4], [2, 4], [5, 6], [1, 4]], outputs: ["9", "9", "c"], source: "rulebook 3.10.1 p.28 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 7ins", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5, 6], [2, 4], [1, 3, 4, 5], [2, 3, 4]], outputs: ["7", "i", "n", "s"], source: "rulebook 10.12.2 p.166 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example lang:uk", inputs: [[1, 2, 3], [1], [1, 3, 4, 5], [1, 2, 4, 5], [5, 6], [2, 5], [1, 3, 6], [1, 3]], outputs: ["l", "a", "n", "g", ":", "u", "k"], source: "rulebook 7.1.3 p.78 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example a:o", inputs: [[1], [5, 6], [2, 5], [1, 3, 5]], outputs: ["a", ":", "o"], source: "rulebook 7.1.3 p.78 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example .doc", inputs: [[5, 6], [2, 5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], outputs: [".", "d", "o", "c"], source: "rulebook 7.1.3 p.78 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Ai!!ams", inputs: [[6], [1], [2, 4], [5, 6], [2, 3, 5], [2, 3, 5], [1], [1, 3, 4], [2, 3, 4]], outputs: ["A", "i", "!", "!", "a", "m", "s"], source: "rulebook 7.1.3 p.78 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example add -s", inputs: [[1], [1, 4, 5], [1, 4, 5], [], [3, 6], [5, 6], [2, 3, 4]], outputs: ["a", "d", "d", " ", "-", "s"], source: "rulebook 7.1.1 p.77 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Mr J----", inputs: [[6], [1, 3, 4], [1, 2, 3, 5], [], [5, 6], [6], [2, 4, 5], [3, 6], [3, 6], [3, 6], [3, 6]], outputs: ["M", "r", " ", "J", "-", "-", "-", "-"], source: "rulebook 7.1.1 p.77 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example B--", inputs: [[5, 6], [6], [1, 2], [3, 6], [3, 6]], outputs: ["B", "-", "-"], source: "rulebook 7.2.6 p.80 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example ?-1750", inputs: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], outputs: ["?", "-", "1", "7", "5", "0"], source: "rulebook 7.5.4 p.81 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example 10:30-?", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], outputs: ["1", "0", ":", "3", "0", "-", "?"], source: "rulebook 7.5.4 p.81 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example rock 'n' roll", inputs: [[1, 2, 3, 5], [1, 3, 5], [1, 4], [1, 3], [], [3], [5, 6], [1, 3, 4, 5], [3], [], [1, 2, 3, 5], [1, 3, 5], [1, 2, 3], [1, 2, 3]], outputs: ["r", "o", "c", "k", " ", "'", "n", "'", " ", "r", "o", "l", "l"], source: "rulebook 7.6.6 p.84 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example B-U-S", inputs: [[5, 6], [5, 6], [6], [1, 2], [3, 6], [6], [1, 3, 6], [3, 6], [6], [2, 3, 4]], outputs: ["B", "-", "U", "-", "S"], source: "rulebook 8.7.1 p.97 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example CD", inputs: [[5, 6], [6], [6], [1, 4], [1, 4, 5]], outputs: ["C", "D"], source: "rulebook 8.7.1 p.97 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example LLC", inputs: [[5, 6], [6], [6], [1, 2, 3], [1, 2, 3], [1, 4]], outputs: ["L", "L", "C"], source: "rulebook 10.9.8 p.152 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example UNSD", inputs: [[5, 6], [5, 6], [6], [6], [1, 3, 6], [1, 3, 4, 5], [2, 3, 4], [1, 4, 5]], outputs: ["U", "N", "S", "D"], source: "rulebook 10.9.9 p.153 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Dobrljin", inputs: [[5, 6], [5, 6], [6], [1, 4, 5], [1, 3, 5], [1, 2], [1, 2, 3, 5], [1, 2, 3], [2, 4, 5], [2, 4], [1, 3, 4, 5]], outputs: ["D", "o", "b", "r", "l", "j", "i", "n"], source: "rulebook 10.9.9 p.153 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example ozbrl", inputs: [[5, 6], [5, 6], [1, 3, 5], [1, 3, 5, 6], [1, 2], [1, 2, 3, 5], [1, 2, 3]], outputs: ["o", "z", "b", "r", "l"], source: "rulebook 10.9.9 p.153 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Blvd", inputs: [[5, 6], [6], [1, 2], [1, 2, 3], [1, 2, 3, 6], [1, 4, 5]], outputs: ["B", "l", "v", "d"], source: "rulebook 10.9.8 p.152 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example Grtsamada", inputs: [[5, 6], [6], [1, 2, 4, 5], [1, 2, 3, 5], [2, 3, 4, 5], [2, 3, 4], [1], [1, 3, 4], [1], [1, 4, 5], [1]], outputs: ["G", "r", "t", "s", "a", "m", "a", "d", "a"], source: "rulebook 10.9.8 p.152 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example t-n", inputs: [[5, 6], [2, 3, 4, 5], [3, 6], [5, 6], [1, 3, 4, 5]], outputs: ["t", "-", "n"], source: "rulebook 10.12.13 p.171 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example J----y", inputs: [[5, 6], [6], [2, 4, 5], [3, 6], [3, 6], [3, 6], [3, 6], [5, 6], [1, 3, 4, 5, 6]], outputs: ["J", "-", "-", "-", "-", "y"], source: "rulebook 10.12.13 p.171 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example we-e-ellll", inputs: [[2, 4, 5, 6], [1, 5], [3, 6], [5, 6], [1, 5], [3, 6], [1, 5], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]], outputs: ["w", "e", "-", "e", "-", "e", "l", "l", "l", "l"], source: "rulebook 10.12.14 p.171 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "example -s", inputs: [[3, 6], [5, 6], [2, 3, 4]], outputs: ["-", "s"], source: "rulebook 10.12.5 p.168 (references/research/ueb-grade-1-indicators.yaml)"}
+  - {name: "case br-ra", inputs: [[5, 6], [5, 6], [1, 2], [1, 2, 3, 5], [3, 6], [1, 2, 3, 5], [5, 6], [3], [1]], outputs: ["b", "r", "-", "r", "a"], source: "constructed in references/research/ueb-grade-1-indicators.yaml: grade 1 terminator inside a symbols-sequence, 5.5.2; no output"}
+  - {name: "case a b c", inputs: [[5, 6], [5, 6], [5, 6], [1], [], [1, 2], [], [1, 4], [5, 6], [3]], outputs: ["a", " ", "b", " ", "c"], source: "constructed in references/research/ueb-grade-1-indicators.yaml: grade 1 passage and terminator, 5.4; no output"}
+  - {name: "case ?", inputs: [[5, 6], [5, 6], [2, 3, 6]], outputs: ["?"], source: "constructed in references/research/ueb-grade-1-indicators.yaml: ⠦ after the grade 1 word indicator is a question mark, 7.6.9"}
+  - {name: "case \"hi\"", inputs: [[2, 3, 6], [5, 6], [5, 6], [1, 2, 5], [2, 4], [3, 5, 6]], outputs: ["\"", "h", "i", "\""], source: "constructed in references/research/ueb-grade-1-indicators.yaml: opening quote before the grade 1 indicator, 7.6.9"}
+  - {name: "case 12b", inputs: [[3, 4, 5, 6], [1], [1, 2], [5, 6], [1, 2]], outputs: ["1", "2", "b"], source: "constructed in references/research/ueb-grade-1-indicators.yaml: ⠰ ends numeric mode so ⠃ is the letter b, 6.5.2"}
+  - {name: "case 3b", inputs: [[3, 4, 5, 6], [1, 4], [5, 6], [1, 2]], outputs: ["3", "b"], source: "constructed in references/research/ueb-indicator-context.yaml: numeric on; ⠰ ends it; ⠃ is a letter"}
+  - {name: "case 3m", inputs: [[3, 4, 5, 6], [1, 4], [1, 3, 4]], outputs: ["3", "m"], source: "constructed in references/research/ueb-indicator-context.yaml: k-z ends numeric mode"}
+  - {name: "case 4.b", inputs: [[3, 4, 5, 6], [1, 4, 5], [2, 5, 6], [5, 6], [1, 2]], outputs: ["4", ".", "b"], source: "constructed in references/research/ueb-indicator-context.yaml: ⠲ keeps numeric mode"}
+  - {name: "case 4 500 000", inputs: [[3, 4, 5, 6], [1, 4, 5], [5], [1, 5], [2, 4, 5], [2, 4, 5], [5], [2, 4, 5], [2, 4, 5], [2, 4, 5]], outputs: ["4", " ", "5", "0", "0", " ", "0", "0", "0"], source: "constructed in references/research/ueb-indicator-context.yaml: numeric space keeps numeric mode"}
+  - {name: "case 7(b)", inputs: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], outputs: ["7", "(", "b", ")"], source: "constructed in references/research/ueb-indicator-context.yaml: ⠐⠣ is not a numeric space and ends numeric mode"}
+  - {name: "case DipTP", inputs: [[6], [1, 4, 5], [2, 4], [1, 2, 3, 4], [6], [6], [2, 3, 4, 5], [1, 2, 3, 4]], outputs: ["D", "i", "p", "T", "P"], source: "constructed in references/research/ueb-indicator-context.yaml: word indicator mid-sequence"}
+  - {name: "case ANGLO-SAXON", inputs: [[6], [6], [1], [1, 3, 4, 5], [1, 2, 4, 5], [1, 2, 3], [1, 3, 5], [3, 6], [6], [6], [2, 3, 4], [1], [1, 3, 4, 6], [1, 3, 5], [1, 3, 4, 5]], outputs: ["A", "N", "G", "L", "O", "-", "S", "A", "X", "O", "N"], source: "constructed in references/research/ueb-indicator-context.yaml: hyphen ends a capitalised word"}
+  - {name: "case DON'T", inputs: [[6], [6], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [6], [2, 3, 4, 5]], outputs: ["D", "O", "N", "'", "T"], source: "constructed in references/research/ueb-indicator-context.yaml: apostrophe ends a capitalised word"}
+  - {name: "case ABCs", inputs: [[6], [6], [1], [1, 2], [1, 4], [6], [3], [2, 3, 4]], outputs: ["A", "B", "C", "s"], source: "constructed in references/research/ueb-indicator-context.yaml: terminator ends a capitalised word"}
+  - {name: "case HI THERE! ok", inputs: [[6], [6], [6], [1, 2, 5], [2, 4], [], [2, 3, 4, 5], [1, 2, 5], [1, 5], [1, 2, 3, 5], [1, 5], [2, 3, 5], [6], [3], [], [1, 3, 5], [1, 3]], outputs: ["H", "I", " ", "T", "H", "E", "R", "E", "!", " ", "o", "k"], source: "constructed in references/research/ueb-indicator-context.yaml: passage survives spaces and punctuation until the terminator"}
+  - {name: "case AB CD Ef", inputs: [[6], [6], [6], [1], [1, 2], [], [6], [6], [1, 4], [1, 4, 5], [], [1, 5], [6], [3], [1, 2, 4]], outputs: ["A", "B", " ", "C", "D", " ", "E", "f"], source: "constructed in references/research/ueb-indicator-context.yaml: word indicator inside a passage keeps the passage"}
+  - {name: "case Abc", inputs: [[6], [6], [1], [5, 6], [1, 2], [1, 4]], outputs: ["A", "b", "c"], source: "constructed in references/research/ueb-indicator-context.yaml: grade 1 indicator ends a capitalised word"}
+  - {name: "case \"'Tis late.\"", inputs: [[2, 3, 6], [3], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4], [], [1, 2, 3], [1], [2, 3, 4, 5], [1, 5], [2, 5, 6], [3, 5, 6]], outputs: ["\"", "'", "T", "i", "s", " ", "l", "a", "t", "e", ".", "\""], source: "constructed in references/research/ueb-indicator-context.yaml: ⠦ at the start reads as a quote; the apostrophe keeps word_start"}
+  - {name: "case (\"hi\")", inputs: [[5], [1, 2, 6], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6], [5], [3, 4, 5]], outputs: ["(", "\"", "h", "i", "\"", ")"], source: "constructed in references/research/ueb-indicator-context.yaml: opening parenthesis keeps word_start"}
+  - {name: "case hi?", inputs: [[1, 2, 5], [2, 4], [2, 3, 6]], outputs: ["h", "i", "?"], source: "constructed in references/research/ueb-indicator-context.yaml: ⠦ inside a word is a question mark"}
+  - {name: "case ?-1750", inputs: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], outputs: ["?", "-", "1", "7", "5", "0"], source: "constructed in references/research/ueb-indicator-context.yaml: ⠰ clears word_start so ⠦ is a question mark"}
+  - {name: "case 10:30-?", inputs: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], outputs: ["1", "0", ":", "3", "0", "-", "?"], source: "constructed in references/research/ueb-indicator-context.yaml: hyphen sets word_start, ⠰⠦ still a question mark"}
+  - {name: "case ?", inputs: [[5, 6], [5, 6], [2, 3, 6]], outputs: ["?"], source: "constructed in references/research/ueb-indicator-context.yaml: ⠦ after the grade 1 word indicator"}
+  - {name: "prefix dots 4 that the next chord cannot continue is dropped", inputs: [[4], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 45 that the next chord cannot continue is dropped", inputs: [[4, 5], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 456 that the next chord cannot continue is dropped", inputs: [[4, 5, 6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 5 that the next chord cannot continue is dropped", inputs: [[5], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 46 that the next chord cannot continue is dropped", inputs: [[4, 6], [1]], outputs: ["a"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 6 that the next chord cannot continue is dropped", inputs: [[6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
+  - {name: "prefix dots 3456 that the next chord cannot continue is dropped", inputs: [[3, 4, 5, 6], [3, 6]], outputs: ["-"], source: "phase 02 plan: an orphan prefix is dropped and the next chord is read afresh"}
