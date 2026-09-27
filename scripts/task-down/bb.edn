@@ -1,0 +1,39 @@
+{:min-bb-version "1.3.187"
+ :paths ["src" "test"]
+ :tasks
+ {:init (do
+          (require '[babashka.fs :as fs]
+                   '[clojure.string :as str]
+                   '[clojure.test :as t])
+
+          (def clj-suffix (re-pattern "\\.clj$"))
+          (def test-prefix (re-pattern "^test/"))
+
+          (defn test-files
+            "Every `*_test.clj` file under `test/`, at any depth, sorted."
+            []
+            (if-not (fs/exists? "test")
+              []
+              (->> (concat (fs/glob "test" "*_test.clj")
+                           (fs/glob "test" "**/*_test.clj"))
+                   (map str)
+                   sort)))
+
+          (defn test-ns
+            "The namespace symbol of the test file at `path`."
+            [path]
+            (-> path
+                (str/replace clj-suffix "")
+                (str/replace test-prefix "")
+                (str/replace "/" ".")
+                (str/replace "_" "-")
+                symbol)))
+
+  test {:doc "Run every test/**/*_test.clj, exiting non-zero on failure"
+        :task (let [nss (mapv test-ns (test-files))]
+                (when (empty? nss)
+                  (println "No *_test.clj files found under test/")
+                  (System/exit 1))
+                (doseq [n nss] (require n))
+                (let [{:keys [fail error]} (apply t/run-tests nss)]
+                  (System/exit (+ fail error))))}}}
