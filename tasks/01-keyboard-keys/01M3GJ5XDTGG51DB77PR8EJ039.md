@@ -1,3 +1,14 @@
+---
+author: user
+cargo:
+  status: draft
+  type: task
+created: Sun 27 Sep 14h42
+subject: Draft
+---
+
+# Find macbook keys
+
 1.  Find out which keys are able to be typed on any Apple Macbook.
     1.  You may find the `kagi` tool helpful.
     2.  It doesn't matter which macbook, they'll all largely be the same.

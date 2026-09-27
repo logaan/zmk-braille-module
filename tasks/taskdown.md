@@ -63,8 +63,8 @@
 1.  Must have `type: task`
 2.  A task may have any properties set.
 3.  The standard properties of tasks are as follows:
-    1.  `status` is a `3.1.1.1. Status` value
-    2.  `worker` is a `3.2. Contributor` value
+    1.  `status` is a required `3.1.1.1. Status` value
+    2.  `worker` is an optional `3.2. Contributor` value
 
 ##### 3.1.1.1. Status
 
@@ -150,6 +150,7 @@ A `Status` value must be one of:
     - `01M3GJ5XDTGG51DB77PR8EJ039.md`
 
       ``` markdown
+      ---
       created: Sun 27 Sep 13h23
       author: user
       task:
@@ -164,6 +165,7 @@ A `Status` value must be one of:
     - `01M3GJ5XDTS3PKTY6P4E1J7B1D.md`
 
       ``` markdown
+      ---
       created: Sun 27 Sep 13h24
       author: user
       task:
@@ -174,6 +176,7 @@ A `Status` value must be one of:
     - `01M3GJ5XDTH9A69A9H6TZ1MFF6.md`
 
       ``` markdown
+      ---
       created: Sun 27 Sep 13h24
       author:
         type: agent
@@ -187,6 +190,7 @@ A `Status` value must be one of:
     - `01M3GJ5XDTH9A69A9H6TZ1MFF6.md`
 
       ``` markdown
+      ---
       created: Sun 27 Sep 13h34
       author:
         type: agent
@@ -205,6 +209,7 @@ A `Status` value must be one of:
     - `05.md`
 
       ``` markdown
+      ---
       created: Mon 28 Sep 09h12
       author:
         type: user
