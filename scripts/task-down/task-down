@@ -9,11 +9,16 @@
 ;; `tasks`, so this script deliberately does not change directory: it puts its
 ;; own `src` on the classpath and calls `task-down.main/-main` in this process.
 ;; Staying in-process keeps the controlling tty, which the UI needs.
+;;
+;; Each step is its own top-level form: the classpath must be extended before
+;; task-down.main is required, and that alias must exist before -main is
+;; resolved.
 
 (require '[babashka.classpath :as cp]
          '[babashka.fs :as fs])
 
-(let [src (-> (fs/real-path *file*) fs/parent (fs/path "src") str)]
-  (cp/add-classpath src)
-  (require '[task-down.main :as main])
-  (apply main/-main *command-line-args*))
+(cp/add-classpath (-> (fs/real-path *file*) fs/parent (fs/path "src") str))
+
+(require '[task-down.main :as main])
+
+(apply main/-main *command-line-args*)

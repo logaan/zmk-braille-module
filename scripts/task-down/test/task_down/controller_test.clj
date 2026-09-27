@@ -59,9 +59,9 @@
 (defn- next-size "The next scripted size, holding the last one once the script
   runs out."
   [sizes]
-  (let [next (first @sizes)]
+  (let [value (first @sizes)]
     (when (< 1 (count @sizes)) (swap! sizes rest))
-    next))
+    value))
 
 (defrecord fake-terminal [keys sizes drawn calls]
   terminal/Terminal
@@ -97,25 +97,24 @@
 
 ;;; Inspecting what the loop left behind.
 
-(defn- frame "The ops of the `n`th frame the terminal drew."
-  [term n]
+(defn- frame "The ops of the `n`th frame the terminal drew." [term n]
   (nth @(:drawn term) n))
 
-(defn- texts "The trimmed text of every op."
-  [ops]
+(defn- texts "The trimmed text of every op." [ops]
   (mapv #(str/trim (:text %)) ops))
 
-(defn- pane-texts "The trimmed text drawn inside one pane."
-  [ops pane]
+(defn- pane-texts "The trimmed text drawn inside one pane." [ops pane]
   (let [x (get view/pane-offsets pane)]
     (texts (filter #(<= x (:x %) (+ x view/pane-width)) ops))))
 
-(defn- cursor "The cursor a pane ended on."
-  [pane]
+(defn- op-with-text "The first op showing `text`, cursor padding aside."
+  [ops text]
+  (first (filter #(= text (str/trim (:text %))) ops)))
+
+(defn- cursor "The cursor a pane ended on." [pane]
   (get-in @controller/app-state [:state/cursors pane]))
 
-(defn- state-key "A top-level key of the state the loop ended on."
-  [k]
+(defn- state-key "A top-level key of the state the loop ended on." [k]
   (get @controller/app-state k))
 
 ;;; Tests
@@ -150,8 +149,7 @@
   (let [ops (frame (driven [{:key \l} {:key \q}]) 1)]
     (is (= "01 ALPHA" (first (pane-texts ops :listing))))
     (is (= "TASKS" (first (pane-texts ops :parents))))
-    (is (= 38 (:x (first (filter #(= "TASKS" (str/trim (:text %)))
-                                 (filter #(= 0 (:y %)) ops))))))
+    (is (= 38 (:x (op-with-text ops "TASKS")))) ; off its cursor, so centred
     (is (some #(str/includes? % "Mon 28 Sep - 01h 00m 00s  Old news")
               (pane-texts ops :messages)))
     (is (some #(str/includes? % "New news") (pane-texts ops :messages)))))
@@ -183,24 +181,23 @@
   (driven [{:key :enter} {:key :enter} {:key \q}])
   (is (= :listing (state-key :state/focus))))
 
-(deftest G-jumps-to-the-bottom-row-of-the-focused-pane
-  (driven [{:key \G} {:key \q}])
-  (is (= [2] (cursor :parents))))
+(deftest G-and-gg-jump-to-the-ends-of-the-focused-pane
+  (testing "G goes to the last row"
+    (driven [{:key \G} {:key \q}])
+    (is (= [2] (cursor :parents))))
+  (testing "gg goes to the first"
+    (driven [{:key \G} {:key \g} {:key \g} {:key \q}])
+    (is (= :heading (cursor :parents)))))
 
-(deftest gg-jumps-to-the-top-row-of-the-focused-pane
-  (driven [{:key \G} {:key \g} {:key \g} {:key \q}])
-  (is (= :heading (cursor :parents))))
-
-(deftest a-single-g-waits-for-its-partner
-  (driven [{:key \l} {:key \g} {:key \q}])
-  (is (= :g (state-key :state/pending-key)))
-  (is (= [0] (cursor :parents))))
-
-(deftest any-other-key-cancels-a-pending-g
-  (testing "a navigation key"
+(deftest the-two-key-jump-needs-both-keys
+  (testing "a single g waits for its partner"
+    (driven [{:key \l} {:key \g} {:key \q}])
+    (is (= :g (state-key :state/pending-key)))
+    (is (= [0] (cursor :parents))))
+  (testing "a navigation key cancels the wait"
     (driven [{:key \g} {:key \j} {:key \q}])
     (is (nil? (state-key :state/pending-key))))
-  (testing "a key the controller does not know"
+  (testing "so does a key the controller does not know"
     (driven [{:key \l} {:key \g} {:key \x} {:key \g} {:key \q}])
     (is (= [0] (cursor :parents)))))
 

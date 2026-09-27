@@ -90,7 +90,6 @@
   (let [[cols rows] (size screen)]
     {:rows rows :cols cols}))
 
-
 ; A Terminal drawing on this process's controlling tty through the Lanterna
 ; pod. `screen` is an opaque pod handle: pass it back whole, never destructure
 ; it. Create instances with new-lanterna-terminal.
