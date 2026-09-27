@@ -27,12 +27,12 @@
 (def cargo-types #{"task" "question" "answer"})
 
 (def message-filename-re
-  "Crockford base32 (no I, L, O, U), 26 chars, followed by .md."
-  #"^[0-9A-HJKMNP-TV-Z]{26}\.md$")
+  "128-bit ULID: first digit 0-7, then 25 Crockford base32 chars, followed by .md."
+  #"^[0-7][0-9A-HJKMNP-TV-Z]{25}\.md$")
 
 (def truncated-ulid-re
-  "A task id truncated to 10 chars, used in answer 'regarding' keys."
-  #"^[0-9A-HJKMNP-TV-Z]{10}$")
+  "A task ULID truncated to 10 chars, used in answer 'regarding' keys."
+  #"^[0-7][0-9A-HJKMNP-TV-Z]{9}$")
 
 (def agent-str-re
   "Agent harness/model/name values."
@@ -251,7 +251,7 @@
   (let [fname (str (fs/file-name path))
         filename-problems (if (re-matches message-filename-re fname)
                             []
-                            [(str "file name: must be a ULID (<26 base32 chars>.md), got: " fname)])
+                            [(str "file name: must be a ULID (26 Crockford base32 chars, first 0-7, then .md), got: " fname)])
         {:keys [frontmatter body error]} (parse-message-file path)]
     (into filename-problems
           (if error [error] (validate-message-data frontmatter body)))))

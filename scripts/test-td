@@ -115,6 +115,30 @@ rm tasks/example/01JMQ3ZK7VR8TQ4XNB0W2G9F6E.md
 fail_if_successful "$td" message validate unknown
 fail_if_successful "$td" message validate abc def
 
+# A 128-bit ULID's first digit is 0-7, including for truncated answer ids.
+base_id=01JMQ3ZK7VR8TQ4XNB0W2G9F6E
+for first in 0 7 8 Z; do
+  id="${first}${base_id:1}"
+  cp draft.md "tasks/example/$id.md"
+  if [[ $first == 0 || $first == 7 ]]; then
+    "$td" message validate "$id" > /dev/null
+  else
+    fail_if_successful "$td" message validate "$id"
+    grep -Fq 'file name: must be a ULID' output.txt
+  fi
+  rm "tasks/example/$id.md"
+done
+valid_regarding=$("$td" message new --task example --subject Boundary --type answer \
+  --regarding '71JMQ3ZK7V=Boundary')
+"$td" message validate "$(basename "$valid_regarding" .md)" > /dev/null
+rm "$valid_regarding"
+for first in 8 Z; do
+  fail_if_successful "$td" message new --task example --subject Bad --type answer \
+    --regarding "${first}1JMQ3ZK7V=Invalid"
+  grep -Fq 'cargo.regarding: key must be a 10 char truncated task id' output.txt
+done
+[[ $(find tasks -name '*.md' | wc -l | tr -d ' ') == 4 ]]
+
 # Creation and file validation must apply the same message rules.
 printf '%s\n' '---' 'created: Sun 27 Sep 2006 - 13h 23m 00s' 'author: user' \
   'subject: Work' 'cargo:' '  type: task' '  status: invalid' '---' \
