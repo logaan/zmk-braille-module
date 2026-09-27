@@ -4,7 +4,7 @@ cargo:
   status: draft
   type: task
 created: Sun 27 Sep 14h42
-subject: Draft
+subject: Find macbook keys
 ---
 
 # Find macbook keys

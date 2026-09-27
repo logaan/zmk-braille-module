@@ -153,7 +153,9 @@ A `Status` value must be one of:
       ---
       created: Sun 27 Sep 13h23
       author: user
-      task:
+      subject: Keyboard keys
+      cargo:
+        type: task
         status: draft
       ---
 
@@ -168,7 +170,9 @@ A `Status` value must be one of:
       ---
       created: Sun 27 Sep 13h24
       author: user
-      task:
+      subject: Keyboard keys
+      cargo:
+        type: task
         status: ready
       ---
       ```
@@ -182,12 +186,14 @@ A `Status` value must be one of:
         type: agent
         harness: pi
         model: kimi-k3
-      task:
+      subject: Keyboard keys
+      cargo:
+        type: task
         status: started
       ---
       ```
 
-    - `01M3GJ5XDTH9A69A9H6TZ1MFF6.md`
+    - `01M3GJ5XDTK7ZP9R2X4V8N6Q3W.md`
 
       ``` markdown
       ---
@@ -197,7 +203,9 @@ A `Status` value must be one of:
         harness: pi
         model: kimi-k3
         name: coordinator
-      task:
+      subject: Results
+      cargo:
+        type: task
         status: delivered
       ---
 
@@ -206,14 +214,15 @@ A `Status` value must be one of:
       1. I have written the Macbook keys to `./output/keys.yaml`
       ```
 
-    - `05.md`
+    - `01M3GJ5XDTM4C8D1E2F3G5H7J9.md`
 
       ``` markdown
       ---
       created: Mon 28 Sep 09h12
-      author:
-        type: user
-      task:
+      author: user
+      subject: Keyboard keys
+      cargo:
+        type: task
         status: done
       ---
       ```
