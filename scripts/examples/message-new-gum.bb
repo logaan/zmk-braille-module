@@ -1,11 +1,15 @@
 #!/usr/bin/env bb
 ;; Run: ./scripts/examples/message-new-gum.bb (requires https://github.com/charmbracelet/gum)
-;; gum supplies fuzzy filtering and selection, text input, a multiline editor and confirmation.
+;; Gum supplies fuzzy selection, subject input and confirmation. Babashka's bundled
+;; JLine edits the body because gum write hard-codes Enter as submit.
 ;; td's command is `message new` (singular); td supplies author=user and created=now.
 
 (require '[babashka.fs :as fs]
          '[babashka.process :as p]
          '[clojure.string :as str])
+(import '[org.jline.reader EndOfFileException LineReader LineReaderBuilder
+           Reference UserInterruptException Widget]
+        '[org.jline.terminal TerminalBuilder])
 
 (def root (-> *file* fs/absolutize fs/parent fs/parent fs/parent))
 (def statuses ["draft" "ready" "started" "blocked" "delivered" "done" "cancelled"])
@@ -73,16 +77,33 @@
             (recur))))))
 
 (defn body-input [type]
-  (loop []
-    (let [header (if (= type "question")
-                   "Question body (exactly one ?)"
-                   "Body (optional)")
-          body (gum ["write" "--header" header "--placeholder" "Markdown body"])]
-      (if (or (not= type "question") (= 1 (count (re-seq #"\?" body))))
-        (show-completed "Body" body true)
-        (do (println "A question body must contain exactly one question mark.")
-            (flush)
-            (recur))))))
+  (let [body (with-open [terminal (-> (TerminalBuilder/builder) (.system true) (.build))]
+               (let [reader (-> (LineReaderBuilder/builder)
+                                (.terminal terminal)
+                                (.variable LineReader/SECONDARY_PROMPT_PATTERN "  │ ")
+                                (.build))
+                     keymap (get (.getKeyMaps reader) LineReader/MAIN)]
+                 (.put (.getWidgets reader) "body-newline"
+                       (reify Widget
+                         (apply [_]
+                           (.write (.getBuffer reader) "\n")
+                           true)))
+                 ;; Terminals may send CR or LF for Enter. Insert a real newline
+                 ;; for either, and accept the whole buffer only on Ctrl-Y.
+                 (.bind keymap (Reference. "body-newline") (into-array String ["\r" "\n"]))
+                 (.bind keymap (Reference. LineReader/ACCEPT_LINE) "\u0019")
+                 (loop []
+                   (println (str (if (= type "question")
+                                   "Question body (exactly one ?)"
+                                   "Body (optional)")
+                                 " — Enter: newline, Ctrl-Y: finish, Ctrl-C: cancel"))
+                   (flush)
+                   (let [body (.readLine reader "Body: ")]
+                     (if (or (not= type "question") (= 1 (count (re-seq #"\?" body))))
+                       body
+                       (do (println "A question body must contain exactly one question mark.")
+                           (recur)))))))]
+    (show-completed "Body" body true)))
 
 (defn form [folders]
   (println "New TaskDown message (Ctrl-C to cancel)")
@@ -109,6 +130,8 @@
       (binding [*out* *err*] (println "No task folders found under tasks/."))
       (System/exit 1))
     (let [flags (try (form folders)
+                     (catch EndOfFileException _ nil)
+                     (catch UserInterruptException _ nil)
                      (catch clojure.lang.ExceptionInfo e
                        (if (:cancelled (ex-data e)) nil (throw e))))]
       (if flags
