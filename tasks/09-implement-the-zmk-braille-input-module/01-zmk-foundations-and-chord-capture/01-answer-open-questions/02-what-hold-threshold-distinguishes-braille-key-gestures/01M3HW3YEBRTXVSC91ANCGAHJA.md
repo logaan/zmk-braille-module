@@ -16,7 +16,7 @@ cargo:
 
 1. Nothing in the module is triggered by a long press.
 2. Opening Braille settings is a ZMK behavior action, like `&bt` or `&rgb_ug` actions.
-    1. Factory rule data binds it to a default chord from the space-plus-dot pool; phase 02 allocates that chord.
+    1. Factory rule data binds it to a default chord; phase 02's command-chord research allocates it.
     2. Users can rebind it or add more chords through the override layer.
 3. The braille-mode-key's hold/tap distinction uses ZMK hold-tap conventions: pressing another key while it is held resolves as hold.
 

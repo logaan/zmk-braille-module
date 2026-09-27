@@ -13,7 +13,7 @@ cargo:
 
 # Track boundaries and pending output
 
-1. Implement word-position constraints and the agreed UEB context, bounded lookahead, and commit/fallback policies in the common engine.
+1. Implement word-position constraints and the agreed UEB context, and the next-chord-decides commit policy in the common engine; there are no timers, and pending input is bounded by the 8-cell rule length.
 2. Apply the agreed mode/action/settings transition policy without leaking stale cells or context into the next input session.
 3. Expose pending cells and their commit/cancel lifecycle for phase 05's display; do not defer all delayed-input feedback to Grade 2.
-4. Unit-test context and pending output alongside the implementation: all word positions, ambiguous and unmatched prefixes, buffer and latency limits, and transition contracts that leave no stale cells or context.
+4. Unit-test context and pending output alongside the implementation: all word positions, ambiguous and unmatched prefixes, the 8-cell bound, and transition contracts that leave no stale cells or context.

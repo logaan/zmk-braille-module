@@ -9,6 +9,6 @@ cargo:
 
 # Supply navigation and other keyboard actions
 
-1. Factory functions are rules, not literary characters; actions remain available in every character mode.
-2. Finalize the shared chord allocation against the Grade 1 requirements, chosen computer8 mapping, and selected host's capabilities.
+1. Factory functions are rules, not literary characters; each character mode has its own command table, so every function is available in every mode.
+2. Take chords from the milestone's research (macOS VoiceOver for that mode, then Android TalkBack, then Hable One); every factory rule carries a comment naming its source.
 3. Use fixture character tables for early testing; check real combined tables as phases 03 and 04 arrive and during phase 06 acceptance.

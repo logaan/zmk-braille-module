@@ -14,6 +14,6 @@ cargo:
 # Register extensible named character tables
 
 1. Select exactly one compiled character table by name: initially `ueb1` or `computer8`, with `ueb2` exposed only when its rules are included.
-2. Preserve navigation and the user override layer in every character mode; use the same selection mechanism for devicetree defaults and later settings changes.
+2. Pair each character table with its own factory command table, so navigation, noncharacter functions, and the user override layer are available in every mode; use the same selection mechanism for devicetree defaults and later settings changes.
 3. Allow future named language tables through the common representation without changing capture, matching, or navigation; no non-English table or dynamic plugin framework is required now.
-4. Unit-test table registration alongside the implementation: selecting each compiled table by name, exposing `ueb2` only when included, and keeping navigation and overrides active in every mode.
+4. Unit-test table registration alongside the implementation: selecting each compiled table by name, exposing `ueb2` only when included, and selecting each mode's command table with it, and keeping overrides active in every mode.

@@ -13,7 +13,7 @@ cargo:
 
 # Define common rule and action data
 
-1. Create `braille_rules.h` with bounded nine-bit chord sequences and `any`, `word-start`, `word-middle`, or `word-end` constraints.
-2. Represent output uniformly as ordered ZMK behavior bindings: a device and up to two parameters per invocation.
+1. Create `braille_rules.h` with sequences of up to 8 nine-bit chords and `any`, `word-start`, `word-middle`, or `word-end` constraints.
+2. Represent output uniformly as up to 16 ordered ZMK behavior bindings: a device and up to two parameters per invocation.
 3. Apply the resolved UEB-context design so numeric/capitalization/grade 1 state fits the shared matcher without per-character dispatch or separate output types.
 4. Keep the shape usable by read-only factory tables, the initially empty override layer, and later persisted user sequences/actions.
