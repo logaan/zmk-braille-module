@@ -318,13 +318,11 @@
         (fs/copy file target)
         (println (str "tasks/" (:name task-result) "/" id ".md"))))))
 
-(defn run-new [{:keys [opts]}]
-  (if (contains? opts :file)
-    (run-new-file opts)
-    (let [{:keys [task created author harness model subject type status
-                  worker worker-harness worker-model worker-name regarding
-                  body body-file]
-           agent-name :name} opts
+(defn run-new-flags [{:keys [opts]}]
+  (let [{:keys [task created author harness model subject type status
+                worker worker-harness worker-model worker-name regarding
+                body body-file]
+         agent-name :name} opts
         author (or author "user")
         errors (atom [])
         err! (fn [msg] (swap! errors conj msg))
@@ -394,7 +392,12 @@
                            (when-not (str/blank? body-text)
                              (str "\n" (str/trim body-text) "\n")))]
           (spit (str file) content)
-          (println (str "tasks/" (:name task-result) "/" id ".md"))))))))
+          (println (str "tasks/" (:name task-result) "/" id ".md")))))))
+
+(defn run-new [{:keys [opts] :as command}]
+  (if (contains? opts :file)
+    (run-new-file opts)
+    (run-new-flags command)))
 
 ;; ---------------------------------------------------------------------------
 ;; Validate command

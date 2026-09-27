@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""PTY integration test for the script-wizard example. Requires its Babashka pod."""
+
+import errno
+import os
+import pty
+import select
+import shutil
+import signal
+import subprocess
+import tempfile
+import time
+from pathlib import Path
+
+SOURCE = Path(__file__).resolve().parent
+
+
+def run_flow(mode):
+    with tempfile.TemporaryDirectory(prefix="wizard-test-") as directory:
+        root = Path(directory)
+        (root / "scripts/examples").mkdir(parents=True)
+        (root / "tasks/example").mkdir(parents=True)
+        for name in ("td", "examples/message-new-script-wizard.bb"):
+            shutil.copy2(SOURCE / name, root / "scripts" / name)
+
+        editor = root / "editor.sh"
+        editor.write_text("""#!/bin/sh
+printf 'EDITOR_VISIBLE_ON_STDOUT\\n'
+printf '%s\\n' "$*" > "$WIZARD_EDITOR_ARGS"
+if [ "$WIZARD_MODE" = failure ]; then exit 9; fi
+python3 - "$2" <<'PY'
+from pathlib import Path
+import sys
+file = Path(sys.argv[1])
+content = file.read_text()
+assert 'subject: Original' in content
+assert 'author: user' in content
+assert 'status: draft' in content
+content = content.replace('subject: Original', 'subject: Edited')
+content = content.replace('---\\n\\n', 'custom: retained\\n---\\n\\n')
+file.write_text(content + '# Edited body\\n\\n1. Written in the editor.\\n')
+PY
+""")
+        editor.chmod(0o755)
+        env = os.environ.copy()
+        env.update(EDITOR=f"sh {editor} --test-flag", WIZARD_EDITOR_ARGS=str(root / "editor-args"),
+                   WIZARD_MODE=mode, TERM="xterm-256color")
+        pid, master = pty.fork()
+        if pid == 0:
+            os.chdir(root)
+            os.execve(str(root / "scripts/examples/message-new-script-wizard.bb"),
+                      [str(root / "scripts/examples/message-new-script-wizard.bb")], env)
+
+        output = b""
+        deadline = time.monotonic() + 40
+
+        def read_more():
+            nonlocal output
+            if time.monotonic() > deadline:
+                raise AssertionError(f"Wizard timed out: {output[-2000:]!r}")
+            ready, _, _ = select.select([master], [], [], 0.2)
+            if ready:
+                try:
+                    output += os.read(master, 65536)
+                except OSError as error:
+                    if error.errno != errno.EIO:  # PTY closed by child
+                        raise
+
+        def wait_for(text):
+            nonlocal output
+            text = text.encode()
+            while text not in output:
+                read_more()
+            output = output[output.index(text) + len(text):]
+
+        draft = None
+        child = 0
+        try:
+            wait_for("Task folder (type to filter)")
+            os.write(master, b"\r")
+            wait_for("Subject (max 64 characters)")
+            os.write(master, b"Original\r")
+            wait_for("Message type")
+            os.write(master, b"\r")  # task
+            wait_for("Status")
+            os.write(master, b"\r")  # draft
+            wait_for("Editing message in ")
+            while b".md" not in output:
+                read_more()
+            draft = Path(output.split(b".md", 1)[0].decode() + ".md")
+            wait_for("EDITOR_VISIBLE_ON_STDOUT")
+            if mode == "failure":
+                wait_for("Editor exited with status 9")
+                assert b"Create this message?" not in output
+            else:
+                wait_for("Create this message?")
+                assert not list((root / "tasks/example").glob("*.md"))
+                os.write(master, b"y\r" if mode == "accept" else b"\r")
+
+            assert "--test-flag" in (root / "editor-args").read_text()
+            while True:
+                child, status = os.waitpid(pid, os.WNOHANG)
+                if child:
+                    break
+                read_more()
+            assert os.waitstatus_to_exitcode(status) == (1 if mode == "failure" else 0), output[-2000:]
+            files = list((root / "tasks/example").glob("*.md"))
+            if mode == "accept":
+                assert len(files) == 1, files
+                content = files[0].read_text()
+                assert "subject: Edited\n" in content, content
+                assert "custom: retained\n---\n\n# Edited body" in content, content
+                assert "1. Written in the editor.\n" in content, content
+                assert subprocess.run(["./scripts/td", "message", "validate"], cwd=root,
+                                      stdout=subprocess.DEVNULL, check=False).returncode == 0
+            else:
+                assert not files, files
+            assert draft.exists() == (mode == "failure"), draft
+        finally:
+            if draft is not None:
+                draft.unlink(missing_ok=True)
+            if not child:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                    os.waitpid(pid, 0)
+                except ProcessLookupError:
+                    pass
+            os.close(master)
+
+
+for mode in ("accept", "decline", "failure"):
+    run_flow(mode)
+print("script-wizard editor tests passed")
