@@ -17,3 +17,22 @@ Add `CONFIG_ZMK_FEATURE_BRAILLE=y` to the firmware's `.conf` file (for example, 
 The module is disabled by default. No device-tree nodes or keymap bindings are required for this stub. It has no extra west dependencies and can also be included in a west manifest later when it has a published remote.
 
 See [the implementation plan](plans/00-implementation.md) for the intended input design, acceptance gates, and limitations. The unchanged [ICEB rulebook](references/README.md) is a separate reference under its own noncommercial/no-derivatives license; the MIT license in `LICENSE` applies to the module code, not the PDF.
+
+## Tasks
+
+This project tracks its work in `tasks/` using TaskDown. TaskDown's implementation,
+tests, and its own development tasks now live in the separate Git repository at
+`~/code/personal/babashka/taskdown`.
+
+The existing entry points remain as small compatibility launchers:
+
+```sh
+./scripts/td system                  # Read the TaskDown reference
+./scripts/td message new -i          # Work on this project's tasks
+./scripts/task-down/task-down        # Browse this project's tasks
+```
+
+By default the launchers expect the TaskDown checkout at
+`../../babashka/taskdown`, relative to this repository. Set `TASKDOWN_HOME` to use
+another checkout. Neither launcher changes the current working directory, so
+they continue to operate on this project's task data.

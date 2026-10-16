@@ -1,24 +1,11 @@
-#!/usr/bin/env bb
-;; Launcher for the read-only three-pane TaskDown TUI.
-;;
-;; From the repository root:
-;;
-;;     scripts/task-down/task-down [vault-dir]
-;;
-;; The vault directory is relative to the current directory and defaults to
-;; `tasks`, so this script deliberately does not change directory: it puts its
-;; own `src` on the classpath and calls `task-down.main/-main` in this process.
-;; Staying in-process keeps the controlling tty, which the UI needs.
-;;
-;; Each step is its own top-level form: the classpath must be extended before
-;; task-down.main is required, and that alias must exist before -main is
-;; resolved.
-
-(require '[babashka.classpath :as cp]
-         '[babashka.fs :as fs])
-
-(cp/add-classpath (-> (fs/real-path *file*) fs/parent (fs/path "src") str))
-
-(require '[task-down.main :as main])
-
-(apply main/-main *command-line-args*)
+#!/bin/sh
+# Compatibility launcher for the standalone TaskDown terminal UI.
+# Preserve the caller's working directory and pass through any vault argument.
+set -eu
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+taskdown_home=${TASKDOWN_HOME:-"$script_dir/../../../../babashka/taskdown"}
+if [ ! -x "$taskdown_home/task-down" ]; then
+    printf '%s\n' "TaskDown not found at $taskdown_home. Set TASKDOWN_HOME to its checkout." >&2
+    exit 1
+fi
+exec "$taskdown_home/task-down" "$@"

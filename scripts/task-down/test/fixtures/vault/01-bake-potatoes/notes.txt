@@ -1,1 +1,0 @@
-Not a message file, so the loader must ignore it.
