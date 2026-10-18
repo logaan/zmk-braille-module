@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh the information snapshot, build the A4 PDF, and validate it.
+"""Build and validate the A4 PDF from the adjacent source-content.json.
 
 Requires Python 3.9+, Typst 0.15+, Poppler, and the Atkinson Hyperlegible
 and Atkinson Hyperlegible Mono fonts. No Python packages are required.
@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
-import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -16,8 +15,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
-ORIGINAL = ROOT / "references/braille-cheatsheet.typ"
+ROOT = HERE.parents[1]
 DESIGN = HERE / "braille-cheatsheet.typ"
 SNAPSHOT = HERE / "source-content.json"
 PDF = HERE / "braille-cheatsheet.pdf"
@@ -52,6 +50,42 @@ def check_content(snapshot):
         )
     assert query(DESIGN, "reference-commands") == snapshot["commands"], \
         "Factory chords differ from the source"
+    tables = query(DESIGN, "reference-comparison")
+    assert len(tables) == 6, f"Expected six character tables, got {len(tables)}"
+    assert all(table["capacity"] == 20 and 0 < len(table["entries"]) <= 20
+               for table in tables), "Character tables must have 20 data rows"
+    characters = [entry for table in tables for entry in table["entries"]]
+    assert Counter(entry["symbol"] for entry in characters) == Counter(
+        chr(code) for code in range(32, 127)
+    ), "Character tables must show each printable ASCII character exactly once"
+    for mode, column in (("ueb1", "ueb1"), ("eight-dot", "eightdot")):
+        expected_characters = Counter(
+            (label, sequence)
+            for group in snapshot["lookups"] if mode in group["modes"]
+            for label, sequence in group["entries"] if len(label) == 1
+        )
+        assert Counter((entry["symbol"], entry[column]) for entry in characters) \
+            == expected_characters, f"Incorrect {mode} character mappings"
+    quotes = {entry["symbol"]: entry for entry in characters
+              if entry["symbol"] in ("\"", "'")}
+    assert quotes['"']["ueb1"] == "⠠⠶" and quotes["'"]["ueb1"] == "⠄", \
+        "Only nondirectional quotation marks should be shown"
+    assert not any(group["group"] in (
+        "Opening", "Closing", "Nondirectional", "Text", "Code",
+    ) for group in snapshot["lookups"]), "Obsolete quote/example sections remain"
+
+    expected_chords = []
+    for group in snapshot["commands"]:
+        for command in group["commands"]:
+            keys = command["inputs"][0]
+            dots = sum(1 << (key - 1) for key in keys if isinstance(key, int))
+            assert command["masks"][0] == dots + (256 if "space" in keys else 0), \
+                f"Incorrect chord mask for {command['name']}"
+            expected_chords.append((tuple(keys), dots))
+    assert Counter((tuple(chord["keys"]), chord["dots"])
+                   for chord in query(DESIGN, "reference-chord")) \
+        == Counter(expected_chords), "Braille chord cells differ from the source"
+
     contractions = sum(
         len(group["entries"]) for group in snapshot["lookups"]
         if group["modes"] == ["ueb2"] and group["group"] not in (
@@ -62,6 +96,27 @@ def check_content(snapshot):
     commands = sum(len(group["commands"]) for group in snapshot["commands"])
     assert commands == 22, f"Expected 22 factory chords, got {commands}"
     return sum(expected.values()), contractions, commands
+
+
+def check_comparison_layout():
+    tables = json.loads(run(
+        "typst", "eval",
+        "query(table).map(it => (columns: it.columns.len(), "
+        "rows: it.rows.len(), position: it.location().position()))",
+        "--in", str(DESIGN), "--root", str(ROOT), "--format", "json",
+    ))
+    assert len(tables) == 6 and all(
+        table["columns"] == 3 and table["rows"] == 21 for table in tables
+    ), "Expected six three-column tables, each with a header and 20 data rows"
+    positions = [table["position"] for table in tables]
+    assert all(position["page"] == 1 for position in positions), \
+        "Character tables must all fit on page 1"
+    xs = [float(position["x"].removesuffix("pt")) for position in positions]
+    ys = [float(position["y"].removesuffix("pt")) for position in positions]
+    assert max(ys) - min(ys) < 0.1, "Character tables are not side by side"
+    steps = [right - left for left, right in zip(xs, xs[1:])]
+    assert min(steps) > 0 and max(steps) - min(steps) < 0.1, \
+        "Character tables are not evenly spaced across the page"
 
 
 def check_pdf():
@@ -85,7 +140,7 @@ def check_pdf():
         for index, (text, (x1, y1, x2, y2)) in enumerate(words):
             assert x1 >= 11 * mm - 0.3 and x2 <= width - 11 * mm + 0.3, \
                 f"Page {number}: {text!r} exceeds the horizontal print margins"
-            assert y1 >= 10 * mm - 0.3 and y2 <= height - 5 * mm + 0.3, \
+            assert y1 >= 10 * mm - 0.3 and y2 <= height - 13 * mm + 0.3, \
                 f"Page {number}: {text!r} exceeds the vertical print margins"
             for other, (ox1, oy1, ox2, oy2) in words[index + 1:]:
                 overlap_x = min(x2, ox2) - max(x1, ox1)
@@ -99,7 +154,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--check", action="store_true",
-        help="Check the existing snapshot/PDF without rewriting either",
+        help="Check the source mappings and existing PDF without rewriting either",
     )
     args = parser.parse_args()
     for tool in ("typst", "pdftotext"):
@@ -110,26 +165,20 @@ def main():
     if missing:
         parser.error("Missing fonts: " + ", ".join(sorted(missing)))
 
-    snapshot = {
-        "source": str(ORIGINAL.relative_to(ROOT)),
-        "source_sha256": hashlib.sha256(ORIGINAL.read_bytes()).hexdigest(),
-        "lookups": query(ORIGINAL, "lookup"),
-        "commands": query(ORIGINAL, "command-lookup"),
-    }
+    snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     if args.check:
-        assert json.loads(SNAPSHOT.read_text()) == snapshot, \
-            "The information source changed; rebuild and review the PDF"
         assert PDF.is_file(), f"PDF not found: {PDF}"
     else:
-        SNAPSHOT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n")
         subprocess.run([
             "typst", "compile", "--root", str(ROOT), str(DESIGN), str(PDF),
         ], cwd=ROOT, check=True)
 
     mappings, contractions, commands = check_content(snapshot)
+    check_comparison_layout()
     words = check_pdf()
     print(f"Validated: 2 A4 pages; {mappings} source mappings; "
           f"{contractions} contractions; {commands} factory chords.")
+    print("Character layout: six side-by-side tables; three columns; 20 data rows each.")
     print(f"Checked {words} text boxes: no overlaps or print-margin overflow.")
     print(PDF.relative_to(ROOT))
 

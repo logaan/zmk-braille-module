@@ -1,31 +1,23 @@
-// A new A4 design. The original cheatsheet supplies information, not layout.
-// Build and validate with: python3 references/braille-cheatsheet/gpt-6.1-sol/build.py
+// Build and validate with: python3 docs/braille-cheatsheet/build.py
 #let source = json("source-content.json")
 #let ink = rgb("#172e37")
 #let muted = rgb("#4f6269")
 #let teal = rgb("#006b68")
-#let blue = rgb("#285c93")
 #let rule = rgb("#d6e1e3")
 #let wash = rgb("#f0f5f5")
 #let mono = "Atkinson Hyperlegible Mono"
 
 #set document(
   title: "Braille input — two-page A4 quick reference",
-  author: "Braille module · gpt-6.1-sol",
-  description: "Planned UEB 1 and Computer8 character mappings, all 182 optional UEB 2 contractions, and verified factory chords.",
+  author: "Braille module",
+  description: "UEB 1 and 8 dot character mappings, UEB 2 contractions, and factory chords.",
 )
 #set page(
   paper: "a4",
   margin: (left: 11mm, right: 11mm, top: 10mm, bottom: 13mm),
-  footer-descent: 1.5mm,
-  footer: context [
-    #line(length: 100%, stroke: 0.45pt + rule)
-    #v(3pt)
-    #grid(columns: (1fr, auto), align: (left, right),
-      text(size: 7.2pt, fill: muted)[BRAILLE MODULE · Planned mappings, not a firmware-support guarantee.],
-      text(size: 7.2pt, weight: "bold", fill: teal)[#counter(page).display() / 2],
-    )
-  ],
+  header: none,
+  footer: none,
+  numbering: none,
 )
 #set text(
   font: "Atkinson Hyperlegible", size: 9.4pt, fill: ink,
@@ -38,9 +30,7 @@
 #let find(group, mode) = source.lookups.find(row => row.group == group and row.modes.contains(mode)).entries
 #let register(group, entries, modes) = [#metadata((group: group, entries: entries, modes: modes)) <reference-lookup>]
 
-// Each cell is vector artwork, not a font-dependent stack. Small pale dots
-// explicitly mark unpressed positions; active dots retain their normal geometry.
-// Alt text spells out the pressed dots in the tagged PDF.
+// Vector cells use the same dot geometry throughout the document.
 #let braille(cell, eight: false) = {
   let mask = cell.to-unicode() - 0x2800
   let order = if eight { (1, 2, 3, 7, 4, 5, 6, 8) } else { (1, 2, 3, 4, 5, 6) }
@@ -77,8 +67,6 @@
   if label == " " { "␣" } else { label },
 )
 
-// A pair is indivisible. A shared label width aligns the braille beside its
-// result, leaving clear white space before the next pair of columns.
 #let pairs(entries, columns: 2, eight: false, code: false, row: 13.8pt, size: 9.4pt) = context {
   let label-width = calc.max(..entries.map(pair => measure(output(pair.at(0), code: code, size: size)).width))
   let count = calc.ceil(entries.len() / columns) * columns
@@ -105,42 +93,57 @@
     }),
   )
 }
-#let caption(title, note: none, color: teal) = {
+#let caption(title) = {
   v(3pt)
-  grid(columns: (auto, 1fr), column-gutter: 5pt, align: (left + horizon, right + horizon),
-    text(size: 9.2pt, weight: "bold", fill: color)[#title],
-    if note != none { text(size: 7.1pt, fill: muted)[#note] },
-  )
-  v(1.5pt)
+  heading(level: 2, text(size: 9.2pt, weight: "bold", fill: teal)[#title])
+  v(2pt)
 }
-#let lookup(title, group, mode, columns: 2, eight: false, code: false, note: none, row: 13.8pt, size: 9.4pt, color: teal) = block(breakable: false)[
+#let lookup(title, group, mode, columns: 2, code: false, row: 13.8pt, size: 9.4pt) = block(breakable: false)[
   #let entries = find(group, mode)
   #register(group, entries, (mode,))
-  #caption(title, note: note, color: color)
-  #pairs(entries, columns: columns, eight: eight, code: code, row: row, size: size)
+  #caption(title)
+  #pairs(entries, columns: columns, code: code, row: row, size: size)
 ]
-#let page-title(kicker, title, subtitle) = {
-  text(size: 7.8pt, tracking: 1.15pt, weight: "bold", fill: teal)[#kicker]
-  v(3pt)
+#let page-title(title) = {
   heading(level: 1, text(size: 20pt, weight: "bold", tracking: -0.3pt)[#title])
-  v(3pt)
-  text(size: 8.5pt, fill: muted)[#subtitle]
+  v(8pt)
 }
-#let mode-title(title, description, color) = {
-  block(width: 100%, inset: (x: 6pt, y: 3pt), fill: color)[
-    #heading(level: 2, text(size: 12pt, weight: "bold", fill: white)[#title])
+
+#let comparison-rows(group) = {
+  let ueb = find(group, "ueb1")
+  let eight = find(group, "eight-dot")
+  ueb.map(pair => (
+    symbol: pair.at(0),
+    ueb1: pair.at(1),
+    eightdot: eight.find(entry => entry.at(0) == pair.at(0)).at(1),
+  ))
+}
+#let comparison-table(title, entries) = block(breakable: false)[
+  #metadata((title: title, capacity: 20, entries: entries)) <reference-comparison>
+  #block(height: 14pt)[
+    #heading(level: 2, text(size: 7.3pt, weight: "bold", fill: teal)[#title])
   ]
-  v(3pt)
-  text(size: 8pt, fill: muted)[#description]
-  v(1pt)
-}
-#let number-guide = box[
-  #set text(font: mono, size: 7.5pt, weight: "medium")
-  #grid(columns: (auto, auto), column-gutter: 4pt, row-gutter: 0.3pt,
-    [1], [4], [2], [5], [3], [6],
-    text(fill: blue)[7], text(fill: blue)[8],
+  #table(
+    columns: (1fr, 1.15fr, 1fr),
+    rows: (17pt,) + (18.5pt,) * 20,
+    inset: (x: 2pt, y: 0pt),
+    align: center + horizon,
+    stroke: 0.3pt + rule,
+    fill: (column, row) => if row == 0 { teal } else if calc.odd(row) { wash } else { white },
+    table.header(
+      ..("Symbol", "UEB 1", "8 dot").map(label => text(size: 6.7pt, weight: "bold", fill: white)[#label]),
+    ),
+    ..range(20).map(i => if i < entries.len() {
+      let entry = entries.at(i)
+      (
+        output(entry.symbol, code: true, size: 8.7pt),
+        sequence(entry.ueb1),
+        sequence(entry.eightdot, eight: true),
+      )
+    } else { ([], [], []) }).flatten(),
   )
 ]
+
 #let command-labels = (
   "literal-space": "Space", "previous-item-left": "Left", "next-item-right": "Right",
   "up": "Up", "down": "Down", "first-item-home": "Home", "last-item-end": "End",
@@ -151,18 +154,23 @@
 )
 #let command-keys(keys) = {
   let numbers = keys.filter(key => type(key) == int)
-  let dots = if numbers.len() == 0 { "" } else { numbers.map(str).join() }
-  let prefix = if keys.contains("space") { if dots == "" { "Space" } else { "Space + " } } else { "" }
-  box(text(size: 8.1pt, weight: "bold", fill: muted, prefix) + text(font: mono, size: 8.4pt, weight: "medium", dots))
+  let mask = numbers.fold(0, (mask, dot) => mask + calc.pow(2, dot - 1))
+  let cells = if keys.contains("space") { (space-key,) } else { () }
+  if numbers.len() > 0 {
+    if cells.len() > 0 { cells.push(text(size: 8pt, fill: muted)[+]) }
+    cells.push(braille(str.from-unicode(0x2800 + mask), eight: true))
+  }
+  [#metadata((keys: keys, dots: mask)) <reference-chord>]
+  box(grid(columns: (auto,) * cells.len(), column-gutter: 3pt, align: horizon, ..cells))
 }
-#let command-table(index, row: 16pt) = {
+#let command-table(index, columns: 4, row: 20pt) = {
   let data = source.commands.at(index)
   [#metadata(data) <reference-commands>]
-  let count = calc.ceil(data.commands.len() / 4) * 4
-  grid(columns: (1fr,) * 4, ..range(count).map(i => block(
+  let count = calc.ceil(data.commands.len() / columns) * columns
+  grid(columns: (1fr,) * columns, ..range(count).map(i => block(
     width: 100%, height: row, inset: (x: 4pt, y: 1pt),
-    fill: if calc.even(calc.floor(i / 4)) { wash } else { white },
-    stroke: (bottom: 0.3pt + rule, right: if calc.rem(i, 4) != 3 { 0.4pt + rule } else { none }),
+    fill: if calc.even(calc.floor(i / columns)) { wash } else { white },
+    stroke: (bottom: 0.3pt + rule, right: if calc.rem(i, columns) != columns - 1 { 0.4pt + rule } else { none }),
   )[
     #if i < data.commands.len() {
       let command = data.commands.at(i)
@@ -174,134 +182,64 @@
   ]))
 }
 
-#page-title(
-  "BRAILLE INPUT / QUICK REFERENCE",
-  "Characters & keyboard chords",
-  [UEB 1 · uncontracted literary braille #h(9pt) Computer8 · one cell per character],
+#page-title("Characters & keyboard chords")
+#let character-groups = (
+  "Lowercase letters & Braille Space", "Uppercase letters", "Digits", "Punctuation & symbols",
+)
+#for group in source.lookups.filter(group => character-groups.contains(group.group)) {
+  register(group.group, group.entries, group.modes)
+}
+#let lower = comparison-rows("Lowercase letters & Braille Space")
+#let upper = comparison-rows("Uppercase letters")
+#let digits = comparison-rows("Digits")
+#let symbols = comparison-rows("Punctuation & symbols")
+#grid(columns: (1fr,) * 6, column-gutter: 6pt,
+  comparison-table("Lowercase", lower.slice(0, 20)),
+  comparison-table("Letters & digits", lower.slice(20, 26) + digits + (lower.last(),)),
+  comparison-table("Uppercase", upper.slice(0, 20)),
+  comparison-table("Capitals & symbols", upper.slice(20) + symbols.slice(0, 6)),
+  comparison-table("Symbols ' – =", symbols.slice(6, 19)),
+  comparison-table("Symbols > – ~", symbols.slice(19)),
 )
 #v(6pt)
-#block(width: 100%, inset: (x: 7pt, y: 5pt), fill: wash, radius: 3pt)[
-  #grid(columns: (auto, 100pt, 1fr), column-gutter: 9pt, align: horizon,
-    number-guide,
-    text(size: 7.8pt, fill: muted)[*Dot positions*\
-      UEB text: 1–6\
-      Computer8 text: 1–8],
-    text(size: 8pt)[*Print → braille.* Read across each table, then down; enter cells *in sequence*.\
-      Dark dots = pressed. Faint dots = position guides. #space-key = Braille Space key.],
-  )
-]
-#v(3pt)
-#let lower = find("Lowercase letters & Braille Space · UEB 1 / Computer8", "ueb1")
-#register("Lowercase letters & Braille Space · UEB 1 / Computer8", lower, ("ueb1", "computer8"))
-#caption("Shared lowercase letters", note: [Both modes · space output ␣ = #space-key])
-#pairs(lower.slice(0, 26), columns: 13, code: true, row: 15pt)
-#v(6pt)
-
 #grid(columns: (1fr, 1fr), column-gutter: 13pt,
-  [
-    #mode-title("UEB 1", [Capitals and digits include their required prefix cells.], teal)
-    #lookup("Uppercase", "Uppercase letters", "ueb1", columns: 6, code: true)
-    #lookup("Digits", "Digits", "ueb1", columns: 5, code: true)
-    #lookup("Punctuation & symbols", "Punctuation & symbols", "ueb1", columns: 4, code: true)
-    #caption("Quotation marks")
-    #grid(columns: (1fr, 1fr, 1fr), column-gutter: 5pt,
-      [
-        #text(size: 7.5pt, weight: "bold", fill: muted)[Opening]
-        #v(3pt)
-        #let entries = find("Opening", "ueb1")
-        #register("Opening", entries, ("ueb1",))
-        #pairs(entries, columns: 1, code: true)
-      ],
-      [
-        #text(size: 7.5pt, weight: "bold", fill: muted)[Closing]
-        #v(3pt)
-        #let entries = find("Closing", "ueb1")
-        #register("Closing", entries, ("ueb1",))
-        #pairs(entries, columns: 1, code: true)
-      ],
-      [
-        #text(size: 7.5pt, weight: "bold", fill: muted)[Nondirectional]
-        #v(3pt)
-        #let entries = find("Nondirectional", "ueb1")
-        #register("Nondirectional", entries, ("ueb1",))
-        #pairs(entries, columns: 1, code: true)
-      ],
-    )
-    #lookup("Capitalisation examples", "Capitalisation", "ueb1", columns: 1)
-    #lookup("Numbers & letters", "Numbers & letters", "ueb1", columns: 2)
-  ],
-  [
-    #mode-title("Computer8", [Eight-dot computer braille · liblouis en-us-comp8.], blue)
-    #lookup("Uppercase", "Uppercase letters", "computer8", columns: 6, code: true, eight: true, color: blue)
-    #lookup("Digits", "Digits", "computer8", columns: 5, code: true, eight: true, color: blue)
-    #lookup("Punctuation & symbols", "Punctuation & symbols", "computer8", columns: 4, code: true, eight: true, color: blue)
-    #lookup("Text examples", "Text", "computer8", columns: 1, eight: true, color: blue)
-    #lookup("Code examples", "Code", "computer8", columns: 1, eight: true, code: true, color: blue)
-  ],
+  lookup("Capitalisation · UEB 1", "Capitalisation", "ueb1", columns: 1, row: 19pt),
+  lookup("Numbers & letters · UEB 1", "Numbers & letters", "ueb1", columns: 1, row: 19pt),
 )
 #v(7pt)
-#grid(columns: (auto, 1fr), column-gutter: 8pt, align: (left + horizon, right + horizon),
-  heading(level: 2, text(size: 11.5pt, weight: "bold", fill: teal)[Factory keys · both modes]),
-  text(size: 7.4pt, fill: muted)[Software verified · hardware acceptance pending],
-)
-#v(4pt)
-#text(size: 8pt)[*Command chords:* press every listed key *together*. Digits are dot numbers, not sequential cells.]
-#v(4pt)
+#caption("Factory keys")
 #command-table(0)
-#v(4pt)
-#set par(leading: 1pt)
-#text(size: 7.5pt, fill: muted)[
-  Tab = Space + dots 2345 (#text(font: mono, size: 7.3pt)[0x11e]). Delete/Return rows are alternative chords. Dot 7/8 commands work in both modes.\
-  Sticky modifiers (page 2): next host key, or 1 s unused timeout. Command + Left/Right = line start/end; Shift + Tab = previous UI item.\
-  Settings entry deferred.
-]
 
 #pagebreak()
-#set par(leading: 0pt)
-#page-title(
-  "BRAILLE INPUT / OPTIONAL UEB 2",
-  "Contractions & shortforms",
-  [All 182 planned contractions · Use the UEB 1 character mappings and indicators on page 1.],
-)
-#v(6pt)
-#block(width: 100%, inset: (x: 7pt, y: 5pt), fill: wash, radius: 3pt)[
-  #text(size: 8pt)[*Context matters.* Wordsigns and shortforms below are whole words; groupsigns have the placement shown.\
-    Read each table across, then down. Multiple braille cells are a *sequence*, not a simultaneous chord.]
-]
-#v(5pt)
+#page-title("Contractions & shortforms · UEB 2")
 #grid(columns: (1fr, 1fr, 1fr), column-gutter: 10pt,
   [
-    #lookup("Alphabetic wordsigns", "Alphabetic wordsigns · whole words", "ueb2", note: "Whole words")
-    #lookup("Strong wordsigns", "Strong wordsigns · whole words", "ueb2", note: "Whole words")
-    #lookup("Lower wordsigns", "Lower wordsigns · whole words", "ueb2", note: "Whole words")
+    #lookup("Alphabetic wordsigns", "Alphabetic wordsigns · whole words", "ueb2")
+    #lookup("Strong wordsigns", "Strong wordsigns · whole words", "ueb2")
+    #lookup("Lower wordsigns", "Lower wordsigns · whole words", "ueb2")
     #lookup("Capitalisation", "Capitalisation", "ueb2", columns: 1)
   ],
   [
     #lookup("Strong contractions", "Strong contractions", "ueb2")
-    #lookup("Strong groupsigns", "Strong groupsigns · inside words", "ueb2", note: "Inside words")
-    #lookup("Lower groupsigns", "Lower groupsigns · word start", "ueb2", note: "Word start")
-    #lookup("Lower groupsigns", "Lower groupsigns · word middle", "ueb2", note: "Word middle")
-    #lookup("Lower groupsigns", "Lower groupsigns · en / in", "ueb2", note: "en / in")
-    #lookup("Grade 1 indicators", "Grade 1 indicators · literal letters", "ueb2", columns: 1, note: "Literal letters")
+    #lookup("Strong groupsigns", "Strong groupsigns · inside words", "ueb2")
+    #lookup("Lower groupsigns · word start", "Lower groupsigns · word start", "ueb2")
+    #lookup("Lower groupsigns · word middle", "Lower groupsigns · word middle", "ueb2")
+    #lookup("Lower groupsigns · en / in", "Lower groupsigns · en / in", "ueb2")
+    #lookup("Grade 1 indicators", "Grade 1 indicators · literal letters", "ueb2", columns: 1)
   ],
   [
     #lookup("Initial-letter contractions", "Initial-letter contractions", "ueb2")
-    #lookup("Final-letter groupsigns", "Final-letter groupsigns · after a letter", "ueb2", note: "After a letter")
+    #lookup("Final-letter groupsigns", "Final-letter groupsigns · after a letter", "ueb2")
   ],
 )
 #v(4pt)
-#lookup("Shortforms", "Shortforms · whole words", "ueb2", columns: 5, note: "Whole words · alphabetical order", row: 14.1pt, size: 9.1pt)
+#lookup("Shortforms", "Shortforms · whole words", "ueb2", columns: 5, row: 14.1pt, size: 9.1pt)
 #v(7pt)
-#grid(columns: (auto, 1fr), column-gutter: 8pt, align: (left + horizon, right + horizon),
-  heading(level: 2, text(size: 11.5pt, weight: "bold", fill: teal)[Sticky modifiers]),
-  text(size: 7.5pt, fill: muted)[Factory chords · UEB 1 / Computer8],
-)
-#v(4pt)
-#command-table(1, row: 17pt)
-#v(5pt)
-#text(size: 8pt)[*Sticky* = applies to the next host key, or clears after 1 s unused. *Globe ≠ Fn.* Press command chords together.]
-#v(6pt)
-#text(size: 7.2pt, fill: muted)[
-  *Content:* project braille-cheatsheet.typ and its verified research; UEB rules, 3rd ed. (2024); Computer8: liblouis en-us-comp8.\
-  *Factory chords:* #link("https://support.apple.com/en-us/103560")[Mac VoiceOver · support.apple.com/en-us/103560].
-]
+#caption("Sticky modifiers")
+#command-table(1, columns: 5)
+
+// Reference update: character tables compare UEB 1 and 8 dot in six columns,
+// with 20 data rows each. Quotation marks use only nondirectional forms;
+// command chords, including sticky modifiers, use the same vector cells.
+// Only headings and mappings are printed: no running headers, footers,
+// page numbers, explanatory prose, or text/code example sections.

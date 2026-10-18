@@ -1,13 +1,12 @@
 {
-  "source": "references/braille-cheatsheet.typ",
-  "source_sha256": "7cf0e102014c21fe9246941bd4381d7b588a6323673600122c6d3c9f7a25b260",
+  "source": "Project character mappings, UEB rules (3rd ed., 2024), liblouis en-us-comp8, and Mac VoiceOver factory chords.",
   "lookups": [
     {
       "modes": [
         "ueb1",
-        "computer8"
+        "eight-dot"
       ],
-      "group": "Lowercase letters & Braille Space · UEB 1 / Computer8",
+      "group": "Lowercase letters & Braille Space",
       "entries": [
         [
           "a",
@@ -291,7 +290,7 @@
         ],
         [
           "\"",
-          "⠴"
+          "⠠⠶"
         ],
         [
           "#",
@@ -419,62 +418,6 @@
       "modes": [
         "ueb1"
       ],
-      "group": "Opening",
-      "entries": [
-        [
-          "\"",
-          "⠦"
-        ],
-        [
-          "\"",
-          "⠘⠦"
-        ],
-        [
-          "'",
-          "⠠⠦"
-        ]
-      ]
-    },
-    {
-      "modes": [
-        "ueb1"
-      ],
-      "group": "Closing",
-      "entries": [
-        [
-          "\"",
-          "⠴"
-        ],
-        [
-          "\"",
-          "⠘⠴"
-        ],
-        [
-          "'",
-          "⠠⠴"
-        ]
-      ]
-    },
-    {
-      "modes": [
-        "ueb1"
-      ],
-      "group": "Nondirectional",
-      "entries": [
-        [
-          "\"",
-          "⠠⠶"
-        ],
-        [
-          "'",
-          "⠄"
-        ]
-      ]
-    },
-    {
-      "modes": [
-        "ueb1"
-      ],
       "group": "Capitalisation",
       "entries": [
         [
@@ -517,7 +460,7 @@
     },
     {
       "modes": [
-        "computer8"
+        "eight-dot"
       ],
       "group": "Uppercase letters",
       "entries": [
@@ -629,7 +572,7 @@
     },
     {
       "modes": [
-        "computer8"
+        "eight-dot"
       ],
       "group": "Digits",
       "entries": [
@@ -677,7 +620,7 @@
     },
     {
       "modes": [
-        "computer8"
+        "eight-dot"
       ],
       "group": "Punctuation & symbols",
       "entries": [
@@ -808,62 +751,6 @@
         [
           "~",
           "⠘"
-        ]
-      ]
-    },
-    {
-      "modes": [
-        "computer8"
-      ],
-      "group": "Text",
-      "entries": [
-        [
-          "Hello, world!",
-          "⡓⠑⠇⠇⠕⠠ ⠺⠕⠗⠇⠙⠮"
-        ],
-        [
-          "ABC",
-          "⡁⡃⡉"
-        ],
-        [
-          "123",
-          "⠂⠆⠒"
-        ],
-        [
-          "7:30",
-          "⠶⠱⠒⠴"
-        ],
-        [
-          "3b",
-          "⠒⠃"
-        ],
-        [
-          "a?",
-          "⠁⠹"
-        ]
-      ]
-    },
-    {
-      "modes": [
-        "computer8"
-      ],
-      "group": "Code",
-      "entries": [
-        [
-          "a[i]",
-          "⠁⡪⠊⡻"
-        ],
-        [
-          "b{j}",
-          "⠃⠪⠚⠻"
-        ],
-        [
-          "x = 42;",
-          "⠭ ⠿ ⠲⠆⠰"
-        ],
-        [
-          "\\ | /",
-          "⡳ ⠳ ⠌"
         ]
       ]
     },
@@ -1728,7 +1615,7 @@
     {
       "modes": [
         "ueb1",
-        "computer8"
+        "eight-dot"
       ],
       "commands": [
         {
@@ -2006,7 +1893,7 @@
     {
       "modes": [
         "ueb1",
-        "computer8"
+        "eight-dot"
       ],
       "commands": [
         {
