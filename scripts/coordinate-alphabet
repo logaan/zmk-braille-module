@@ -226,7 +226,7 @@ def check_once(args, log_dir):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--interval", type=float, default=60, help="seconds between Luna checks (default 60)")
+    parser.add_argument("--interval", type=float, default=600, help="seconds between Luna checks (default 600)")
     parser.add_argument("--luna-model", default="openrouter/pareto-code")
     parser.add_argument("--sol-model", default="openrouter/pareto-code")
     parser.add_argument("--pane", default=os.environ.get("TMUX_PANE"), help="script pane in the target window")
