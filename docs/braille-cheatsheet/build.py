@@ -50,7 +50,8 @@ def check_content(snapshot):
         )
     assert query(DESIGN, "reference-commands") == snapshot["commands"], \
         "Factory chords differ from the source"
-    tables = query(DESIGN, "reference-comparison")
+    comparisons = query(DESIGN, "reference-comparison")
+    tables = [table for table in comparisons if table["group"] is None]
     assert len(tables) == 6, f"Expected six character tables, got {len(tables)}"
     assert all(table["capacity"] == 20 and 0 < len(table["entries"]) <= 20
                for table in tables), "Character tables must have 20 data rows"
@@ -73,6 +74,28 @@ def check_content(snapshot):
     assert not any(group["group"] in (
         "Opening", "Closing", "Nondirectional", "Text", "Code",
     ) for group in snapshot["lookups"]), "Obsolete quote/example sections remain"
+
+    sequences = [table for table in comparisons if table["group"] is not None]
+    assert Counter(table["group"] for table in sequences) == Counter((
+        "Capitalisation", "Numbers & letters",
+    )), "Both sequence sections must compare UEB 1 and 8 dot"
+    eightdot = {entry["symbol"]: entry["eightdot"] for entry in characters}
+    for table in sequences:
+        assert table["capacity"] == len(table["entries"]), \
+            f"Incorrect row count for {table['group']}"
+        for mode, column in (("ueb1", "ueb1"), ("eight-dot", "eightdot")):
+            expected_sequences = Counter(
+                (label, sequence)
+                for group in snapshot["lookups"]
+                if group["group"] == table["group"] and mode in group["modes"]
+                for label, sequence in group["entries"]
+            )
+            assert Counter((entry["symbol"], entry[column])
+                           for entry in table["entries"]) == expected_sequences, \
+                f"Incorrect {mode} sequences for {table['group']}"
+        for entry in table["entries"]:
+            assert entry["eightdot"] == "".join(eightdot[c] for c in entry["symbol"]), \
+                f"8-dot sequence differs from its character mappings: {entry['symbol']}"
 
     expected_chords = []
     for group in snapshot["commands"]:
@@ -98,25 +121,38 @@ def check_content(snapshot):
     return sum(expected.values()), contractions, commands
 
 
-def check_comparison_layout():
-    tables = json.loads(run(
+def check_layout(snapshot):
+    layout = json.loads(run(
         "typst", "eval",
-        "query(table).map(it => (columns: it.columns.len(), "
-        "rows: it.rows.len(), position: it.location().position()))",
+        "(tables: query(table).map(it => (columns: it.columns.len(), "
+        "rows: it.rows.len(), position: it.location().position())), "
+        "chord_pages: query(<reference-chord>).map(it => it.location().page()))",
         "--in", str(DESIGN), "--root", str(ROOT), "--format", "json",
     ))
-    assert len(tables) == 6 and all(
-        table["columns"] == 3 and table["rows"] == 21 for table in tables
-    ), "Expected six three-column tables, each with a header and 20 data rows"
+    assert set(layout["chord_pages"]) == {1}, \
+        "Navigation and Editing and Sticky modifiers must both fit on page 1"
+    tables = layout["tables"]
+    assert len(tables) == 8 and all(table["columns"] == 3 for table in tables), \
+        "Expected eight three-column comparison tables"
+    assert all(table["rows"] == 21 for table in tables[:6]), \
+        "Character tables must each have a header and 20 data rows"
+    for table, name in zip(tables[6:], ("Capitalisation", "Numbers & letters")):
+        entries = next(group["entries"] for group in snapshot["lookups"]
+                       if group["group"] == name and "ueb1" in group["modes"])
+        assert table["rows"] == len(entries) + 1, \
+            f"Expected a header and one row per sequence in {name}"
     positions = [table["position"] for table in tables]
     assert all(position["page"] == 1 for position in positions), \
-        "Character tables must all fit on page 1"
+        "Comparison tables must all fit on page 1"
     xs = [float(position["x"].removesuffix("pt")) for position in positions]
     ys = [float(position["y"].removesuffix("pt")) for position in positions]
-    assert max(ys) - min(ys) < 0.1, "Character tables are not side by side"
-    steps = [right - left for left, right in zip(xs, xs[1:])]
+    assert max(ys[:6]) - min(ys[:6]) < 0.1, "Character tables are not side by side"
+    steps = [right - left for left, right in zip(xs[:6], xs[1:6])]
     assert min(steps) > 0 and max(steps) - min(steps) < 0.1, \
         "Character tables are not evenly spaced across the page"
+    assert abs(xs[6] - xs[0]) < 0.1 and abs(xs[7] - xs[0]) < 0.1 \
+        and ys[0] < ys[6] < ys[7], \
+        "Sequence tables must be aligned and stacked below the character tables"
 
 
 def check_pdf():
@@ -174,11 +210,12 @@ def main():
         ], cwd=ROOT, check=True)
 
     mappings, contractions, commands = check_content(snapshot)
-    check_comparison_layout()
+    check_layout(snapshot)
     words = check_pdf()
     print(f"Validated: 2 A4 pages; {mappings} source mappings; "
           f"{contractions} contractions; {commands} factory chords.")
     print("Character layout: six side-by-side tables; three columns; 20 data rows each.")
+    print("Sequence layout: Capitalisation and Numbers & letters compare UEB 1 and 8 dot.")
     print(f"Checked {words} text boxes: no overlaps or print-margin overflow.")
     print(PDF.relative_to(ROOT))
 

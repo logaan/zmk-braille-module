@@ -462,6 +462,50 @@
       "modes": [
         "eight-dot"
       ],
+      "group": "Capitalisation",
+      "entries": [
+        [
+          "ABC",
+          "⡁⡃⡉"
+        ],
+        [
+          "ABc",
+          "⡁⡃⠉"
+        ],
+        [
+          "A BIG CAT",
+          "⡁ ⡃⡊⡛ ⡉⡁⡞"
+        ]
+      ]
+    },
+    {
+      "modes": [
+        "eight-dot"
+      ],
+      "group": "Numbers & letters",
+      "entries": [
+        [
+          "123",
+          "⠂⠆⠒"
+        ],
+        [
+          "7:30",
+          "⠶⠱⠒⠴"
+        ],
+        [
+          "3b",
+          "⠒⠃"
+        ],
+        [
+          "a?",
+          "⠁⠹"
+        ]
+      ]
+    },
+    {
+      "modes": [
+        "eight-dot"
+      ],
       "group": "Uppercase letters",
       "entries": [
         [

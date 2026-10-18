@@ -118,22 +118,22 @@
     eightdot: eight.find(entry => entry.at(0) == pair.at(0)).at(1),
   ))
 }
-#let comparison-table(title, entries) = block(breakable: false)[
-  #metadata((title: title, capacity: 20, entries: entries)) <reference-comparison>
+#let comparison-table(title, entries, group: none, rows: 20, columns: (1fr, 1.15fr, 1fr)) = block(breakable: false)[
+  #metadata((title: title, group: group, capacity: rows, entries: entries)) <reference-comparison>
   #block(height: 14pt)[
-    #heading(level: 2, text(size: 7.3pt, weight: "bold", fill: teal)[#title])
+    #heading(level: 2, text(size: if group == none { 7.3pt } else { 9.2pt }, weight: "bold", fill: teal)[#title])
   ]
   #table(
-    columns: (1fr, 1.15fr, 1fr),
-    rows: (17pt,) + (18.5pt,) * 20,
+    columns: columns,
+    rows: (17pt,) + (17pt,) * rows,
     inset: (x: 2pt, y: 0pt),
     align: center + horizon,
     stroke: 0.3pt + rule,
     fill: (column, row) => if row == 0 { teal } else if calc.odd(row) { wash } else { white },
     table.header(
-      ..("Symbol", "UEB 1", "8 dot").map(label => text(size: 6.7pt, weight: "bold", fill: white)[#label]),
+      ..("Symbol", "UEB 1", "8 dot").map(label => text(size: if group == none { 6.7pt } else { 8pt }, weight: "bold", fill: white)[#label]),
     ),
-    ..range(20).map(i => if i < entries.len() {
+    ..range(rows).map(i => if i < entries.len() {
       let entry = entries.at(i)
       (
         output(entry.symbol, code: true, size: 8.7pt),
@@ -142,6 +142,16 @@
       )
     } else { ([], [], []) }).flatten(),
   )
+]
+
+#let comparison-lookup(title, group) = block(breakable: false)[
+  #let entries = comparison-rows(group)
+  #for lookup in source.lookups.filter(lookup => lookup.group == group and (
+    lookup.modes.contains("ueb1") or lookup.modes.contains("eight-dot")
+  )) {
+    register(lookup.group, lookup.entries, lookup.modes)
+  }
+  #comparison-table(title, entries, group: group, rows: entries.len(), columns: (70pt, 1fr, 1fr))
 ]
 
 #let command-labels = (
@@ -202,13 +212,15 @@
   comparison-table("Symbols > – ~", symbols.slice(19)),
 )
 #v(6pt)
-#grid(columns: (1fr, 1fr), column-gutter: 13pt,
-  lookup("Capitalisation · UEB 1", "Capitalisation", "ueb1", columns: 1, row: 19pt),
-  lookup("Numbers & letters · UEB 1", "Numbers & letters", "ueb1", columns: 1, row: 19pt),
-)
+#comparison-lookup("Capitalisation", "Capitalisation")
+#v(6pt)
+#comparison-lookup("Numbers & letters", "Numbers & letters")
 #v(7pt)
-#caption("Factory keys")
+#caption("Navigation and Editing")
 #command-table(0)
+#v(7pt)
+#caption("Sticky modifiers")
+#command-table(1, columns: 5)
 
 #pagebreak()
 #page-title("Contractions & shortforms · UEB 2")
@@ -234,12 +246,12 @@
 )
 #v(4pt)
 #lookup("Shortforms", "Shortforms · whole words", "ueb2", columns: 5, row: 14.1pt, size: 9.1pt)
-#v(7pt)
-#caption("Sticky modifiers")
-#command-table(1, columns: 5)
 
 // Reference update: character tables compare UEB 1 and 8 dot in six columns,
 // with 20 data rows each. Quotation marks use only nondirectional forms;
 // command chords, including sticky modifiers, use the same vector cells.
 // Only headings and mappings are printed: no running headers, footers,
 // page numbers, explanatory prose, or text/code example sections.
+// Capitalisation and numbers/letters also compare UEB 1 with 8 dot;
+// each 8-dot sequence is the concatenation of its character mappings.
+// Sticky modifiers share page 1 with Navigation and Editing.
