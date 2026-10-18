@@ -24,9 +24,13 @@ Leave implementation, tests, and technical choices to each leaf worker. Preserve
 unrelated changes. Commit only your own TaskDown messages, never git add -A.
 
 The script owns the polling interval: do NOT sleep or run a polling loop yourself.
-Inspect tagged worker panes and relevant task messages. Never interrupt an active
-worker, spawn a duplicate, or advance before its delivery is committed and its
-implementation has finished. Untagged panes are NOT your workers. Do not type
+Inspect tagged worker panes and relevant task messages. A healthy active worker
+only needs COORDINATOR_WAIT: do not post routine progress requests or repeated
+pings. Never interrupt an active worker, spawn a duplicate, or advance before its
+delivery is committed and implementation has finished. An adopted interactive
+worker can remain a node process after delivery; a committed delivery and idle
+final response mean it is finished. Leave that idle pane alone and continue.
+Untagged panes are NOT your workers. Do not type
 into the user's or another coordinator's pane. A notification to read a new
 TaskDown message is fine, but put substantive coordination in TaskDown.
 
