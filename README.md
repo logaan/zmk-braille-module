@@ -1,6 +1,10 @@
-# ZMK Braille module (hello-world skeleton)
+# ZMK Braille module
 
-An external ZMK feature module intended for six-dot Unified English Braille (UEB) uncontracted input. **Currently this is only a build/discovery smoke test:** when enabled, it logs `Hello from the ZMK Braille module!` at startup. It does not intercept keys, translate Braille, or send HID output. Normal keyboard behavior is unchanged.
+An out-of-tree ZMK module for chorded Braille input. **Currently this is build
+scaffolding, not usable Braille input.** The behavior devices register on the
+central half, but their press/release callbacks return `-ENOTSUP`. There is no
+chord capture, layer switching, matching, character table, settings UI, or HID
+output yet. The former startup-log stub has been removed.
 
 ## Pinned development baseline
 
@@ -18,19 +22,66 @@ its `nice_view_gem` display is supplied by the keyboard repository itself.
 
 ## Try it locally
 
-In a ZMK west workspace, pass this directory as an extra Zephyr module to a central or non-split firmware build (replace the paths and board with your own):
+In a pinned ZMK west workspace, include the module through the ordinary
+`zmk-config` manifest, or pass the local checkout with `ZMK_EXTRA_MODULES`
+(replace the paths and board with your own):
 
 ```sh
 west build -s /path/to/zmk/app -b <board> -- \
-  -DZEPHYR_EXTRA_MODULES=/path/to/braille-module \
+  -DZMK_EXTRA_MODULES=/path/to/braille-module \
   -DZMK_CONFIG=/path/to/zmk-config
 ```
 
-Add `CONFIG_ZMK_FEATURE_BRAILLE=y` to the firmware's `.conf` file (for example, a shield `.conf` or the config directory's `config/<board>.conf`). Reconfigure/pristine-build after changing the setting. Enable ZMK logging and a log transport in your firmware configuration if you want to *see* the startup message; no keypress is needed. The option is unavailable on split peripherals, where input will eventually be processed by the central half.
+Add `CONFIG_ZMK_FEATURE_BRAILLE=y` to the central firmware's `.conf` file.
+The option is off by default and unavailable on split peripherals. Pristine
+build after changing it. Preserve any other extra modules in the semicolon-
+separated `ZMK_EXTRA_MODULES` list (the Toucan also needs its keyboard module).
+No ZMK-core changes or additional west dependencies are needed.
 
-The module is disabled by default. No device-tree nodes or keymap bindings are required for this stub. It has no extra west dependencies and can also be included in a west manifest later when it has a published remote.
+For manifest discovery, add this project to your config's existing `projects`
+list and pin `revision` to the reviewed module commit:
 
-See [the implementation plan](plans/00-implementation.md) for the intended input design, acceptance gates, and limitations. The unchanged [ICEB rulebook](references/README.md) is a separate reference under its own noncommercial/no-derivatives license; the MIT license in `LICENSE` applies to the module code, not the PDF.
+```yaml
+- name: zmk-braille-module
+  url: https://github.com/logaan/zmk-braille-module
+  revision: <reviewed-module-commit>
+```
+
+Production devicetree bindings and default nodes are not supplied yet. The
+registration hooks recognize `zmk,behavior-braille-dot`,
+`zmk,behavior-braille-space`, `zmk,behavior-braille-mode`, and
+`zmk,behavior-braille-settings`; they are not a functional keymap API yet.
+
+## Source layout and checks
+
+- `src/behavior_braille.c`: central-local ZMK device registration; unsupported
+  callbacks until the input-routing leaf.
+- `src/braille_engine.c`: reserved shared matcher/buffer translation unit.
+- `include/braille_rules.h`: reserved common rule/action schema; only a forward
+  declaration, not a temporary alternate output representation.
+- `src/braille_rules_{grade1,nav,computer8}.c`: reserved rule-data translation units.
+- `src/braille_rules_grade2.c`: optional placeholder selected by
+  `CONFIG_ZMK_BRAILLE_GRADE2=y` (off by default). This does not implement UEB2.
+
+Run the focused host checks with Python 3, CMake, and a C compiler:
+
+```sh
+python3 tests/host/test_build.py
+# With the pinned workspace present, also check the real Kconfig parser:
+PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig.py
+```
+
+These check enabled/disabled source selection, optional Grade 2 isolation,
+compilation with/without behavior nodes, central locality, and the explicit
+unsupported callbacks. The host shim is not a Zephyr runtime and does not prove
+hardware behavior. The existing `tests/braille/*.yaml` files are future
+conformance data, not an executable engine test suite yet.
+
+See [the implementation task](tasks/09-implement-the-zmk-braille-input-module/)
+for requirements and acceptance gates. The unchanged
+[ICEB rulebook](references/README.md) is a separate reference under its own
+noncommercial/no-derivatives license; the MIT license in `LICENSE` applies to
+the module code, not the PDF.
 
 ## Tasks
 

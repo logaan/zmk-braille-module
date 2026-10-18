@@ -1,9 +1,22 @@
 # SPDX-License-Identifier: MIT
 
 menuconfig ZMK_FEATURE_BRAILLE
-    bool "Braille module hello-world stub"
+    bool "Braille input module"
     default n
     depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
     help
-      Build the Braille module's startup log message. No Braille input,
-      translation, or HID output is implemented yet.
+      Build the out-of-tree Braille behavior module on the split central
+      or a non-split keyboard. The module is currently build scaffolding:
+      behavior callbacks report unsupported until input routing is added.
+
+if ZMK_FEATURE_BRAILLE
+
+config ZMK_BRAILLE_GRADE2
+    bool "Optional UEB Grade 2 rules"
+    default n
+    help
+      Include the optional Grade 2 rule-data translation unit. It is currently
+      a placeholder, not a working contracted Braille table. The initial
+      feature set does not require it.
+
+endif # ZMK_FEATURE_BRAILLE

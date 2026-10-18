@@ -2,3 +2,5 @@ name: zmk-feature-braille
 build:
   cmake: .
   kconfig: Kconfig
+  settings:
+    dts_root: .
