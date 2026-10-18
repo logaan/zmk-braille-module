@@ -197,3 +197,9 @@ box with the open-box symbol ␣ (U+2423). The Navigation and Editing Space
 chord keeps its name Space in the Output column, and Capitals examples
 show ␣ wherever their braille sequences contain a space. Rendering and
 validation are unchanged; this is a presentation change.
+
+= Printable quick-reference sticky ellipsis spacing
+
+Sticky modifier outputs drop the space before the ellipsis: Shift…,
+Control…, Option…, Command…, and Globe… now have no space before the
+ellipsis. The compilation assert matches the new form.

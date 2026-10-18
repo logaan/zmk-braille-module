@@ -83,7 +83,7 @@
   ("Globe", ("space", 5, 7)),
 )
 // Sticky modifiers hold their effect for the next chord, marked with "…".
-#let chords = navigation + modifiers.map(entry => (entry.at(0) + " …", entry.at(1), true))
+#let chords = navigation + modifiers.map(entry => (entry.at(0) + "…", entry.at(1), true))
 
 // UEB 2 data: each section is one flowing table, never a fixed-size chunk.
 #let ueb2 = (
