@@ -290,3 +290,10 @@ box, matching the "8 Dot" and space-key labels.
 The Quick Braille Fox subhead labels return to the default 7pt key-box
 size; at 10pt the sans label dwarfed the 9.2pt cells. The key-box size
 parameter remains available for future callers.
+
+= Printable quick-reference Quick Braille Fox bare cells
+
+The Quick Braille Fox subheads drop the "qk brl fox" label, its key
+box, and the two-column grid; each subhead is now just the centred
+braille sequence. Word gaps widen from the fixed 6pt to three
+non-breaking spaces ([~~~]) plus the usual cell gutter.
