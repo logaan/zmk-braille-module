@@ -45,7 +45,7 @@
     columns: (1fr,) * count, rows: heights + (row,) * entries.len() + (0pt,),
     inset: inset,
     align: (x, y) => if x == 0 { label-align + horizon } else { center + horizon },
-    stroke: (bottom: 0.3pt + rule),
+    stroke: (bottom: 0.2pt + rule),
     fill: (x, y) => if y >= header-rows and calc.even(y - header-rows) { wash } else { white },
     table.header(..head),
     ..entries.enumerate().map(((index, entry)) => {

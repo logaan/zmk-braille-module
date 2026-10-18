@@ -183,3 +183,9 @@ Within Symbols, opening and closing pairs are adjacent: ( with ), < with >,
 [ with ], and { with }, so = follows the angle pair, \ follows the bracket
 pair, and | follows the brace pair. A compilation assert pins each closing
 symbol to the row after its opening counterpart.
+
+= Printable quick-reference thinner cell rules
+
+Every cheatsheet table's internal row separators drop from 0.3pt to 0.2pt
+while the 1pt black top, side, and bottom frame rules and the 0.4pt Space
+key outlines stay unchanged. This is a presentation change only.
