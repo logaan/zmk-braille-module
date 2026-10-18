@@ -147,7 +147,7 @@ def start_leaf(args, snapshot):
         prompt += (f" Prepare the required alphabet hardware handoff in {HARDWARE}: fresh firmware for "
                    "both halves of both keyboards, current published pins, artifact paths and flashing "
                    "instructions. Do not flash hardware or start phase 02.")
-    command = shlex.join(["pi", "--provider", "openai", "--model", args.sol_model,
+    command = shlex.join(["pi", "--model", args.sol_model,
                           "--thinking", "high", "--print", "--name", name, prompt])
     pane = subprocess.check_output(["tmux", "split-window", "-d", "-P", "-F", "#{pane_id}",
                                     "-t", args.pane, "-c", str(ROOT), command], text=True).strip()
@@ -156,7 +156,7 @@ def start_leaf(args, snapshot):
 
 
 def run_pi(model, thinking, prompt, log_dir, label):
-    command = ["pi", "--provider", "openai", "--model", model, "--thinking", thinking,
+    command = ["pi", "--model", model, "--thinking", thinking,
                "--print", "--no-session", "--no-extensions", "--no-skills", "--no-prompt-templates"]
     command += ["--no-tools", "--no-context-files"] if label == "luna" else ["--tools", "read,bash"]
     result = subprocess.run(command + [prompt], cwd=ROOT, capture_output=True, text=True,
@@ -227,8 +227,8 @@ def check_once(args, log_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--interval", type=float, default=60, help="seconds between Luna checks (default 60)")
-    parser.add_argument("--luna-model", default="gpt-6-luna")
-    parser.add_argument("--sol-model", default="gpt-6.1-sol")
+    parser.add_argument("--luna-model", default="openrouter/pareto-code")
+    parser.add_argument("--sol-model", default="openrouter/pareto-code")
     parser.add_argument("--pane", default=os.environ.get("TMUX_PANE"), help="script pane in the target window")
     parser.add_argument("--once", action="store_true", help="perform one coordination check, then exit")
     args = parser.parse_args()
