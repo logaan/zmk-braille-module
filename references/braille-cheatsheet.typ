@@ -278,3 +278,9 @@ The key-box helper gains a size parameter (default 7pt) that scales the
 text and the box padding together. The Quick Braille Fox subhead labels
 use 10pt so the boxed "qk brl fox" matches the height of the braille
 cells beside it; "8 Dot" and the space key keep the default 7pt.
+
+= Printable quick-reference Quick Braille Fox label typeface
+
+The Quick Braille Fox subhead labels drop the monospace raw styling;
+"qk brl fox" now sets in the regular bold sans face inside the key
+box, matching the "8 Dot" and space-key labels.
