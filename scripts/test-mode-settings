@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Exercise mode semantics and settings hooks through pinned ZMK, not a layer mock.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+ROOT="$PWD"
+WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
+[ "$#" -eq 0 ] || { echo 'Usage: scripts/test-mode-settings' >&2; exit 2; }
+[ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
+mkdir -p "$WORKSPACE/logs"
+docker run --rm \
+  -v "$WORKSPACE:/work" -v "$ROOT:/braille:ro" -w /work \
+  zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+    test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+    west zephyr-export
+    west build -p always -d build/mode-settings-native -s zmk/app -b native_posix_64 -- \
+      -DZMK_CONFIG=/braille/tests/firmware/mode-settings \
+      "-DZMK_EXTRA_MODULES=/braille;/braille/tests/firmware/mode-settings" \
+      2>&1 | tee logs/mode-settings-build.log
+    timeout 30 build/mode-settings-native/zephyr/zmk.exe 2>&1 | tee logs/mode-settings-native.log
+  '
+python3 tests/firmware/check_mode_settings.py "$WORKSPACE/logs/mode-settings-native.log"

@@ -5,8 +5,9 @@ yet.** Central-local dot/space behaviors now route press/release edges by bindin
 parameter, on any layer, to the release-terminated detector. Capture now emits
 one nine-bit mask on the last Braille-key release, without a timer. The downstream
 completion consumer still returns `-ENOTSUP`; matching/output are not implemented.
-Mode/settings callbacks remain unsupported. There is no layer switching,
-matching, character table, settings UI, or Braille HID output yet.
+The mode key now composes ZMK layer/hold-tap behaviors, and settings entry/exit
+hooks isolate captured input from typing. There is no matching, character table,
+settings UI, or Braille HID output yet.
 
 ## Pinned development baseline
 
@@ -61,8 +62,8 @@ BASE and becomes `&bspc` only on BRL. Both use the schema's `ueb1` default.
 Physical `f d s` = dots 1 2 3; `j k l` = 4 5 6; `a` = 7; `;` = 8.
 QBF uses the key under `j` for Braille space and updates its hand-maintained OLED
 legends to match. Toucan uses its ordinary Space position for Braille space.
-**These are compile/link configurations, not working input yet:** notably
-`bmode` cannot enter BRL until the later mode-key implementation.
+**These are not working text input yet:** `bmode` can now enter BRL by tap or
+hold, but completed chords have no production matcher/output consumer yet.
 
 Prepare the shared workspace once, if it is not already present:
 
@@ -147,12 +148,52 @@ callback, even if it fails. Capture has no timer or timeout property.
 
 **Output is not implemented yet:** the weak `braille_chord_resolved()` consumer
 returns `-ENOTSUP` until the shared engine supplies it. That error propagates on
-the final release; capture itself is implemented. Mode/settings callbacks also
-still return `-ENOTSUP`. The detector is bounded by `ZMK_KEYMAP_LEN` simultaneous
-keys; overflow returns `-ENOSPC` without changing the chord. Invalid masks or a
+the final release; capture itself is implemented. The detector is bounded by
+`ZMK_KEYMAP_LEN` simultaneous keys; overflow returns `-ENOSPC` without changing the chord. Invalid masks or a
 changed bit for an already-held key return `-EINVAL`. Input callbacks must be
 serialized, as on ZMK's central behavior path. The mode key selects a layer,
 not a character table. Use an existing keymap layer number as its argument.
+
+### Mode key and settings lifecycle
+
+`&bmode LAYER` forwards its single target to both parameters of the internal
+`braille_mode_hold_tap` device. It uses ZMK's `hold-preferred` hold-tap with `&mo`
+for hold and `&to` for tap, a 200 ms tapping term, no quick-tap window, and
+`hold-while-undecided`. Thus the target activates immediately; another key press
+resolves hold before that key is dispatched, even within 200 ms. A timer-resolved
+hold also stays momentary. Release ends the momentary layer; a tap instead
+switches to the target until an ordinary layer key or another `&bmode` switches
+back. Keep a return binding on the target layer. Neither mode edges nor the
+underlying layer actions enter chord masks. The only timer is ZMK's mode-key
+hold/tap decision; **chord capture still has no timer**. Runtime mode bindings
+reject nonexistent layer IDs and nonzero unused parameters; metadata exposes a
+layer parameter. Include `behaviors/braille.dtsi` for custom mode devices too.
+The internal hold-tap node may be overridden to tune `tapping-term-ms`; retain
+its flavor, no-quick-tap, bindings, and hold-while-undecided for these semantics.
+
+`&bsettings` is a zero-parameter, central-local ordinary ZMK behavior. Its press
+enters settings; release does not exit. Rule actions can invoke the same behavior
+through the normal ZMK API. No factory entry chord is assigned here; command-chord
+research/overrides own that mapping. `include/braille_settings.h` exposes:
+
+- `braille_settings_enter(event)` / `braille_settings_exit(event)` and
+  `braille_settings_active()`: idempotent serialized lifecycle, not a UI.
+- `braille_input_reset()`: weak engine hook to discard unresolved multi-chord
+  input and reset context **without host output**. The future shared engine must
+  implement it; the current reserved engine has no pending state to discard.
+- `braille_settings_changed(active, event)`: weak UI notification, called only
+  after state changes and reset; the phase-05 UI calls exit explicitly.
+- `braille_settings_chord(mask, event)`: settings-only capture consumer. While
+  active, completed chords go here, never to `braille_chord_resolved`. Its weak
+  default consumes without output; UI errors propagate without typing fallback.
+
+Both boundaries discard an in-flight chord through the next idle point, retaining
+physical key ownership and dropping late joins. Nothing is committed or replayed
+on exit. These hooks/gates suspend **module-generated Braille typing**, not
+conventional keymap behaviors or an already-held host key. The later ordered
+host-action dispatcher must also check `braille_settings_active()` before output,
+including queued actions; the capture gate is not a substitute for that check.
+No settings screen, persistent storage, matcher, or output dispatcher is added.
 
 The same include supplies the `braille` configuration node (`zmk,braille`).
 Its `default-mode` string defaults to `"ueb1"`. A keyboard may override it:
@@ -185,10 +226,13 @@ use a valid dot number as their replaceable placeholder, not zero.
 - `dts/bindings/` and `dts/behaviors/braille.dtsi`: production schemas, default
   devices, and named per-keyboard default-mode configuration.
 - `src/behavior_braille.c`: central-local dot/space input routing and runtime
-  validation; mode/settings remain unsupported. No character/command dispatch.
+  validation, one-parameter mode-key adapter, and settings-entry behavior.
+  No character dispatch or rule matching.
 - `include/braille_chord.h`: single-bit input, completed-mask hook, and mask constants.
 - `src/braille_chord.c`: bounded held-key tracking and timer-free nine-bit capture;
   the downstream completion consumer remains explicitly unsupported.
+- `include/braille_settings.h` / `src/braille_settings.c`: lifecycle/reset/UI hooks
+  and capture-to-consumer typing gate, without a settings UI.
 - `src/braille_bindings.c`: build-time dot-argument assertions.
 - `src/braille_engine.c`: reserved shared matcher/buffer translation unit.
 - `include/braille_rules.h`: reserved common rule/action schema; only a forward
@@ -203,9 +247,11 @@ Run the focused host checks with Python 3, CMake, and a C compiler:
 python3 tests/host/test_build.py
 python3 tests/host/test_routing.py
 python3 tests/host/test_chord.py
-# Optional ASan/UBSan runs of routing and detector checks:
+python3 tests/host/test_settings.py
+# Optional ASan/UBSan runs of routing, detector, and settings checks:
 CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_routing.py
 CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_chord.py
+CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_settings.py
 # With the pinned workspace present, also check the real Kconfig parser:
 PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig.py
 # Production DT schemas + C assertions, using the same pinned workspace:
@@ -218,7 +264,10 @@ build/bindings/venv/bin/python tests/host/test_keyboards.py
 
 These check enabled/disabled source selection, optional Grade 2 isolation,
 every combination of enabled behavior compatibles, central locality, and the
-explicit unsupported downstream consumer/mode/settings callbacks. Detector checks
+explicit unsupported downstream typing consumer, mode forwarding, and settings
+behavior validation. Settings checks exercise pending-prefix discard, hook ordering,
+idempotence, UI-only routing/error propagation, and chords spanning either or both
+boundaries, with split off/on. Detector checks
 compile the production detector with only a completion spy: all 511 nonempty
 masks, overlap/early release/late joins/re-presses, consecutive chords, layer and
 split-source identity, duplicate bindings/edges, invalid input, bounded capacity,
@@ -236,7 +285,25 @@ compile/link fixture, not a usable keymap or a replacement for the actual
 both-keyboard smoke builds above. The existing `tests/braille/*.yaml` files are
 future conformance data, not an executable engine test suite yet.
 
-Run the real pinned ZMK routing integration test in Docker:
+Run the real pinned ZMK integration tests in Docker:
+
+```sh
+./scripts/test-mode-settings
+# Recheck the mode/settings log without rebuilding:
+python3 tests/firmware/check_mode_settings.py build/baseline/logs/mode-settings-native.log
+```
+
+The mode/settings fixture runs 12 assertion checkpoints through actual keymap,
+ZMK hold-tap/layer behaviors, mock scan events, production capture and settings
+gates. It checks interrupted/timed holds, chording while held, tap-to-layer and
+both return paths, release ownership after mode release, mask exclusion, and
+settings invoked as a fixture rule action. A fixture pending consumer/UI verifies
+reset-before-notice, no stale prefix replay, and no host keycode events. It does
+not implement the future matcher or settings UI. Logs are
+`build/baseline/logs/mode-settings-{build,native}.log`; executable is
+`build/baseline/build/mode-settings-native/zephyr/zmk.exe`.
+
+The earlier routing regression remains unchanged:
 
 ```sh
 ./scripts/test-routing

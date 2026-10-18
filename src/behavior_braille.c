@@ -3,6 +3,10 @@
 #include <errno.h>
 #include <drivers/behavior.h>
 #include <braille_chord.h>
+#include <braille_settings.h>
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_mode)
+#include <zmk/keymap.h>
+#endif
 
 /*
  * Only Braille behavior bindings enter the detector: no position/layer filter,
@@ -100,25 +104,81 @@ DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_space, BRAILLE_SPACE_DEFINE)
 
 #endif
 
-/* The later mode/settings leaf owns these paths; never feed them as bits. */
-#if DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_mode) ||                                        \
-    DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_settings)
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_mode)
 
-static int braille_binding_unsupported(struct zmk_behavior_binding *binding,
-                                       struct zmk_behavior_binding_event event) {
-    (void)binding;
-    (void)event;
-    return -ENOTSUP;
+/* Delegate event capture, interruption, timers, and release ownership to ZMK. */
+static int braille_mode_input(struct zmk_behavior_binding *binding,
+                              struct zmk_behavior_binding_event event, bool pressed) {
+    if (binding->param1 >= ZMK_KEYMAP_LAYERS_LEN || binding->param2 != 0) {
+        return -EINVAL;
+    }
+    struct zmk_behavior_binding hold_tap = {
+        .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(braille_mode_hold_tap)),
+        .param1 = binding->param1,
+        .param2 = binding->param1,
+    };
+    return zmk_behavior_invoke_binding(&hold_tap, event, pressed);
 }
 
-static const struct behavior_driver_api braille_unsupported_driver_api = {
+static int braille_mode_pressed(struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event) {
+    return braille_mode_input(binding, event, true);
+}
+
+static int braille_mode_released(struct zmk_behavior_binding *binding,
+                                 struct zmk_behavior_binding_event event) {
+    return braille_mode_input(binding, event, false);
+}
+
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+static const struct behavior_parameter_value_metadata mode_values[] = {
+    {.display_name = "Layer", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID},
+};
+static const struct behavior_parameter_metadata_set mode_metadata_sets[] = {
+    {.param1_values_len = ARRAY_SIZE(mode_values), .param1_values = mode_values},
+};
+static const struct behavior_parameter_metadata mode_metadata = {
+    .sets_len = ARRAY_SIZE(mode_metadata_sets),
+    .sets = mode_metadata_sets,
+};
+#endif
+
+static const struct behavior_driver_api braille_mode_driver_api = {
     .locality = BEHAVIOR_LOCALITY_CENTRAL,
-    .binding_pressed = braille_binding_unsupported,
-    .binding_released = braille_binding_unsupported,
+    .binding_pressed = braille_mode_pressed,
+    .binding_released = braille_mode_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &mode_metadata,
+#endif
 };
 
-#define BRAILLE_UNSUPPORTED_DEFINE(node_id) BRAILLE_DEFINE(node_id, &braille_unsupported_driver_api)
-DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_mode, BRAILLE_UNSUPPORTED_DEFINE)
-DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_settings, BRAILLE_UNSUPPORTED_DEFINE)
+#define BRAILLE_MODE_DEFINE(node_id) BRAILLE_DEFINE(node_id, &braille_mode_driver_api)
+DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_mode, BRAILLE_MODE_DEFINE)
+#endif
 
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_settings)
+static int braille_settings_pressed(struct zmk_behavior_binding *binding,
+                                    struct zmk_behavior_binding_event event) {
+    if (binding->param1 || binding->param2) {
+        return -EINVAL;
+    }
+    return braille_settings_enter(event);
+}
+
+static int braille_settings_released(struct zmk_behavior_binding *binding,
+                                     struct zmk_behavior_binding_event event) {
+    (void)event;
+    return binding->param1 || binding->param2 ? -EINVAL : 0;
+}
+
+static const struct behavior_driver_api braille_settings_driver_api = {
+    .locality = BEHAVIOR_LOCALITY_CENTRAL,
+    .binding_pressed = braille_settings_pressed,
+    .binding_released = braille_settings_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif
+};
+#define BRAILLE_SETTINGS_DEFINE(node_id) BRAILLE_DEFINE(node_id, &braille_settings_driver_api)
+DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_settings, BRAILLE_SETTINGS_DEFINE)
 #endif

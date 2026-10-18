@@ -3,6 +3,9 @@
 #ifndef ZMK_BRAILLE_BEHAVIORS_DTSI
 #define ZMK_BRAILLE_BEHAVIORS_DTSI
 
+#include <behaviors/momentary_layer.dtsi>
+#include <behaviors/to_layer.dtsi>
+
 / {
     braille: braille {
         compatible = "zmk,braille";
@@ -19,6 +22,17 @@
             compatible = "zmk,behavior-braille-space";
             #binding-cells = <0>;
             display-name = "Braille Space";
+        };
+
+        /* One-parameter bmode adapts its target to both hold/tap parameters. */
+        braille_mode_hold_tap: braille_mode_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <0>;
+            hold-while-undecided;
+            bindings = <&mo>, <&to>;
         };
 
         bmode: braille_mode {

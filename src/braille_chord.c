@@ -5,6 +5,7 @@
 #include <zephyr/toolchain.h>
 #include <zmk/matrix.h>
 #include <braille_chord.h>
+#include <braille_settings.h>
 
 /* Central behavior callbacks serialize input. No work item or timer owns state. */
 static struct held_key {
@@ -16,6 +17,13 @@ static struct held_key {
 } held_keys[ZMK_KEYMAP_LEN];
 static size_t held_count;
 static uint16_t chord_mask;
+static bool discarded;
+
+void braille_chord_discard(void) {
+    /* Retain physical ownership until idle; late joins belong to this discard. */
+    discarded = held_count != 0;
+    chord_mask = 0;
+}
 
 /* Matching/output is a later leaf; do not silently discard completed input. */
 __weak int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
@@ -61,7 +69,9 @@ int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_bind
         }
         uint16_t completed = chord_mask;
         chord_mask = 0; /* Idle before dispatch, even on failure or reentry. */
-        return braille_chord_resolved(completed, event);
+        bool drop = discarded;
+        discarded = false;
+        return drop ? 0 : braille_input_dispatch(completed, event);
     }
 
     if (!pressed) {

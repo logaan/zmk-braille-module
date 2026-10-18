@@ -24,7 +24,7 @@ struct behavior_parameter_value_metadata {
             int32_t max;
         } range;
     };
-    enum { BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE } type;
+    enum { BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE, BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID } type;
 };
 struct behavior_parameter_metadata_set {
     size_t param1_values_len;

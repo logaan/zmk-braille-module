@@ -21,6 +21,25 @@ int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_bind
     return sink.result;
 }
 
+static unsigned forwarded;
+static int forward_result;
+int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event, bool pressed) {
+    assert(strcmp(binding->behavior_dev, "braille_mode_hold_tap") == 0);
+    assert(binding->param1 == 5 && binding->param2 == 5);
+    assert(event.position == 0 && event.layer == 1);
+    assert(pressed == (forwarded % 2 == 0));
+    ++forwarded;
+    return forward_result;
+}
+void braille_chord_discard(void) {}
+int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
+    (void)mask;
+    (void)event;
+    assert(false); /* Settings must not route to the host consumer. */
+    return 0;
+}
+
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 int zmk_behavior_get_empty_param_metadata(const struct device *dev,
                                           struct behavior_parameter_metadata *metadata) {
@@ -114,12 +133,29 @@ static void test_non_chord_behaviors(void) {
     struct zmk_behavior_binding binding = {.behavior_dev = "test", .param1 = 5};
     struct zmk_behavior_binding_event event = {.position = 0, .layer = 1};
     unsigned calls = sink.calls;
-    const struct behavior_driver_api *others[] = {mode, settings};
-    for (size_t i = 0; i < ARRAY_SIZE(others); ++i) {
-        assert(others[i]->locality == BEHAVIOR_LOCALITY_CENTRAL);
-        assert(others[i]->binding_pressed(&binding, event) == -ENOTSUP);
-        assert(others[i]->binding_released(&binding, event) == -ENOTSUP);
-    }
+    assert(mode->locality == BEHAVIOR_LOCALITY_CENTRAL);
+    assert(mode->binding_pressed(&binding, event) == 0);
+    assert(mode->binding_released(&binding, event) == 0);
+    forward_result = -EIO;
+    assert(mode->binding_pressed(&binding, event) == -EIO);
+    assert(mode->binding_released(&binding, event) == -EIO);
+    assert(forwarded == 4);
+    binding.param1 = 32;
+    assert(mode->binding_pressed(&binding, event) == -EINVAL);
+    binding.param1 = 5;
+    binding.param2 = 1;
+    assert(mode->binding_released(&binding, event) == -EINVAL);
+    assert(forwarded == 4);
+    assert(settings->locality == BEHAVIOR_LOCALITY_CENTRAL);
+    assert(settings->binding_pressed(&binding, event) == -EINVAL);
+    assert(settings->binding_released(&binding, event) == -EINVAL);
+    binding.param1 = binding.param2 = 0;
+    assert(settings->binding_pressed(&binding, event) == 0);
+    assert(braille_settings_active());
+    assert(settings->binding_released(&binding, event) == 0);
+    assert(braille_settings_active());
+    assert(braille_settings_exit(event) == 0);
+    assert(!braille_settings_active());
     assert(sink.calls == calls);
     /* Conventional &kp and layer keys use real ZMK in the native fixture. */
 }
@@ -134,6 +170,13 @@ static void test_metadata(void) {
     assert(set->param1_values[0].range.min == 1 && set->param1_values[0].range.max == 8);
     struct behavior_parameter_metadata empty = {.sets_len = 1};
     assert(space->get_parameter_metadata(NULL, &empty) == 0 && empty.sets_len == 0);
+    metadata = mode->parameter_metadata;
+    assert(metadata && metadata->sets_len == 1);
+    set = metadata->sets;
+    assert(set->param1_values_len == 1 && set->param2_values_len == 0);
+    assert(set->param1_values[0].type == BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID);
+    empty.sets_len = 1;
+    assert(settings->get_parameter_metadata(NULL, &empty) == 0 && empty.sets_len == 0);
 #endif
 }
 

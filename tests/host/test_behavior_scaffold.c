@@ -2,6 +2,15 @@
 #include <assert.h>
 #include "../../src/behavior_braille.c"
 
+/* Host-only forwarding stub; real hold-tap semantics run in native ZMK. */
+int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event, bool pressed) {
+    (void)binding;
+    (void)event;
+    (void)pressed;
+    return 0;
+}
+
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 int zmk_behavior_get_empty_param_metadata(const struct device *dev,
                                           struct behavior_parameter_metadata *metadata) {
@@ -30,13 +39,16 @@ int main(void) {
 #endif
 #if TEST_MODE_NODES
     assert(mode->locality == BEHAVIOR_LOCALITY_CENTRAL);
-    assert(mode->binding_pressed(&binding, event) == -ENOTSUP);
-    assert(mode->binding_released(&binding, event) == -ENOTSUP);
+    assert(mode->binding_pressed(&binding, event) == 0);
+    assert(mode->binding_released(&binding, event) == 0);
 #endif
 #if TEST_SETTINGS_NODES
     assert(settings->locality == BEHAVIOR_LOCALITY_CENTRAL);
-    assert(settings->binding_pressed(&binding, event) == -ENOTSUP);
-    assert(settings->binding_released(&binding, event) == -ENOTSUP);
+    assert(settings->binding_pressed(&binding, event) == 0);
+    assert(braille_settings_active());
+    assert(settings->binding_released(&binding, event) == 0);
+    assert(braille_settings_active());
+    assert(braille_settings_exit(event) == 0);
 #endif
     (void)binding;
     (void)event;

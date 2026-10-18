@@ -20,7 +20,7 @@ class ChordDetector(unittest.TestCase):
                     "-std=c11", "-Wall", "-Wextra", "-Werror", f"-DCONFIG_ZMK_SPLIT={split}",
                     "-I", str(ROOT / "tests/host/stubs"), "-I", str(ROOT / "include"),
                     str(ROOT / "tests/host/test_chord.c"), str(ROOT / "src/braille_chord.c"),
-                    "-o", str(binary),
+                    str(ROOT / "src/braille_settings.c"), "-o", str(binary),
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
 

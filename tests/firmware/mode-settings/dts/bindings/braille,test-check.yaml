@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+description: Test-only assertion checkpoint
+compatible: "braille,test-check"
+include: one_param.yaml

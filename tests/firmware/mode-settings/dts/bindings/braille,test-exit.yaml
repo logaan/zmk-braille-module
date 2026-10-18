@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+description: Test-only settings exit hook
+compatible: "braille,test-exit"
+include: zero_param.yaml

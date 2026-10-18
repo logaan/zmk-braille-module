@@ -27,9 +27,16 @@
  */
 int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_binding_event event);
 
+/* Discard current capture through the next idle point, without output. Held
+ * ownership is retained, including keys joining before the last release.
+ */
+void braille_chord_discard(void);
+
 /*
  * One resolution per last release, with all bits pressed since idle and the
  * unchanged last-release event. State is idle before this synchronous call.
+ * Settings input is gated to braille_settings_chord instead; capture crossing
+ * a settings boundary is discarded without calling either consumer.
  * Return 0 or a negative errno (propagated to the releasing behavior); failures
  * are not retried and cannot contaminate the next chord. The weak default
  * returns -ENOTSUP until the shared engine supplies this completion hook.

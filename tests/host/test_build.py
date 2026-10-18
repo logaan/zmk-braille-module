@@ -11,6 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = {
     "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_chord.c", "src/braille_engine.c",
+    "src/braille_settings.c",
     "src/braille_rules_grade1.c", "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
 }
 
@@ -60,7 +61,8 @@ include("{ROOT / 'CMakeLists.txt'}")
                     f"-DTEST_NO_NODES={no_nodes}", "-I", str(ROOT / "tests/host/stubs"),
                     "-I", str(ROOT / "include"),
                     str(ROOT / "tests/host/test_behavior_scaffold.c"),
-                    str(ROOT / "src/braille_chord.c"), "-o", str(binary),
+                    str(ROOT / "src/braille_chord.c"), str(ROOT / "src/braille_settings.c"),
+                    "-o", str(binary),
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
             for source in sorted((ROOT / "src").glob("braille_*.c")):

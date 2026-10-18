@@ -69,6 +69,8 @@ def check_build(workspace, target):
     assert ("CONFIG_ZMK_FEATURE_BRAILLE=y" in config) == central, target
     assert ("src/behavior_braille.c.obj:" in ninja) == central, target
     assert ("src/braille_bindings.c.obj:" in ninja) == central, target
+    assert ("src/braille_settings.c.obj:" in ninja) == central, target
+    assert "mode-settings/fixture.c" not in ninja and "routing/edge_spy.c" not in ninja, target
     assert "CONFIG_ZMK_BRAILLE_GRADE2=y" not in config, target
     assert "src/braille_rules_grade2.c.obj:" not in ninja, target
     assert (build / "zephyr/zmk.uf2").stat().st_size > 0, target
@@ -93,6 +95,9 @@ def check_build(workspace, target):
         if central:
             values = defines(header)
             link_map = (build / "zephyr/zmk.map").read_text()
+            for symbol in ("braille_settings_enter", "braille_settings_exit",
+                           "braille_input_dispatch", "braille_chord_discard"):
+                assert symbol in link_map, (target, symbol)
             for device in ("dot", "space", "mode", "settings"):
                 ordinal = values[f"DT_N_S_behaviors_S_braille_{device}_ORD"]
                 assert f"._zmk_behavior_ref.static.zmk_behavior___device_dts_ord_{ordinal}_" in link_map, (target, device)

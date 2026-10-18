@@ -22,7 +22,8 @@ class Routing(unittest.TestCase):
                 binary = Path(tmp) / "routing"
                 subprocess.run(CC + FLAGS + [
                     f"-DCONFIG_ZMK_SPLIT={split}", f"-DCONFIG_ZMK_BEHAVIOR_METADATA={metadata}",
-                    str(ROOT / "tests/host/test_behavior_routing.c"), "-o", str(binary),
+                    str(ROOT / "tests/host/test_behavior_routing.c"),
+                    str(ROOT / "src/braille_settings.c"), "-o", str(binary),
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
 
@@ -37,7 +38,8 @@ class Routing(unittest.TestCase):
                     subprocess.run(CC + FLAGS + defines + [
                         f"-DCONFIG_ZMK_BEHAVIOR_METADATA={metadata}",
                         str(ROOT / "tests/host/test_behavior_scaffold.c"),
-                        str(ROOT / "src/braille_chord.c"), "-o", str(binary),
+                        str(ROOT / "src/braille_chord.c"), str(ROOT / "src/braille_settings.c"),
+                        "-o", str(binary),
                     ], check=True)
                     subprocess.run([str(binary)], check=True)
 

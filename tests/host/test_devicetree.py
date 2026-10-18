@@ -34,7 +34,7 @@ class DevicetreeContract(unittest.TestCase):
     };
 };
 ''' + extra)
-        includes = [ROOT / "dts", ZMK / "dts", ZEPHYR / "dts", ZEPHYR / "include"]
+        includes = [ROOT / "dts", ZMK / "dts", ZMK / "include", ZEPHYR / "dts", ZEPHYR / "include"]
         preprocessed = tmp / "test.pre.dts"
         with preprocessed.open("w") as output:
             subprocess.run(CC + ["-E", "-P", "-x", "assembler-with-cpp", "-nostdinc", "-undef"]

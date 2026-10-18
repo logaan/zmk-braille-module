@@ -1,0 +1,65 @@
+/* SPDX-License-Identifier: MIT */
+#include <behaviors.dtsi>
+#include <behaviors/braille.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        check: test_check { compatible = "braille,test-check"; #binding-cells = <1>; };
+        exit_settings: test_exit { compatible = "braille,test-exit"; #binding-cells = <0>; };
+    };
+    keymap {
+        compatible = "zmk,keymap";
+        base {
+            bindings = <
+                &kp A &kp B &kp SPACE &none &none &none &none &none
+                &none &none &none &to 0 &bmode 1 &bsettings &exit_settings &check 0
+            >;
+        };
+        braille {
+            bindings = <
+                &bc 1 &bc 2 &bspc &bc 8 &none &none &none &none
+                &none &none &none &to 0 &bmode 0 &bsettings &exit_settings &check 0
+            >;
+        };
+    };
+};
+
+#define TAP(row, col) ZMK_MOCK_PRESS(row, col, 10) ZMK_MOCK_RELEASE(row, col, 10)
+#define CHECK TAP(1, 7)
+
+&kscan {
+    columns = <8>;
+    events = <
+        CHECK
+        /* Interrupt well before tapping term; target dots must chord, not A/B. */
+        ZMK_MOCK_PRESS(1, 4, 10)
+        ZMK_MOCK_PRESS(0, 0, 10) ZMK_MOCK_PRESS(0, 1, 10)
+        ZMK_MOCK_RELEASE(0, 0, 10) ZMK_MOCK_RELEASE(0, 1, 10)
+        ZMK_MOCK_RELEASE(1, 4, 10)
+        CHECK
+        /* Timer-resolved hold stays momentary, including Braille space. */
+        ZMK_MOCK_PRESS(1, 4, 250) TAP(0, 2) ZMK_MOCK_RELEASE(1, 4, 10)
+        CHECK
+        /* Tap locks target; target's bmode pointing back returns. */
+        TAP(1, 4) CHECK TAP(1, 4) CHECK
+        /* Ordinary layer return also works. */
+        TAP(1, 4) TAP(1, 3) CHECK
+        /* Releasing mode first must still release the original dot binding. */
+        ZMK_MOCK_PRESS(1, 4, 10) ZMK_MOCK_PRESS(0, 0, 10)
+        ZMK_MOCK_RELEASE(1, 4, 10) ZMK_MOCK_RELEASE(0, 0, 10)
+        CHECK
+        /* Use a fixture rule action (dot 8) to invoke production bsettings. */
+        TAP(1, 4) TAP(0, 3) CHECK
+        /* Active settings chords never reach the typing consumer. */
+        TAP(0, 1) CHECK
+        /* A settings chord held across exit must not resume as host input. */
+        ZMK_MOCK_PRESS(0, 0, 10) TAP(1, 6) ZMK_MOCK_RELEASE(0, 0, 10)
+        TAP(0, 1) CHECK
+        /* Enter while a dot is held; discard that whole chord too. */
+        ZMK_MOCK_PRESS(0, 0, 10) TAP(1, 5) ZMK_MOCK_RELEASE(0, 0, 10)
+        TAP(0, 1) TAP(1, 6) CHECK
+        TAP(1, 4) CHECK
+    >;
+};

@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+name: braille-mode-settings-test
+build:
+  cmake: .
+  settings:
+    dts_root: .

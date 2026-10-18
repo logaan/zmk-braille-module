@@ -14,12 +14,19 @@
 #define IS_ENABLED(config) (config)
 #define ZMK_BEHAVIOR_OPAQUE 0
 #define ZMK_BEHAVIOR_TRANSPARENT 1
+#define DT_NODELABEL(name) name
+#define TEST_STRINGIFY(node) #node
+#define DEVICE_DT_NAME(node) TEST_STRINGIFY(node)
 
 struct zmk_behavior_binding {
     const char *behavior_dev;
     uint32_t param1;
     uint32_t param2;
 };
+
+struct zmk_behavior_binding_event;
+int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event, bool pressed);
 
 struct zmk_behavior_binding_event {
     int layer;
