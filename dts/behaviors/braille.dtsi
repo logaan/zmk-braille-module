@@ -3,12 +3,17 @@
 #ifndef ZMK_BRAILLE_BEHAVIORS_DTSI
 #define ZMK_BRAILLE_BEHAVIORS_DTSI
 
+#include <behaviors/key_press.dtsi>
+#include <behaviors/sticky_key.dtsi>
 #include <behaviors/momentary_layer.dtsi>
 #include <behaviors/to_layer.dtsi>
 
 / {
     braille: braille {
         compatible = "zmk,braille";
+        /* C factory rules use these devices even in Braille-only keymaps.
+         * Real DT references prevent ZMK /omit-if-no-ref/ from dropping them. */
+        factory-behaviors = <&kp &sk>;
     };
 
     behaviors {

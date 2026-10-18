@@ -24,7 +24,7 @@ For local text searching, `pdftotext -layout iceb/rules-of-unified-english-brail
 
 ## Braille cheatsheet
 
-[`braille-cheatsheet.pdf`](braille-cheatsheet.pdf) is a two-page, result-first lookup for the **planned** character mappings, not a statement of current firmware support. Its tables cover printable UEB 1 and Computer8 characters, complete capital/digit sequences, and all 182 optional UEB 2 contractions. A visible `␣` represents a space result; `Space` in a chord sequence is the Braille Space key. Commands and settings without assigned factory chords are omitted.
+[`braille-cheatsheet.pdf`](braille-cheatsheet.pdf) is a two-page, result-first lookup for the **planned** character mappings, not a statement of current firmware support. Its tables cover printable UEB 1 and Computer8 characters, complete capital/digit sequences, and all 182 optional UEB 2 contractions. A visible `␣` represents a space result; `Space` in a chord sequence is the Braille Space key. The two pages also show all 25 software-verified Phase-02 factory rules, including their Delete/Return aliases, sticky modifiers and supported volume/playback actions; physical hardware acceptance is still pending. `Space +` a cell means one simultaneous chord, unlike adjacent literary cells. Per user instruction, keys without a sourced assignment are skipped and listed as omissions; settings entry remains deferred.
 
 Build from the repository root with Typst 0.15+ and the Avenir, Apple Braille, and DejaVu Sans Mono fonts installed:
 
@@ -33,4 +33,4 @@ typst compile references/braille-cheatsheet.typ
 python3 -m unittest discover -s tests/host -p test_cheatsheet.py
 ```
 
-The reference tests require PyYAML and Typst. They compare the displayed mappings with the existing fixtures and verified research; Poppler's `pdftotext` additionally checks the two-page layout for overlapping text and margin overflow. UEB tables are read directly from `research/`; the Computer8 mappings are checked against `tests/braille/computer8/characters.yaml`.
+The reference tests require PyYAML and Typst. They compare the displayed mappings with the existing fixtures and verified research; Poppler's `pdftotext` additionally checks the two-page layout for overlapping text and margin overflow. UEB tables and factory commands are read directly from `research/`; the Computer8 mappings are checked against `tests/braille/computer8/characters.yaml`. Command metadata is checked against `research/factory-command-chords.yaml`. Update `braille-cheatsheet.typ` and rebuild the PDF before each implementation commit.

@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+description: Native factory-command assertion checkpoint
+compatible: "braille,test-commands"
+include: one_param.yaml

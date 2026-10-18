@@ -55,6 +55,9 @@ struct braille_whitespace_chords {
     uint16_t space;
     uint16_t enter;
     uint16_t tab;
+    /* Optional Return aliases (e.g. VoiceOver dot8 and space+dot8). Zero is
+     * unused. Every alias must share the canonical Return's whitespace path. */
+    uint16_t enter_aliases[2];
 };
 
 /* Select the active mode's tables and the override layer. All views must

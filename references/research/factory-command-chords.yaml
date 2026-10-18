@@ -5,6 +5,21 @@
 verified_on: 2026-10-18
 modes: [ueb1, computer8]
 priority: [voiceover_mac, talkback, hable]
+source_gap_decision:
+  author: user
+  instruction: Check references/ for missing mappings; if none exist, skip those keys.
+  references_checked:
+    - references/01-mba-keys.yaml
+    - references/research/zmk-globe-fn-and-media-actions.yaml
+    - references/research/zmk-behavior-enumeration.yaml
+    - references/braille-cheatsheet.typ
+    - references/braille-cheatsheet.pdf
+    - references/research/ueb-*.yaml
+  result: >-
+    The inventory lists keys, ZMK research lists supported output bindings,
+    and literary research/cheatsheet data defines characters, not additional
+    representable factory command assignments. Skip the unsourced defaults
+    below in Phase 02; no arbitrary chord remapping or new timer is introduced.
 sources:
   voiceover_mac:
     product: macOS VoiceOver
@@ -126,8 +141,9 @@ conflicts_and_resolutions:
       cannot be represented by the release-terminated mask detector without
       remapping. No new timer or arbitrary space-bit adaptation is authorized.
 
-unassigned_required_actions:
-  # No exact representable default found in the specified source hierarchy.
+skipped_actions:
+  # User-approved omissions for this phase, not an unresolved software blocker.
+  # No exact representable default found in references/ or the source hierarchy.
   # Supported HID bindings below do NOT supply a sourced chord by themselves.
   - {name: caps-lock, binding: "&kp CAPS", reason: "Hable text CapsLock is not host Caps Lock; conflicts with literary capitals"}
   - {name: function-keys, bindings: "&kp F1 .. &kp F12", reason: "No dot-chord defaults in the Mac, TalkBack or Hable documents read"}

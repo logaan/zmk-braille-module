@@ -46,6 +46,10 @@ class CheatsheetReference(unittest.TestCase):
             "typst", "eval", "query(<lookup>).map(it => it.value)",
             "--in", str(SOURCE), "--format", "json",
         ], text=True))
+        cls.command_tables = json.loads(subprocess.check_output([
+            "typst", "eval", "query(<command-lookup>).map(it => it.value)",
+            "--in", str(SOURCE), "--format", "json",
+        ], text=True))
 
     def entries(self, mode, group=None):
         return [tuple(pair) for table in self.lookups
@@ -102,6 +106,21 @@ class CheatsheetReference(unittest.TestCase):
                          for pair in table["entries"])
         self.assertEqual(sum(actual.values()), 182)
         self.assertEqual(actual, expected)
+
+    def test_all_verified_factory_commands_are_displayed(self):
+        research = load_yaml("references/research/factory-command-chords.yaml")
+        actual = [row for table in self.command_tables for row in table["commands"]]
+        self.assertEqual(len(actual), 25)
+        self.assertEqual(Counter(row["name"] for row in actual),
+                         Counter(row["name"] for row in research["commands"]))
+        self.assertEqual({row["name"]: row for row in actual},
+                         {row["name"]: row for row in research["commands"]})
+        for table in self.command_tables:
+            self.assertEqual(table["modes"], ["ueb1", "computer8"])
+        tab = next(row for row in actual if row["name"] == "tab")
+        self.assertEqual(tab["inputs"], [["space", 2, 3, 4, 5]])
+        self.assertEqual(tab["masks"], [0x11e])
+        self.assertEqual(tab["binding"], "&kp TAB")
 
     @unittest.skipUnless(shutil.which("pdftotext"), "Poppler's pdftotext is not installed")
     def test_two_pages_without_overlapping_or_out_of_bounds_text(self):

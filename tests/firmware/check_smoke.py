@@ -101,6 +101,12 @@ def check_build(workspace, target):
             for device in ("dot", "space", "mode", "settings"):
                 ordinal = values[f"DT_N_S_behaviors_S_braille_{device}_ORD"]
                 assert f"._zmk_behavior_ref.static.zmk_behavior___device_dts_ord_{ordinal}_" in link_map, (target, device)
+            # Factory data names these node-label devices even if the keymap
+            # never uses them directly. Devicetree must retain and link both.
+            for device in ("key_press", "sticky_key"):
+                ordinal = values[f"DT_N_S_behaviors_S_{device}_ORD"]
+                assert f"._zmk_behavior_ref.static.zmk_behavior___device_dts_ord_{ordinal}_" in link_map, (target, device)
+            assert "CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL=y" in config, target
     print(f"{target}: resolved layout/mode, module discovery, config, link and UF2 checks PASS")
 
 

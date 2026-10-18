@@ -5,6 +5,12 @@ description: Per-keyboard Braille input configuration
 compatible: "zmk,braille"
 
 properties:
+  factory-behaviors:
+    type: phandles
+    description: |
+      Retains the key-press and sticky-key behavior devices used by compiled
+      factory rules, even if the keymap has no direct kp or sk binding.
+      Supplied by behaviors/braille.dtsi; not a runtime action configuration.
   default-mode:
     type: string
     default: "ueb1"

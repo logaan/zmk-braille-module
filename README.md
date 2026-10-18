@@ -135,19 +135,42 @@ Rules send ordinary host keys, not screen-reader API commands.
 | Home / End (first / last item) | Space + 123 / Space + 456 | Mac VoiceOver, Navigation |
 | Page Up / Page Down | Space + 3456 / Space + 1456 | Mac VoiceOver, Scrolling |
 | **Tab** | **Space + 2345 (`0x11e`)** | Mac VoiceOver, Braille |
-| Return | Space + 15 | Mac VoiceOver, Braille |
+| Return | Space + 15; dot 8 alone; Space + 8 | Mac VoiceOver, Braille / 8-dot |
+| Delete (Backspace) | Space + 145; dot 7 alone; Space + 7 | Mac VoiceOver, Braille / 8-dot |
+| Escape | Space + 12 | Mac VoiceOver, Navigation |
+| Sticky Shift / Control / Option / Command | Space + 47 / 37 / 27 / 17 | Mac VoiceOver, 8-dot |
+| Sticky Globe (not true Fn) | Space + 57 | Mac VoiceOver Fn position, project Globe-only substitution |
+| Volume down / up | Space + 126 / Space + 345 | Mac VoiceOver, Interaction positions |
+| Play / pause | Space + 78 | TalkBack, Use braille keystrokes |
 
 “Space” here means `&bspc`, never a conventional space key. The former fixture
 Tab at Space + 45 (`0x118`) is removed; that is VoiceOver's Translate chord.
 Home/End are not macOS line-start/end shortcuts: those compose sticky Command
 with Left/Right. Host focus behavior for raw arrows depends on the app and
-VoiceOver/Quick Nav settings.
+VoiceOver/Quick Nav settings. Sticky Shift then Tab moves to the previous UI
+element; unmodified Tab moves to the next. Both Return aliases share the canonical
+Return's whitespace path, so pending text is not discarded as for navigation.
+
+Modifiers invoke the real ZMK `&sk`, inheriting its configuration: by default,
+they apply through the next host key's release or expire unused after 1000 ms.
+Shift, Control, Option and Command can stack. Globe uses Consumer `0x029d` and
+can combine with the next letter or Tab, but **is not Apple's Fn modifier**:
+Globe + Delete/arrows does not emulate Fn + Delete/arrows. These rules do not
+install VoiceOver's held/toggle modifiers. Chording itself still has no timer.
+
+The module's devicetree explicitly retains `&kp` and `&sk`, even with no direct
+keymap bindings to either. Consumer actions use `C_` usages; preserve ZMK's default
+`CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL=y`. Choosing BASIC emits a build-time
+warning: it cannot represent Globe, Spotlight or Mission Control (the latter two
+still have no assigned factory chords).
 
 The source audit found no exact representable defaults in the permitted
 Mac VoiceOver → TalkBack → Hable hierarchy for host Caps Lock, F1–F12,
 brightness, Mission Control, Spotlight, previous/next track, or system mute.
-Those assignments need a policy decision; they are not silently invented or
-claimed as implemented. Settings entry remains deferred to Phase 05. True Fn,
+The existing `references/` files list their supported ZMK output bindings but
+supply no additional representable Braille assignments. Per user instruction,
+**these factory defaults are skipped in Phase 02**, not invented or claimed as
+implemented. Settings entry remains deferred to Phase 05. True Fn,
 Dictation/Siri, Do Not Disturb, Touch ID and power have no factory action.
 
 ```sh
@@ -159,7 +182,32 @@ These compile/run the real capture, matching, per-mode data and dispatch path,
 with only behavior invocation recorded. They prove exact Tab isolation from
 alphabet `t`, final-release output, literal space/navigation in every compiled
 mode, whitespace metadata, fixture-character coexistence and collision
-rejection. They do not prove BLE delivery or physical host behavior.
+rejection, all 25 verified action bindings, Return aliases, and the BASIC warning.
+They do not simulate sticky-key semantics or prove BLE delivery.
+
+```sh
+./scripts/test-commands
+# Recheck an existing native run:
+python3 tests/firmware/check_commands.py build/baseline/logs/commands-native.log
+```
+
+This runs pinned ZMK in Docker with the real production bindings, capture,
+matcher, per-mode rules, dispatcher, key-press/sticky-key behaviors and HID.
+A test-only linker wrapper observes HID reports and forwards transmission to
+the real endpoint implementation. It checks every direct command, each sticky
+modifier (including Globe) followed by a letter and exact Tab, one-shot release,
+keyboard-modifier stacking, line-start/end and previous/next-UI compositions,
+Globe + e, and real unused-sticky timeouts. `computer8` uses fixture letters via
+the ordinary override layer, not a replacement command table. Native POSIX has
+no physical USB endpoint, so expected endpoint-error messages are not host/BLE
+acceptance. Logs are `build/baseline/logs/commands-{build,native}.log`; executable
+is `build/baseline/build/commands-native/zephyr/zmk.exe`.
+
+Both halves of both baseline keyboards, both reset images, and the Toucan
+`computer8` override also pass `./scripts/smoke-build`. That verifies compile/link
+and UF2 generation, not physical macOS input. The software scope is delivered
+with the user-approved omissions above; Phase 02 still needs its user-owned
+hardware acceptance.
 
 ## Devicetree interface
 

@@ -2,6 +2,8 @@
 //   typst compile references/braille-cheatsheet.typ
 // UEB data comes from the project's verified research, not a second transcription.
 // Computer8 follows tests/braille/computer8/characters.yaml (liblouis en-us-comp8).
+// Factory commands are the Phase-02 verified subset; missing source assignments
+// are skipped by user decision. Rebuild this PDF before every implementation commit.
 #set page(paper: "us-letter", margin: (x: 9mm, y: 8mm))
 #set text(
   font: "Avenir", size: 9.5pt, fill: rgb("#17212b"),
@@ -49,6 +51,43 @@
     stroke: (x: none, y: (paint: border-color, thickness: 0.35pt)),
     fill: (x, y) => if calc.even(x) { pale } else { none },
     ..cells,
+  )
+]
+
+// Commands use nine-bit simultaneous chords, unlike sequential literary cells.
+// Keep separate metadata so command output labels are not treated as text examples.
+#let command-data = yaml("research/factory-command-chords.yaml")
+#let command-labels = (
+  "literal-space": "Space", "previous-item-left": "Left", "next-item-right": "Right",
+  "up": "Up", "down": "Down", "first-item-home": "Home", "last-item-end": "End",
+  "page-up": "Page Up", "page-down": "Page Down", "tab": "Tab",
+  "return": "Return", "escape": "Escape", "delete": "Delete",
+  "delete-dot7": "Delete", "delete-space7": "Delete", "return-dot8": "Return",
+  "return-space8": "Return", "shift": "Shift", "control": "Control",
+  "option": "Option", "command": "Command", "globe": "Globe",
+  "volume-down": "Volume −", "volume-up": "Volume +", "play-pause": "Play/pause",
+)
+#let command-chord(keys) = box({
+  let mask = keys.filter(key => type(key) == int).fold(0, (mask, dot) => mask + calc.pow(2, dot - 1))
+  if keys.contains("space") {
+    text(size: 6.5pt, weight: "bold")[Space]
+    if mask != 0 { text(size: 6.5pt, " + ") }
+  }
+  if mask != 0 { text(font: "Apple Braille", size: 11.5pt)[#str.from-unicode(0x2800 + mask)] }
+})
+#let command-lookup(title, names) = block(width: 100%, breakable: false, below: 2pt)[
+  #let rows = names.map(name => command-data.commands.find(row => row.name == name))
+  #metadata((modes: command-data.modes, commands: rows)) <command-lookup>
+  #heading(level: 4, title)
+  #table(
+    columns: (auto, 1fr, auto, 1fr, auto, 1fr, auto, 1fr),
+    align: left + horizon, inset: (x: 3pt, y: 1pt),
+    stroke: (x: none, y: (paint: border-color, thickness: 0.35pt)),
+    fill: (x, y) => if calc.even(x) { pale } else { none },
+    ..rows.map(row => (
+      text(size: 7.5pt, weight: "medium")[#command-labels.at(row.name)],
+      command-chord(row.inputs.first()),
+    )).flatten(),
   )
 ]
 
@@ -139,6 +178,21 @@
   ],
 )
 
+#command-lookup("Factory keys · UEB 1 / Computer8 · software verified, hardware acceptance pending", (
+  "literal-space", "previous-item-left", "next-item-right", "up", "down",
+  "first-item-home", "last-item-end", "page-up", "page-down", "tab", "return",
+  "escape", "delete", "delete-dot7", "delete-space7", "return-dot8", "return-space8",
+))
+#block(above: 0pt, below: 0pt)[
+  #set text(size: 6.5pt)
+  #set par(leading: 1pt)
+  Space + cell means one simultaneous chord with Braille Space. Tab = Space + dots 2345 (`0x11e`). Source: Mac VoiceOver, support.apple.com/en-us/103560.
+  #linebreak()
+  Sticky: next host key or 1 s unused timeout. Command + Left/Right = line start/end; Shift + Tab = previous UI item. Globe ≠ Fn.
+  #linebreak()
+  Skipped defaults: Caps Lock, F1–F12, brightness, Mission Control, Spotlight, previous/next track, system mute. No sourced chord in project references. Settings entry deferred.
+]
+
 #pagebreak()
 
 #let contractions = yaml("research/ueb-grade2-contractions.yaml").normative.classes
@@ -183,3 +237,8 @@
 )
 
 #contraction-table("Shortforms · whole words", "shortforms", pairs: 5)
+
+#command-lookup("Factory sticky modifiers & media · both modes · Mac VoiceOver; Play/pause: TalkBack", (
+  "shift", "control", "option", "command", "globe", "volume-down", "volume-up", "play-pause",
+))
+#text(size: 6.5pt)[Software verification: 25 factory rules in both modes, real ZMK sticky/HID tests, and all 7 keyboard firmware targets pass. Physical macOS/BLE acceptance is pending.]

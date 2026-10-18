@@ -1,0 +1,32 @@
+/* SPDX-License-Identifier: MIT */
+#include <behaviors.dtsi>
+#include <behaviors/braille.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        run_commands: run_commands {
+            compatible = "braille,test-commands";
+            #binding-cells = <1>;
+        };
+    };
+    keymap {
+        compatible = "zmk,keymap";
+        base {
+            /* Deliberately no &kp or &sk bindings: the module must retain them. */
+            bindings = <
+                &bc 1 &bc 2 &bc 3 &bc 4 &bc 5 &bc 6 &bc 7 &bc 8
+                &bspc &run_commands 0 &run_commands 1 &run_commands 2 &none &none &none &none
+            >;
+        };
+    };
+};
+
+&kscan {
+    columns = <8>;
+    events = <
+        ZMK_MOCK_PRESS(1, 1, 10) ZMK_MOCK_RELEASE(1, 1, 1200)
+        ZMK_MOCK_PRESS(1, 2, 10) ZMK_MOCK_RELEASE(1, 2, 1200)
+        ZMK_MOCK_PRESS(1, 3, 10) ZMK_MOCK_RELEASE(1, 3, 10)
+    >;
+};

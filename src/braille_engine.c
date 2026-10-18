@@ -85,7 +85,8 @@ void braille_engine_set_whitespace(const struct braille_whitespace_chords *ws) {
 
 bool braille_engine_is_whitespace(uint16_t mask) {
     return mask != 0 &&
-           (mask == whitespace.space || mask == whitespace.enter || mask == whitespace.tab);
+           (mask == whitespace.space || mask == whitespace.enter || mask == whitespace.tab ||
+            mask == whitespace.enter_aliases[0] || mask == whitespace.enter_aliases[1]);
 }
 
 void braille_engine_set_overrides(const struct braille_rule_table *overrides) {

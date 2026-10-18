@@ -37,6 +37,18 @@ class FactoryCommands(unittest.TestCase):
                     ], check=True)
                     subprocess.run([str(binary)], check=True)
 
+    def test_basic_consumer_report_warns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(shlex.split(os.environ.get("CC", "cc")) + [
+                "-std=c11", "-DCONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC=1",
+                "-I", str(ROOT / "tests/host/stubs"), "-I", str(ROOT / "include"),
+                "-c", str(ROOT / "src/braille_rules_nav.c"),
+                "-o", str(Path(tmp) / "commands.o"),
+            ], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("BASIC consumer usages cannot send Globe, Spotlight or Mission Control",
+                          result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

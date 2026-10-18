@@ -11,3 +11,7 @@
         braille-module tasks remain here.
 2.  There may be other agents working in the same worktree.
 3.  Commit your own work as you go.
+4.  Before each commit, update `references/braille-cheatsheet.typ` with new
+    information and run `typst compile references/braille-cheatsheet.typ` to
+    rebuild its PDF. Append information without spending time on layout or
+    reviewing the rendered PDF.

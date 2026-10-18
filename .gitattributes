@@ -1,0 +1,2 @@
+# Generated/reference PDFs are binary artifacts, not whitespace-checked source.
+*.pdf binary

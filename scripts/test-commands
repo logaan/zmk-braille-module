@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Real per-mode factory rules, production capture/dispatch, ZMK sticky keys and HID.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+ROOT="$PWD"
+WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
+[ "$#" -eq 0 ] || { echo 'Usage: scripts/test-commands' >&2; exit 2; }
+[ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
+mkdir -p "$WORKSPACE/logs"
+docker run --rm \
+  -v "$WORKSPACE:/work" -v "$ROOT:/braille:ro" -w /work \
+  zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+    test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+    west zephyr-export
+    west build -p always -d build/commands-native -s zmk/app -b native_posix_64 -- \
+      -DZMK_CONFIG=/braille/tests/firmware/commands \
+      "-DZMK_EXTRA_MODULES=/braille;/braille/tests/firmware/commands" \
+      2>&1 | tee logs/commands-build.log
+    timeout 30 build/commands-native/zephyr/zmk.exe 2>&1 | tee logs/commands-native.log
+  '
+python3 tests/firmware/check_commands.py "$WORKSPACE/logs/commands-native.log"

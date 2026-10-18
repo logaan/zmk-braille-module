@@ -74,6 +74,20 @@ class DevicetreeContract(unittest.TestCase):
             result = self.compile(tmp)
             self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_braille_only_keymap_retains_factory_behaviors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # Neither &kp nor &sk appears in the keymap; both are still needed
+            # by the C factory rules. Zephyr's real parser applies omit-if-no-ref.
+            result = self.generate(tmp, "&bc 1 &bspc")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            header = (Path(tmp) / "include/generated/devicetree_generated.h").read_text()
+            self.assertIn("DT_N_S_braille_P_factory_behaviors_IDX_0_PH DT_N_S_behaviors_S_key_press",
+                          header)
+            self.assertIn("DT_N_S_braille_P_factory_behaviors_IDX_1_PH DT_N_S_behaviors_S_sticky_key",
+                          header)
+            self.assertIn("DT_N_S_behaviors_S_key_press_EXISTS 1", header)
+            self.assertIn("DT_N_S_behaviors_S_sticky_key_EXISTS 1", header)
+
     def test_named_mode_override_is_extensible(self):
         for mode in ("computer8", "ueb2", "future-japanese"):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as tmp:
