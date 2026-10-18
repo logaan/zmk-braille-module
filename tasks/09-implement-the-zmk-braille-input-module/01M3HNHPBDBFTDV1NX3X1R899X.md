@@ -89,6 +89,7 @@ cargo:
     1. Pin the baseline and build the module, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
     2. Build the common rule and action data, matcher, ordered action dispatch, and named-table registration; then implement the 26 six-dot alphabet cells immediately after those prerequisites.
     3. Use fixture command tables, character modes, and in-memory overrides where their real data arrives later; lowercase alphabet input does not depend on context transitions or populated factory command tables.
+    4. Finish with the user-owned alphabet hardware test on the baseline keyboards before phase 02.
 2. Phase 02 extends that same engine with context transitions, word boundaries, and the pending-input lifecycle, then researches and implements per-mode factory command chords.
     1. Its UEB-context representation is `references/research/ueb-indicator-context.yaml`, derived from phase 03's rulebook research in `references/research/`.
     2. Braille-space output, navigation, and the other factory commands arrive here, after alphabet bring-up.
