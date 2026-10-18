@@ -2,8 +2,9 @@
 
 An out-of-tree ZMK module for chorded Braille input. **Not usable Braille input
 yet.** Central-local dot/space behaviors now route press/release edges by binding
-parameter, on any layer, to the detector input boundary. The detector still
-returns `-ENOTSUP`; chord capture/finalization is the next implementation step.
+parameter, on any layer, to the release-terminated detector. Capture now emits
+one nine-bit mask on the last Braille-key release, without a timer. The downstream
+completion consumer still returns `-ENOTSUP`; matching/output are not implemented.
 Mode/settings callbacks remain unsupported. There is no layer switching,
 matching, character table, settings UI, or Braille HID output yet.
 
@@ -134,13 +135,24 @@ filter: only invoking a Braille binding enters this path. Conventional
 ZMK retains the press-time layer state for release routing; the driver does
 not look up the current layer again on release.
 
-**Capture/output are not implemented yet:** `braille_chord_key_event()` has an
-explicit weak `-ENOTSUP` placeholder in `src/braille_chord.c`, to be replaced by
-the detector implementation. The routing tests substitute an edge spy, not a
-working detector. Mode/settings callbacks also still return `-ENOTSUP`.
-Chords will end only on the last Braille-key release; no chord timeout property
-exists. The mode key selects a layer, not a character table. Use an existing
-keymap layer number as its argument.
+`braille_chord_key_event()` starts capture on the first press, accumulates every
+Braille bit pressed while any Braille key remains held, and calls
+`braille_chord_resolved(mask, last_release_event)` exactly once on the last release.
+Early releases do not remove accumulated bits; late joins and re-presses stay in
+the same chord. Space-only (`0x100`), dot-only, and space-plus-dot masks are all
+ordinary chords. Held keys are identified by position and split source, not
+layer; different physical keys bound to the same dot must both release.
+Duplicate edges are ignored. State is idle before the synchronous completion
+callback, even if it fails. Capture has no timer or timeout property.
+
+**Output is not implemented yet:** the weak `braille_chord_resolved()` consumer
+returns `-ENOTSUP` until the shared engine supplies it. That error propagates on
+the final release; capture itself is implemented. Mode/settings callbacks also
+still return `-ENOTSUP`. The detector is bounded by `ZMK_KEYMAP_LEN` simultaneous
+keys; overflow returns `-ENOSPC` without changing the chord. Invalid masks or a
+changed bit for an already-held key return `-EINVAL`. Input callbacks must be
+serialized, as on ZMK's central behavior path. The mode key selects a layer,
+not a character table. Use an existing keymap layer number as its argument.
 
 The same include supplies the `braille` configuration node (`zmk,braille`).
 Its `default-mode` string defaults to `"ueb1"`. A keyboard may override it:
@@ -174,8 +186,9 @@ use a valid dot number as their replaceable placeholder, not zero.
   devices, and named per-keyboard default-mode configuration.
 - `src/behavior_braille.c`: central-local dot/space input routing and runtime
   validation; mode/settings remain unsupported. No character/command dispatch.
-- `include/braille_chord.h`: single-bit detector input contract and mask constants.
-- `src/braille_chord.c`: explicitly unsupported detector placeholder, not capture.
+- `include/braille_chord.h`: single-bit input, completed-mask hook, and mask constants.
+- `src/braille_chord.c`: bounded held-key tracking and timer-free nine-bit capture;
+  the downstream completion consumer remains explicitly unsupported.
 - `src/braille_bindings.c`: build-time dot-argument assertions.
 - `src/braille_engine.c`: reserved shared matcher/buffer translation unit.
 - `include/braille_rules.h`: reserved common rule/action schema; only a forward
@@ -189,8 +202,10 @@ Run the focused host checks with Python 3, CMake, and a C compiler:
 ```sh
 python3 tests/host/test_build.py
 python3 tests/host/test_routing.py
-# Optional ASan/UBSan run of the routing and parameter-boundary checks:
+python3 tests/host/test_chord.py
+# Optional ASan/UBSan runs of routing and detector checks:
 CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_routing.py
+CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_chord.py
 # With the pinned workspace present, also check the real Kconfig parser:
 PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig.py
 # Production DT schemas + C assertions, using the same pinned workspace:
@@ -203,7 +218,11 @@ build/bindings/venv/bin/python tests/host/test_keyboards.py
 
 These check enabled/disabled source selection, optional Grade 2 isolation,
 every combination of enabled behavior compatibles, central locality, and the
-explicit unsupported downstream callbacks. Routing checks cover all eight dot
+explicit unsupported downstream consumer/mode/settings callbacks. Detector checks
+compile the production detector with only a completion spy: all 511 nonempty
+masks, overlap/early release/late joins/re-presses, consecutive chords, layer and
+split-source identity, duplicate bindings/edges, invalid input, bounded capacity,
+consumer failure, and reentry. Routing checks cover all eight dot
 parameters and space across 32 layers and seven positions, multiple dot devices,
 original event fields (including split source), invalid runtime parameters,
 metadata, and downstream error propagation, with split/metadata both on and off.
@@ -227,21 +246,26 @@ python3 tests/firmware/check_routing.py build/baseline/logs/routing-native.log
 
 This builds/runs `native_posix_64` with the real production behavior driver,
 keymap/layer APIs, mock scan driver, and Zephyr kernel. A separate **test-only**
-module in `tests/firmware/routing/` replaces the unavailable detector with an
-edge spy and observes conventional keycode events without consuming them.
-The reviewed 61-event snapshot checks every dot on two different layouts,
+module in `tests/firmware/routing/` observes edges through a linker wrapper that
+always calls the production detector, supplies only the unavailable completion
+consumer, and observes conventional keycode events without consuming them.
+The reviewed 81-event routing snapshot checks every dot on two different layouts,
 Braille space versus conventional Space/A/B (also while a dot is held),
 transparent-layer fallback, and press-time release ownership when switching
 layers with a dot, Braille space,
-or conventional space held. It also validates dot/space metadata through real
-ZMK APIs. No ZMK source is patched or layer router reimplemented in the test.
+or conventional space held. A second snapshot checks 26 completed masks and their
+last-release events, including overlapping keys, late joins, re-presses, two
+physical keys sharing a dot, and a chord spanning a layer switch. Each completion
+must immediately follow its final release. It also validates dot/space metadata
+through real ZMK APIs. No ZMK source is patched or layer router reimplemented
+in the test.
 
 `WORKSPACE` overrides the shared workspace path. Build/run logs are
 `build/baseline/logs/routing-{build,native}.log`; the native executable is
 `build/baseline/build/routing-native/zephyr/zmk.exe`. This test does not connect
 a host transport: the native board's expected `USB endpoint is not supported`
 messages do not negate its keycode-event checks. It does not test a finished
-chord detector, wireless split transport, physical hardware, or host typing.
+rule engine, wireless split transport, physical hardware, or host typing.
 
 See [the implementation task](tasks/09-implement-the-zmk-braille-input-module/)
 for requirements and acceptance gates. The unchanged

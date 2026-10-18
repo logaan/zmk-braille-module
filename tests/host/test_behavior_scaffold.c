@@ -12,20 +12,20 @@ int zmk_behavior_get_empty_param_metadata(const struct device *dev,
 #endif
 
 int main(void) {
-    /* The real downstream placeholder must not silently claim working capture. */
+    /* Capture works; the unavailable completion consumer remains explicit. */
     struct zmk_behavior_binding binding = {.behavior_dev = "test", .param1 = 8};
     struct zmk_behavior_binding_event event = {.position = 42, .layer = 3, .timestamp = 1234};
 #if TEST_DOT_NODES
     assert(dot_a->locality == BEHAVIOR_LOCALITY_CENTRAL);
     assert(dot_b->locality == BEHAVIOR_LOCALITY_CENTRAL);
-    assert(dot_a->binding_pressed(&binding, event) == -ENOTSUP);
+    assert(dot_a->binding_pressed(&binding, event) == 0);
     assert(dot_b->binding_released(&binding, event) == -ENOTSUP);
     assert(binding.param1 == 8 && binding.param2 == 0);
 #endif
     binding.param1 = 0;
 #if TEST_SPACE_NODES
     assert(space->locality == BEHAVIOR_LOCALITY_CENTRAL);
-    assert(space->binding_pressed(&binding, event) == -ENOTSUP);
+    assert(space->binding_pressed(&binding, event) == 0);
     assert(space->binding_released(&binding, event) == -ENOTSUP);
 #endif
 #if TEST_MODE_NODES

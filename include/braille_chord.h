@@ -19,8 +19,22 @@
  *
  * Return 0 (opaque/handled) or a negative errno, never a transparent result.
  * The detector owns held-key/chord state and finalization, not the driver.
- * Until that implementation lands, the weak placeholder returns -ENOTSUP.
+ * Callbacks must be serialized, as in ZMK's central behavior event path.
+ * Held keys are identified by position and (on splits) source, not layer.
+ * Duplicate edges are ignored; inconsistent bits for a held key are rejected.
+ * At most ZMK_KEYMAP_LEN distinct keys may be held; overflow returns -ENOSPC
+ * without changing the chord. Invalid/non-single-bit input returns -EINVAL.
  */
 int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_binding_event event);
+
+/*
+ * One resolution per last release, with all bits pressed since idle and the
+ * unchanged last-release event. State is idle before this synchronous call.
+ * Return 0 or a negative errno (propagated to the releasing behavior); failures
+ * are not retried and cannot contaminate the next chord. The weak default
+ * returns -ENOTSUP until the shared engine supplies this completion hook.
+ * This is a capture boundary, not an alternate character/action representation.
+ */
+int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event);
 
 #endif /* BRAILLE_CHORD_H */

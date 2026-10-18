@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run routing through the real pinned ZMK keymap/behavior APIs and Zephyr kernel.
-# The native-only companion module substitutes an edge spy, not a chord detector.
+# The native companion observes edges and supplies only a completion consumer.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"

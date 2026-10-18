@@ -7,9 +7,10 @@ menuconfig ZMK_FEATURE_BRAILLE
     help
       Build the out-of-tree Braille behavior module on the split central
       or a non-split keyboard. Braille dot/space behaviors route input by
-      binding parameter on any layer, without an on/off state. Chord capture,
-      mode/settings actions, and output are not implemented yet; the detector
-      placeholder reports unsupported rather than silently losing input.
+      binding parameter on any layer, without an on/off state. Chords collect
+      all nine Braille bits until the last release, without a timer. Mode and
+      settings actions and output are not implemented yet; the completion
+      consumer reports unsupported rather than silently losing input.
 
 if ZMK_FEATURE_BRAILLE
 

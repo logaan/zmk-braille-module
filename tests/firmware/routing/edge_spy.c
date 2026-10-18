@@ -10,15 +10,20 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-/*
- * Strong replacement for the unavailable detector, for routing tests only.
- * It records single edges, not accumulated or finalized chords. LOG_DBG uses
- * the same backend as &kp, so the snapshot also checks their relative order.
- */
-int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_binding_event event) {
+/* Linker wrapper observes edges and always invokes the production detector. */
+int __real_braille_chord_key_event(uint16_t bit, bool pressed,
+                                   struct zmk_behavior_binding_event event);
+int __wrap_braille_chord_key_event(uint16_t bit, bool pressed,
+                                   struct zmk_behavior_binding_event event) {
     LOG_DBG("braille_edge: bit 0x%03x pressed %d position %u layer %d", bit, pressed,
             event.position, event.layer);
-    return ZMK_BEHAVIOR_OPAQUE;
+    return __real_braille_chord_key_event(bit, pressed, event);
+}
+
+/* Only the not-yet-implemented engine is replaced, not chord capture. */
+int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
+    LOG_DBG("braille_chord: mask 0x%03x position %u layer %d", mask, event.position, event.layer);
+    return 0;
 }
 
 static int observe_keycode(const zmk_event_t *eh) {

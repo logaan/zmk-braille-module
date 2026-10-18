@@ -26,7 +26,7 @@ class Routing(unittest.TestCase):
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
 
-    def test_independent_compatibles_and_unavailable_detector(self):
+    def test_independent_compatibles_and_unavailable_consumer(self):
         # Every node combination, including none and a dot behavior without space.
         for nodes in itertools.product((0, 1), repeat=4):
             for metadata in (0, 1):
