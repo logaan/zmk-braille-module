@@ -8,6 +8,10 @@
 
 #ifdef __ZEPHYR__
 #include <zephyr/devicetree.h>
+#include <zephyr/init.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(braille_tables, CONFIG_ZMK_LOG_LEVEL);
 #endif
 
 /*
@@ -115,3 +119,21 @@ int braille_tables_select(const char *name) {
 int braille_tables_select_default(void) {
     return braille_tables_select(BRAILLE_TABLES_DEFAULT_MODE);
 }
+
+#ifdef __ZEPHYR__
+/* Boot-time selection: the module is always on, so the devicetree default
+ * mode (the zmk,braille node's `default-mode` property, "ueb1" when the node
+ * is absent) is selected once at startup, before any chord can resolve.
+ * Selection only retargets table views and validates them; no behavior device
+ * is invoked here. A failure leaves the engine without factory tables, so the
+ * error is logged rather than asserted. */
+static int braille_tables_boot(void) {
+    int ret = braille_tables_select_default();
+    if (ret < 0) {
+        LOG_ERR("default Braille mode \"%s\" not selected: %d", BRAILLE_TABLES_DEFAULT_MODE, ret);
+    }
+    return 0;
+}
+
+SYS_INIT(braille_tables_boot, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
+#endif

@@ -58,7 +58,7 @@ static void chord(uint16_t mask) {
 #define CMD_TAB (0x100 | 0x18)
 #define CMD_PREV (0x100 | 0x04)
 #define CMD_NEXT (0x100 | 0x20)
-#define DOT_A 0x001 /* dot 1: no factory rule yet; used by the override */
+#define DOT_A 0x001 /* dot 1: the ueb1 `a` cell; the override shadows it */
 
 /* 1. Exactly the compiled tables are registered by name: `ueb1` and
  *    `computer8` always, `ueb2` only when its rules are included. */
@@ -197,7 +197,8 @@ static void test_devicetree_default_selection(void) {
 
 /* 5. A mode switch discards pending input: a pending prefix held under one
  *    mode does not leak into the next. Uses the override layer to create a
- *    two-chord rule, since the factory character tables are still empty. */
+ *    two-chord rule whose longer sequence holds the single-cell factory `a`
+ *    pending. */
 static void test_mode_switch_resets_pending(void) {
     struct braille_override_layer overrides = braille_tables_overrides();
     overrides.rules[0] = (struct braille_rule){

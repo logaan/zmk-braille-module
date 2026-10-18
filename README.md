@@ -1,13 +1,17 @@
 # ZMK Braille module
 
-An out-of-tree ZMK module for chorded Braille input. **Not usable Braille input
-yet.** Central-local dot/space behaviors now route press/release edges by binding
-parameter, on any layer, to the release-terminated detector. Capture now emits
-one nine-bit mask on the last Braille-key release, without a timer. The downstream
-completion consumer still returns `-ENOTSUP`; matching/output are not implemented.
-The mode key now composes ZMK layer/hold-tap behaviors, and settings entry/exit
-hooks isolate captured input from typing. There is no matching, character table,
-settings UI, or Braille HID output yet.
+An out-of-tree ZMK module for chorded Braille input. **Lowercase alphabet
+input works; the rest is not implemented yet.** Central-local dot/space
+behaviors route press/release edges by binding parameter, on any layer, to
+the release-terminated detector. Capture emits one nine-bit mask on the last
+Braille-key release, without a timer. The shared engine matches the selected
+mode's character and fixture command tables plus the user override layer,
+and committed rules invoke their ordered ZMK behavior actions on the host.
+The `ueb1` table carries the 26 six-dot alphabet cells as ordinary lowercase
+keystrokes; the devicetree default mode is selected at boot. The mode key
+composes ZMK layer/hold-tap behaviors, and settings entry/exit hooks isolate
+captured input from typing. Literary signs, real factory command chords,
+context transitions, the settings UI, and persistence are not implemented yet.
 
 ## Pinned development baseline
 
@@ -146,9 +150,9 @@ layer; different physical keys bound to the same dot must both release.
 Duplicate edges are ignored. State is idle before the synchronous completion
 callback, even if it fails. Capture has no timer or timeout property.
 
-**Output is not implemented yet:** the weak `braille_chord_resolved()` consumer
-returns `-ENOTSUP` until the shared engine supplies it. That error propagates on
-the final release; capture itself is implemented. The detector is bounded by
+The engine supplies the strong `braille_chord_resolved()` consumer: completed
+chords match the selected tables and dispatch their actions as host keystrokes.
+The detector is bounded by
 `ZMK_KEYMAP_LEN` simultaneous keys; overflow returns `-ENOSPC` without changing the chord. Invalid masks or a
 changed bit for an already-held key return `-EINVAL`. Input callbacks must be
 serialized, as on ZMK's central behavior path. The mode key selects a layer,

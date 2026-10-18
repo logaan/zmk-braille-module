@@ -34,10 +34,10 @@ struct braille_mode {
     const struct braille_whitespace_chords *whitespace;
 };
 
-/* Compiled factory tables, defined by the rule-data units. The character
- * tables are empty until their data tasks populate them (phase 01 alphabet,
- * phases 03/04/07); the command tables are per-mode fixtures until phase 02
- * researches the real factory chords. */
+/* Compiled factory tables, defined by the rule-data units. `ueb1` carries
+ * the 26 six-dot alphabet cells; the remaining character tables are empty
+ * until their data tasks populate them (phases 03/04/07). The command tables
+ * are per-mode fixtures until phase 02 researches the real factory chords. */
 extern const struct braille_rule_table braille_rules_ueb1_characters;
 extern const struct braille_rule_table braille_rules_computer8_characters;
 extern const struct braille_rule_table braille_rules_ueb1_commands;
