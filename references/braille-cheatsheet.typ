@@ -271,3 +271,10 @@ two columns: the code label and the braille cell sequence.
 The Quick Braille Fox subheads set the monospace "qk brl fox" label
 inside the same white bordered key box used for "8 Dot" and the space
 key.
+
+= Printable quick-reference scalable key box
+
+The key-box helper gains a size parameter (default 7pt) that scales the
+text and the box padding together. The Quick Braille Fox subhead labels
+use 10pt so the boxed "qk brl fox" matches the height of the braille
+cells beside it; "8 Dot" and the space key keep the default 7pt.

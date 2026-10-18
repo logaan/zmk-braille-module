@@ -24,10 +24,10 @@
   image(bytes(svg), format: "svg", width: 6.4pt, height: height * 1pt,
     alt: "Braille dots " + dots.map(str).join(", "))
 }
-#let key-box(body) = box(
-  inset: (x: 2.4pt, y: 1.5pt), radius: 2pt,
+#let key-box(body, size: 7pt) = box(
+  inset: (x: 2.4pt * (size / 7pt), y: 1.5pt * (size / 7pt)), radius: 2pt,
   stroke: 0.4pt + rgb("#aebfc4"), fill: white,
-  text(size: 7pt, weight: "bold", fill: muted, body),
+  text(size: size, weight: "bold", fill: muted, body),
 )
 #let space-key = key-box[␣]
 #let sequence(cells, eight: false, wrap: false, space: auto) = {
