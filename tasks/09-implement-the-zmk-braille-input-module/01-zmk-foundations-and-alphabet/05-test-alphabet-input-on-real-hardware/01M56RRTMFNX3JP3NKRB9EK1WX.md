@@ -16,9 +16,12 @@ cargo:
 ## 1. Firmware artifacts (fresh, built for this checkpoint)
 
 1.  Built locally with `./scripts/smoke-build qbf-left qbf-right toucan-left
-    toucan-right` at module commit `4ce0868` (`Map the 26 six-dot alphabet
-    cells`), in `zmkfirmware/zmk-build-arm:3.5`; all four pristine builds
-    exited 0 and `tests/firmware/check_smoke.py` passed on all four.
+    toucan-right` at module commit `db8d74a` — the published pin below,
+    which contains `4ce0868` (`Map the 26 six-dot alphabet cells`) — in
+    `zmkfirmware/zmk-build-arm:3.5`; all four pristine builds exited 0 and
+    `tests/firmware/check_smoke.py` passed on all four. Rebuilt 18 Oct 2026
+    after the re-pin; the UF2 SHA-256 sums are unchanged, confirming
+    bit-reproducible builds (no firmware-affecting changes since `4ce0868`).
 2.  Staged UF2s (copy these to the bootloader drives):
 
     | Target | UF2 | SHA-256 |
@@ -40,14 +43,16 @@ cargo:
 1.  ZMK: v0.3.0, `edf5c0814fd3ea202e43aad2d68fd32e882a518c` (all three
     manifests pin `v0.3.0`).
 2.  Zephyr: `v3.5.0+zmk-fixes`, `dacab4875df72109b96cc8977547a0dc04875bcd`.
-3.  Keyboards: QBF Paintbrushes `1cbbcf9b0f86d537be4c4eb6a435b8081bba02fe`
-    (main); Toucan `46125e6e33d817df76b0ef91efbb5fae31f35891` (main).
-4.  Module: both keyboard manifests publish-pin `5273efebd5f13f7bff506609da79f5f9954b892e`;
-    per the smoke-build script's documented behavior, these local builds
-    substitute the current checkout (`4ce0868`) for that pinned project so
-    the new alphabet table is included. Production C/bindings are unchanged
-    between those revisions except this leaf's alphabet table, boot-time
-    default-mode selection, and tests/docs.
+3.  Keyboards: QBF Paintbrushes `ecf8f2fe5558a2585e7f897c387a0fe38e6c646c`
+    (main, pushed); Toucan `04e87db010ab1b403b7c1a9c2db359ba2ec11004` (main,
+    pushed).
+4.  Module: both keyboard manifests publish-pin
+    `db8d74a693ad183c6af01bd356f05b67c3974ae5`, which is pushed to
+    `github.com/logaan/zmk-braille-module` `main` and contains the alphabet
+    commit `4ce0868` plus chord capture, routing, mode layers, matcher,
+    dispatch, table registration, and boot-time default-mode selection.
+    The smoke-build discovery log confirms this exact pinned revision was
+    used for the staged builds (`build/baseline/logs/smoke-discovery.log`).
 5.  Build container: `zmkfirmware/zmk-build-arm:3.5`, digest
     `sha256:0979a8de325e3d822e48bd8d1d9efaee2984ad3750253119f920a342f0ce5cde`.
 
