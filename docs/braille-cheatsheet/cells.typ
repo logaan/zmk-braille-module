@@ -62,23 +62,14 @@
   weight: if code { "medium" } else { "regular" },
   if label == " " { "␣" } else { label },
 )
-// An underline marks a chord whose braille keys are held with Braille Space.
-#let with-space(body) = box(
-  stroke: (bottom: 0.5pt + ink), inset: (bottom: 1.2pt), body,
-)
 #let command-keys(keys, sticky: false) = {
   let mask = dot-mask(keys)
-  let cells = ()
-  if keys.contains("space") {
-    if mask > 0 {
-      cells.push(with-space(braille(str.from-unicode(0x2800 + mask), eight: true)))
-    } else {
-      cells.push(space-key)
-    }
-  } else if mask > 0 {
+  let cells = if keys.contains("space") { (space-key,) } else { () }
+  if mask > 0 {
+    if cells.len() > 0 { cells.push(text(size: 8pt, fill: muted)[+]) }
     cells.push(braille(str.from-unicode(0x2800 + mask), eight: true))
   }
-  if sticky { cells.push(output("_")) }
+  if sticky { cells.push(output("…")) }
   [#metadata((keys: keys, dots: mask, sticky: sticky)) <reference-chord>]
   box(grid(columns: (auto,) * cells.len(), column-gutter: 3pt, align: horizon, ..cells))
 }

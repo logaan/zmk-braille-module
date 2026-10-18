@@ -8,7 +8,8 @@
 #let lowercase = alphabet
 #let numeral-bases = "⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊".clusters()
 #let numeral-eight = "⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔".clusters()
-#let digits = range(10).map(i => (str(i), "⠼" + numeral-bases.at(i), numeral-eight.at(i)))
+#let digit-ueb1 = range(10).map(i => (str(i), "⠼" + numeral-bases.at(i)))
+#let digit-eight = range(10).map(i => (str(i), numeral-eight.at(i)))
 #let symbols = (
   ("!", "⠖", "⠮"),
   ("\"", "⠠⠶", "⠐"),
@@ -43,7 +44,7 @@
   ("}", "⠸⠜", "⠻"),
   ("~", "⠈⠔", "⠘"),
 )
-#let characters = lowercase + digits + symbols
+#let characters = lowercase + digit-ueb1 + symbols
 #let capitals = (
   (scope: "Letter prefix", indicator: "⠠", example: "A", ueb1: "⠠⠁"),
   (scope: "Word prefix", indicator: "⠠⠠", example: "ABC", ueb1: "⠠⠠⠁⠃⠉"),
@@ -81,8 +82,8 @@
   ("Command", ("space", 1, 7)),
   ("Globe", ("space", 5, 7)),
 )
-// Sticky modifiers hold their effect for the next chord, marked with "_".
-#let chords = navigation + modifiers.map(entry => (entry.at(0) + " _", entry.at(1), true))
+// Sticky modifiers hold their effect for the next chord, marked with "…".
+#let chords = navigation + modifiers.map(entry => (entry.at(0) + " …", entry.at(1), true))
 
 // UEB 2 data: each section is one flowing table, never a fixed-size chunk.
 #let ueb2 = (

@@ -4,7 +4,11 @@
 #import "style.typ": page-margins
 
 // Validate the data at compilation time, without a separate build program.
-#assert(alphabet.len() == 26 and digits.len() == 10 and symbols.len() == 32)
+#assert(alphabet.len() == 26 and digit-ueb1.len() == 10 and digit-eight.len() == 10
+  and symbols.len() == 32)
+#assert(digit-ueb1.all(entry => entry.at(1).starts-with("⠼")))
+#assert(digit-eight.map(entry => entry.at(1)) == range(10).map(i =>
+  str.from-unicode(0x2800 + 2 * (alphabet.at(calc.rem(i + 9, 10)).at(1).to-unicode() - 0x2800))))
 #assert(characters.map(entry => entry.at(0)).sorted() == range(33, 127)
   .filter(code => not (65 <= code and code <= 90)).map(str.from-unicode))
 #assert(symbols.find(entry => entry.at(0) == "\"").at(1) == "⠠⠶")
@@ -13,7 +17,7 @@
 #assert(navigation.len() == 17 and modifiers.len() == 5)
 #assert(chords.len() == 22 and chords.slice(0, navigation.len()) == navigation)
 #assert(chords.slice(navigation.len()).all(entry =>
-  entry.at(0).ends-with(" _") and entry.at(2) and entry.at(1).contains("space")))
+  entry.at(0).ends-with(" …") and entry.at(2) and entry.at(1).contains("space")))
 #assert(capitals.len() == 7)
 #assert(dot-mask((2, 3, 4, 5)) == 30)
 #assert(cell-mnemonics.len() == 36)
@@ -38,9 +42,13 @@
   let sections = query(<reference-section>)
   let rows = query(<reference-row>)
   if rows.len() > 0 {
-    let expected = characters.len() + capitals.len() + navigation.len() + modifiers.len() + ueb2.map(section => section.entries.len()).sum()
+    let expected = (
+      lowercase.len() + digit-ueb1.len() + digit-eight.len() + symbols.len()
+        + capitals.len() + navigation.len() + modifiers.len()
+        + ueb2.map(section => section.entries.len()).sum()
+    )
     assert(rows.len() == expected, message: "Missing or duplicated reference rows")
-    assert(sections.len() == ueb2.len() + 5, message: "Missing or duplicated sections")
+    assert(sections.len() == ueb2.len() + 6, message: "Missing or duplicated sections")
     for section in sections {
       let data = section.value
       let actual = rows.filter(row => row.value.section == data.title)

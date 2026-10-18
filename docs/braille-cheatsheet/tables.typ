@@ -70,6 +70,11 @@
   entry => (output(entry.at(0), code: true), sequence(entry.at(1)), sequence(entry.at(2), eight: true)),
   columns: 3, headers: ("Symbol", "UEB 1", "8 dot"), row: 15pt, label-align: center,
 )
+#let digit-section(title, entries) = section-table(
+  title, title, ("ueb1", "eight-dot"), entries,
+  entry => (output(entry.at(0), code: true), sequence(entry.at(1)), mnemonic(entry.at(1))),
+  columns: 3, headers: ("Number", "Input", "Mnemonic"), row: 15pt, label-align: center,
+)
 #let word-section(section) = {
   let has-mnemonics = section.entries.any(entry => mnemonic-spelling(entry.at(1)) != none)
   section-table(

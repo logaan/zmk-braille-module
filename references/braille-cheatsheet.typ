@@ -160,3 +160,16 @@ The Lowercase table drops its Braille Space row and is retitled "Lowercase
 letters"; the Space chord remains in Navigation and Editing. The character
 coverage assertion now covers printable ASCII excluding space. The
 reference stays two A4 pages with no overlapping or out-of-bounds text.
+
+= Printable quick-reference digit tables
+
+The Digits table splits into "Digits · UEB 1" and "Digits · 8 dot", each
+with Number, Input, and Mnemonic columns. The 8-dot digit cells are the
+lowered a–j letters, so their mnemonics use the down arrow: 0 is ↓j and 1
+is ↓a. UEB 1 mnemonics keep the number sign before the letter. Modifier
+outputs and inputs end with an ellipsis instead of an underscore, and
+Space chords show the bordered Space key plus the dot cell again instead
+of an underline. A page break puts Alphabetic wordsigns at the top of
+page 2; the reference is three A4 pages with no overlapping or
+out-of-bounds text. A multiline expected-row expression in the compilation
+checks silently counted only its first line and is now parenthesized.
