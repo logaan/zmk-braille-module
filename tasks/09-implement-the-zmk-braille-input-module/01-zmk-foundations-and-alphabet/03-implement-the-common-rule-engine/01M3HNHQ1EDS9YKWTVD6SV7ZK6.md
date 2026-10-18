@@ -11,3 +11,4 @@ cargo:
 
 1. Character, command, and override tables use the same nine-bit input and ordered behavior actions.
 2. Write each engine unit test alongside its implementation task, using small fixture tables and in-memory overrides because real tables and persistence arrive later.
+3. Complete these four tasks before the alphabet task; phase 02 extends the same engine with context transitions, word boundaries, and the pending-input lifecycle.

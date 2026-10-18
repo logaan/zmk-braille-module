@@ -85,11 +85,15 @@ cargo:
 
 ## 6. Order and dependencies
 
-1. Phase 01 pins the baseline and builds the module, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
-2. Phase 02 builds the common rule, context, matching, and action contracts, and researches and implements per-mode factory command chords against fixture tables.
+1. Phase 01 delivers the first end-to-end lowercase alphabet input.
+    1. Pin the baseline and build the module, Braille key bindings, release-terminated chord capture, the braille-mode-key, and the settings-entry action.
+    2. Build the common rule and action data, matcher, ordered action dispatch, and named-table registration; then implement the 26 six-dot alphabet cells immediately after those prerequisites.
+    3. Use fixture command tables, character modes, and in-memory overrides where their real data arrives later; lowercase alphabet input does not depend on context transitions or populated factory command tables.
+2. Phase 02 extends that same engine with context transitions, word boundaries, and the pending-input lifecycle, then researches and implements per-mode factory command chords.
     1. Its UEB-context representation is `references/research/ueb-indicator-context.yaml`, derived from phase 03's rulebook research in `references/research/`.
-3. Phases 03 and 04 build the `ueb1` and `computer8` character tables on the phase 02 engine, independently of each other, and check them against the real command tables.
-4. Phase 05 storage depends on the common schema; its settings interface also needs phase 01's capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
+    2. Braille-space output, navigation, and the other factory commands arrive here, after alphabet bring-up.
+3. Phase 03 extends the existing alphabet into complete `ueb1` literary input; phase 04 builds `computer8`. Both use phase 01's engine and actions and phase 02's context and command support, and check their real tables against the command tables.
+4. Phase 05 storage depends on phase 01's common schema; its settings interface also needs phase 01's capture and settings-entry hooks, Grade 1 search input, and the compiled named modes.
 5. Phase 06 verifies the combined feature set on the baseline keyboards and completes user documentation; it is not the first build or test step.
 6. Phase 07 reuses the delivered engine, display, capture, and actions, adding only contraction data and necessary word context.
 
