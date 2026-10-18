@@ -242,3 +242,6 @@
 ))
 #text(size: 6.5pt)[Software verification: 22 factory rules in both modes, real ZMK sticky/HID tests, and all 7 keyboard firmware targets pass. Physical macOS/BLE acceptance is pending.]
 // Command reference refreshed: 17 direct key chords and 5 sticky modifiers.
+// Firmware updates: publish the module before repinning and pushing both QBF
+// Paintbrushes and Toucan, then verify their GitHub Actions builds. Local smoke
+// builds substitute local sources and do not verify the published module pin.
