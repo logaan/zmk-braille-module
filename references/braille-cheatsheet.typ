@@ -216,3 +216,14 @@ the Input column wrap inside their cells, and spaces in those sequences
 show the open-box symbol. The mode-example and capital-example helpers
 are removed. Capitals still renders exactly seven rows, checked by the
 compilation assertion.
+
+= Printable quick-reference continuous columns
+
+The weak column break after Symbols is dropped. Lowercase, Capitals,
+Symbols, both digit tables, and Navigation and Editing now flow
+continuously through page 1's three columns: Symbols continues at the
+top of column 2 as "Symbols Cont'd", and Navigation and Editing starts
+at the bottom of column 2 and continues at the top of column 3 as
+"Navigation and Editing Cont'd". All chords stay on page 1, which the
+compilation assert checks. The reference remains three A4 pages with
+every continued heading starting its page column.

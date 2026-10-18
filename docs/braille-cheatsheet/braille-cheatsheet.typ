@@ -8,8 +8,8 @@
 #show: cheatsheet
 
 // Sections flow naturally through the page columns; their table headers repeat
-// on continuation. Capitals follows Lowercase as an Output/Input table, Symbols
-// fills the next column, and the digit tables and keyboard chords start a fresh one.
+// on continuation. Capitals follows Lowercase as an Output/Input table and
+// Symbols, the digit tables, and the keyboard chords follow without a break.
 #character-section("Lowercase", "Lowercase letters", lowercase)
 #section-table("Capitals", "Capitals", ("ueb1", "eight-dot"), capitals,
   example => (output(example.example, code: true), sequence(example.ueb1, wrap: true)),
@@ -18,7 +18,6 @@
   inset: (x: 2pt, y: 0.2pt),
 )
 #character-section("Symbols", "Punctuation & symbols", symbols)
-#colbreak(weak: true)
 #digit-section("Digits · UEB 1", digit-ueb1)
 #digit-section("Digits · 8 dot", digit-eight)
 #chord-section("Navigation and Editing", chords)
