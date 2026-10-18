@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stateless Luna progress checks; visible interactive workers; deterministic leaf scheduling; Sol verification."""
+"""Stateless Luna progress checks; visible interactive workers and Sol verification; deterministic leaf scheduling."""
 import argparse
 import fcntl
 import json
@@ -50,6 +50,7 @@ If fixes are needed, record actionable feedback in the affected software leaf,
 reopen it ready, commit only your messages, and end with COORDINATOR_CONTINUE.
 If a user decision is required, record it and end with COORDINATOR_BLOCKED.
 Never mark physical acceptance passed. Your LAST LINE must be exactly one marker.
+Your pane is visible to the user; never try to quit pi yourself, the coordinator closes it.
 """
 
 
@@ -105,8 +106,11 @@ def pane_info(pane):
 
 
 def pane_tail(pane):
-    text = subprocess.check_output(["tmux", "capture-pane", "-p", "-t", pane],
-                                   text=True, stderr=subprocess.DEVNULL)
+    try:
+        text = subprocess.check_output(["tmux", "capture-pane", "-p", "-t", pane],
+                                       text=True, stderr=subprocess.DEVNULL)
+    except subprocess.SubprocessError:
+        return "pane gone"
     return " | ".join(line.strip() for line in text.splitlines() if line.strip())[-400:]
 
 
@@ -209,15 +213,61 @@ def start_leaf(args, snapshot):
 
 def run_pi(model, thinking, prompt, log_dir, label):
     command = ["pi", "--model", model, "--thinking", thinking,
-               "--print", "--no-session", "--no-extensions", "--no-skills", "--no-prompt-templates"]
-    command += ["--no-tools", "--no-context-files"] if label == "luna" else ["--tools", "read,bash"]
+               "--print", "--no-session", "--no-extensions", "--no-skills", "--no-prompt-templates",
+               "--no-tools", "--no-context-files"]
     result = subprocess.run(command + [prompt], cwd=ROOT, capture_output=True, text=True,
-                            timeout=180 if label == "luna" else 1800)
+                            timeout=180)
     log = log_dir / f"{time.time_ns()}-{label}.log"
     log.write_text(result.stdout + "\n--- stderr ---\n" + result.stderr)
     if result.returncode:
         raise RuntimeError(f"{label} exited {result.returncode}; see {log}")
     return result.stdout.strip()
+
+
+MARKERS = ("ALPHABET_VERIFIED", "COORDINATOR_CONTINUE", "COORDINATOR_BLOCKED")
+
+
+def sol_panes(pane):
+    output = subprocess.check_output([
+        "tmux", "list-panes", "-t", pane, "-F",
+        "#{pane_id}\t#{@braille_sol}"], text=True)
+    return [p for p, tag in (line.split("\t", 1) for line in output.splitlines()) if tag]
+
+
+def run_sol(args, prompt, log_dir):
+    """Run Sol verification in a visible interactive pi pane and return its verdict marker."""
+    for stale in sol_panes(args.pane):
+        subprocess.run(["tmux", "kill-pane", "-t", stale], check=True)
+        print(f"Closed stale Sol pane {stale}.", flush=True)
+    command = shlex.join(["pi", "--model", args.verify_model, "--thinking", "high",
+                          "--name", "alphabet-sol", prompt])
+    pane = subprocess.check_output(["tmux", "split-window", "-d", "-P", "-F", "#{pane_id}",
+                                    "-t", args.pane, "-c", str(ROOT), command], text=True).strip()
+    subprocess.run(["tmux", "set-option", "-p", "-t", pane, "remain-on-exit", "on"], check=True)
+    subprocess.run(["tmux", "set-option", "-p", "-t", pane, "@braille_sol", "1"], check=True)
+    wait_for_pane(pane, "alphabet-sol")
+    print(f"Watching Sol verification in {pane} ({args.verify_model}).", flush=True)
+    deadline, capture, marker = time.monotonic() + 1800, "", None
+    while time.monotonic() < deadline:
+        time.sleep(10)
+        try:
+            dead, _ = pane_info(pane)
+        except subprocess.SubprocessError:
+            dead = True
+        if dead:
+            raise RuntimeError(f"Sol pane {pane} died during verification: {pane_tail(pane)}")
+        capture = subprocess.check_output(
+            ["tmux", "capture-pane", "-p", "-t", pane, "-S", "-200"], text=True)
+        marker = next((m for m in MARKERS
+                       if m in [line.strip() for line in capture.splitlines()]), None)
+        if marker:
+            break
+    if marker is None:
+        raise RuntimeError(f"Sol pane {pane} produced no verdict within 1800s: {pane_tail(pane)}")
+    log = log_dir / f"{time.time_ns()}-sol.log"
+    log.write_text(capture)
+    print(f"Sol verdict {marker}; transcript saved to {log}.", flush=True)
+    return marker
 
 
 def check_once(args, log_dir):
@@ -260,9 +310,7 @@ def check_once(args, log_dir):
         if workers(args.pane) or not software_complete(task_snapshot()):
             print("Sol handoff deferred: implementation is still active or incomplete.", flush=True)
             return "wait"
-        report = run_pi(args.sol_model, "high", VERIFY + json.dumps(snapshot), log_dir, "sol")
-        print(report, flush=True)
-        marker = report.splitlines()[-1] if report else ""
+        marker = run_sol(args, VERIFY + json.dumps(snapshot), log_dir)
         if marker == "ALPHABET_VERIFIED" and software_complete(task_snapshot()):
             return "done"
         if marker == "COORDINATOR_BLOCKED":
@@ -283,8 +331,12 @@ def check_once(args, log_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--interval", type=float, default=600, help="seconds between Luna checks (default 600)")
-    parser.add_argument("--luna-model", default="openrouter/pareto-code")
-    parser.add_argument("--sol-model", default="openrouter/pareto-code")
+    parser.add_argument("--luna-model", default="openrouter/pareto-code",
+                        help="headless Luna check model")
+    parser.add_argument("--sol-model", default="openrouter/pareto-code",
+                        help="implementation worker model")
+    parser.add_argument("--verify-model", default="openrouter/openai/gpt-6.1-sol",
+                        help="visible interactive Sol verification model")
     parser.add_argument("--pane", default=os.environ.get("TMUX_PANE"), help="script pane in the target window")
     parser.add_argument("--once", action="store_true", help="perform one coordination check, then exit")
     args = parser.parse_args()
