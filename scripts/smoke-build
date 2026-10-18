@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Real pinned firmware builds; requires the existing build/baseline west workspace.
+# Optional arguments select targets; defaults include both halves, reset images,
+# and a test-only named-mode override. No hardware is flashed.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+ROOT="$PWD"
+WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
+QBF="${QBF:-$(cd ../qbf-paintbrushes/basic-zmk && pwd)}"
+TOUCAN="${TOUCAN:-$(cd ../zmk-keyboard-toucan && pwd)}"
+[ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
+if [ "$#" -eq 0 ]; then
+  set -- qbf-left qbf-right toucan-left toucan-right toucan-computer8 qbf-reset toucan-reset
+fi
+for target in "$@"; do
+  case "$target" in
+    qbf-left|qbf-right|toucan-left|toucan-right|toucan-computer8|qbf-reset|toucan-reset) ;;
+    *) echo "Unknown target: $target" >&2; exit 2 ;;
+  esac
+done
+mkdir -p "$WORKSPACE/logs"
+docker run --rm \
+  -v "$WORKSPACE:/work" -v "$ROOT:/work/zmk-braille-module:ro" \
+  -v "$QBF:/qbf:ro" -v "$TOUCAN:/toucan:ro" -w /work \
+  -e TARGETS="$*" zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+    # Add the local source as an ordinary west project, so these builds verify
+    # manifest-based module discovery, NOT a module ZMK_EXTRA_MODULES bypass.
+    # The generated manifest/config change is temporary; upstream pins stay put.
+    old_manifest=$(west config manifest.path)
+    trap '\''west config manifest.path "$old_manifest"'\'' EXIT
+    python3 - <<"PY"
+from pathlib import Path
+import yaml
+root = Path("/work/zmk-braille-module")
+manifest = yaml.safe_load((root / "west/west.yml").read_text())
+def module(path):
+    data = yaml.safe_load(Path(path).read_text())["manifest"]
+    return next(p for p in data["projects"] if p["name"] == "zmk-braille-module")
+project = module("/qbf/config/west.yml")
+assert project == module("/toucan/config/west.yml"), "Keyboard module pins differ"
+manifest["manifest"]["projects"].append(project)
+manifest["manifest"]["self"]["path"] = "smoke-manifest"
+Path("smoke-manifest").mkdir(exist_ok=True)
+Path("smoke-manifest/west.yml").write_text(yaml.safe_dump(manifest, sort_keys=False))
+PY
+    west config manifest.path smoke-manifest
+    west manifest --validate
+    west list zmk-braille-module | tee logs/smoke-discovery.log
+    test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+    west zephyr-export
+    for target in $TARGETS; do
+      args=()
+      case "$target" in
+        qbf-left) board=nice_nano_v2; shield=qbf_paintbrush_left; config=/qbf/config ;;
+        qbf-right) board=nice_nano_v2; shield=qbf_paintbrush_right; config=/qbf/config ;;
+        qbf-reset) board=nice_nano_v2; shield=settings_reset; config=/qbf/config ;;
+        toucan-left|toucan-computer8)
+          board=seeeduino_xiao_ble; shield="toucan_left rgbled_adapter nice_view_gem"; config=/toucan/config
+          args=(-S studio-rpc-usb-uart)
+          ;;
+        toucan-right) board=seeeduino_xiao_ble; shield="toucan_right rgbled_adapter"; config=/toucan/config ;;
+        toucan-reset) board=seeeduino_xiao_ble; shield=settings_reset; config=/toucan/config ;;
+      esac
+      cmake_args=(-DSHIELD="$shield" -DZMK_CONFIG="$config")
+      # Toucan itself is a keyboard module outside this development manifest.
+      if [[ "$target" == toucan-* ]]; then cmake_args+=(-DZMK_EXTRA_MODULES=/toucan); fi
+      if [ "$target" = toucan-computer8 ]; then
+        cmake_args+=(-DEXTRA_DTC_OVERLAY_FILE=/work/zmk-braille-module/tests/firmware/computer8.overlay)
+      fi
+      # Retain failures and exact commands in per-target logs, including warnings.
+      set +e
+      (set -x; west build -p always -d "build/smoke-$target" -s zmk/app \
+        -b "$board" "${args[@]}" -- "${cmake_args[@]}") 2>&1 | tee "logs/smoke-$target.log"
+      result=${PIPESTATUS[0]}
+      set -e
+      echo "$result" > "logs/smoke-$target.exit"
+      [ "$result" -eq 0 ] || exit "$result"
+    done
+  '
+python3 tests/firmware/check_smoke.py --workspace "$WORKSPACE" "$@"

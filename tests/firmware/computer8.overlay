@@ -1,0 +1,4 @@
+/* Build-boundary probe only: no computer8 table/runtime mode exists yet. */
+&braille {
+    default-mode = "computer8";
+};

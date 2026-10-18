@@ -47,6 +47,68 @@ list and pin `revision` to the reviewed module commit:
   revision: <reviewed-module-commit>
 ```
 
+## Both-keyboard smoke builds
+
+Both sibling manifests now pin the published module revision containing the
+production bindings. QBF enables the module only on its left central and puts
+Perkins Braille on BASE. Toucan keeps QWERTY/NAV/SYM/ADJ/TAP, adds BRL at index 5,
+and replaces the duplicate left SYM thumb with `&bmode 5`; BRL's left thumb or
+top-right key returns with `&to 0`. Its conventional Space stays conventional on
+BASE and becomes `&bspc` only on BRL. Both use the schema's `ueb1` default.
+
+Physical `f d s` = dots 1 2 3; `j k l` = 4 5 6; `a` = 7; `;` = 8.
+QBF uses the key under `j` for Braille space and updates its hand-maintained OLED
+legends to match. Toucan uses its ordinary Space position for Braille space.
+**These are compile/link configurations, not working input yet:** notably
+`bmode` cannot enter BRL until the later mode-key implementation.
+
+Prepare the shared workspace once, if it is not already present:
+
+```sh
+mkdir -p build/baseline/manifest
+cp west/west.yml build/baseline/manifest/west.yml
+docker run --rm -v "$PWD/build/baseline:/work" -w /work \
+  zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+    west init -l manifest
+    west update --narrow --fetch-opt=--depth=1
+    west zephyr-export
+  '
+```
+
+With sibling checkouts at `../qbf-paintbrushes` and `../zmk-keyboard-toucan`:
+
+```sh
+./scripts/smoke-build
+# Or select targets for a focused rerun:
+./scripts/smoke-build qbf-left toucan-left toucan-computer8
+# Recheck existing generated artifacts without rebuilding:
+python3 tests/firmware/check_smoke.py --workspace build/baseline \
+  qbf-left qbf-right toucan-left toucan-right toucan-computer8 qbf-reset toucan-reset
+```
+
+The script reuses the workspace and Docker 3.5, temporarily selects a generated
+manifest that adds the keyboards' pinned module project, and mounts **this local
+source checkout** at that project's west path. This intentionally substitutes
+local work for the remote module pin during development. West discovers the
+module normally (no Braille `ZMK_EXTRA_MODULES` injection); the Toucan keyboard
+itself still uses `ZMK_EXTRA_MODULES=/toucan`. The prior workspace manifest
+selection is restored on exit. Do not run concurrent west/config operations in
+this workspace while smoke builds are running. Source dependencies are not
+updated or patched; a new workspace should use the preparation command above.
+`WORKSPACE`, `QBF` (the `basic-zmk` directory), and `TOUCAN` override paths.
+
+Default targets are both halves, both settings-reset images, and a second
+Toucan-central build with `tests/firmware/computer8.overlay`. That override checks
+only the configured named-mode boundary; no `computer8` table/runtime is claimed.
+Assertions inspect generated keymaps/default names, central-only feature/source
+gating, all four linked behavior devices, retained displays/Studio/pointing,
+and nonempty UF2s. Logs/exit codes are `build/baseline/logs/smoke-*`; artifacts
+are `build/baseline/build/smoke-<target>/zephyr/zmk.uf2`. Existing sibling CI
+workflows use their manifests to fetch the **published pinned** module instead
+of the local substitution, including both halves and reset images. Publish a
+new module commit before updating/pushing either dependent keyboard pin.
+No hardware is flashed by these commands.
+
 ## Devicetree interface
 
 Include the module's default nodes explicitly in your central keymap:
@@ -115,6 +177,8 @@ PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig
 python3 -m venv build/bindings/venv
 build/bindings/venv/bin/pip install PyYAML==6.0.3
 build/bindings/venv/bin/python tests/host/test_devicetree.py
+# Parse both actual sibling keymaps; check layouts, return paths, pins/legends:
+build/bindings/venv/bin/python tests/host/test_keyboards.py
 ```
 
 These check enabled/disabled source selection, optional Grade 2 isolation,
@@ -126,8 +190,8 @@ the host compiler (`CONFIG_ARCH_POSIX`); they test valid dots, rejected boundary
 values, cell schemas, custom devices, extensible names, and the `ueb1` default.
 Set `ZEPHYR_BASE` and `ZMK_APP` to use a different pinned workspace. They do not
 run a Zephyr kernel. `tests/firmware/bindings.overlay` is a Paintbrush-central
-compile/link fixture, not a usable keymap or a replacement for the later
-both-keyboard smoke/CI matrix. The existing `tests/braille/*.yaml` files are
+compile/link fixture, not a usable keymap or a replacement for the actual
+both-keyboard smoke builds above. The existing `tests/braille/*.yaml` files are
 future conformance data, not an executable engine test suite yet.
 
 See [the implementation task](tasks/09-implement-the-zmk-braille-input-module/)
