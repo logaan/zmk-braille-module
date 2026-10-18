@@ -1,7 +1,6 @@
 .DS_Store
 build/
 *.pdf
-!references/iceb/rules-of-unified-english-braille-2024.pdf
 .clj-kondo/
 .lsp/
 .nrepl-port
