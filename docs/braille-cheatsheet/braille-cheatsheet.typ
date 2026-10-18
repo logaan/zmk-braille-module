@@ -1,24 +1,27 @@
-// Build and validate with: python3 docs/braille-cheatsheet/build.py
-#let source = json("source-content.json")
+// Build: typst compile docs/braille-cheatsheet/braille-cheatsheet.typ
+// This file owns its data, transformations, templates, and validation.
+// Sources: UEB rules, 3rd ed. (2024); liblouis en-us-comp8;
+// project mappings and Mac VoiceOver factory chords.
+
 #let ink = rgb("#172e37")
 #let muted = rgb("#4f6269")
 #let teal = rgb("#006b68")
 #let rule = rgb("#d6e1e3")
 #let wash = rgb("#f0f5f5")
 #let mono = "Atkinson Hyperlegible Mono"
+#let page-margins = (left: 11mm, right: 11mm, top: 10mm, bottom: 13mm)
 
 #set document(
-  title: "Braille input — two-page A4 quick reference",
+  title: "Braille input — A4 quick reference",
   author: "Braille module",
-  description: "UEB 1 and 8 dot character mappings, UEB 2 contractions, and factory chords.",
+  description: "UEB 1 and 8 dot characters, capitals, keyboard chords, and UEB 2 contractions.",
 )
 #set page(
-  paper: "a4",
-  margin: (left: 11mm, right: 11mm, top: 10mm, bottom: 13mm),
-  header: none,
-  footer: none,
-  numbering: none,
+  paper: "a4", columns: 3,
+  margin: page-margins,
+  header: none, footer: none, numbering: none,
 )
+#set columns(gutter: 8pt)
 #set text(
   font: "Atkinson Hyperlegible", size: 9.4pt, fill: ink,
   top-edge: "ascender", bottom-edge: "descender", lang: "en",
@@ -26,11 +29,197 @@
 #set par(leading: 0pt, spacing: 0pt)
 #set heading(numbering: none)
 #show heading: set block(above: 0pt, below: 0pt)
+#show heading.where(level: 1): set text(size: 13.5pt, weight: "bold")
 
-#let find(group, mode) = source.lookups.find(row => row.group == group and row.modes.contains(mode)).entries
-#let register(group, entries, modes) = [#metadata((group: group, entries: entries, modes: modes)) <reference-lookup>]
+// Character data: (print, UEB 1, 8 dot). Capitals are generated, not listed A–Z.
+#let alphabet = "abcdefghijklmnopqrstuvwxyz".clusters().zip(
+  "⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠅⠇⠍⠝⠕⠏⠟⠗⠎⠞⠥⠧⠺⠭⠽⠵".clusters(),
+).map(((letter, cell)) => (letter, cell, cell))
+#let lowercase = alphabet + ((" ", " ", " "),)
+#let numeral-bases = "⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊".clusters()
+#let numeral-eight = "⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔".clusters()
+#let digits = range(10).map(i => (str(i), "⠼" + numeral-bases.at(i), numeral-eight.at(i)))
+#let symbols = (
+  ("!", "⠖", "⠮"),
+  ("\"", "⠠⠶", "⠐"),
+  ("#", "⠸⠹", "⠼"),
+  ("$", "⠈⠎", "⠫"),
+  ("%", "⠨⠴", "⠩"),
+  ("&", "⠈⠯", "⠯"),
+  ("'", "⠄", "⠄"),
+  ("(", "⠐⠣", "⠷"),
+  (")", "⠐⠜", "⠾"),
+  ("*", "⠐⠔", "⠡"),
+  ("+", "⠐⠖", "⠬"),
+  (",", "⠂", "⠠"),
+  ("-", "⠤", "⠤"),
+  (".", "⠲", "⠨"),
+  ("/", "⠸⠌", "⠌"),
+  (":", "⠒", "⠱"),
+  (";", "⠆", "⠰"),
+  ("<", "⠈⠣", "⠣"),
+  ("=", "⠐⠶", "⠿"),
+  (">", "⠈⠜", "⠜"),
+  ("?", "⠰⠦", "⠹"),
+  ("@", "⠈⠁", "⡈"),
+  ("[", "⠨⠣", "⡪"),
+  ("\\", "⠸⠡", "⡳"),
+  ("]", "⠨⠜", "⡻"),
+  ("^", "⠈⠢", "⡘"),
+  ("_", "⠨⠤", "⠸"),
+  ("`", "⠨⠡", "⠈"),
+  ("{", "⠸⠣", "⠪"),
+  ("|", "⠸⠳", "⠳"),
+  ("}", "⠸⠜", "⠻"),
+  ("~", "⠈⠔", "⠘"),
+)
+#let characters = lowercase + digits + symbols
+#let eight-map = characters.fold((:), (map, entry) => {
+  map.insert(entry.at(0), entry.at(2))
+  map
+})
+#let eight-dot-word(word) = word.clusters().map(character => {
+  let code = character.to-unicode()
+  if 65 <= code and code <= 90 {
+    str.from-unicode(eight-map.at(str.from-unicode(code + 32)).to-unicode() + 0x40)
+  } else {
+    eight-map.at(character)
+  }
+}).join()
+#let capitals = (
+  (scope: "Letter prefix", indicator: "⠠", example: "A", ueb1: "⠠⠁"),
+  (scope: "Word prefix", indicator: "⠠⠠", example: "ABC", ueb1: "⠠⠠⠁⠃⠉"),
+  (scope: "End capitals", indicator: "⠠⠄", example: "ABc", ueb1: "⠠⠠⠁⠃⠠⠄⠉"),
+  (scope: "Passage prefix · 3+ words", indicator: "⠠⠠⠠", example: "A BIG CAT", ueb1: "⠠⠠⠠⠁ ⠃⠊⠛ ⠉⠁⠞⠠⠄"),
+).map(example => example + (eightdot: eight-dot-word(example.example)))
 
-// Vector cells use the same dot geometry throughout the document.
+// Chord data: (host key, simultaneously pressed braille keys).
+#let navigation = (
+  ("Space", ("space",)),
+  ("Left", ("space", 1)),
+  ("Right", ("space", 4)),
+  ("Up", ("space", 3)),
+  ("Down", ("space", 6)),
+  ("Home", ("space", 1, 2, 3)),
+  ("End", ("space", 4, 5, 6)),
+  ("Page Up", ("space", 3, 4, 5, 6)),
+  ("Page Down", ("space", 1, 4, 5, 6)),
+  ("Tab", ("space", 2, 3, 4, 5)),
+  ("Return", ("space", 1, 5)),
+  ("Escape", ("space", 1, 2)),
+  ("Delete", ("space", 1, 4, 5)),
+  ("Delete", (7,)),
+  ("Delete", ("space", 7)),
+  ("Return", (8,)),
+  ("Return", ("space", 8)),
+)
+#let modifiers = (
+  ("Shift", ("space", 4, 7)),
+  ("Control", ("space", 3, 7)),
+  ("Option", ("space", 2, 7)),
+  ("Command", ("space", 1, 7)),
+  ("Globe", ("space", 5, 7)),
+)
+#let dot-mask(keys) = keys.filter(key => type(key) == int).fold(
+  0, (mask, dot) => mask + calc.pow(2, dot - 1),
+)
+
+// UEB 2 data: each section is one flowing table, never a fixed-size chunk.
+#let ueb2 = (
+  (title: "Alphabetic wordsigns", group: "Alphabetic wordsigns · whole words", entries: (
+    ("as", "⠵"), ("but", "⠃"), ("can", "⠉"), ("do", "⠙"),
+    ("every", "⠑"), ("from", "⠋"), ("go", "⠛"), ("have", "⠓"),
+    ("it", "⠭"), ("just", "⠚"), ("knowledge", "⠅"), ("like", "⠇"),
+    ("more", "⠍"), ("not", "⠝"), ("people", "⠏"), ("quite", "⠟"),
+    ("rather", "⠗"), ("so", "⠎"), ("that", "⠞"), ("us", "⠥"),
+    ("very", "⠧"), ("will", "⠺"), ("you", "⠽"),
+  )),
+  (title: "Strong wordsigns", group: "Strong wordsigns · whole words", entries: (
+    ("child", "⠡"), ("out", "⠳"), ("shall", "⠩"),
+    ("still", "⠌"), ("this", "⠹"), ("which", "⠱"),
+  )),
+  (title: "Lower wordsigns", group: "Lower wordsigns · whole words", entries: (
+    ("be", "⠆"), ("enough", "⠢"), ("his", "⠦"),
+    ("in", "⠔"), ("was", "⠴"), ("were", "⠶"),
+  )),
+  (title: "Capitalised contractions", group: "Capitalisation", entries: (
+    ("Will", "⠠⠺"), ("CHILD", "⠠⠠⠡"), ("LITTLE", "⠠⠠⠇⠇"),
+  )),
+  (title: "Strong contractions", group: "Strong contractions", entries: (
+    ("and", "⠯"), ("for", "⠿"), ("of", "⠷"), ("the", "⠮"), ("with", "⠾"),
+  )),
+  (title: "Strong groupsigns", group: "Strong groupsigns · inside words", entries: (
+    ("ar", "⠜"), ("ch", "⠡"), ("ed", "⠫"), ("er", "⠻"),
+    ("gh", "⠣"), ("ing", "⠬"), ("ou", "⠳"), ("ow", "⠪"),
+    ("sh", "⠩"), ("st", "⠌"), ("th", "⠹"), ("wh", "⠱"),
+  )),
+  (title: "Lower groupsigns · start", group: "Lower groupsigns · word start", entries: (
+    ("be", "⠆"), ("con", "⠒"), ("dis", "⠲"),
+  )),
+  (title: "Lower groupsigns · middle", group: "Lower groupsigns · word middle", entries: (
+    ("bb", "⠆"), ("cc", "⠒"), ("ea", "⠂"), ("ff", "⠖"), ("gg", "⠶"),
+  )),
+  (title: "Lower groupsigns · en / in", group: "Lower groupsigns · en / in", entries: (
+    ("en", "⠢"), ("in", "⠔"),
+  )),
+  (title: "Grade 1 indicators", group: "Grade 1 indicators · literal letters", entries: (
+    ("b", "⠰⠃"), ("cd", "⠰⠰⠉⠙"), ("b c d", "⠰⠰⠰⠃ ⠉ ⠙⠰⠄"),
+  )),
+  (title: "Initial-letter contractions", group: "Initial-letter contractions", entries: (
+    ("cannot", "⠸⠉"), ("character", "⠐⠡"), ("day", "⠐⠙"), ("ever", "⠐⠑"),
+    ("father", "⠐⠋"), ("had", "⠸⠓"), ("here", "⠐⠓"), ("know", "⠐⠅"),
+    ("lord", "⠐⠇"), ("many", "⠸⠍"), ("mother", "⠐⠍"), ("name", "⠐⠝"),
+    ("one", "⠐⠕"), ("ought", "⠐⠳"), ("part", "⠐⠏"), ("question", "⠐⠟"),
+    ("right", "⠐⠗"), ("some", "⠐⠎"), ("spirit", "⠸⠎"), ("their", "⠸⠮"),
+    ("there", "⠐⠮"), ("these", "⠘⠮"), ("those", "⠘⠹"), ("through", "⠐⠹"),
+    ("time", "⠐⠞"), ("under", "⠐⠥"), ("upon", "⠘⠥"), ("where", "⠐⠱"),
+    ("whose", "⠘⠱"), ("word", "⠘⠺"), ("work", "⠐⠺"), ("world", "⠸⠺"),
+    ("young", "⠐⠽"),
+  )),
+  (title: "Final-letter groupsigns", group: "Final-letter groupsigns · after a letter", entries: (
+    ("ance", "⠨⠑"), ("ence", "⠰⠑"), ("ful", "⠰⠇"), ("ity", "⠰⠽"),
+    ("less", "⠨⠎"), ("ment", "⠰⠞"), ("ness", "⠰⠎"), ("ong", "⠰⠛"),
+    ("ound", "⠨⠙"), ("ount", "⠨⠞"), ("sion", "⠨⠝"), ("tion", "⠰⠝"),
+  )),
+  (title: "Shortforms", continuation: "ShortForms Cont'd", group: "Shortforms · whole words", entries: (
+    ("about", "⠁⠃"), ("above", "⠁⠃⠧"), ("according", "⠁⠉"), ("across", "⠁⠉⠗"),
+    ("after", "⠁⠋"), ("afternoon", "⠁⠋⠝"), ("afterward", "⠁⠋⠺"), ("again", "⠁⠛"),
+    ("against", "⠁⠛⠌"), ("almost", "⠁⠇⠍"), ("already", "⠁⠇⠗"), ("also", "⠁⠇"),
+    ("although", "⠁⠇⠹"), ("altogether", "⠁⠇⠞"), ("always", "⠁⠇⠺"), ("because", "⠆⠉"),
+    ("before", "⠆⠋"), ("behind", "⠆⠓"), ("below", "⠆⠇"), ("beneath", "⠆⠝"),
+    ("beside", "⠆⠎"), ("between", "⠆⠞"), ("beyond", "⠆⠽"), ("blind", "⠃⠇"),
+    ("braille", "⠃⠗⠇"), ("children", "⠡⠝"), ("conceive", "⠒⠉⠧"), ("conceiving", "⠒⠉⠧⠛"),
+    ("could", "⠉⠙"), ("deceive", "⠙⠉⠧"), ("deceiving", "⠙⠉⠧⠛"), ("declare", "⠙⠉⠇"),
+    ("declaring", "⠙⠉⠇⠛"), ("either", "⠑⠊"), ("first", "⠋⠌"), ("friend", "⠋⠗"),
+    ("good", "⠛⠙"), ("great", "⠛⠗⠞"), ("herself", "⠓⠻⠋"), ("him", "⠓⠍"),
+    ("himself", "⠓⠍⠋"), ("immediate", "⠊⠍⠍"), ("its", "⠭⠎"), ("itself", "⠭⠋"),
+    ("letter", "⠇⠗"), ("little", "⠇⠇"), ("much", "⠍⠡"), ("must", "⠍⠌"),
+    ("myself", "⠍⠽⠋"), ("necessary", "⠝⠑⠉"), ("neither", "⠝⠑⠊"), ("oneself", "⠐⠕⠋"),
+    ("ourselves", "⠳⠗⠧⠎"), ("paid", "⠏⠙"), ("perceive", "⠏⠻⠉⠧"), ("perceiving", "⠏⠻⠉⠧⠛"),
+    ("perhaps", "⠏⠻⠓"), ("quick", "⠟⠅"), ("receive", "⠗⠉⠧"), ("receiving", "⠗⠉⠧⠛"),
+    ("rejoice", "⠗⠚⠉"), ("rejoicing", "⠗⠚⠉⠛"), ("said", "⠎⠙"), ("should", "⠩⠙"),
+    ("such", "⠎⠡"), ("themselves", "⠮⠍⠧⠎"), ("thyself", "⠹⠽⠋"), ("today", "⠞⠙"),
+    ("together", "⠞⠛⠗"), ("tomorrow", "⠞⠍"), ("tonight", "⠞⠝"), ("would", "⠺⠙"),
+    ("your", "⠽⠗"), ("yourself", "⠽⠗⠋"), ("yourselves", "⠽⠗⠧⠎"),
+  )),
+)
+
+// Validate the data at compilation time, without a separate build program.
+#assert(alphabet.len() == 26 and digits.len() == 10 and symbols.len() == 32)
+#assert(characters.map(entry => entry.at(0)).sorted() == range(32, 127)
+  .filter(code => not (65 <= code and code <= 90)).map(str.from-unicode))
+#assert(symbols.find(entry => entry.at(0) == "\"").at(1) == "⠠⠶")
+#assert(symbols.find(entry => entry.at(0) == "'").at(1) == "⠄")
+#assert(ueb2.filter(section => not (
+  "Capitalisation", "Grade 1 indicators · literal letters",
+).contains(section.group)).map(section => section.entries.len()).sum() == 182)
+#assert(navigation.len() == 17 and modifiers.len() == 5)
+#assert(capitals.map(example => example.eightdot) == (
+  "⡁", "⡁⡃⡉", "⡁⡃⠉", "⡁ ⡃⡊⡛ ⡉⡁⡞",
+))
+#assert(dot-mask((2, 3, 4, 5)) == 30)
+
+// The same vector cells are used for text, indicators, and command chords.
 #let braille(cell, eight: false) = {
   let mask = cell.to-unicode() - 0x2800
   let order = if eight { (1, 2, 3, 7, 4, 5, 6, 8) } else { (1, 2, 3, 4, 5, 6) }
@@ -54,204 +243,219 @@
   stroke: 0.4pt + rgb("#aebfc4"), fill: white,
   text(size: 7pt, weight: "bold", fill: muted)[Space],
 )
-#let sequence(cells, eight: false) = box(
-  grid(
-    columns: (auto,) * cells.clusters().len(), column-gutter: 3pt,
-    align: horizon,
-    ..cells.clusters().map(cell => if cell == " " { space-key } else { braille(cell, eight: eight) }),
-  )
-)
+#let sequence(cells, eight: false, wrap: false) = {
+  let tokens = cells.clusters().map(cell => if cell == " " { space-key } else { braille(cell, eight: eight) })
+  let line(tokens) = box(grid(columns: (auto,) * tokens.len(), column-gutter: 3pt, align: horizon, ..tokens))
+  if wrap {
+    layout(size => {
+      let lines = ()
+      let current = ()
+      let width = 0pt
+      for token in tokens {
+        let token-width = measure(token).width
+        assert(token-width <= size.width)
+        let gap = if current.len() == 0 { 0pt } else { 3pt }
+        if width + gap + token-width > size.width {
+          lines.push(line(current))
+          current = ()
+          width = 0pt
+          gap = 0pt
+        }
+        current.push(token)
+        width += gap + token-width
+      }
+      if current.len() > 0 { lines.push(line(current)) }
+      grid(columns: (1fr,), row-gutter: 2pt, align: right, ..lines)
+    })
+  } else {
+    line(tokens)
+  }
+}
 #let output(label, code: false, size: 9.4pt) = text(
-  font: if code { mono } else { "Atkinson Hyperlegible" },
-  size: size, weight: if code { "medium" } else { "regular" },
+  font: if code { mono } else { "Atkinson Hyperlegible" }, size: size,
+  weight: if code { "medium" } else { "regular" },
   if label == " " { "␣" } else { label },
 )
-
-#let pairs(entries, columns: 2, eight: false, code: false, row: 13.8pt, size: 9.4pt) = context {
-  let label-width = calc.max(..entries.map(pair => measure(output(pair.at(0), code: code, size: size)).width))
-  let count = calc.ceil(entries.len() / columns) * columns
-  grid(
-    columns: (1fr,) * columns,
-    ..range(count).map(i => {
-      let row-number = calc.floor(i / columns)
-      block(
-        width: 100%, height: row,
-        inset: (x: 3pt, y: 0pt),
-        fill: if calc.even(row-number) { wash } else { white },
-        stroke: (bottom: 0.3pt + rule),
-      )[
-        #if i < entries.len() {
-          let pair = entries.at(i)
-          grid(
-            columns: (label-width, 1fr), column-gutter: 4pt,
-            align: (left + horizon, left + horizon),
-            output(pair.at(0), code: code, size: size),
-            sequence(pair.at(1), eight: eight),
-          )
-        }
-      ]
-    }),
-  )
-}
-#let caption(title) = {
-  v(3pt)
-  heading(level: 2, text(size: 9.2pt, weight: "bold", fill: teal)[#title])
-  v(2pt)
-}
-#let lookup(title, group, mode, columns: 2, code: false, row: 13.8pt, size: 9.4pt) = block(breakable: false)[
-  #let entries = find(group, mode)
-  #register(group, entries, (mode,))
-  #caption(title)
-  #pairs(entries, columns: columns, code: code, row: row, size: size)
-]
-#let page-title(title) = {
-  heading(level: 1, text(size: 20pt, weight: "bold", tracking: -0.3pt)[#title])
-  v(8pt)
-}
-
-#let comparison-rows(group) = {
-  let ueb = find(group, "ueb1")
-  let eight = find(group, "eight-dot")
-  ueb.map(pair => (
-    symbol: pair.at(0),
-    ueb1: pair.at(1),
-    eightdot: eight.find(entry => entry.at(0) == pair.at(0)).at(1),
-  ))
-}
-#let comparison-table(title, entries, group: none, rows: 20, columns: (1fr, 1.15fr, 1fr)) = block(breakable: false)[
-  #metadata((title: title, group: group, capacity: rows, entries: entries)) <reference-comparison>
-  #block(height: 14pt)[
-    #heading(level: 2, text(size: if group == none { 7.3pt } else { 9.2pt }, weight: "bold", fill: teal)[#title])
-  ]
-  #table(
-    columns: columns,
-    rows: (17pt,) + (17pt,) * rows,
-    inset: (x: 2pt, y: 0pt),
-    align: center + horizon,
-    stroke: 0.3pt + rule,
-    fill: (column, row) => if row == 0 { teal } else if calc.odd(row) { wash } else { white },
-    table.header(
-      ..("Symbol", "UEB 1", "8 dot").map(label => text(size: if group == none { 6.7pt } else { 8pt }, weight: "bold", fill: white)[#label]),
-    ),
-    ..range(rows).map(i => if i < entries.len() {
-      let entry = entries.at(i)
-      (
-        output(entry.symbol, code: true, size: 8.7pt),
-        sequence(entry.ueb1),
-        sequence(entry.eightdot, eight: true),
-      )
-    } else { ([], [], []) }).flatten(),
-  )
-]
-
-#let comparison-lookup(title, group) = block(breakable: false)[
-  #let entries = comparison-rows(group)
-  #for lookup in source.lookups.filter(lookup => lookup.group == group and (
-    lookup.modes.contains("ueb1") or lookup.modes.contains("eight-dot")
-  )) {
-    register(lookup.group, lookup.entries, lookup.modes)
-  }
-  #comparison-table(title, entries, group: group, rows: entries.len(), columns: (70pt, 1fr, 1fr))
-]
-
-#let command-labels = (
-  "literal-space": "Space", "previous-item-left": "Left", "next-item-right": "Right",
-  "up": "Up", "down": "Down", "first-item-home": "Home", "last-item-end": "End",
-  "page-up": "Page Up", "page-down": "Page Down", "tab": "Tab", "return": "Return",
-  "escape": "Escape", "delete": "Delete", "delete-dot7": "Delete", "delete-space7": "Delete",
-  "return-dot8": "Return", "return-space8": "Return", "shift": "Shift", "control": "Control",
-  "option": "Option", "command": "Command", "globe": "Globe",
-)
 #let command-keys(keys) = {
-  let numbers = keys.filter(key => type(key) == int)
-  let mask = numbers.fold(0, (mask, dot) => mask + calc.pow(2, dot - 1))
+  let mask = dot-mask(keys)
   let cells = if keys.contains("space") { (space-key,) } else { () }
-  if numbers.len() > 0 {
+  if mask > 0 {
     if cells.len() > 0 { cells.push(text(size: 8pt, fill: muted)[+]) }
     cells.push(braille(str.from-unicode(0x2800 + mask), eight: true))
   }
   [#metadata((keys: keys, dots: mask)) <reference-chord>]
   box(grid(columns: (auto,) * cells.len(), column-gutter: 3pt, align: horizon, ..cells))
 }
-#let command-table(index, columns: 4, row: 20pt) = {
-  let data = source.commands.at(index)
-  [#metadata(data) <reference-commands>]
-  let count = calc.ceil(data.commands.len() / columns) * columns
-  grid(columns: (1fr,) * columns, ..range(count).map(i => block(
-    width: 100%, height: row, inset: (x: 4pt, y: 1pt),
-    fill: if calc.even(calc.floor(i / columns)) { wash } else { white },
-    stroke: (bottom: 0.3pt + rule, right: if calc.rem(i, columns) != columns - 1 { 0.4pt + rule } else { none }),
-  )[
-    #if i < data.commands.len() {
-      let command = data.commands.at(i)
-      grid(columns: (auto, 1fr), column-gutter: 3pt, align: (left + horizon, right + horizon),
-        text(size: 9pt)[#command-labels.at(command.name)],
-        command-keys(command.inputs.first()),
-      )
+
+// A repeatable table header is also the section heading. Its local counter
+// distinguishes the original heading from every column/page continuation.
+// Fixed-height heading rows keep the initial and continued layouts identical.
+#let section-table(title, group, modes, entries, render,
+  columns: 2, headers: (), intro: none, row: 12.5pt, continuation: auto,
+  inset: (x: 2pt, y: 0.5pt),
+) = {
+  let count = columns
+  let parts = counter("section-parts:" + group)
+  let continued = if continuation == auto { title + " Cont'd" } else { continuation }
+  let head = (table.cell(
+    colspan: count, fill: white, stroke: none, inset: 0pt, align: left + horizon,
+    context {
+      parts.step()
+      let part = parts.get().first() + 1
+      let displayed = if part == 1 { title } else { continued }
+      [#metadata((section: title, part: part, heading: displayed)) <reference-fragment>]
+      heading(level: 2, text(size: 9.2pt, weight: "bold", fill: teal, displayed))
+    },
+  ),)
+  let heights = (18pt,)
+  if intro != none {
+    head.push(table.cell(colspan: count, fill: white, stroke: none, inset: (x: 0pt, y: 2pt), intro))
+    heights.push(auto)
+  }
+  if headers.len() > 0 {
+    head += headers.map(label => table.cell(
+      fill: teal, text(size: 7.3pt, weight: "bold", fill: white, label),
+    ))
+    heights.push(14pt)
+  }
+  let header-rows = heights.len()
+  [#metadata((title: title, continuation: continued, group: group, modes: modes, entries: entries)) <reference-section>]
+  table(
+    columns: (1fr,) * count, rows: heights + (row,) * entries.len() + (0pt,),
+    inset: inset,
+    align: (x, y) => if count == 3 { center + horizon }
+      else if x == 0 { left + horizon } else { right + horizon },
+    stroke: (bottom: 0.3pt + rule),
+    fill: (x, y) => if y >= header-rows and calc.even(y - header-rows) { wash } else { white },
+    table.header(..head),
+    ..entries.enumerate().map(((index, entry)) => {
+      let cells = render(entry)
+      assert(cells.len() == count)
+      let trace = [#metadata((section: title, index: index, entry: entry)) <reference-row>]
+      (table.cell(breakable: false, trace + cells.first()),) + cells.slice(1).map(body => table.cell(breakable: false, body))
+    }).flatten(),
+    // Repeat an explicit rule at every fragment's bottom, including the final
+    // fragment. The footer itself is zero-height and contains no printed text.
+    table.footer(
+      table.hline(stroke: 0.55pt + rgb("#aebfc4")),
+      table.cell(colspan: count, inset: 0pt, stroke: none, context [
+        #metadata((section: title)) <reference-table-bottom>
+      ]),
+    ),
+  )
+  v(4pt)
+}
+#let character-section(title, group, entries) = section-table(
+  title, group, ("ueb1", "eight-dot"), entries,
+  entry => (output(entry.at(0), code: true), sequence(entry.at(1)), sequence(entry.at(2), eight: true)),
+  columns: 3, headers: ("Symbol", "UEB 1", "8 dot"), row: 15pt,
+)
+#let word-section(section) = section-table(
+  section.title, section.group, ("ueb2",), section.entries,
+  entry => (output(entry.at(0)), sequence(entry.at(1), wrap: true)),
+  continuation: section.at("continuation", default: auto), row: auto,
+  inset: (x: 2pt, y: 0.4pt),
+)
+#let chord-section(title, entries) = section-table(
+  title, title, ("ueb1", "eight-dot"), entries,
+  entry => (output(entry.at(0)), command-keys(entry.at(1))), row: 16pt,
+)
+
+// Long passage examples keep their cells at full size: stack only the mode
+// label when its sequence would otherwise exceed the page-column width.
+#let mode-example(label, cells, eight: false, available: 100%) = {
+  let name = text(size: 7.3pt, fill: muted, label)
+  let dots = sequence(cells, eight: eight)
+  assert(measure(dots).width <= available, message: "A braille sequence exceeds its page column")
+  if measure(name).width + 3pt + measure(dots).width <= available {
+    box(grid(columns: (auto, auto), column-gutter: 3pt, align: horizon, name, dots))
+  } else {
+    name
+    v(1pt)
+    dots
+  }
+}
+#let capital-example(example) = layout(size => {
+  let six = mode-example("UEB 1", example.ueb1, available: size.width)
+  let eight = mode-example("8 dot", example.eightdot, eight: true, available: size.width)
+  [
+    #grid(columns: (1fr, auto), align: horizon, column-gutter: 3pt,
+      text(size: 8.2pt, weight: "bold", example.scope), sequence(example.indicator),
+    )
+    #v(2pt)
+    #output(example.example, code: true, size: 8.7pt)
+    #v(2pt)
+    #if measure(six).width + 8pt + measure(eight).width <= size.width {
+      grid(columns: (auto, auto), column-gutter: 8pt, align: horizon, six, eight)
+    } else {
+      six
+      v(2pt)
+      eight
     }
-  ]))
+    #v(3pt)
+  ]
+})
+
+// All content follows the page's columns. Sections grow naturally; there are
+// no fixed 20-row chunks, side-by-side section grids, or manual column breaks.
+#heading(level: 1)[Characters & keyboard chords]
+#v(5pt)
+#character-section("Lowercase", "Lowercase letters & Braille Space", lowercase)
+#character-section("Digits", "Digits", digits)
+#character-section("Symbols", "Punctuation & symbols", symbols)
+#section-table("Capitals", "Capitals", ("ueb1", "eight-dot"), capitals,
+  example => (capital-example(example),), columns: 1, row: auto,
+  intro: text(size: 8.2pt)[8 dot: add dot 7 to each uppercase letter.],
+)
+#chord-section("Navigation and Editing", navigation)
+#chord-section("Sticky modifiers", modifiers)
+#heading(level: 1)[Contractions & shortforms · UEB 2]
+#v(5pt)
+#for section in ueb2 { word-section(section) }
+
+// Layout checks run in Typst too. Every data row must be rendered exactly
+// once, and every continued heading must start at the top of its column.
+#context {
+  let sections = query(<reference-section>)
+  let rows = query(<reference-row>)
+  if rows.len() > 0 {
+    let expected = characters.len() + capitals.len() + navigation.len() + modifiers.len() + ueb2.map(section => section.entries.len()).sum()
+    assert(rows.len() == expected, message: "Missing or duplicated reference rows")
+    assert(sections.len() == ueb2.len() + 6, message: "Missing or duplicated sections")
+    for section in sections {
+      let data = section.value
+      let actual = rows.filter(row => row.value.section == data.title)
+      assert(actual.map(row => row.value.index) == range(data.entries.len()))
+    }
+    assert(query(<reference-chord>).all(chord => chord.location().page() == 1),
+      message: "Keyboard chords and sticky modifiers must stay on page 1")
+    let fragments = query(<reference-fragment>)
+    let bottoms = query(<reference-table-bottom>)
+    assert(query(table).all(table => table.columns.all(width => width == 1fr)),
+      message: "All columns within a table must have equal width")
+    for section in sections {
+      let parts = fragments.filter(fragment => fragment.value.section == section.value.title)
+      let ends = bottoms.filter(bottom => bottom.value.section == section.value.title)
+      assert(ends.len() == parts.len(), message: "Every table fragment needs a bottom rule")
+      assert(parts.map(part => part.value.part) == range(1, parts.len() + 1))
+      assert(parts.all(part => part.value.heading == if part.value.part == 1 {
+        section.value.title
+      } else {
+        section.value.continuation
+      }))
+    }
+    for fragment in fragments.filter(fragment => fragment.value.part > 1) {
+      assert(calc.abs(fragment.location().position().y - page-margins.top) < 0.1pt,
+        message: "A continued heading must begin its page column")
+    }
+  }
 }
 
-#page-title("Characters & keyboard chords")
-#let character-groups = (
-  "Lowercase letters & Braille Space", "Uppercase letters", "Digits", "Punctuation & symbols",
-)
-#for group in source.lookups.filter(group => character-groups.contains(group.group)) {
-  register(group.group, group.entries, group.modes)
-}
-#let lower = comparison-rows("Lowercase letters & Braille Space")
-#let upper = comparison-rows("Uppercase letters")
-#let digits = comparison-rows("Digits")
-#let symbols = comparison-rows("Punctuation & symbols")
-#grid(columns: (1fr,) * 6, column-gutter: 6pt,
-  comparison-table("Lowercase", lower.slice(0, 20)),
-  comparison-table("Letters & digits", lower.slice(20, 26) + digits + (lower.last(),)),
-  comparison-table("Uppercase", upper.slice(0, 20)),
-  comparison-table("Capitals & symbols", upper.slice(20) + symbols.slice(0, 6)),
-  comparison-table("Symbols ' – =", symbols.slice(6, 19)),
-  comparison-table("Symbols > – ~", symbols.slice(19)),
-)
-#v(6pt)
-#comparison-lookup("Capitalisation", "Capitalisation")
-#v(6pt)
-#comparison-lookup("Numbers & letters", "Numbers & letters")
-#v(7pt)
-#caption("Navigation and Editing")
-#command-table(0)
-#v(7pt)
-#caption("Sticky modifiers")
-#command-table(1, columns: 5)
-
-#pagebreak()
-#page-title("Contractions & shortforms · UEB 2")
-#grid(columns: (1fr, 1fr, 1fr), column-gutter: 10pt,
-  [
-    #lookup("Alphabetic wordsigns", "Alphabetic wordsigns · whole words", "ueb2")
-    #lookup("Strong wordsigns", "Strong wordsigns · whole words", "ueb2")
-    #lookup("Lower wordsigns", "Lower wordsigns · whole words", "ueb2")
-    #lookup("Capitalisation", "Capitalisation", "ueb2", columns: 1)
-  ],
-  [
-    #lookup("Strong contractions", "Strong contractions", "ueb2")
-    #lookup("Strong groupsigns", "Strong groupsigns · inside words", "ueb2")
-    #lookup("Lower groupsigns · word start", "Lower groupsigns · word start", "ueb2")
-    #lookup("Lower groupsigns · word middle", "Lower groupsigns · word middle", "ueb2")
-    #lookup("Lower groupsigns · en / in", "Lower groupsigns · en / in", "ueb2")
-    #lookup("Grade 1 indicators", "Grade 1 indicators · literal letters", "ueb2", columns: 1)
-  ],
-  [
-    #lookup("Initial-letter contractions", "Initial-letter contractions", "ueb2")
-    #lookup("Final-letter groupsigns", "Final-letter groupsigns · after a letter", "ueb2")
-  ],
-)
-#v(4pt)
-#lookup("Shortforms", "Shortforms · whole words", "ueb2", columns: 5, row: 14.1pt, size: 9.1pt)
-
-// Reference update: character tables compare UEB 1 and 8 dot in six columns,
-// with 20 data rows each. Quotation marks use only nondirectional forms;
-// command chords, including sticky modifiers, use the same vector cells.
-// Only headings and mappings are printed: no running headers, footers,
-// page numbers, explanatory prose, or text/code example sections.
-// Capitalisation and numbers/letters also compare UEB 1 with 8 dot;
-// each 8-dot sequence is the concatenation of its character mappings.
-// Sticky modifiers share page 1 with Navigation and Editing.
+// Reference update: data and transformations live in this Typst template.
+// Page-level columns flow every section, repeating “Cont'd” headings wherever
+// a section crosses a column or page. Symbols is one continuous section.
+// Capitals replace the A–Z list and old Capitalisation section; the mixed
+// Numbers & letters section is omitted. All 182 contractions and 22 keyboard
+// chords remain, with no running headers, footers, or page numbers.
+// Every table uses equal-width tracks and an explicit repeated bottom rule;
+// long braille sequences wrap inside their cells without shrinking the dots.
