@@ -1,4 +1,4 @@
-#import "style.typ": muted, mono
+#import "style.typ": ink, muted, mono
 
 #let dot-mask(keys) = keys.filter(key => type(key) == int).fold(
   0, (mask, dot) => mask + calc.pow(2, dot - 1),
@@ -62,11 +62,20 @@
   weight: if code { "medium" } else { "regular" },
   if label == " " { "␣" } else { label },
 )
+// An underline marks a chord whose braille keys are held with Braille Space.
+#let with-space(body) = box(
+  stroke: (bottom: 0.5pt + ink), inset: (bottom: 1.2pt), body,
+)
 #let command-keys(keys) = {
   let mask = dot-mask(keys)
-  let cells = if keys.contains("space") { (space-key,) } else { () }
-  if mask > 0 {
-    if cells.len() > 0 { cells.push(text(size: 8pt, fill: muted)[+]) }
+  let cells = ()
+  if keys.contains("space") {
+    if mask > 0 {
+      cells.push(with-space(braille(str.from-unicode(0x2800 + mask), eight: true)))
+    } else {
+      cells.push(space-key)
+    }
+  } else if mask > 0 {
     cells.push(braille(str.from-unicode(0x2800 + mask), eight: true))
   }
   [#metadata((keys: keys, dots: mask)) <reference-chord>]

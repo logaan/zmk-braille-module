@@ -1,5 +1,5 @@
 #import "data.typ": alphabet
-#import "cells.typ": braille, space-key, output
+#import "cells.typ": braille, output, with-space
 #import "style.typ": muted
 
 // Derive letter mnemonics from the actual cells, not from the output word.
@@ -20,13 +20,14 @@
 }
 
 // Keep non-letter signs as vector braille, including contraction prefixes.
-// A down arrow applies only to the immediately following letter.
+// A down arrow applies only to the immediately following letter; an underline
+// marks chords held with Braille Space.
 #let mnemonic(cells, space: false) = {
   let spelling = mnemonic-spelling(cells)
   if spelling == none {
     []
   } else {
-    let tokens = if space { (space-key, text(size: 8pt, fill: muted)[+]) } else { () }
+    let tokens = ()
     let letters = ""
     for character in spelling.clusters() {
       if 0x2800 <= character.to-unicode() and character.to-unicode() <= 0x28ff {
@@ -40,7 +41,8 @@
       }
     }
     if letters != "" { tokens.push(output(letters, code: true, size: 8.7pt)) }
+    let body = box(grid(columns: (auto,) * tokens.len(), column-gutter: 2pt, align: horizon, ..tokens))
     [#metadata((input: cells, spelling: spelling, space: space)) <reference-mnemonic>]
-    box(grid(columns: (auto,) * tokens.len(), column-gutter: 2pt, align: horizon, ..tokens))
+    if space { with-space(body) } else { body }
   }
 }

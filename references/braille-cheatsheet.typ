@@ -136,3 +136,12 @@ weak column breaks, so the keyboard chords begin page 2 together. Missing
 mnemonics leave their cell empty instead of a dash. Compilation now
 requires all 22 chords to share one page rather than page 1. The reference
 is three A4 pages with no overlapping or out-of-bounds text.
+
+= Printable quick-reference underline convention
+
+The dedicated Symbols column is reverted: Digits and Symbols share the
+second page column, the keyboard chords flow onto page 1 again, and the
+reference is two A4 pages. Chords held with Braille Space no longer show a
+Space key and plus sign; their dot cell is underlined instead, in both the
+Input and Mnemonic columns. The plain Space row keeps its key box, dot-only
+chords stay unmarked, and missing mnemonics remain empty cells.
