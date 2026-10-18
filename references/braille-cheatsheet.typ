@@ -265,3 +265,9 @@ capitalises the instruction: "Add dot 7 to each uppercase letter."
 The Quick Braille Fox subheads drop the middle-dot separator and set
 "qk brl fox" as inline raw (monospace) code. The subhead grid becomes
 two columns: the code label and the braille cell sequence.
+
+= Printable quick-reference Quick Braille Fox key-box label
+
+The Quick Braille Fox subheads set the monospace "qk brl fox" label
+inside the same white bordered key box used for "8 Dot" and the space
+key.
