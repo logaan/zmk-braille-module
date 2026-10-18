@@ -173,3 +173,13 @@ of an underline. A page break puts Alphabetic wordsigns at the top of
 page 2; the reference is three A4 pages with no overlapping or
 out-of-bounds text. A multiline expected-row expression in the compilation
 checks silently counted only its first line and is now parenthesized.
+
+= Printable quick-reference symbol pairing
+
+Symbols precedes the digit tables: Lowercase and Capitals fill the first
+page column, Symbols fills the second, and a weak column break starts
+Digits · UEB 1, Digits · 8 dot, and Navigation and Editing in the third.
+Within Symbols, opening and closing pairs are adjacent: ( with ), < with >,
+[ with ], and { with }, so = follows the angle pair, \ follows the bracket
+pair, and | follows the brace pair. A compilation assert pins each closing
+symbol to the row after its opening counterpart.

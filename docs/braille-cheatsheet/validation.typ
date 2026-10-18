@@ -19,6 +19,10 @@
 #assert(chords.slice(navigation.len()).all(entry =>
   entry.at(0).ends-with(" …") and entry.at(2) and entry.at(1).contains("space")))
 #assert(capitals.len() == 7)
+#let symbol-prints = symbols.map(entry => entry.at(0))
+#assert(("()", "<>", "[]", "{}").all(pair =>
+  symbol-prints.position(letter => letter == pair.at(0)) + 1
+    == symbol-prints.position(letter => letter == pair.at(1))))
 #assert(dot-mask((2, 3, 4, 5)) == 30)
 #assert(cell-mnemonics.len() == 36)
 #assert(mnemonic-spelling("⠃") == "b")
