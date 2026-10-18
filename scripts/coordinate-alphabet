@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""Small, stateless Luna coordinator; Sol verifies the alphabet handoff."""
+import argparse
+import fcntl
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+PHASE = Path("tasks/09-implement-the-zmk-braille-input-module/01-zmk-foundations-and-alphabet")
+HARDWARE = PHASE / "05-test-alphabet-input-on-real-hardware"
+
+COORDINATE = """Act only as a MINIMAL coordinator, not an implementer or code reviewer.
+Continue phase 01 in the snapshot, one leaf per fresh pi subagent, in task order,
+until the alphabet is ready for the USER to test. Never start phase 02 or perform
+hardware testing. The user delegates marking tasks ready. Use ./scripts/td for
+assignments, questions, decisions, and deliveries; TaskDown is the durable state.
+Read relevant task messages, not every source file or the entire task history.
+Leave implementation, tests, and technical choices to each leaf worker. Preserve
+unrelated changes. Commit only your own TaskDown messages, never git add -A.
+
+The script owns the polling interval: do NOT sleep or run a polling loop yourself.
+Inspect tagged worker panes and relevant task messages. Never interrupt an active
+worker, spawn a duplicate, or advance before its delivery is committed and its
+implementation has finished. Untagged panes are NOT your workers. Do not type
+into the user's or another coordinator's pane. A notification to read a new
+TaskDown message is fine, but put substantive coordination in TaskDown.
+
+When no worker is active and the preceding leaf is delivered/done, mark the next
+leaf ready, assign it, and launch a fresh pi in a tmux pane in this same window.
+Use the worker command/model given below with --print (so its pane exits when it
+finishes). Prompt it to read its assigned task and prerequisites, implement ONLY
+that leaf, test, commit its work, deliver via ./scripts/td, and stop. Tag the new
+pane using `tmux set-option -p -t PANE @braille_task TASK_PATH`. Use tmux
+split-window -d -P -F '#{pane_id}' -t YOUR_SCRIPT_PANE -c REPO_ROOT COMMAND;
+quote COMMAND correctly. Keep one live implementation worker at a time. A failed
+or interrupted leaf can be assigned a fresh worker on that SAME leaf after
+checking its task messages. Never kill/replace a live worker just to restart it.
+
+Answer routine coordination questions through TaskDown; do not guess user-only
+policy or hardware answers. For a genuine user blocker, record the question and
+blocked status and end with COORDINATOR_BLOCKED. Otherwise keep the work moving.
+
+At the alphabet leaf, include the required preparation for the hardware checkpoint:
+fresh firmware for both keyboards/both halves, current published module/config
+pins, exact artifact paths and flashing instructions in the user-owned hardware
+task. Do not mistake old scaffolding smoke artifacts for working alphabet builds.
+When all 12 implementation leaves are delivered/done and the handoff appears
+ready, end with COORDINATOR_VERIFY to request Sol's independent check.
+Otherwise end with COORDINATOR_WAIT. No other final marker; do not claim success.
+Keep your response short. The LAST LINE must be exactly one of those markers.
+"""
+
+VERIFY = """Independently check whether phase 01 is ready for the user's alphabet
+hardware test. You are Sol, the final checker, not another implementation worker.
+Read TaskDown deliveries and check the implementation/test/build evidence as
+needed. Verify the real alphabet uses the shared capture/matcher/action path,
+all 26 lowercase host mappings, both keyboard layouts and mode-key access,
+fresh usable firmware for both halves of both keyboards, reproducible current
+module/config pins, and artifact paths/flashing instructions in the user-owned
+hardware task. No physical testing or phase-02 features are required. Do NOT
+flash hardware, start phase 02, or implement fixes yourself.
+If ready, record a concise handoff in TaskDown, mark the user hardware test ready
+with worker user, commit only your own messages, and end with ALPHABET_VERIFIED.
+If fixes are needed, record actionable feedback in the affected implementation
+leaf, reopen it ready for a fresh one-leaf worker only when no worker is still
+active there, and end with COORDINATOR_CONTINUE. If a user decision is required,
+record it in TaskDown and end with COORDINATOR_BLOCKED. Never mark physical
+acceptance passed. The LAST LINE must be exactly one of those markers.
+"""
+
+
+def task_snapshot(root=ROOT):
+    folders = {p.parent for p in (root / PHASE).rglob("*.md")}
+    leaves = sorted(p for p in folders if not any(p in q.parents for q in folders))
+    result = []
+    for folder in leaves:
+        status, latest = "unknown", None
+        for message in sorted(folder.glob("*.md")):
+            text = message.read_text()
+            if not text.startswith("---\n") or "\n---" not in text[4:]:
+                raise ValueError(f"Incomplete TaskDown message: {message}")
+            front = text[4:].split("\n---", 1)[0]
+            match = re.search(r"(?m)^  status:\s*['\"]?([a-z]+)", front)
+            if match:
+                status = match[1]
+            latest = message
+        result.append({"task": str(folder.relative_to(root)), "status": status,
+                       "latest_message": str(latest.relative_to(root))})
+    return result
+
+
+def software_complete(snapshot):
+    software = [row for row in snapshot if row["task"] != str(HARDWARE)]
+    return len(software) == 12 and all(row["status"] in {"delivered", "done"} for row in software)
+
+
+def run_pi(model, thinking, prompt, log_dir, label):
+    command = ["pi", "--provider", "openai", "--model", model, "--thinking", thinking,
+               "--print", "--no-session", "--no-extensions", "--no-skills",
+               "--no-prompt-templates", "--tools", "read,bash", prompt]
+    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True,
+                            timeout=180 if label == "luna" else 1800)
+    log = log_dir / f"{time.time_ns()}-{label}.log"
+    log.write_text(result.stdout + "\n--- stderr ---\n" + result.stderr)
+    if result.returncode:
+        raise RuntimeError(f"{label} exited {result.returncode}; see {log}")
+    lines = result.stdout.strip().splitlines()
+    return lines[-1].strip() if lines else "", result.stdout.strip()
+
+
+def check_once(args, log_dir):
+    snapshot = task_snapshot()
+    panes = subprocess.check_output([
+        "tmux", "list-panes", "-t", args.pane, "-F",
+        "#{pane_id} command=#{pane_current_command} task=#{@braille_task}"], text=True)
+    context = (f"\nREPO_ROOT={ROOT}\nYOUR_SCRIPT_PANE={args.pane}\n"
+               f"Worker command: pi --provider openai --model {args.sol_model} "
+               "--thinking high --print --name <one-leaf-name> <task-prompt>\n"
+               f"Current window panes:\n{panes}\nTask snapshot:\n{json.dumps(snapshot, indent=2)}\n")
+    marker, report = run_pi(args.luna_model, "low", COORDINATE + context, log_dir, "luna")
+    print(report, flush=True)
+    if marker == "COORDINATOR_VERIFY":
+        if not software_complete(task_snapshot()):
+            raise RuntimeError("Refused premature Sol handoff: not all 12 software leaves are delivered")
+        marker, report = run_pi(args.sol_model, "high", VERIFY + context, log_dir, "sol")
+        print(report, flush=True)
+        if marker == "ALPHABET_VERIFIED":
+            if not software_complete(task_snapshot()):
+                raise RuntimeError("Sol reported success while software leaves remain open")
+            return "done"
+        if marker not in {"COORDINATOR_CONTINUE", "COORDINATOR_BLOCKED"}:
+            raise RuntimeError(f"Unexpected Sol marker: {marker!r}")
+    elif marker not in {"COORDINATOR_WAIT", "COORDINATOR_BLOCKED"}:
+        raise RuntimeError(f"Unexpected Luna marker: {marker!r}")
+    return "blocked" if marker == "COORDINATOR_BLOCKED" else "wait"
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--interval", type=float, default=60, help="seconds between Luna checks (default 60)")
+    parser.add_argument("--luna-model", default="gpt-6-luna")
+    parser.add_argument("--sol-model", default="gpt-6.1-sol")
+    parser.add_argument("--pane", default=os.environ.get("TMUX_PANE"), help="script pane in the target window")
+    parser.add_argument("--once", action="store_true", help="perform one coordination check, then exit")
+    args = parser.parse_args()
+    if not args.pane or args.interval <= 0:
+        parser.error("run inside tmux with a positive interval")
+    log_dir = ROOT / "build/coordinator"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    with (log_dir / "lock").open("w") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            parser.error("another alphabet coordinator is already running")
+        errors = 0
+        while True:
+            print(time.strftime("%Y-%m-%d %H:%M:%S"), "checking with Luna", flush=True)
+            try:
+                outcome = check_once(args, log_dir)
+                errors = 0
+                if outcome == "done":
+                    print("Alphabet handoff verified by Sol. Stopping before hardware testing.", flush=True)
+                    return 0
+                if outcome == "blocked":
+                    print("User input needed in TaskDown. Resolve it, then rerun this script.", flush=True)
+                    return 2
+                if args.once:
+                    return 0
+            except (RuntimeError, subprocess.SubprocessError, OSError, ValueError) as error:
+                errors += 1
+                print(f"Coordinator error ({errors}/3): {error}", file=sys.stderr, flush=True)
+                if args.once or errors >= 3:
+                    return 1
+            time.sleep(args.interval)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("Coordinator stopped; worker panes were left alone.", flush=True)
+        sys.exit(130)
