@@ -66,7 +66,7 @@
 #let with-space(body) = box(
   stroke: (bottom: 0.5pt + ink), inset: (bottom: 1.2pt), body,
 )
-#let command-keys(keys) = {
+#let command-keys(keys, sticky: false) = {
   let mask = dot-mask(keys)
   let cells = ()
   if keys.contains("space") {
@@ -78,6 +78,7 @@
   } else if mask > 0 {
     cells.push(braille(str.from-unicode(0x2800 + mask), eight: true))
   }
-  [#metadata((keys: keys, dots: mask)) <reference-chord>]
+  if sticky { cells.push(output("_")) }
+  [#metadata((keys: keys, dots: mask, sticky: sticky)) <reference-chord>]
   box(grid(columns: (auto,) * cells.len(), column-gutter: 3pt, align: horizon, ..cells))
 }

@@ -145,3 +145,18 @@ reference is two A4 pages. Chords held with Braille Space no longer show a
 Space key and plus sign; their dot cell is underlined instead, in both the
 Input and Mnemonic columns. The plain Space row keeps its key box, dot-only
 chords stay unmarked, and missing mnemonics remain empty cells.
+
+= Printable quick-reference chord merge
+
+Sticky modifiers merge into the Navigation and Editing table, whose 22 rows
+now end with the five modifiers. Each modifier name and input cell carries a
+trailing underscore: "Shift _" with its underlined cell followed by "_",
+marking that the chord holds its effect for the next input. The UEB Grade 2
+heading is dropped; the Grade 2 sections follow the chord table directly.
+
+= Printable quick-reference space row
+
+The Lowercase table drops its Braille Space row and is retitled "Lowercase
+letters"; the Space chord remains in Navigation and Editing. The character
+coverage assertion now covers printable ASCII excluding space. The
+reference stays two A4 pages with no overlapping or out-of-bounds text.

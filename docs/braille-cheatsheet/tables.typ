@@ -86,7 +86,7 @@
   let has-mnemonics = entries.any(entry => mnemonic-spelling(chord-cell(entry.at(1))) != none)
   section-table(
     title, title, ("ueb1", "eight-dot"), entries,
-    entry => (output(entry.at(0)), command-keys(entry.at(1)))
+    entry => (output(entry.at(0)), command-keys(entry.at(1), sticky: entry.at(2, default: false)))
       + if has-mnemonics { (mnemonic(chord-cell(entry.at(1)), space: entry.at(1).contains("space")),) } else { () },
     columns: if has-mnemonics { 3 } else { 2 },
     headers: if headers != auto { headers }

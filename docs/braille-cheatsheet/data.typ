@@ -5,7 +5,7 @@
 #let alphabet = "abcdefghijklmnopqrstuvwxyz".clusters().zip(
   "⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠅⠇⠍⠝⠕⠏⠟⠗⠎⠞⠥⠧⠺⠭⠽⠵".clusters(),
 ).map(((letter, cell)) => (letter, cell, cell))
-#let lowercase = alphabet + ((" ", " ", " "),)
+#let lowercase = alphabet
 #let numeral-bases = "⠚⠁⠃⠉⠙⠑⠋⠛⠓⠊".clusters()
 #let numeral-eight = "⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔".clusters()
 #let digits = range(10).map(i => (str(i), "⠼" + numeral-bases.at(i), numeral-eight.at(i)))
@@ -81,6 +81,8 @@
   ("Command", ("space", 1, 7)),
   ("Globe", ("space", 5, 7)),
 )
+// Sticky modifiers hold their effect for the next chord, marked with "_".
+#let chords = navigation + modifiers.map(entry => (entry.at(0) + " _", entry.at(1), true))
 
 // UEB 2 data: each section is one flowing table, never a fixed-size chunk.
 #let ueb2 = (
