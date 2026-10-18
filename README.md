@@ -1,17 +1,18 @@
 # ZMK Braille module
 
 An out-of-tree ZMK module for chorded Braille input. **Lowercase alphabet
-input works; the rest is not implemented yet.** Central-local dot/space
+input and a verified subset of direct factory commands work.** Central-local dot/space
 behaviors route press/release edges by binding parameter, on any layer, to
 the release-terminated detector. Capture emits one nine-bit mask on the last
 Braille-key release, without a timer. The shared engine matches the selected
-mode's character and fixture command tables plus the user override layer,
+mode's character and per-mode factory command tables plus the user override layer,
 and committed rules invoke their ordered ZMK behavior actions on the host.
 The `ueb1` table carries the 26 six-dot alphabet cells as ordinary lowercase
 keystrokes; the devicetree default mode is selected at boot. The mode key
 composes ZMK layer/hold-tap behaviors, and settings entry/exit hooks isolate
-captured input from typing. Literary signs, real factory command chords,
-context transitions, the settings UI, and persistence are not implemented yet.
+captured input from typing. Literary signs, context transitions, the settings UI,
+and persistence are not implemented yet. Factory command coverage is incomplete;
+see [direct factory commands](#direct-factory-commands) for the source audit and gaps.
 
 ## Pinned development baseline
 
@@ -66,8 +67,9 @@ BASE and becomes `&bspc` only on BRL. Both use the schema's `ueb1` default.
 Physical `f d s` = dots 1 2 3; `j k l` = 4 5 6; `a` = 7; `;` = 8.
 QBF uses the key under `j` for Braille space and updates its hand-maintained OLED
 legends to match. Toucan uses its ordinary Space position for Braille space.
-**These are not working text input yet:** `bmode` can now enter BRL by tap or
-hold, but completed chords have no production matcher/output consumer yet.
+`bmode` enters BRL by tap or hold. Completed chords run through the production
+matcher and dispatcher; `ueb1` currently types the lowercase alphabet and the
+verified direct command subset below.
 
 Prepare the shared workspace once, if it is not already present:
 
@@ -115,6 +117,49 @@ workflows use their manifests to fetch the **published pinned** module instead
 of the local substitution, including both halves and reset images. Publish a
 new module commit before updating/pushing either dependent keyboard pin.
 No hardware is flashed by these commands.
+
+## Direct factory commands
+
+Both `ueb1` and `computer8` have separate command tables, validated with the
+selected character table before activation. The `computer8` character table is
+still empty; command availability does not claim computer-Braille text support.
+The full source audit, exact masks, collisions, and unassigned requirements are
+in [`references/research/factory-command-chords.yaml`](references/research/factory-command-chords.yaml).
+Rules send ordinary host keys, not screen-reader API commands.
+
+| Action | Simultaneous Braille chord | Source |
+| --- | --- | --- |
+| Literal space | Braille space alone | Project requirement |
+| Left / Right (previous / next item) | Space + 1 / Space + 4 | Mac VoiceOver, Navigation |
+| Up / Down | Space + 3 / Space + 6 | Mac VoiceOver, Navigation |
+| Home / End (first / last item) | Space + 123 / Space + 456 | Mac VoiceOver, Navigation |
+| Page Up / Page Down | Space + 3456 / Space + 1456 | Mac VoiceOver, Scrolling |
+| **Tab** | **Space + 2345 (`0x11e`)** | Mac VoiceOver, Braille |
+| Return | Space + 15 | Mac VoiceOver, Braille |
+
+“Space” here means `&bspc`, never a conventional space key. The former fixture
+Tab at Space + 45 (`0x118`) is removed; that is VoiceOver's Translate chord.
+Home/End are not macOS line-start/end shortcuts: those compose sticky Command
+with Left/Right. Host focus behavior for raw arrows depends on the app and
+VoiceOver/Quick Nav settings.
+
+The source audit found no exact representable defaults in the permitted
+Mac VoiceOver → TalkBack → Hable hierarchy for host Caps Lock, F1–F12,
+brightness, Mission Control, Spotlight, previous/next track, or system mute.
+Those assignments need a policy decision; they are not silently invented or
+claimed as implemented. Settings entry remains deferred to Phase 05. True Fn,
+Dictation/Siri, Do Not Disturb, Touch ID and power have no factory action.
+
+```sh
+python3 tests/host/test_commands.py
+CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_commands.py
+```
+
+These compile/run the real capture, matching, per-mode data and dispatch path,
+with only behavior invocation recorded. They prove exact Tab isolation from
+alphabet `t`, final-release output, literal space/navigation in every compiled
+mode, whitespace metadata, fixture-character coexistence and collision
+rejection. They do not prove BLE delivery or physical host behavior.
 
 ## Devicetree interface
 

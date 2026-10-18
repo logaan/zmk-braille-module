@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 /*
  * Host tests for the named character-table registry (src/braille_tables.c)
- * and its fixture factory command tables (src/braille_rules_nav.c), compiled
+ * and its factory command tables (src/braille_rules_nav.c), compiled
  * against the stub ZMK headers and run natively by test_tables.py.
  *
  * The registry is exercised through the real compiled tables: the (still
- * empty) ueb1/computer8/ueb2 character tables, each mode's own fixture
+ * partial) ueb1/computer8/ueb2 character tables, each mode's own factory
  * command table, and the registry-owned in-memory override layer. The
  * matcher's commit hook is overridden here to record commits, so selection
  * is verified by feeding chords through braille_chord_resolved.
@@ -52,12 +52,12 @@ static void chord(uint16_t mask) {
     assert(ret == 0);
 }
 
-/* Fixture command chords, mirroring src/braille_rules_nav.c. */
+/* Mac VoiceOver factory command chords. */
 #define CMD_SPACE 0x100
-#define CMD_RETURN (0x100 | 0x11)
-#define CMD_TAB (0x100 | 0x18)
-#define CMD_PREV (0x100 | 0x04)
-#define CMD_NEXT (0x100 | 0x20)
+#define CMD_RETURN 0x111
+#define CMD_TAB 0x11e
+#define CMD_PREV 0x101
+#define CMD_NEXT 0x108
 #define DOT_A 0x001 /* dot 1: the ueb1 `a` cell; the override shadows it */
 
 /* 1. Exactly the compiled tables are registered by name: `ueb1` and
@@ -112,14 +112,17 @@ static void test_mode_command_tables(void) {
         log_reset();
 
         /* Navigation and noncharacter functions are available in this mode:
-         * each fixture command rule commits through the shared engine. */
+         * each factory command rule commits through the shared engine. */
         chord(CMD_PREV);
         chord(CMD_NEXT);
         chord(CMD_RETURN);
         assert(commit_count == 3);
-        assert(commits[0] == &mode->commands->rules[3]);
-        assert(commits[1] == &mode->commands->rules[4]);
-        assert(commits[2] == &mode->commands->rules[1]);
+        assert(commits[0]->chords[0] == CMD_PREV);
+        assert(commits[0]->actions[0].param1 == ((0x07UL << 16) | 0x50));
+        assert(commits[1]->chords[0] == CMD_NEXT);
+        assert(commits[1]->actions[0].param1 == ((0x07UL << 16) | 0x4f));
+        assert(commits[2]->chords[0] == CMD_RETURN);
+        assert(commits[2]->actions[0].param1 == ((0x07UL << 16) | 0x28));
 
         /* The mode's whitespace chords are selected with it. */
         assert(braille_engine_is_whitespace(CMD_SPACE));

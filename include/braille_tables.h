@@ -36,8 +36,9 @@ struct braille_mode {
 
 /* Compiled factory tables, defined by the rule-data units. `ueb1` carries
  * the 26 six-dot alphabet cells; the remaining character tables are empty
- * until their data tasks populate them (phases 03/04/07). The command tables
- * are per-mode fixtures until phase 02 researches the real factory chords. */
+ * until their data tasks populate them (phases 03/04/07). Per-mode command
+ * tables carry the verified direct factory subset; see the source audit in
+ * references/research/factory-command-chords.yaml for gaps and limitations. */
 extern const struct braille_rule_table braille_rules_ueb1_characters;
 extern const struct braille_rule_table braille_rules_computer8_characters;
 extern const struct braille_rule_table braille_rules_ueb1_commands;
