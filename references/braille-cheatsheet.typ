@@ -259,3 +259,9 @@ on page 2, matching the page section headings.
 
 The Capitals intro sets "8 Dot" inside the white bordered key box and
 capitalises the instruction: "Add dot 7 to each uppercase letter."
+
+= Printable quick-reference Quick Braille Fox code label
+
+The Quick Braille Fox subheads drop the middle-dot separator and set
+"qk brl fox" as inline raw (monospace) code. The subhead grid becomes
+two columns: the code label and the braille cell sequence.

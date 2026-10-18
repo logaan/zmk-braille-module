@@ -22,12 +22,12 @@
 #digit-section("Digits · 8 dot", digit-eight)
 #linebreak()
 #align(center, text(size: 18pt, weight: "bold", fill: teal)[Quick Braille Fox])
-#align(center, grid(columns: 3, gutter: 10pt, align: center, [qk brl fox], [·], sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: h(6pt))))
+#align(center, grid(columns: 2, gutter: 10pt, align: center, [`qk brl fox`], sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: h(6pt))))
 #colbreak()
 #chord-section("Navigation and Editing", chords)
 #for section in ueb2 { word-section(section) }
 #linebreak()
 #align(center, text(size: 18pt, weight: "bold", fill: blue)[Quick Braille Fox])
-#align(center, grid(columns: 3, gutter: 10pt, align: center, [qk brl fox], [·], sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: h(6pt))))
+#align(center, grid(columns: 2, gutter: 10pt, align: center, [`qk brl fox`], sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: h(6pt))))
 
 #include "validation.typ"
