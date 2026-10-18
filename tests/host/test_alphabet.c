@@ -108,20 +108,24 @@ static void chord(uint16_t mask) {
 
 /* --- Tests ------------------------------------------------------------------ */
 
-/* 1. Table shape: exactly 26 single-chord, single-action letter rules in the
- *    one common representation: an ordinary `&kp` binding, any context, the
- *    letter class, no capitals side effect. */
+/* 1. The growing UEB1 table retains exactly 26 single-chord, single-action
+ *    letter rules: an ordinary `&kp` binding, any context, no capitals side
+ *    effect. Non-letter rules are covered by their own tests. */
 static void test_table_shape(void) {
     const struct braille_rule_table *t = &braille_rules_ueb1_characters;
-    assert(t->count == 26);
+    size_t letters = 0;
     for (size_t i = 0; i < t->count; ++i) {
         const struct braille_rule *r = &t->rules[i];
+        if (r->class != BRAILLE_CLASS_LETTER) {
+            continue;
+        }
+        assert(letters < 26);
         assert(r->chord_count == 1);
-        assert(r->chords[0] == alphabet[i].chord);
+        assert(r->chords[0] == alphabet[letters].chord);
         assert((r->chords[0] & BRAILLE_CHORD_SPACE_BIT) == 0); /* dot-only */
         assert(r->action_count == 1);
         assert(strcmp(r->actions[0].behavior_dev, DEVICE_DT_NAME(DT_NODELABEL(kp))) == 0);
-        assert(r->actions[0].param1 == KEY_USAGE(alphabet[i].usage));
+        assert(r->actions[0].param1 == KEY_USAGE(alphabet[letters].usage));
         assert(r->actions[0].param2 == 0);
         assert(r->word_position == BRAILLE_WORD_POSITION_ANY);
         assert(r->when.numeric == BRAILLE_CONDITION_ANY);
@@ -129,13 +133,14 @@ static void test_table_shape(void) {
         assert(r->when.word_start == BRAILLE_CONDITION_ANY);
         assert(r->class == BRAILLE_CLASS_LETTER);
         assert(r->sets == BRAILLE_CAPS_NONE);
+        letters++;
     }
+    assert(letters == 26);
     printf("ok: table shape\n");
 }
 
-/* 2. Selection: the ueb1 mode validates (no collision between the alphabet
- *    and the mode's fixture command table) and the devicetree default names
- *    it. */
+/* 2. Selection: the ueb1 mode validates with its real phase-02 command table
+ *    and the devicetree default names it. */
 static void test_selection(void) {
     assert(braille_engine_validate_factory(&braille_rules_ueb1_characters,
                                            &braille_rules_ueb1_commands) == 0);
@@ -191,16 +196,13 @@ static void test_alphabet_sequence(void) {
     printf("ok: alphabet sequence\n");
 }
 
-/* 5. Six-dot cells outside the alphabet produce no host output and leave
- *    nothing pending; the alphabet still works afterwards. (Literary signs
- *    for these cells arrive in phase 03.) */
+/* 5. Cells still outside the alphabet/core punctuation produce no host
+ *    output and leave nothing pending; the alphabet still works afterwards.
+ *    Dots 2,3,6 remain deferred to the phase-04 contextual task. */
 static void test_unmapped_cells_silent(void) {
     static const uint16_t unmapped[] = {
-        0x04, /* dot 3            */
         0x20, /* dot 6            */
-        0x06, /* dots 2, 3        */
-        0x12, /* dots 2, 5        */
-        0x24, /* dots 3, 6        */
+        0x26, /* dots 2, 3, 6     */
         0x3F, /* dots 1-6 (⠿)    */
     };
     for (size_t i = 0; i < sizeof(unmapped) / sizeof(unmapped[0]); ++i) {

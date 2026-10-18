@@ -1,20 +1,21 @@
 // SPDX-License-Identifier: MIT
 
+#include <dt-bindings/zmk/keys.h>
 #include <braille_rules.h>
 #include <braille_tables.h>
 
 /*
- * The `ueb1` character table: the 26 six-dot alphabet cells of the ICEB
- * rulebook (The Rules of Unified English Braille, 3rd edition 2024, section
- * 2.5), each producing one ordinary lowercase host keystroke through `&kp`.
- * Dot n is bit n-1 of the nine-bit chord mask (braille_chord.h); every cell
- * is a single dot-only chord, so it can never collide with the mode's
- * Braille-space command chords (bit 8). Phase 03 completes the Grade 1
- * literary signs in this same representation.
+ * The `ueb1` character table: the 26 six-dot alphabet cells and seven
+ * context-free core punctuation signs of the ICEB rulebook (The Rules of
+ * Unified English Braille, 3rd edition 2024, sections 2.5 and 7, p.75).
+ * Every row produces an ordinary US-layout host keystroke through `&kp`.
+ * Dot n is bit n-1 of the nine-bit chord mask (braille_chord.h); these
+ * six-dot cells collide with neither space chords nor dot-7/8 commands.
  *
- * A single `&kp` press/release with a letter usage and no modifiers yields
- * the lowercase letter on a US host layout; capitalization arrives with
- * phase 03's indicator rules, not with modifier actions here.
+ * Letter usages have no modifiers, so they yield lowercase on a US host
+ * layout. Punctuation uses ZMK keycodes, including implicit Shift for ':'
+ * and '!'. Phase 04 owns capitalization and context-dependent signs;
+ * dots 2,3,6 (question mark/opening quotation mark) must stay unmapped here.
  *
  * ZMK_HID_USAGE(HID_USAGE_KEY, id) = (0x07 << 16) | id, as in
  * dt-bindings/zmk/keys.h; HID keyboard usage ids are dt-bindings/zmk/hid_usage.h
@@ -25,20 +26,18 @@
 
 #define BRAILLE_WHEN_ANY {BRAILLE_CONDITION_ANY, BRAILLE_CONDITION_ANY, BRAILLE_CONDITION_ANY}
 
-/* One six-dot cell -> one lowercase letter keystroke. */
-#define BRAILLE_LETTER_RULE(chord, usage)                                                          \
-    {                                                                                              \
-        .chords = {chord},                                                                         \
-        .chord_count = 1,                                                                          \
-        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),                             \
-                     .param1 = BRAILLE_KEY_USAGE(usage)}},                                         \
-        .action_count = 1,                                                                         \
-        .when = BRAILLE_WHEN_ANY,                                                                  \
-        .class = BRAILLE_CLASS_LETTER,                                                             \
+/* One six-dot cell -> one host keystroke, with phase-04 class metadata. */
+#define BRAILLE_CHARACTER_RULE(chord, key, cls)                                             \
+    {                                                                                      \
+        .chords = {chord}, .chord_count = 1,                                                \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = key}},       \
+        .action_count = 1, .when = BRAILLE_WHEN_ANY, .class = cls,                            \
     }
+#define BRAILLE_LETTER_RULE(chord, usage)                                                    \
+    BRAILLE_CHARACTER_RULE(chord, BRAILLE_KEY_USAGE(usage), BRAILLE_CLASS_LETTER)
 
 /* Dot bits: dot 1 = 0x01, dot 2 = 0x02, ..., dot 6 = 0x20 (dots 7/8 unused). */
-static const struct braille_rule ueb1_alphabet_rules[] = {
+static const struct braille_rule ueb1_character_rules[] = {
     BRAILLE_LETTER_RULE(0x01, 0x04), /* a: dots 1             */
     BRAILLE_LETTER_RULE(0x03, 0x05), /* b: dots 1, 2          */
     BRAILLE_LETTER_RULE(0x09, 0x06), /* c: dots 1, 4          */
@@ -65,9 +64,20 @@ static const struct braille_rule ueb1_alphabet_rules[] = {
     BRAILLE_LETTER_RULE(0x2D, 0x1B), /* x: dots 1, 3, 4, 6    */
     BRAILLE_LETTER_RULE(0x3D, 0x1C), /* y: dots 1, 3, 4, 5, 6 */
     BRAILLE_LETTER_RULE(0x35, 0x1D), /* z: dots 1, 3, 5, 6    */
+
+    /* ICEB section 7, p.75. Comma/full stop remain numeric punctuation
+     * (6.2.1); apostrophe is an opening symbol (2.6.2); hyphen bounds a
+     * word (2.6.1). Classes are data only until phase-04 transitions. */
+    BRAILLE_CHARACTER_RULE(0x02, COMMA, BRAILLE_CLASS_NUMERIC_PUNCTUATION), /* comma: 2      */
+    BRAILLE_CHARACTER_RULE(0x06, SEMI, BRAILLE_CLASS_OTHER),               /* semicolon: 23 */
+    BRAILLE_CHARACTER_RULE(0x12, COLON, BRAILLE_CLASS_OTHER),              /* colon: 25     */
+    BRAILLE_CHARACTER_RULE(0x16, EXCL, BRAILLE_CLASS_OTHER),               /* exclamation: 235 */
+    BRAILLE_CHARACTER_RULE(0x04, SQT, BRAILLE_CLASS_OPENING),              /* apostrophe: 3 */
+    BRAILLE_CHARACTER_RULE(0x24, MINUS, BRAILLE_CLASS_HYPHEN),             /* hyphen: 36    */
+    BRAILLE_CHARACTER_RULE(0x32, DOT, BRAILLE_CLASS_NUMERIC_PUNCTUATION),   /* full stop: 256 */
 };
 
 const struct braille_rule_table braille_rules_ueb1_characters = {
-    .rules = ueb1_alphabet_rules,
-    .count = sizeof(ueb1_alphabet_rules) / sizeof(ueb1_alphabet_rules[0]),
+    .rules = ueb1_character_rules,
+    .count = sizeof(ueb1_character_rules) / sizeof(ueb1_character_rules[0]),
 };
