@@ -1,19 +1,20 @@
 ---
-created: Mon 28 Sep 2026 - 00h 50m 47s
 author: user
-subject: Map the 26 six-dot alphabet cells
 cargo:
-  type: task
   status: draft
+  type: task
   worker:
-    type: agent
     harness: pi
     model: unknown
+    type: agent
+created: Mon 28 Sep 2026 - 00h 50m 47s
+subject: Map the 26 six-dot alphabet cells
 ---
 
 # Map the 26 six-dot alphabet cells
 
-1. Map the alphabet to these six-dot patterns, as in the ICEB rulebook, producing ordinary lowercase host keystrokes.
+1.  Map the alphabet to these six-dot patterns, as in the ICEB rulebook,
+    producing ordinary lowercase host keystrokes.
 
     | Letter | Dots          |
     |--------|---------------|
@@ -44,4 +45,5 @@ cargo:
     | y      | 1, 3, 4, 5, 6 |
     | z      | 1, 3, 5, 6    |
 
-2. Unit-test all 26 mappings alongside the implementation, asserting ordinary lowercase host keystrokes.
+2.  Unit-test all 26 mappings alongside the implementation, asserting ordinary
+    lowercase host keystrokes.
