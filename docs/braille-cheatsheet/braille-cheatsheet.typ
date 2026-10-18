@@ -2,17 +2,20 @@
 // Data, styling, cells, mnemonics, tables, and validation live in sibling modules.
 #import "style.typ": cheatsheet
 #import "data.typ": lowercase, digit-ueb1, digit-eight, symbols, capitals, chords, ueb2
-#import "tables.typ": character-section, digit-section, section-table, capital-example, chord-section, word-section
+#import "cells.typ": output, sequence
+#import "tables.typ": character-section, digit-section, section-table, chord-section, word-section
 
 #show: cheatsheet
 
 // Sections flow naturally through the page columns; their table headers repeat
-// on continuation. Capitals follows Lowercase, Symbols fills the next column,
-// and the digit tables and keyboard chords start a fresh one.
+// on continuation. Capitals follows Lowercase as an Output/Input table, Symbols
+// fills the next column, and the digit tables and keyboard chords start a fresh one.
 #character-section("Lowercase", "Lowercase letters", lowercase)
 #section-table("Capitals", "Capitals", ("ueb1", "eight-dot"), capitals,
-  example => (capital-example(example),), columns: 1, row: auto,
+  example => (output(example.example, code: true), sequence(example.ueb1, wrap: true)),
+  columns: 2, headers: ("Output", "Input"), row: auto,
   intro: text(size: 8.2pt)[8 dot: add dot 7 to each uppercase letter.],
+  inset: (x: 2pt, y: 0.2pt),
 )
 #character-section("Symbols", "Punctuation & symbols", symbols)
 #colbreak(weak: true)

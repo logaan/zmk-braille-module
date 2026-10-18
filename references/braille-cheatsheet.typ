@@ -203,3 +203,16 @@ validation are unchanged; this is a presentation change.
 Sticky modifier outputs drop the space before the ellipsis: Shift…,
 Control…, Option…, Command…, and Globe… now have no space before the
 ellipsis. The compilation assert matches the new form.
+
+= Printable quick-reference capitals table
+
+Capitals becomes a two-column table with Output and Input headers. Each
+row pairs the printed example with its complete UEB 1 sequence: A with
+⠠⠁, ABC with ⠠⠠⠁⠃⠉, ABc with ⠠⠠⠁⠃⠠⠄⠉, A BIG CAT with ⠠⠠⠠⠁ ⠃⠊⠛ ⠉⠁⠞⠠⠄,
+b with ⠰⠃, cd with ⠰⠰⠉⠙, and b c d with ⠰⠰⠰⠃ ⠉ ⠙⠰⠄. The per-row scope
+headings (Letter prefix, Word prefix, and so on) and the UEB 1 mode
+labels are dropped; the dot-7 intro line stays. Sequences that exceed
+the Input column wrap inside their cells, and spaces in those sequences
+show the open-box symbol. The mode-example and capital-example helpers
+are removed. Capitals still renders exactly seven rows, checked by the
+compilation assertion.

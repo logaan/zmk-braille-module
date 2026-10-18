@@ -99,27 +99,3 @@
   )
 }
 
-// Long passage examples keep their cells at full size: stack only the mode
-// label when its sequence would otherwise exceed the page-column width.
-#let mode-example(label, cells, available: 100%) = {
-  let name = text(size: 7.3pt, fill: muted, label)
-  let dots = sequence(cells)
-  assert(measure(dots).width <= available, message: "A braille sequence exceeds its page column")
-  if measure(name).width + 3pt + measure(dots).width <= available {
-    box(grid(columns: (auto, auto), column-gutter: 3pt, align: horizon, name, dots))
-  } else {
-    name
-    v(1pt)
-    dots
-  }
-}
-#let capital-example(example) = layout(size => [
-  #grid(columns: (1fr, auto), align: horizon, column-gutter: 3pt,
-    text(size: 8.2pt, weight: "bold", example.scope), sequence(example.indicator),
-  )
-  #v(2pt)
-  #output(example.example, code: true, size: 8.7pt)
-  #v(2pt)
-  #mode-example("UEB 1", example.ueb1, available: size.width)
-  #v(3pt)
-])
