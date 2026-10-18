@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCES = {
     "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_chord.c", "src/braille_engine.c",
     "src/braille_dispatch.c",
-    "src/braille_settings.c",
+    "src/braille_settings.c", "src/braille_tables.c",
     "src/braille_rules_grade1.c", "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
 }
 
