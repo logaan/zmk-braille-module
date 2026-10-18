@@ -10,7 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = {
-    "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_engine.c",
+    "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_chord.c", "src/braille_engine.c",
     "src/braille_rules_grade1.c", "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
 }
 
@@ -58,7 +58,9 @@ include("{ROOT / 'CMakeLists.txt'}")
                 subprocess.run(cc + [
                     "-std=c11", "-Wall", "-Wextra", "-Werror",
                     f"-DTEST_NO_NODES={no_nodes}", "-I", str(ROOT / "tests/host/stubs"),
-                    str(ROOT / "tests/host/test_behavior_scaffold.c"), "-o", str(binary),
+                    "-I", str(ROOT / "include"),
+                    str(ROOT / "tests/host/test_behavior_scaffold.c"),
+                    str(ROOT / "src/braille_chord.c"), "-o", str(binary),
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
             for source in sorted((ROOT / "src").glob("braille_*.c")):
@@ -67,6 +69,7 @@ include("{ROOT / 'CMakeLists.txt'}")
                     continue
                 subprocess.run(cc + [
                     "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"),
+                    "-I", str(ROOT / "tests/host/stubs"),
                     "-c", str(source), "-o", str(Path(tmp) / (source.stem + ".o")),
                 ], check=True)
 

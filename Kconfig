@@ -6,8 +6,10 @@ menuconfig ZMK_FEATURE_BRAILLE
     depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
     help
       Build the out-of-tree Braille behavior module on the split central
-      or a non-split keyboard. The module is currently build scaffolding:
-      behavior callbacks report unsupported until input routing is added.
+      or a non-split keyboard. Braille dot/space behaviors route input by
+      binding parameter on any layer, without an on/off state. Chord capture,
+      mode/settings actions, and output are not implemented yet; the detector
+      placeholder reports unsupported rather than silently losing input.
 
 if ZMK_FEATURE_BRAILLE
 

@@ -1,10 +1,11 @@
 # ZMK Braille module
 
-An out-of-tree ZMK module for chorded Braille input. **Currently this is build
-scaffolding, not usable Braille input.** The behavior devices register on the
-central half, but their press/release callbacks return `-ENOTSUP`. There is no
-chord capture, layer switching, matching, character table, settings UI, or HID
-output yet. The former startup-log stub has been removed.
+An out-of-tree ZMK module for chorded Braille input. **Not usable Braille input
+yet.** Central-local dot/space behaviors now route press/release edges by binding
+parameter, on any layer, to the detector input boundary. The detector still
+returns `-ENOTSUP`; chord capture/finalization is the next implementation step.
+Mode/settings callbacks remain unsupported. There is no layer switching,
+matching, character table, settings UI, or Braille HID output yet.
 
 ## Pinned development baseline
 
@@ -124,11 +125,22 @@ Include the module's default nodes explicitly in your central keymap:
 | `&bmode LAYER` | 1 | `zmk,behavior-braille-mode` | Hold target layer while chording; tap switches to it |
 | `&bsettings` | 0 | `zmk,behavior-braille-settings` | Settings-entry action, also usable by rule actions |
 
-These schemas and devices compile/link, but **callbacks still return
-`-ENOTSUP`**. The meanings above are the interface contract, not implemented
-runtime behavior. Chords will end only on the last Braille-key release; no
-chord timeout property exists. The mode key selects a layer, not a character
-table. Use an existing keymap layer number as its argument.
+Dot/space callbacks validate parameters and forward a single-bit press/release
+edge. Dots 1–8 use `1 << (N - 1)` (bits 0–7); `&bspc` uses `0x100` (bit 8).
+The original ZMK event, including position, layer, timestamp, and split source,
+is preserved. There is no on/off state, fixed key-position mapping, or layer
+filter: only invoking a Braille binding enters this path. Conventional
+`&kp SPACE`, letters, and layer keys retain their ordinary ZMK behavior.
+ZMK retains the press-time layer state for release routing; the driver does
+not look up the current layer again on release.
+
+**Capture/output are not implemented yet:** `braille_chord_key_event()` has an
+explicit weak `-ENOTSUP` placeholder in `src/braille_chord.c`, to be replaced by
+the detector implementation. The routing tests substitute an edge spy, not a
+working detector. Mode/settings callbacks also still return `-ENOTSUP`.
+Chords will end only on the last Braille-key release; no chord timeout property
+exists. The mode key selects a layer, not a character table. Use an existing
+keymap layer number as its argument.
 
 The same include supplies the `braille` configuration node (`zmk,braille`).
 Its `default-mode` string defaults to `"ueb1"`. A keyboard may override it:
@@ -149,16 +161,21 @@ Zephyr 3.5 enforces the binding cell counts but cannot constrain individual
 phandle-array argument values in YAML. With the feature enabled,
 `src/braille_bindings.c` rejects dot arguments outside 1–8 at compile time in
 enabled nodes' `bindings` arrays, including custom dot devices. This does not
-validate dynamically constructed rule/Studio bindings; the later input driver
-must reject invalid runtime values as well. Parameterized macros should use
-a valid dot number as their replaceable placeholder, not zero.
+validate dynamically constructed rule/Studio bindings. The input driver also
+rejects invalid runtime dot values before shifting, and rejects nonzero unused
+parameters (dot `param2`, or either space parameter), returning `-EINVAL`
+without calling the detector. Dot 1–8 and zero-parameter space metadata are
+provided when ZMK behavior metadata is enabled. Parameterized macros should
+use a valid dot number as their replaceable placeholder, not zero.
 
 ## Source layout and checks
 
 - `dts/bindings/` and `dts/behaviors/braille.dtsi`: production schemas, default
   devices, and named per-keyboard default-mode configuration.
-- `src/behavior_braille.c`: central-local ZMK device registration; unsupported
-  callbacks until the input-routing leaf.
+- `src/behavior_braille.c`: central-local dot/space input routing and runtime
+  validation; mode/settings remain unsupported. No character/command dispatch.
+- `include/braille_chord.h`: single-bit detector input contract and mask constants.
+- `src/braille_chord.c`: explicitly unsupported detector placeholder, not capture.
 - `src/braille_bindings.c`: build-time dot-argument assertions.
 - `src/braille_engine.c`: reserved shared matcher/buffer translation unit.
 - `include/braille_rules.h`: reserved common rule/action schema; only a forward
@@ -171,6 +188,9 @@ Run the focused host checks with Python 3, CMake, and a C compiler:
 
 ```sh
 python3 tests/host/test_build.py
+python3 tests/host/test_routing.py
+# Optional ASan/UBSan run of the routing and parameter-boundary checks:
+CC='cc -fsanitize=address,undefined -fno-omit-frame-pointer' python3 tests/host/test_routing.py
 # With the pinned workspace present, also check the real Kconfig parser:
 PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig.py
 # Production DT schemas + C assertions, using the same pinned workspace:
@@ -182,10 +202,13 @@ build/bindings/venv/bin/python tests/host/test_keyboards.py
 ```
 
 These check enabled/disabled source selection, optional Grade 2 isolation,
-compilation with/without behavior nodes, central locality, and the explicit
-unsupported callbacks. The host shim is not a Zephyr runtime and does not prove
-hardware behavior. The devicetree tests run Zephyr's actual parser/header
-generator, then compile production assertions against real Zephyr headers with
+every combination of enabled behavior compatibles, central locality, and the
+explicit unsupported downstream callbacks. Routing checks cover all eight dot
+parameters and space across 32 layers and seven positions, multiple dot devices,
+original event fields (including split source), invalid runtime parameters,
+metadata, and downstream error propagation, with split/metadata both on and off.
+The host shim is not a Zephyr runtime and does not prove hardware behavior.
+The devicetree tests run Zephyr's actual parser/header generator, then compile production assertions against real Zephyr headers with
 the host compiler (`CONFIG_ARCH_POSIX`); they test valid dots, rejected boundary
 values, cell schemas, custom devices, extensible names, and the `ueb1` default.
 Set `ZEPHYR_BASE` and `ZMK_APP` to use a different pinned workspace. They do not
@@ -193,6 +216,32 @@ run a Zephyr kernel. `tests/firmware/bindings.overlay` is a Paintbrush-central
 compile/link fixture, not a usable keymap or a replacement for the actual
 both-keyboard smoke builds above. The existing `tests/braille/*.yaml` files are
 future conformance data, not an executable engine test suite yet.
+
+Run the real pinned ZMK routing integration test in Docker:
+
+```sh
+./scripts/test-routing
+# Recheck its log without rebuilding:
+python3 tests/firmware/check_routing.py build/baseline/logs/routing-native.log
+```
+
+This builds/runs `native_posix_64` with the real production behavior driver,
+keymap/layer APIs, mock scan driver, and Zephyr kernel. A separate **test-only**
+module in `tests/firmware/routing/` replaces the unavailable detector with an
+edge spy and observes conventional keycode events without consuming them.
+The reviewed 61-event snapshot checks every dot on two different layouts,
+Braille space versus conventional Space/A/B (also while a dot is held),
+transparent-layer fallback, and press-time release ownership when switching
+layers with a dot, Braille space,
+or conventional space held. It also validates dot/space metadata through real
+ZMK APIs. No ZMK source is patched or layer router reimplemented in the test.
+
+`WORKSPACE` overrides the shared workspace path. Build/run logs are
+`build/baseline/logs/routing-{build,native}.log`; the native executable is
+`build/baseline/build/routing-native/zephyr/zmk.exe`. This test does not connect
+a host transport: the native board's expected `USB endpoint is not supported`
+messages do not negate its keycode-event checks. It does not test a finished
+chord detector, wireless split transport, physical hardware, or host typing.
 
 See [the implementation task](tasks/09-implement-the-zmk-braille-input-module/)
 for requirements and acceptance gates. The unchanged

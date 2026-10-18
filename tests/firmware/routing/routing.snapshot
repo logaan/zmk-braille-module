@@ -1,0 +1,61 @@
+routing_metadata: PASS
+braille_edge: bit 0x040 pressed 1 position 0 layer 0
+braille_edge: bit 0x040 pressed 0 position 0 layer 0
+braille_edge: bit 0x004 pressed 1 position 1 layer 0
+braille_edge: bit 0x004 pressed 0 position 1 layer 0
+braille_edge: bit 0x002 pressed 1 position 2 layer 0
+braille_edge: bit 0x002 pressed 0 position 2 layer 0
+braille_edge: bit 0x001 pressed 1 position 3 layer 0
+braille_edge: bit 0x001 pressed 0 position 3 layer 0
+braille_edge: bit 0x008 pressed 1 position 4 layer 0
+braille_edge: bit 0x008 pressed 0 position 4 layer 0
+braille_edge: bit 0x010 pressed 1 position 5 layer 0
+braille_edge: bit 0x010 pressed 0 position 5 layer 0
+braille_edge: bit 0x020 pressed 1 position 6 layer 0
+braille_edge: bit 0x020 pressed 0 position 6 layer 0
+braille_edge: bit 0x080 pressed 1 position 7 layer 0
+braille_edge: bit 0x080 pressed 0 position 7 layer 0
+braille_edge: bit 0x100 pressed 1 position 8 layer 0
+braille_edge: bit 0x100 pressed 0 position 8 layer 0
+conventional_key: page 0x07 usage 0x2c pressed 1
+conventional_key: page 0x07 usage 0x2c pressed 0
+conventional_key: page 0x07 usage 0x04 pressed 1
+conventional_key: page 0x07 usage 0x04 pressed 0
+braille_edge: bit 0x001 pressed 1 position 3 layer 0
+conventional_key: page 0x07 usage 0x2c pressed 1
+conventional_key: page 0x07 usage 0x2c pressed 0
+conventional_key: page 0x07 usage 0x04 pressed 1
+conventional_key: page 0x07 usage 0x04 pressed 0
+braille_edge: bit 0x001 pressed 0 position 3 layer 0
+braille_edge: bit 0x001 pressed 1 position 3 layer 0
+braille_edge: bit 0x001 pressed 0 position 3 layer 0
+braille_edge: bit 0x080 pressed 1 position 0 layer 1
+braille_edge: bit 0x080 pressed 0 position 0 layer 1
+braille_edge: bit 0x040 pressed 1 position 1 layer 1
+braille_edge: bit 0x040 pressed 0 position 1 layer 1
+braille_edge: bit 0x020 pressed 1 position 2 layer 1
+braille_edge: bit 0x020 pressed 0 position 2 layer 1
+braille_edge: bit 0x010 pressed 1 position 3 layer 1
+braille_edge: bit 0x010 pressed 0 position 3 layer 1
+braille_edge: bit 0x008 pressed 1 position 4 layer 1
+braille_edge: bit 0x008 pressed 0 position 4 layer 1
+braille_edge: bit 0x004 pressed 1 position 5 layer 1
+braille_edge: bit 0x004 pressed 0 position 5 layer 1
+braille_edge: bit 0x002 pressed 1 position 6 layer 1
+braille_edge: bit 0x002 pressed 0 position 6 layer 1
+braille_edge: bit 0x001 pressed 1 position 7 layer 1
+braille_edge: bit 0x001 pressed 0 position 7 layer 1
+braille_edge: bit 0x100 pressed 1 position 10 layer 1
+braille_edge: bit 0x100 pressed 0 position 10 layer 1
+braille_edge: bit 0x100 pressed 1 position 8 layer 0
+braille_edge: bit 0x100 pressed 0 position 8 layer 0
+conventional_key: page 0x07 usage 0x2c pressed 1
+conventional_key: page 0x07 usage 0x2c pressed 0
+conventional_key: page 0x07 usage 0x2c pressed 1
+conventional_key: page 0x07 usage 0x2c pressed 0
+braille_edge: bit 0x080 pressed 1 position 0 layer 1
+braille_edge: bit 0x080 pressed 0 position 0 layer 1
+braille_edge: bit 0x002 pressed 1 position 13 layer 0
+braille_edge: bit 0x002 pressed 0 position 13 layer 0
+conventional_key: page 0x07 usage 0x05 pressed 1
+conventional_key: page 0x07 usage 0x05 pressed 0

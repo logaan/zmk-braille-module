@@ -7,6 +7,7 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
   zephyr_library_sources(
     src/behavior_braille.c
     src/braille_bindings.c
+    src/braille_chord.c
     src/braille_engine.c
     src/braille_rules_grade1.c
     src/braille_rules_nav.c

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Run routing through the real pinned ZMK keymap/behavior APIs and Zephyr kernel.
+# The native-only companion module substitutes an edge spy, not a chord detector.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+ROOT="$PWD"
+WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
+[ "$#" -eq 0 ] || { echo 'Usage: scripts/test-routing' >&2; exit 2; }
+[ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
+mkdir -p "$WORKSPACE/logs"
+docker run --rm \
+  -v "$WORKSPACE:/work" -v "$ROOT:/braille:ro" -w /work \
+  zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+    test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+    west zephyr-export
+    west build -p always -d build/routing-native -s zmk/app -b native_posix_64 -- \
+      -DZMK_CONFIG=/braille/tests/firmware/routing \
+      "-DZMK_EXTRA_MODULES=/braille;/braille/tests/firmware/routing" \
+      2>&1 | tee logs/routing-build.log
+    timeout 30 build/routing-native/zephyr/zmk.exe 2>&1 | tee logs/routing-native.log
+  '
+python3 tests/firmware/check_routing.py "$WORKSPACE/logs/routing-native.log"
