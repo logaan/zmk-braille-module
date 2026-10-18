@@ -5,11 +5,11 @@ Open [`braille-cheatsheet.pdf`](braille-cheatsheet.pdf). It is **two A4 portrait
 ## Design
 
 - **Page 1:** shared lowercase letters, side-by-side UEB 1 / Computer8 character mappings and examples, quotation marks, and factory navigation/editing chords.
-- **Page 2:** all **182** optional UEB 2 contractions, capitalisation and Grade 1 examples, and sticky-modifier/media chords.
+- **Page 2:** all **182** optional UEB 2 contractions, capitalisation and Grade 1 examples, and sticky-modifier chords.
 - Atkinson Hyperlegible body text, monospaced character labels, aligned mappings, restrained row shading, and separate colours for the two character modes.
 - Braille cells are **vector drawings**, with larger dark active dots and small pale position guides. The spacing clearly separates successive cells. Each cell has pressed-dot alt text in the tagged PDF.
 - Command chords use explicit **Space + dot numbers** notation, distinct from sequential literary cells. A dot-position guide is on page 1.
-- Planned-support status, hardware-acceptance caveats, missing defaults, sticky timing, Globe/Fn distinction, and source links are retained.
+- Planned-support status, hardware-acceptance caveats, sticky timing, Globe/Fn distinction, and source links are retained.
 
 The original [`../../braille-cheatsheet.typ`](../../braille-cheatsheet.typ) is used **only as an information source**, including the research data it loads. Its layout and original PDF are not reused or modified. This is a separate design by `gpt-6.1-sol`.
 
@@ -25,7 +25,7 @@ Requirements: Python 3.9+, Typst 0.15+, Poppler (`pdftotext`), and the **Atkinso
 
 The build extracts the source's lookup and command metadata into `source-content.json`, compiles this directory's independent Typst design, then checks:
 
-1. Every displayed mapping against the source: **376 mapping rows**, including all 182 contractions, plus **25 factory chords**.
+1. Every displayed mapping against the source: **376 mapping rows**, including all 182 contractions, plus **22 factory chords**.
 2. Exactly **two A4 pages**.
 3. Extractable text boxes for overlaps and print-margin overflow.
 

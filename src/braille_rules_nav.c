@@ -15,12 +15,10 @@
  * line-start/end shortcuts (compose sticky Command + Left/Right for those).
  * Each mode owns a separate array, validated with its character table before
  * selection. No settings-entry chord is assigned until Phase 05 has a UI.
- * Unassigned Caps Lock/F-key/system functions are recorded in the source audit;
- * supported HID usages alone are not evidence of factory Braille assignments.
  */
 
 #if defined(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
-#warning "Braille: BASIC consumer usages cannot send Globe, Spotlight or Mission Control; use FULL"
+#warning "Braille: BASIC consumer usages cannot send Globe; use FULL"
 #endif
 
 #define BRAILLE_ACTION_RULE(chord, behavior, key, cls)                                     \
@@ -78,13 +76,7 @@
     /* Mac VoiceOver, 8-dot: Command (space+17), one-shot not toggle. */                     \
     BRAILLE_SK_RULE(0x141, LGUI),                                                           \
     /* Mac VoiceOver Fn position (space+57): project-required Globe substitution, NOT Fn. */ \
-    BRAILLE_SK_RULE(0x150, GLOBE),                                                          \
-    /* Mac VoiceOver, Interaction: decrease volume (space+126). Consumer page on macOS. */  \
-    BRAILLE_KP_RULE(0x123, C_VOL_DN, BRAILLE_CLASS_NEUTRAL),                                 \
-    /* Mac VoiceOver, Interaction: increase volume (space+345). Consumer page on macOS. */  \
-    BRAILLE_KP_RULE(0x11c, C_VOL_UP, BRAILLE_CLASS_NEUTRAL),                                 \
-    /* TalkBack, Use braille keystrokes, TalkBack features: play/pause (space+78). */         \
-    BRAILLE_KP_RULE(0x1c0, C_PP, BRAILLE_CLASS_NEUTRAL)
+    BRAILLE_SK_RULE(0x150, GLOBE)
 
 #define BRAILLE_COMMAND_TABLE(name)                                                        \
     static const struct braille_rule name##_rules[] = {BRAILLE_NAV_RULES, BRAILLE_KEY_RULES};                   \

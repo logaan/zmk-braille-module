@@ -148,7 +148,6 @@
   "escape": "Escape", "delete": "Delete", "delete-dot7": "Delete", "delete-space7": "Delete",
   "return-dot8": "Return", "return-space8": "Return", "shift": "Shift", "control": "Control",
   "option": "Option", "command": "Command", "globe": "Globe",
-  "volume-down": "Volume −", "volume-up": "Volume +", "play-pause": "Play/pause",
 )
 #let command-keys(keys) = {
   let numbers = keys.filter(key => type(key) == int)
@@ -254,7 +253,7 @@
 #text(size: 7.5pt, fill: muted)[
   Tab = Space + dots 2345 (#text(font: mono, size: 7.3pt)[0x11e]). Delete/Return rows are alternative chords. Dot 7/8 commands work in both modes.\
   Sticky modifiers (page 2): next host key, or 1 s unused timeout. Command + Left/Right = line start/end; Shift + Tab = previous UI item.\
-  No assigned defaults: Caps Lock, F1–F12, brightness, Mission Control, Spotlight, previous/next track, system mute. Settings entry deferred.
+  Settings entry deferred.
 ]
 
 #pagebreak()
@@ -294,7 +293,7 @@
 #lookup("Shortforms", "Shortforms · whole words", "ueb2", columns: 5, note: "Whole words · alphabetical order", row: 14.1pt, size: 9.1pt)
 #v(7pt)
 #grid(columns: (auto, 1fr), column-gutter: 8pt, align: (left + horizon, right + horizon),
-  heading(level: 2, text(size: 11.5pt, weight: "bold", fill: teal)[Sticky modifiers & media]),
+  heading(level: 2, text(size: 11.5pt, weight: "bold", fill: teal)[Sticky modifiers]),
   text(size: 7.5pt, fill: muted)[Factory chords · UEB 1 / Computer8],
 )
 #v(4pt)
@@ -305,5 +304,4 @@
 #text(size: 7.2pt, fill: muted)[
   *Content:* project braille-cheatsheet.typ and its verified research; UEB rules, 3rd ed. (2024); Computer8: liblouis en-us-comp8.\
   *Factory chords:* #link("https://support.apple.com/en-us/103560")[Mac VoiceOver · support.apple.com/en-us/103560].
-  Play/pause: #link("https://support.google.com/accessibility/android/answer/3535886")[Android TalkBack · Use braille keystrokes].
 ]

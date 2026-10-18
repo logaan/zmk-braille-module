@@ -46,7 +46,7 @@ class FactoryCommands(unittest.TestCase):
                 "-o", str(Path(tmp) / "commands.o"),
             ], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("BASIC consumer usages cannot send Globe, Spotlight or Mission Control",
+            self.assertIn("BASIC consumer usages cannot send Globe; use FULL",
                           result.stderr)
 
 

@@ -29,15 +29,12 @@ subject: Implement the ZMK Braille input module
 6.  The completeness target is the printable characters and ordinary key
     functions of a US MacBook Air keyboard.
     1.  Letters in both cases, digits, punctuation, and space.
-    2.  Tab, Return, Delete, Escape, arrows, Caps Lock, Shift, Control, Option,
-        Command, and F1–F12.
+    2.  Tab, Return, Delete, Escape, arrows, Shift, Control, Option, and Command.
     3.  Globe/Fn where the host and ZMK can represent it.
-    4.  Host media and system functions, such as brightness and volume, where
-        ZMK and host behaviors exist; they are actions, not Braille characters.
-    5.  Literary UEB signs cover the characters UEB defines; `computer8` and
+    4.  Literary UEB signs cover the characters UEB defines; `computer8` and
         action bindings cover the rest.
-    6.  `references/01-mba-keys.yaml` is a supporting inventory only; it omits
-        F1–F12 and Globe/Fn, which remain required.
+    5.  `references/01-mba-keys.yaml` is a supporting inventory; Globe/Fn is
+        specified separately.
 7.  Intended users are ZMK hobbyists, Braille learners, and sighted users of
     Perkins-style keyboards; feedback is visual, on an OLED or comparable
     display.

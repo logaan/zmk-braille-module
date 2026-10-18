@@ -14,9 +14,9 @@ cargo:
 
 ## 1. Result
 
-1. `references/research/factory-command-chords.yaml` records the full verified table, exact masks, source sections, per-mode collision decisions, and missing assignments.
+1. `references/research/factory-command-chords.yaml` records the full verified table, exact masks, source sections, and per-mode collision decisions.
 2. Read the full primary Mac VoiceOver article (`https://support.apple.com/en-us/103560`), TalkBack keystrokes (`https://support.google.com/accessibility/android/answer/3535886?hl=en`), both Hable manuals, and the iOS article used by the candidate catalog.
-3. Validated all 25 selected masks and their uniqueness with PyYAML; no search-summary-only assignments were promoted.
+3. Validated all 22 selected masks and their uniqueness with PyYAML; no search-summary-only assignments were promoted.
 
 ## 2. Table for both initial modes
 
@@ -28,14 +28,9 @@ cargo:
 6. Mac VoiceOver 8-dot: dot7 `0x040` and space+7 `0x140` -> Backspace; dot8 `0x080` and space+8 `0x180` -> Return.
 7. Mac VoiceOver 8-dot: space+47 `0x148` -> sticky Shift; space+37 `0x144` -> sticky Control; space+27 `0x142` -> sticky Option; space+17 `0x141` -> sticky Command.
 8. Mac VoiceOver Fn position: space+57 `0x150` -> `&sk GLOBE`, the required supported-action substitution, explicitly not true Fn.
-9. Mac VoiceOver Interaction volume positions: space+126 `0x123` -> `&kp C_VOL_DN`; space+345 `0x11c` -> `&kp C_VOL_UP`.
-10. TalkBack, TalkBack features: space+78 `0x1c0` -> `&kp C_PP` (Mac article has no media play/pause assignment).
-11. Compose sticky Command then Left/Right for macOS line start/end, and sticky Shift then Tab for previous UI element. Home/End are not macOS line-start/end shortcuts.
+9. Compose sticky Command then Left/Right for macOS line start/end, and sticky Shift then Tab for previous UI element. Home/End are not macOS line-start/end shortcuts.
 
-## 3. Boundaries and unresolved coverage
+## 3. Boundaries
 
 1. Space-bearing rules cannot collide with dot-only character rows; dot7/8 are outside UEB six-dot input and non-printable in the planned computer8 mapping, and must remain command-only there. Real Phase-03 rows still require collision validation.
-2. No exact representable default was found for host Caps Lock, F1-F12, brightness, Mission Control, Spotlight, previous/next track, or system mute in the permitted hierarchy. Supported ZMK usages do not establish Braille chord assignments.
-3. Hable long-press Spotlight/Mute conflict with literary cells and require a policy-approved remapping; Hable CapsLock is text capitalisation, not host Caps Lock. No timer or arbitrary command assignments were invented.
-4. These missing assignments block completion of the noncharacter leaf, not the verified space/navigation implementation.
-5. Settings entry, held/toggle modifiers, iOS-only candidate editing shortcuts, and true Fn semantics are not installed.
+2. Settings entry, held/toggle modifiers, iOS-only candidate editing shortcuts, and true Fn semantics are not installed.

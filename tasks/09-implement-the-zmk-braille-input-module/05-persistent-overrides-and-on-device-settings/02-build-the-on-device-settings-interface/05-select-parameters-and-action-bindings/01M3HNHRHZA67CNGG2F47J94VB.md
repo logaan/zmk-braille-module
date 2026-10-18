@@ -19,7 +19,7 @@ cargo:
     3. Omit behaviors that report no parameter metadata, and parameter kinds with no editor below, such as `LAYER_ID`.
 2. Prompt for required parameters in order and preserve that order in the saved action.
 3. Provide these parameter editors:
-    1. Keycode: fuzzy-search ZMK keycode names, such as `LEFT_ARROW`, `F5`, or `N4`, with the behavior-name search interface, then toggle Control, Shift, Option, and Command from a modifier checklist.
+    1. Keycode: fuzzy-search ZMK keycode names, such as `LEFT_ARROW`, `TAB`, or `N4`, with the behavior-name search interface, then toggle Control, Shift, Option, and Command from a modifier checklist.
     2. Bluetooth profile commands: choose the command, then the profile number when the command takes one.
     3. Other behaviors whose parameters are keycodes, such as sticky keys, reuse the keycode editor.
 4. Generate the keycode name list at build time from the pinned ZMK release's keycode headers.

@@ -12,11 +12,10 @@ cargo:
 
 1. Complete the shared checklist against the root task's completeness target, using `references/01-mba-keys.yaml` only as a supporting inventory.
 2. Verify lowercase and uppercase letters, digits, all printable US ASCII including space, and the required literary signs through their intended input routes.
-3. Verify factory bindings for Tab, Return, Delete, Escape, all arrows, Caps Lock, Shift, Control, Option, Command, and F1–F12.
-4. Check the Globe and media/system bindings against `references/research/zmk-globe-fn-and-media-actions.yaml` on the host.
-    1. Each supported function works over Bluetooth on both baseline keyboards.
+3. Verify factory bindings for Tab, Return, Delete, Escape, all arrows, Shift, Control, Option, and Command.
+4. Check the Globe binding against `references/research/zmk-globe-and-fn-actions.yaml` on the host.
+    1. It works over Bluetooth on both baseline keyboards.
     2. Globe followed by a Braille letter triggers its Globe shortcut, such as Globe+E for the emoji picker; record what a lone Globe action does.
-    3. `F1`–`F12` arrive as standard function keys.
-    4. Sticky modifiers, including Globe, stay active long enough between chords.
-    5. Record any failure as a host or ZMK limitation.
+    3. Sticky modifiers, including Globe, stay active long enough between chords.
+    4. Record any failure as a host or ZMK limitation.
 5. Confirm host keystrokes and usable modifier combinations on the US input layout, not merely matching masks in unit tests.

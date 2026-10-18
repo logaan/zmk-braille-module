@@ -1,6 +1,6 @@
 {
   "source": "references/braille-cheatsheet.typ",
-  "source_sha256": "7f1e3c178bd09b975d50c540808dd2f4451b314960159d9312738053a30b23f7",
+  "source_sha256": "7cf0e102014c21fe9246941bd4381d7b588a6323673600122c6d3c9f7a25b260",
   "lookups": [
     {
       "modes": [
@@ -2088,57 +2088,7 @@
           "binding": "&sk GLOBE",
           "source": "voiceover_mac",
           "section": "8-dot",
-          "adaptation": "Mac calls this the Fn chord. The project's required supported-action policy substitutes Consumer GLOBE at this position, NOT a true Fn key. This does not implement Fn+Delete, Fn+arrows or Fn+F-keys."
-        },
-        {
-          "name": "volume-down",
-          "inputs": [
-            [
-              "space",
-              1,
-              2,
-              6
-            ]
-          ],
-          "masks": [
-            291
-          ],
-          "binding": "&kp C_VOL_DN",
-          "source": "voiceover_mac",
-          "section": "Interaction"
-        },
-        {
-          "name": "volume-up",
-          "inputs": [
-            [
-              "space",
-              3,
-              4,
-              5
-            ]
-          ],
-          "masks": [
-            284
-          ],
-          "binding": "&kp C_VOL_UP",
-          "source": "voiceover_mac",
-          "section": "Interaction"
-        },
-        {
-          "name": "play-pause",
-          "inputs": [
-            [
-              "space",
-              7,
-              8
-            ]
-          ],
-          "masks": [
-            448
-          ],
-          "binding": "&kp C_PP",
-          "source": "talkback",
-          "section": "TalkBack features"
+          "adaptation": "Mac calls this the Fn chord. The project's required supported-action policy substitutes Consumer GLOBE at this position, NOT a true Fn key. This does not implement Fn+Delete or Fn+arrows."
         }
       ]
     }

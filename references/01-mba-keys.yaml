@@ -1,5 +1,5 @@
-# US English (ANSI) MacBook Air keyboard, ordered by physical rows.
-# One entry per key; non-character keys keep the same name when shifted.
+# US English (ANSI) MacBook Air input targets, ordered by physical rows.
+# One entry per target key; non-character keys keep the same name when shifted.
 # Source: https://www.apple.com/macbook-air/specs/
 
 # Top row
@@ -38,7 +38,6 @@
 - {base: "\\", shifted: "|", character: true}
 
 # Home row
-- {base: "Caps Lock", shifted: "Caps Lock", character: false}
 - {base: "a", shifted: "A", character: true}
 - {base: "s", shifted: "S", character: true}
 - {base: "d", shifted: "D", character: true}

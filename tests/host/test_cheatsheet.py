@@ -110,7 +110,7 @@ class CheatsheetReference(unittest.TestCase):
     def test_all_verified_factory_commands_are_displayed(self):
         research = load_yaml("references/research/factory-command-chords.yaml")
         actual = [row for table in self.command_tables for row in table["commands"]]
-        self.assertEqual(len(actual), 25)
+        self.assertEqual(len(actual), 22)
         self.assertEqual(Counter(row["name"] for row in actual),
                          Counter(row["name"] for row in research["commands"]))
         self.assertEqual({row["name"]: row for row in actual},

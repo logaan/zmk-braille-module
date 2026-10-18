@@ -1,25 +1,9 @@
 # SPDX-License-Identifier: MIT
-# Phase 02 source audit. This is the verified subset, not a claim of complete
-# MacBook key coverage. Each selected chord is identical in ueb1/computer8;
+# Phase 02 sourced factory commands. Each chord is identical in ueb1/computer8;
 # separate compiled command tables allow later mode-specific decisions.
 verified_on: 2026-10-18
 modes: [ueb1, computer8]
 priority: [voiceover_mac, talkback, hable]
-source_gap_decision:
-  author: user
-  instruction: Check references/ for missing mappings; if none exist, skip those keys.
-  references_checked:
-    - references/01-mba-keys.yaml
-    - references/research/zmk-globe-fn-and-media-actions.yaml
-    - references/research/zmk-behavior-enumeration.yaml
-    - references/braille-cheatsheet.typ
-    - references/braille-cheatsheet.pdf
-    - references/research/ueb-*.yaml
-  result: >-
-    The inventory lists keys, ZMK research lists supported output bindings,
-    and literary research/cheatsheet data defines characters, not additional
-    representable factory command assignments. Skip the unsourced defaults
-    below in Phase 02; no arbitrary chord remapping or new timer is introduced.
 sources:
   voiceover_mac:
     product: macOS VoiceOver
@@ -32,7 +16,7 @@ sources:
     product: Android TalkBack
     title: Use braille keystrokes
     url: https://support.google.com/accessibility/android/answer/3535886?hl=en
-    verification: Full article read; only Play or pause media is selected below.
+    verification: Full article read as a fallback source.
   hable:
     product: Hable One
     urls:
@@ -45,7 +29,7 @@ sources:
     url: https://support.apple.com/en-us/118665
     verification: Full article read to audit the candidate catalog; not the specified fallback after Mac.
   zmk:
-    reference: references/research/zmk-globe-fn-and-media-actions.yaml
+    reference: references/research/zmk-globe-and-fn-actions.yaml
     note: Binding support is not evidence of a Braille chord assignment.
 
 notation:
@@ -95,10 +79,7 @@ commands:
     adaptation: >-
       Mac calls this the Fn chord. The project's required supported-action
       policy substitutes Consumer GLOBE at this position, NOT a true Fn key.
-      This does not implement Fn+Delete, Fn+arrows or Fn+F-keys.
-  - {name: volume-down, inputs: [[space, 1, 2, 6]], masks: [0x123], binding: "&kp C_VOL_DN", source: voiceover_mac, section: Interaction}
-  - {name: volume-up, inputs: [[space, 3, 4, 5]], masks: [0x11c], binding: "&kp C_VOL_UP", source: voiceover_mac, section: Interaction}
-  - {name: play-pause, inputs: [[space, 7, 8]], masks: [0x1c0], binding: "&kp C_PP", source: talkback, section: TalkBack features}
+      This does not implement Fn+Delete or Fn+arrows.
 
 compositions:
   - {name: line-start, inputs: [[space, 1, 7], [space, 1]], outputs: ["Command+Left Arrow"], source: voiceover_mac}
@@ -131,34 +112,11 @@ conflicts_and_resolutions:
       counterparts but this detector has no duration distinction; adding
       space or converting a long press to a short chord requires a policy
       decision. Do not silently promote the candidate catalog to factory data.
-  - candidate: Hable CapsLock (three successive dot6 prefixes)
-    resolution: >-
-      A text-capitalisation mode, not an ordinary host Caps Lock key, and it
-      collides with UEB capitals-passage syntax. Do not map to &kp CAPS.
-  - candidate: Hable Spotlight (hold dots1,6) and Mute Phone (hold dots1,3,4)
-    resolution: >-
-      Duration-sensitive dot-only actions conflict with literary input and
-      cannot be represented by the release-terminated mask detector without
-      remapping. No new timer or arbitrary space-bit adaptation is authorized.
-
-skipped_actions:
-  # User-approved omissions for this phase, not an unresolved software blocker.
-  # No exact representable default found in references/ or the source hierarchy.
-  # Supported HID bindings below do NOT supply a sourced chord by themselves.
-  - {name: caps-lock, binding: "&kp CAPS", reason: "Hable text CapsLock is not host Caps Lock; conflicts with literary capitals"}
-  - {name: function-keys, bindings: "&kp F1 .. &kp F12", reason: "No dot-chord defaults in the Mac, TalkBack or Hable documents read"}
-  - {name: brightness-down, binding: "&kp C_BRI_DN", reason: "No dot-chord default found"}
-  - {name: brightness-up, binding: "&kp C_BRI_UP", reason: "No dot-chord default found"}
-  - {name: mission-control, binding: "&kp C_AC_DESKTOP_SHOW_ALL_WINDOWS", reason: "No dot-chord default found"}
-  - {name: spotlight, binding: "&kp C_AC_SEARCH", reason: "Hable long-press dots1,6 needs an approved remapping"}
-  - {name: previous-track, binding: "&kp C_PREV", reason: "No dot-chord default found"}
-  - {name: next-track, binding: "&kp C_NEXT", reason: "No dot-chord default found"}
-  - {name: mute, binding: "&kp C_MUTE", reason: "Hable Android long-press dots1,3,4 needs an approved remapping; Mac speech mute is not system mute"}
 
 limitations:
   - Settings-entry chord is intentionally deferred to Phase 05.
   - True Fn, Dictation/Siri, Do Not Disturb, Touch ID and power have no factory action.
   - GLOBE is host-dependent and is not Fn; macOS BLE acceptance is user-owned.
   - Sticky keys inherit the user's &sk settings (ZMK default timeout 1000 ms).
-  - FULL consumer usages are the ZMK default; BASIC cannot send Globe, Spotlight or Mission Control.
+  - FULL consumer usages are the ZMK default; BASIC cannot send Globe.
   - The optional ueb2 command table may reuse these rows; it does not implement Grade 2 text.

@@ -48,10 +48,6 @@ static const struct expected_command expected[] = {
     {0x142, KEY(0xe2), BRAILLE_CLASS_NEUTRAL, "sk"},
     {0x141, KEY(0xe3), BRAILLE_CLASS_NEUTRAL, "sk"},
     {0x150, CONSUMER(0x29d), BRAILLE_CLASS_NEUTRAL, "sk"},
-    {0x123, CONSUMER(0xea), BRAILLE_CLASS_NEUTRAL, "kp"},
-    {0x11c, CONSUMER(0xe9), BRAILLE_CLASS_NEUTRAL, "kp"},
-    /* TalkBack: Use braille keystrokes, TalkBack features. */
-    {0x1c0, CONSUMER(0xcd), BRAILLE_CLASS_NEUTRAL, "kp"},
 };
 
 struct invocation {

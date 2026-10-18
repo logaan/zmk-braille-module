@@ -2,8 +2,8 @@
 //   typst compile references/braille-cheatsheet.typ
 // UEB data comes from the project's verified research, not a second transcription.
 // Computer8 follows tests/braille/computer8/characters.yaml (liblouis en-us-comp8).
-// Factory commands are the Phase-02 verified subset; missing source assignments
-// are skipped by user decision. Rebuild this PDF before every implementation commit.
+// Factory commands are sourced Phase-02 bindings.
+// Rebuild this PDF before every implementation commit.
 #set page(paper: "us-letter", margin: (x: 9mm, y: 8mm))
 #set text(
   font: "Avenir", size: 9.5pt, fill: rgb("#17212b"),
@@ -65,7 +65,6 @@
   "delete-dot7": "Delete", "delete-space7": "Delete", "return-dot8": "Return",
   "return-space8": "Return", "shift": "Shift", "control": "Control",
   "option": "Option", "command": "Command", "globe": "Globe",
-  "volume-down": "Volume −", "volume-up": "Volume +", "play-pause": "Play/pause",
 )
 #let command-chord(keys) = box({
   let mask = keys.filter(key => type(key) == int).fold(0, (mask, dot) => mask + calc.pow(2, dot - 1))
@@ -190,7 +189,7 @@
   #linebreak()
   Sticky: next host key or 1 s unused timeout. Command + Left/Right = line start/end; Shift + Tab = previous UI item. Globe ≠ Fn.
   #linebreak()
-  Skipped defaults: Caps Lock, F1–F12, brightness, Mission Control, Spotlight, previous/next track, system mute. No sourced chord in project references. Settings entry deferred.
+  Settings entry deferred.
 ]
 
 #pagebreak()
@@ -238,7 +237,8 @@
 
 #contraction-table("Shortforms · whole words", "shortforms", pairs: 5)
 
-#command-lookup("Factory sticky modifiers & media · both modes · Mac VoiceOver; Play/pause: TalkBack", (
-  "shift", "control", "option", "command", "globe", "volume-down", "volume-up", "play-pause",
+#command-lookup("Factory sticky modifiers · both modes · Mac VoiceOver", (
+  "shift", "control", "option", "command", "globe",
 ))
-#text(size: 6.5pt)[Software verification: 25 factory rules in both modes, real ZMK sticky/HID tests, and all 7 keyboard firmware targets pass. Physical macOS/BLE acceptance is pending.]
+#text(size: 6.5pt)[Software verification: 22 factory rules in both modes, real ZMK sticky/HID tests, and all 7 keyboard firmware targets pass. Physical macOS/BLE acceptance is pending.]
+// Command reference refreshed: 17 direct key chords and 5 sticky modifiers.

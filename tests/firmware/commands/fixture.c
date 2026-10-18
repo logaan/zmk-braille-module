@@ -95,7 +95,6 @@ static void test_direct_commands(void) {
         {0x13c, PAGE_UP}, {0x139, PAGE_DOWN}, {0x11e, TAB}, {0x111, RETURN},
         {0x103, ESC}, {0x119, BSPC}, {0x040, BSPC}, {0x140, BSPC},
         {0x080, RETURN}, {0x180, RETURN},
-        {0x123, C_VOL_DN}, {0x11c, C_VOL_UP}, {0x1c0, C_PP},
     };
     for (size_t i = 0; i < ARRAY_SIZE(expected); ++i) {
         begin_observation();
@@ -166,7 +165,7 @@ static void run_suite(void) {
     __ASSERT(braille_tables_count() == 2, "Initial mode registry changed");
     for (size_t m = 0; m < braille_tables_count(); ++m) {
         const struct braille_mode *mode = braille_tables_mode(m);
-        __ASSERT(mode->commands->count == 25, "Verified command count changed");
+        __ASSERT(mode->commands->count == 22, "Verified command count changed");
         __ASSERT(braille_tables_select(mode->name) == 0, "Mode selection/collision failure");
         struct braille_override_layer overrides = braille_tables_overrides();
         *overrides.count = 0;

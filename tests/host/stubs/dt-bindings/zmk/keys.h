@@ -22,6 +22,3 @@
 #define LALT TEST_KEY(0xe2)
 #define LGUI TEST_KEY(0xe3)
 #define GLOBE ((0x0cUL << 16) | 0x29d)
-#define C_VOL_DN ((0x0cUL << 16) | 0xea)
-#define C_VOL_UP ((0x0cUL << 16) | 0xe9)
-#define C_PP ((0x0cUL << 16) | 0xcd)

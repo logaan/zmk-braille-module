@@ -32,7 +32,7 @@ cargo:
 ## 3. Scope
 
 1.  Replace the fixtures with researched factory rules for navigation, editing,
-    ordinary keyboard functions, modifiers, and supported media/system actions.
+    ordinary keyboard functions and modifiers.
 2.  Use the existing `tests/braille/commands/voiceover.yaml` catalog as the
     candidate fixture set; confirm its sources before making a rule factory
     data.

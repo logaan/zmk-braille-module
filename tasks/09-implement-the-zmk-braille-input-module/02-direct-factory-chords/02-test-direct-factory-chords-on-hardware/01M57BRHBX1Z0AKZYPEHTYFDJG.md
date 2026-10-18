@@ -15,7 +15,7 @@ cargo:
 
 ## 1. Status
 
-1. Phase-02 software is delivered with the user-approved skipped defaults recorded in the source audit and cheatsheet.
+1. Phase-02 software is delivered with the sourced factory bindings recorded in the source audit and cheatsheet.
 2. All seven smoke targets compiled and linked; native ZMK verifies the real key/sticky/HID path. No physical keyboard was flashed or host behavior observed by the agent.
 3. This user-owned task remains blocked on physical macOS/BLE acceptance, not on source-assignment decisions.
 
@@ -35,7 +35,6 @@ cargo:
 3. Confirm literal space, Return (Space+15, dot8, Space+8), Delete (Space+145, dot7, Space+7), Escape, all arrows and page navigation. Commands must not type alphabet characters.
 4. Sticky Shift+Tab and Control+Tab apply once; the next Tab is plain. Command then Left/Right is macOS line start/end. Home/End are not those shortcuts.
 5. Confirm stacked Shift+Command with Left; default unused modifiers expire after 1000 ms. Slow chording may need an &sk timeout adjustment, not a chord-capture timer.
-6. Sample volume down/up (Space+126 / Space+345) and play/pause (Space+78). Record actual host behavior.
-7. Globe (Space+57) then `e` should send Globe+e; record host effect and unused timeout. It is not Fn; do not expect Fn+Delete or Fn+arrow behavior.
-8. No factory defaults exist in this phase for Caps Lock, F1-F12, brightness, Mission Control, Spotlight, previous/next track or system mute, per the user\u2019s skip decision. Settings entry, literary context and persistence are outside this test.
-9. Record keyboard/host setup, each result and any host-specific limitation here before accepting the phase.
+6. Globe (Space+57) then `e` should send Globe+e; record host effect and unused timeout. It is not Fn; do not expect Fn+Delete or Fn+arrow behavior.
+7. Settings entry, literary context and persistence are outside this test.
+8. Record keyboard/host setup, each result and any host-specific limitation here before accepting the phase.

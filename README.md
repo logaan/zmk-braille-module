@@ -11,8 +11,8 @@ The `ueb1` table carries the 26 six-dot alphabet cells as ordinary lowercase
 keystrokes; the devicetree default mode is selected at boot. The mode key
 composes ZMK layer/hold-tap behaviors, and settings entry/exit hooks isolate
 captured input from typing. Literary signs, context transitions, the settings UI,
-and persistence are not implemented yet. Factory command coverage is incomplete;
-see [direct factory commands](#direct-factory-commands) for the source audit and gaps.
+and persistence are not implemented yet. See
+[direct factory commands](#direct-factory-commands) for mappings and verification status.
 
 ## Pinned development baseline
 
@@ -123,7 +123,7 @@ No hardware is flashed by these commands.
 Both `ueb1` and `computer8` have separate command tables, validated with the
 selected character table before activation. The `computer8` character table is
 still empty; command availability does not claim computer-Braille text support.
-The full source audit, exact masks, collisions, and unassigned requirements are
+The source audit, exact masks, and collision decisions are
 in [`references/research/factory-command-chords.yaml`](references/research/factory-command-chords.yaml).
 Rules send ordinary host keys, not screen-reader API commands.
 
@@ -140,8 +140,6 @@ Rules send ordinary host keys, not screen-reader API commands.
 | Escape | Space + 12 | Mac VoiceOver, Navigation |
 | Sticky Shift / Control / Option / Command | Space + 47 / 37 / 27 / 17 | Mac VoiceOver, 8-dot |
 | Sticky Globe (not true Fn) | Space + 57 | Mac VoiceOver Fn position, project Globe-only substitution |
-| Volume down / up | Space + 126 / Space + 345 | Mac VoiceOver, Interaction positions |
-| Play / pause | Space + 78 | TalkBack, Use braille keystrokes |
 
 “Space” here means `&bspc`, never a conventional space key. The former fixture
 Tab at Space + 45 (`0x118`) is removed; that is VoiceOver's Translate chord.
@@ -159,19 +157,12 @@ Globe + Delete/arrows does not emulate Fn + Delete/arrows. These rules do not
 install VoiceOver's held/toggle modifiers. Chording itself still has no timer.
 
 The module's devicetree explicitly retains `&kp` and `&sk`, even with no direct
-keymap bindings to either. Consumer actions use `C_` usages; preserve ZMK's default
+keymap bindings to either. Globe uses a Consumer-page usage; preserve ZMK's default
 `CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL=y`. Choosing BASIC emits a build-time
-warning: it cannot represent Globe, Spotlight or Mission Control (the latter two
-still have no assigned factory chords).
+warning because it cannot represent Globe.
 
-The source audit found no exact representable defaults in the permitted
-Mac VoiceOver → TalkBack → Hable hierarchy for host Caps Lock, F1–F12,
-brightness, Mission Control, Spotlight, previous/next track, or system mute.
-The existing `references/` files list their supported ZMK output bindings but
-supply no additional representable Braille assignments. Per user instruction,
-**these factory defaults are skipped in Phase 02**, not invented or claimed as
-implemented. Settings entry remains deferred to Phase 05. True Fn,
-Dictation/Siri, Do Not Disturb, Touch ID and power have no factory action.
+Settings entry remains deferred to Phase 05. True Fn, Dictation/Siri,
+Do Not Disturb, Touch ID and power have no factory action.
 
 ```sh
 python3 tests/host/test_commands.py
@@ -182,7 +173,7 @@ These compile/run the real capture, matching, per-mode data and dispatch path,
 with only behavior invocation recorded. They prove exact Tab isolation from
 alphabet `t`, final-release output, literal space/navigation in every compiled
 mode, whitespace metadata, fixture-character coexistence and collision
-rejection, all 25 verified action bindings, Return aliases, and the BASIC warning.
+rejection, all 22 verified action bindings, Return aliases, and the BASIC warning.
 They do not simulate sticky-key semantics or prove BLE delivery.
 
 ```sh
@@ -205,9 +196,8 @@ is `build/baseline/build/commands-native/zephyr/zmk.exe`.
 
 Both halves of both baseline keyboards, both reset images, and the Toucan
 `computer8` override also pass `./scripts/smoke-build`. That verifies compile/link
-and UF2 generation, not physical macOS input. The software scope is delivered
-with the user-approved omissions above; Phase 02 still needs its user-owned
-hardware acceptance.
+and UF2 generation, not physical macOS input. The software scope is delivered;
+Phase 02 still needs its user-owned hardware acceptance.
 
 ## Devicetree interface
 

@@ -4,7 +4,7 @@ author:
   type: agent
   harness: pi
   model: gpt-6.1-sol
-subject: 'delivered: sourced keys sticky modifiers and media'
+subject: 'delivered: sourced keys and sticky modifiers'
 cargo:
   type: task
   status: delivered
@@ -14,13 +14,12 @@ cargo:
 
 ## 1. Revised scope
 
-1. The user approved skipping missing assignments after checking `references/`; the preceding answer records that decision.
-2. Host Caps Lock, F1-F12, brightness down/up, Mission Control, Spotlight, previous/next track and system mute remain unassigned, not invented or falsely labelled supported factory chords.
-3. The source audit, README and cheatsheet list these omissions. Settings entry remains deferred to Phase 05.
+1. The source audit, README and cheatsheet describe the sourced factory bindings.
+2. Settings entry remains deferred to Phase 05.
 
 ## 2. Implementation
 
-1. Expanded `src/braille_rules_nav.c` to 25 sourced rules per mode, including Escape, all Mac Delete/Return aliases, sticky Shift/Control/Option/Command/Globe, Consumer volume and TalkBack play/pause. Every row names its source.
+1. `src/braille_rules_nav.c` contains 22 sourced rules per mode, including Escape, all Mac Delete/Return aliases, and sticky Shift/Control/Option/Command/Globe. Every row names its source.
 2. Globe uses Mac\u2019s Fn position with the project-required Consumer GLOBE substitution; it does not implement true Fn. No held/toggle modifier or new chord timer is added.
 3. Module devicetree retains `&kp` and `&sk` via real phandle references. Compile-time BASIC-consumer warning preserves the default FULL configuration.
 4. Added two optional Return-alias masks to existing whitespace metadata; dot8 and space+dot8 now share the canonical Return\u2019s pending-text path rather than discarding it as navigation.

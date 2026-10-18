@@ -127,13 +127,13 @@ verified:
     device_name: >-
       `item->device->name` is DEVICE_DT_NAME: the node's `label` property if present, else the
       node's full name. Examples at v0.3.0: `key_press`, `sticky_key`, `sticky_layer`,
-      `bluetooth`, `outputs`, `caps_word`, `transparent`, `none`, `sysreset`, `bootload`.
+      `bluetooth`, `outputs`, `transparent`, `none`, `sysreset`, `bootload`.
       This is the string `zmk_behavior_get_binding()` resolves, so it is the stable persisted
       identifier.
     display_name: >-
       With CONFIG_ZMK_BEHAVIOR_METADATA, `item->metadata.display_name` is the node's
       `display-name` property, falling back to the device name. Built-in examples: "Key Press",
-      "Sticky Key", "Bluetooth", "Output Selection", "Caps Word", "Reset", "Bootloader".
+      "Sticky Key", "Bluetooth", "Output Selection", "Reset", "Bootloader".
     node_label: Keymap labels such as `kp` or `sk` are not stored in the firmware.
   compiled_set: >-
     Built-in behavior nodes are `/omit-if-no-ref/` unless ZMK_BEHAVIORS_KEEP_<NAME> or

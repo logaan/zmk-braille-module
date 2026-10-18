@@ -24,8 +24,8 @@ cargo:
 
 1.  Confirm Braille Tab is dots 2, 3, 4, 5 plus Braille space and produces one
     Tab key event.
-2.  Confirm literal Braille space, Return, arrows, navigation, and a sample of
-    modifier and supported system/media actions use their intended host action.
+2.  Confirm literal Braille space, Return, arrows, navigation, and sticky
+    modifiers use their intended host action.
 3.  Confirm direct commands neither emit alphabet characters nor leave a
     modifier armed after its documented scope.
 4.  Exercise QBF Paintbrushes and Toucan, including Toucan's momentary and

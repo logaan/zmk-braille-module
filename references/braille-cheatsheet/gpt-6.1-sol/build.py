@@ -60,7 +60,7 @@ def check_content(snapshot):
     )
     assert contractions == 182, f"Expected 182 contractions, got {contractions}"
     commands = sum(len(group["commands"]) for group in snapshot["commands"])
-    assert commands == 25, f"Expected 25 factory chords, got {commands}"
+    assert commands == 22, f"Expected 22 factory chords, got {commands}"
     return sum(expected.values()), contractions, commands
 
 
