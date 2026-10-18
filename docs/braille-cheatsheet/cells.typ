@@ -24,13 +24,15 @@
   image(bytes(svg), format: "svg", width: 6.4pt, height: height * 1pt,
     alt: "Braille dots " + dots.map(str).join(", "))
 }
-#let space-key = box(
+#let key-box(body) = box(
   inset: (x: 2.4pt, y: 1.5pt), radius: 2pt,
   stroke: 0.4pt + rgb("#aebfc4"), fill: white,
-  text(size: 7pt, weight: "bold", fill: muted)[␣],
+  text(size: 7pt, weight: "bold", fill: muted, body),
 )
-#let sequence(cells, eight: false, wrap: false) = {
-  let tokens = cells.clusters().map(cell => if cell == " " { space-key } else { braille(cell, eight: eight) })
+#let space-key = key-box[␣]
+#let sequence(cells, eight: false, wrap: false, space: auto) = {
+  let space-token = if space == auto { space-key } else { space }
+  let tokens = cells.clusters().map(cell => if cell == " " { space-token } else { braille(cell, eight: eight) })
   let line(tokens) = box(grid(columns: (auto,) * tokens.len(), column-gutter: 3pt, align: horizon, ..tokens))
   if wrap {
     layout(size => {

@@ -227,3 +227,35 @@ at the bottom of column 2 and continues at the top of column 3 as
 "Navigation and Editing Cont'd". All chords stay on page 1, which the
 compilation assert checks. The reference remains three A4 pages with
 every continued heading starting its page column.
+
+= Printable quick-reference digits grade 1 rename
+
+The first digit table's heading changes from "Digits · UEB 1" to
+"Digits · UEB Grade 1". The data module and the 8 dot digit table are
+unchanged.
+
+= Printable quick-reference sequence space parameter
+
+The cell renderer factors the bordered key box out of the space-key
+helper into a general key-box function, and defines the space key as
+key-box[␣]. The sequence renderer gains a space parameter: auto (the
+default) keeps the bordered ␣ key box between words, while any other
+content — such as a fixed h(6pt) gap — replaces it. Tables keep the
+default.
+
+= Printable quick-reference Quick Braille Fox subheads
+
+Each Quick Braille Fox heading gains a centred three-column grid
+subhead: the plain text "qk brl fox", a middle dot, and the sequence
+⠟⠅ ⠃⠗⠇ ⠋⠕⠭ rendered by the sequence cell renderer with space:
+h(6pt) so word gaps are plain horizontal space instead of key boxes.
+Rendering the cells through the sequence SVG renderer — rather than as
+Unicode braille text — also fixes the cells showing question-mark
+glyphs. A linebreak before each heading keeps it off the previous
+content's line, and the headings are coloured: teal on page 1 and blue
+on page 2, matching the page section headings.
+
+= Printable quick-reference capitals key-box intro
+
+The Capitals intro sets "8 Dot" inside the white bordered key box and
+capitalises the instruction: "Add dot 7 to each uppercase letter."
