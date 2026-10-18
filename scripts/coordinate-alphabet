@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Small, stateless Luna coordinator; Sol verifies the alphabet handoff."""
+"""Stateless Luna progress checks; deterministic leaf scheduling; Sol verification."""
 import argparse
 import fcntl
 import json
 import os
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -13,69 +14,50 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 PHASE = Path("tasks/09-implement-the-zmk-braille-input-module/01-zmk-foundations-and-alphabet")
 HARDWARE = PHASE / "05-test-alphabet-input-on-real-hardware"
+TERMINAL = {"delivered", "done"}
 
-COORDINATE = """Act only as a MINIMAL coordinator, not an implementer or code reviewer.
-Continue phase 01 in the snapshot, one leaf per fresh pi subagent, in task order,
-until the alphabet is ready for the USER to test. Never start phase 02 or perform
-hardware testing. The user delegates marking tasks ready. Use ./scripts/td for
-assignments, questions, decisions, and deliveries; TaskDown is the durable state.
-Read relevant task messages, not every source file or the entire task history.
-Leave implementation, tests, and technical choices to each leaf worker. Preserve
-unrelated changes. Commit only your own TaskDown messages, never git add -A.
-
-The script owns the polling interval: do NOT sleep or run a polling loop yourself.
-Inspect tagged worker panes and relevant task messages. A healthy active worker
-only needs COORDINATOR_WAIT: do not post routine progress requests or repeated
-pings. Never interrupt an active worker, spawn a duplicate, or advance before its
-delivery is committed and implementation has finished. An adopted interactive
-worker can remain a node process after delivery; a committed delivery and idle
-final response mean it is finished. Leave that idle pane alone and continue.
-Untagged panes are NOT your workers. Do not type
-into the user's or another coordinator's pane. A notification to read a new
-TaskDown message is fine, but put substantive coordination in TaskDown.
-
-When no worker is active and the preceding leaf is delivered/done, mark the next
-leaf ready, assign it, and launch a fresh pi in a tmux pane in this same window.
-Use the worker command/model given below with --print (so its pane exits when it
-finishes). Prompt it to read its assigned task and prerequisites, implement ONLY
-that leaf, test, commit its work, deliver via ./scripts/td, and stop. Tag the new
-pane using `tmux set-option -p -t PANE @braille_task TASK_PATH`. Use tmux
-split-window -d -P -F '#{pane_id}' -t YOUR_SCRIPT_PANE -c REPO_ROOT COMMAND;
-quote COMMAND correctly. Keep one live implementation worker at a time. A failed
-or interrupted leaf can be assigned a fresh worker on that SAME leaf after
-checking its task messages. Never kill/replace a live worker just to restart it.
-
-Answer routine coordination questions through TaskDown; do not guess user-only
-policy or hardware answers. For a genuine user blocker, record the question and
-blocked status and end with COORDINATOR_BLOCKED. Otherwise keep the work moving.
-
-At the alphabet leaf, include the required preparation for the hardware checkpoint:
-fresh firmware for both keyboards/both halves, current published module/config
-pins, exact artifact paths and flashing instructions in the user-owned hardware
-task. Do not mistake old scaffolding smoke artifacts for working alphabet builds.
-When all 12 implementation leaves are delivered/done and the handoff appears
-ready, end with COORDINATOR_VERIFY to request Sol's independent check.
-Otherwise end with COORDINATOR_WAIT. No other final marker; do not claim success.
-Keep your response short. The LAST LINE must be exactly one of those markers.
+COORDINATE = """You are the MINIMAL progress coordinator for alphabet bring-up.
+Read the snapshot and return ONE JSON object, no markdown:
+{"action":"wait|start|answer|verify|blocked", "reason":"short explanation"}.
+You have no tools: the script, not you, controls workers and TaskDown writes.
+- wait: an implementation worker is active; do not micromanage or send pings.
+- start: no worker is active and the next software leaf needs work. The script
+  assigns ONLY the earliest unfinished leaf, never a later task. A stopped worker
+  may be replaced by a fresh worker on that same leaf, preserving existing work.
+- answer: a routine coordination question can be resolved from the task messages.
+  Also return "regarding": the question's 10-character ID, and "body": a short
+  numbered-list answer. Do not dictate implementation choices or guess user policy.
+- verify: all 12 software leaves appear delivered; request independent Sol review
+  of the real alphabet firmware/artifacts/flashing handoff. Never claim acceptance.
+- blocked: a genuine user decision is needed; explain the question in reason.
+Use only this phase. Never implement, review source, run tests, start phase 02,
+or perform hardware testing. Read the current leaf's messages only as needed.
+The user authorizes ready transitions and one leaf per fresh implementation agent.
 """
 
 VERIFY = """Independently check whether phase 01 is ready for the user's alphabet
-hardware test. You are Sol, the final checker, not another implementation worker.
-Read TaskDown deliveries and check the implementation/test/build evidence as
-needed. Verify the real alphabet uses the shared capture/matcher/action path,
-all 26 lowercase host mappings, both keyboard layouts and mode-key access,
-fresh usable firmware for both halves of both keyboards, reproducible current
-module/config pins, and artifact paths/flashing instructions in the user-owned
-hardware task. No physical testing or phase-02 features are required. Do NOT
-flash hardware, start phase 02, or implement fixes yourself.
-If ready, record a concise handoff in TaskDown, mark the user hardware test ready
-with worker user, commit only your own messages, and end with ALPHABET_VERIFIED.
-If fixes are needed, record actionable feedback in the affected implementation
-leaf, reopen it ready for a fresh one-leaf worker only when no worker is still
-active there, and end with COORDINATOR_CONTINUE. If a user decision is required,
-record it in TaskDown and end with COORDINATOR_BLOCKED. Never mark physical
-acceptance passed. The LAST LINE must be exactly one of those markers.
+hardware test. You are Sol, the final checker, not an implementation worker.
+Read TaskDown deliveries and check implementation/test/build evidence as needed:
+real shared capture/matcher/action path; all 26 lowercase host mappings; both
+keyboard layouts and mode-key access; fresh firmware for both halves of both
+keyboards; current reproducible published module/config pins; artifact paths and
+flashing instructions in the user-owned hardware task. No physical testing or
+phase-02 features are required. Do NOT flash hardware, start phase 02, spawn
+workers, or implement fixes yourself. Coordinate through ./scripts/td.
+If ready, record a concise handoff there, mark the hardware task ready with worker
+user, commit only your own messages, and end with ALPHABET_VERIFIED.
+If fixes are needed, record actionable feedback in the affected software leaf,
+reopen it ready, commit only your messages, and end with COORDINATOR_CONTINUE.
+If a user decision is required, record it and end with COORDINATOR_BLOCKED.
+Never mark physical acceptance passed. Your LAST LINE must be exactly one marker.
 """
+
+
+def frontmatter(message):
+    text = message.read_text()
+    if not text.startswith("---\n") or "\n---" not in text[4:]:
+        raise ValueError(f"Incomplete TaskDown message: {message}")
+    return text[4:].split("\n---", 1)[0]
 
 
 def task_snapshot(root=ROOT):
@@ -83,65 +65,163 @@ def task_snapshot(root=ROOT):
     leaves = sorted(p for p in folders if not any(p in q.parents for q in folders))
     result = []
     for folder in leaves:
-        status, latest = "unknown", None
+        status, status_message, latest = "unknown", None, None
         for message in sorted(folder.glob("*.md")):
-            text = message.read_text()
-            if not text.startswith("---\n") or "\n---" not in text[4:]:
-                raise ValueError(f"Incomplete TaskDown message: {message}")
-            front = text[4:].split("\n---", 1)[0]
-            match = re.search(r"(?m)^  status:\s*['\"]?([a-z]+)", front)
+            match = re.search(r"(?m)^  status:\s*['\"]?([a-z]+)", frontmatter(message))
             if match:
-                status = match[1]
+                status, status_message = match[1], message
             latest = message
         result.append({"task": str(folder.relative_to(root)), "status": status,
+                       "status_message": str(status_message.relative_to(root)) if status_message else None,
                        "latest_message": str(latest.relative_to(root))})
     return result
 
 
+def software_rows(snapshot):
+    rows = [row for row in snapshot if row["task"] != str(HARDWARE)]
+    if len(rows) != 12:
+        raise ValueError("Expected exactly 12 software leaves; refusing an unexpected task tree")
+    return rows
+
+
 def software_complete(snapshot):
-    software = [row for row in snapshot if row["task"] != str(HARDWARE)]
-    return len(software) == 12 and all(row["status"] in {"delivered", "done"} for row in software)
+    return all(row["status"] in TERMINAL for row in software_rows(snapshot))
+
+
+def workers(pane):
+    output = subprocess.check_output([
+        "tmux", "list-panes", "-t", pane, "-F",
+        "#{pane_id}\t#{pane_current_command}\t#{@braille_task}"], text=True)
+    return [{"pane": p, "task": task} for p, command, task in
+            (line.split("\t", 2) for line in output.splitlines())
+            if task and command not in {"zsh", "bash", "sh"}]
+
+
+def committed(message):
+    return bool(message) and subprocess.run(
+        ["git", "ls-files", "--error-unmatch", message], cwd=ROOT,
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0 and subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--", message], cwd=ROOT).returncode == 0
+
+
+def td(args, task, subject, kind, body, *extra):
+    command = ["./scripts/td", "message", "new", "--task", task,
+               "--subject", subject, "--type", kind, "--body", body,
+               "--author", "agent", "--harness", "pi", "--model", args.luna_model,
+               "--name", "coordinator-luna", *extra]
+    return subprocess.check_output(command, cwd=ROOT, text=True).strip()
+
+
+def commit_messages(paths, subject):
+    subprocess.run(["git", "add", "--", *paths], cwd=ROOT, check=True)
+    subprocess.run(["git", "commit", "-m", subject, "--", *paths], cwd=ROOT, check=True)
+
+
+def start_leaf(args, snapshot):
+    # Recheck the real state immediately before assignment, independent of Luna.
+    if workers(args.pane):
+        return "Worker active; start request ignored."
+    rows = software_rows(task_snapshot())
+    index = next((i for i, row in enumerate(rows) if row["status"] not in TERMINAL), None)
+    if index is None:
+        return "No unfinished software leaf."
+    if not all(committed(row["status_message"]) for row in rows[:index]):
+        return "Waiting for predecessor delivery commits."
+    row, name = rows[index], f"alphabet-leaf-{index + 1:02}"
+    ready = td(args, row["task"], f'{row["status"]} -> ready', "task",
+               "1. Ready for sequential work under the user's delegated readiness authority.",
+               "--status", "ready")
+    assignment = td(args, row["task"], f"Assigned to {name}", "task",
+                    f"1. Complete only this leaf as `{name}`, test, commit, deliver through TaskDown, and stop.\n"
+                    "2. Read its requirements, ancestors, and prerequisite deliveries; implementation choices are yours.",
+                    "--status", "started", "--worker", "agent", "--worker-harness", "pi",
+                    "--worker-model", args.sol_model, "--worker-name", name)
+    commit_messages([ready, assignment], f"Assign {name}")
+    prompt = (f"Your single assigned leaf is {row['task']}. Read AGENTS.md, ./scripts/td system, "
+              "all messages in that task, relevant ancestors, and prerequisite deliveries. Implement ONLY "
+              "this leaf, choose the implementation yourself, test, commit only your own work, record "
+              "delivered results or genuine blockers via ./scripts/td, then stop. Preserve unrelated edits. "
+              "Do not start another task, mark your own work done, spawn agents, or type into other panes. "
+              "Coordinate through TaskDown and check for new task messages before delivery.")
+    if index == 11:
+        prompt += (f" Prepare the required alphabet hardware handoff in {HARDWARE}: fresh firmware for "
+                   "both halves of both keyboards, current published pins, artifact paths and flashing "
+                   "instructions. Do not flash hardware or start phase 02.")
+    command = shlex.join(["pi", "--provider", "openai", "--model", args.sol_model,
+                          "--thinking", "high", "--print", "--name", name, prompt])
+    pane = subprocess.check_output(["tmux", "split-window", "-d", "-P", "-F", "#{pane_id}",
+                                    "-t", args.pane, "-c", str(ROOT), command], text=True).strip()
+    subprocess.run(["tmux", "set-option", "-p", "-t", pane, "@braille_task", row["task"]], check=True)
+    return f"Started {name} in {pane}: {row['task']}"
 
 
 def run_pi(model, thinking, prompt, log_dir, label):
     command = ["pi", "--provider", "openai", "--model", model, "--thinking", thinking,
-               "--print", "--no-session", "--no-extensions", "--no-skills",
-               "--no-prompt-templates", "--tools", "read,bash", prompt]
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True,
+               "--print", "--no-session", "--no-extensions", "--no-skills", "--no-prompt-templates"]
+    command += ["--no-tools", "--no-context-files"] if label == "luna" else ["--tools", "read,bash"]
+    result = subprocess.run(command + [prompt], cwd=ROOT, capture_output=True, text=True,
                             timeout=180 if label == "luna" else 1800)
     log = log_dir / f"{time.time_ns()}-{label}.log"
     log.write_text(result.stdout + "\n--- stderr ---\n" + result.stderr)
     if result.returncode:
         raise RuntimeError(f"{label} exited {result.returncode}; see {log}")
-    lines = result.stdout.strip().splitlines()
-    return lines[-1].strip() if lines else "", result.stdout.strip()
+    return result.stdout.strip()
 
 
 def check_once(args, log_dir):
-    snapshot = task_snapshot()
-    panes = subprocess.check_output([
-        "tmux", "list-panes", "-t", args.pane, "-F",
-        "#{pane_id} command=#{pane_current_command} task=#{@braille_task}"], text=True)
-    context = (f"\nREPO_ROOT={ROOT}\nYOUR_SCRIPT_PANE={args.pane}\n"
-               f"Worker command: pi --provider openai --model {args.sol_model} "
-               "--thinking high --print --name <one-leaf-name> <task-prompt>\n"
-               f"Current window panes:\n{panes}\nTask snapshot:\n{json.dumps(snapshot, indent=2)}\n")
-    marker, report = run_pi(args.luna_model, "low", COORDINATE + context, log_dir, "luna")
-    print(report, flush=True)
-    if marker == "COORDINATOR_VERIFY":
-        if not software_complete(task_snapshot()):
-            raise RuntimeError("Refused premature Sol handoff: not all 12 software leaves are delivered")
-        marker, report = run_pi(args.sol_model, "high", VERIFY + context, log_dir, "sol")
+    snapshot, active = task_snapshot(), workers(args.pane)
+    if len(active) > 1:
+        raise RuntimeError("Multiple tagged workers active; refusing further scheduling")
+    rows = software_rows(snapshot)
+    current = next((row for row in rows if row["status"] not in TERMINAL), None)
+    messages = []
+    if current:
+        messages = [{"id": p.stem, "text": p.read_text()[:5000]} for p in
+                    sorted((ROOT / current["task"]).glob("*.md"))[-4:]]
+    context = {"tasks": snapshot, "active_workers": active, "current_messages": messages}
+    report = run_pi(args.luna_model, "low", COORDINATE + json.dumps(context), log_dir, "luna")
+    decision = json.loads(report)
+    action = decision["action"]
+    print(f"Luna: {action}: {decision.get('reason', '')}", flush=True)
+    if action == "start":
+        print(start_leaf(args, snapshot), flush=True)
+    elif action == "answer":
+        if not current:
+            raise ValueError("No current leaf to answer")
+        reference = decision["regarding"]
+        questions = [p for p in (ROOT / current["task"]).glob("*.md")
+                     if p.stem[:10] == reference and re.search(r"(?m)^  type: question$", frontmatter(p))]
+        if len(questions) != 1:
+            raise ValueError("Answer must reference an actual current-leaf question")
+        message = td(args, current["task"], "Coordinator answer", "answer", decision["body"],
+                     "--regarding", f"{reference}=Coordination question")
+        paths = [message]
+        if not active and current["status"] == "blocked":
+            paths.append(td(args, current["task"], "blocked -> ready", "task",
+                            "1. Coordinator answer recorded; resume this same leaf.", "--status", "ready"))
+        commit_messages(paths, "Answer leaf coordination question")
+    elif action == "verify":
+        if workers(args.pane) or not software_complete(task_snapshot()):
+            print("Sol handoff deferred: implementation is still active or incomplete.", flush=True)
+            return "wait"
+        report = run_pi(args.sol_model, "high", VERIFY + json.dumps(snapshot), log_dir, "sol")
         print(report, flush=True)
-        if marker == "ALPHABET_VERIFIED":
-            if not software_complete(task_snapshot()):
-                raise RuntimeError("Sol reported success while software leaves remain open")
+        marker = report.splitlines()[-1] if report else ""
+        if marker == "ALPHABET_VERIFIED" and software_complete(task_snapshot()):
             return "done"
-        if marker not in {"COORDINATOR_CONTINUE", "COORDINATOR_BLOCKED"}:
-            raise RuntimeError(f"Unexpected Sol marker: {marker!r}")
-    elif marker not in {"COORDINATOR_WAIT", "COORDINATOR_BLOCKED"}:
-        raise RuntimeError(f"Unexpected Luna marker: {marker!r}")
-    return "blocked" if marker == "COORDINATOR_BLOCKED" else "wait"
+        if marker == "COORDINATOR_BLOCKED":
+            return "blocked"
+        if marker != "COORDINATOR_CONTINUE":
+            raise ValueError(f"Unexpected Sol result: {marker!r}")
+    elif action == "blocked":
+        if current and current["status"] != "blocked":
+            message = td(args, current["task"], "User decision required", "task",
+                         "1. " + decision["reason"], "--status", "blocked")
+            commit_messages([message], "Record coordinator blocker")
+        return "blocked"
+    elif action != "wait":
+        raise ValueError(f"Unexpected Luna action: {action!r}")
+    return "wait"
 
 
 def main():
@@ -175,7 +255,7 @@ def main():
                     return 2
                 if args.once:
                     return 0
-            except (RuntimeError, subprocess.SubprocessError, OSError, ValueError) as error:
+            except (RuntimeError, subprocess.SubprocessError, OSError, ValueError, KeyError) as error:
                 errors += 1
                 print(f"Coordinator error ({errors}/3): {error}", file=sys.stderr, flush=True)
                 if args.once or errors >= 3:
