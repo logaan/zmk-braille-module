@@ -1,12 +1,13 @@
 # Development and CI workspace for the Braille module.
 #
 # Pins the one ZMK revision the module and both baseline keyboards use: the
-# most recent ZMK release. scripts/build-firmware creates the workspace from
-# this manifest under build/ws/ (git-ignored); the keyboards pin the same
+# most recent ZMK release (verified via GitHub releases/latest on 2026-10-18).
+# v0.3.0 = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+# Initialize a west workspace from this manifest; both keyboards pin the same
 # revision in their own config/west.yml.
 #
 # cirque-input-module and zmk-rgbled-widget are the Toucan's community modules,
-# at the revisions its config pins, so the Toucan builds in this workspace too.
+# at the revisions its config pins, for baseline compatibility checks.
 manifest:
   remotes:
     - name: zmkfirmware
@@ -22,7 +23,8 @@ manifest:
       import: app/west.yml
     - name: cirque-input-module
       remote: geeksville
-      revision: toucan
+      # Snapshot of upstream toucan, matching the keyboard manifest.
+      revision: effec100f0cd3a38e7fba3adfea394586cc84cab
     - name: zmk-rgbled-widget
       remote: caksoylar
       revision: v0.3

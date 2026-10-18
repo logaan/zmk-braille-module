@@ -2,6 +2,20 @@
 
 An external ZMK feature module intended for six-dot Unified English Braille (UEB) uncontracted input. **Currently this is only a build/discovery smoke test:** when enabled, it logs `Hello from the ZMK Braille module!` at startup. It does not intercept keys, translate Braille, or send HID output. Normal keyboard behavior is unchanged.
 
+## Pinned development baseline
+
+[`west/west.yml`](west/west.yml) is the shared development/CI dependency manifest.
+It pins ZMK **v0.3.0** (`edf5c0814fd3ea202e43aad2d68fd32e882a518c`),
+verified as GitHub's latest non-prerelease release on 2026-10-18. Both baseline
+keyboard manifests use the same release. Keep future module build/CI wiring on
+this manifest rather than a floating ZMK branch.
+
+The release uses Zephyr 3.5 and LVGL 8; the tested local build container is
+`zmkfirmware/zmk-build-arm:3.5`. Baseline boards are `nice_nano_v2` for the QBF
+Paintbrushes and `seeeduino_xiao_ble` for the Toucan. The manifest also freezes
+the Toucan's upstream Cirque `toucan` snapshot and pins its RGB widget release;
+its `nice_view_gem` display is supplied by the keyboard repository itself.
+
 ## Try it locally
 
 In a ZMK west workspace, pass this directory as an extra Zephyr module to a central or non-split firmware build (replace the paths and board with your own):
