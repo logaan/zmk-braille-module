@@ -21,3 +21,16 @@ The copyright page (printed page ii, PDF page 2) licenses the publication under 
 At retrieval, ICEB's UEB page listed the 2024 third edition and no separately labelled rulebook errata. It also listed separate Guidelines for Technical Material (GTM), their errata, and approved replacement sections. In particular, [GTM 1.7: Choice and Placement of Grade 1 Indicators](https://iceb.org/wp-content/uploads/2026/02/GTM-1.7-Grade-1-Indicators-Approved.pdf) was approved 2025-07-14. That is a technical-guidelines supplement, not a replacement grade 1 rulebook. Review applicable GTM updates before implementing technical notation. The present literary-input baseline is the pinned rulebook; recheck the publisher before changing the baseline and record any adopted updates explicitly.
 
 For local text searching, `pdftotext -layout iceb/rules-of-unified-english-braille-2024.pdf /tmp/ueb-rules.txt` is useful. Treat the original PDF as authoritative: text extraction can damage Braille cells and layout. Do not commit modified derivatives of the licensed reference.
+
+## Braille cheatsheet
+
+[`braille-cheatsheet.pdf`](braille-cheatsheet.pdf) is a two-page, result-first lookup for the **planned** character mappings, not a statement of current firmware support. Its tables cover printable UEB 1 and Computer8 characters, complete capital/digit sequences, and all 182 optional UEB 2 contractions. A visible `␣` represents a space result; `Space` in a chord sequence is the Braille Space key. Commands and settings without assigned factory chords are omitted.
+
+Build from the repository root with Typst 0.15+ and the Avenir, Apple Braille, and DejaVu Sans Mono fonts installed:
+
+```sh
+typst compile references/braille-cheatsheet.typ
+python3 -m unittest discover -s tests/host -p test_cheatsheet.py
+```
+
+The reference tests require PyYAML and Typst. They compare the displayed mappings with the existing fixtures and verified research; Poppler's `pdftotext` additionally checks the two-page layout for overlapping text and margin overflow. UEB tables are read directly from `research/`; the Computer8 mappings are checked against `tests/braille/computer8/characters.yaml`.
