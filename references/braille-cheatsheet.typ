@@ -51,3 +51,57 @@ its examples show UEB sequences only, while the short dot-7 rule remains.
 The separate Capitalised contractions section is omitted. All 182
 contractions and 22 keyboard chords remain. These are presentation changes,
 not changes to implemented mappings.
+
+= Implemented specified two-cell UEB1 symbols
+
+Task 9.3.1.2 adds the following 21 symbols, with successive cells in the
+listed order. Each complete sequence emits one ordinary US-layout ZMK
+`&kp` press/release; shifted characters use the keycode's implicit Shift.
+
+#table(
+  columns: (auto, auto, auto, auto),
+  [Result], [Dots in order], [Cells], [ZMK keycode],
+  [Ampersand `&`], [4 then 1,2,3,4,6], [⠈⠯], [`AMPS`],
+  [Asterisk `*`], [5 then 3,5], [⠐⠔], [`STAR`],
+  [At `@`], [4 then 1], [⠈⠁], [`AT`],
+  [Caret `^`], [4 then 2,6], [⠈⠢], [`CARET`],
+  [Number sign `#`], [4,5,6 then 1,4,5,6], [⠸⠹], [`HASH`],
+  [Dollar `$`], [4 then 2,3,4], [⠈⠎], [`DLLR`],
+  [Percent `%`], [4,6 then 3,5,6], [⠨⠴], [`PRCNT`],
+  [Tilde `~`], [4 then 3,5], [⠈⠔], [`TILDE`],
+  [Forward slash `/`], [4,5,6 then 3,4], [⠸⠌], [`FSLH`],
+  [Underscore `_`], [4,6 then 3,6], [⠨⠤], [`UNDER`],
+  [Plus `+`], [5 then 2,3,5], [⠐⠖], [`PLUS`],
+  [Equals `=`], [5 then 2,3,5,6], [⠐⠶], [`EQUAL`],
+  [Less-than `<`], [4 then 1,2,6], [⠈⠣], [`LT`],
+  [Greater-than `>`], [4 then 3,4,5], [⠈⠜], [`GT`],
+  [Open parenthesis `(`], [5 then 1,2,6], [⠐⠣], [`LPAR`],
+  [Close parenthesis `)`], [5 then 3,4,5], [⠐⠜], [`RPAR`],
+  [Open square bracket `[`], [4,6 then 1,2,6], [⠨⠣], [`LBKT`],
+  [Close square bracket `]`], [4,6 then 3,4,5], [⠨⠜], [`RBKT`],
+  [Open curly brace `{`], [4,5,6 then 1,2,6], [⠸⠣], [`LBRC`],
+  [Close curly brace `}`], [4,5,6 then 3,4,5], [⠸⠜], [`RBRC`],
+  [Backslash `\`], [4,5,6 then 1,6], [⠸⠡], [`BSLH`],
+)
+
+Authority: ICEB 2024 sections 3 and 7. Per-sign sections and printed pages
+are recovered in `references/research/ueb-literary-signs.yaml` from the
+historical research and checked against the unchanged authoritative PDF.
+
+The four first cells (4; 5; 4,6; 4,5,6) are silent strict prefixes, held
+without a timer. A non-continuation drops the prefix with a notice and is
+interpreted afresh: 4 then 1 emits `@`, but 4 then 1,3,5,6 drops 4 and emits
+`z`. A new prefix after a drop can itself remain pending.
+
+Every symbol has any-context predicates. Open parenthesis, square bracket,
+and curly brace use the opening class (2.6.2); less-than and the other
+symbols use the other class. These are metadata only: context transitions
+and question/quotation policy remain phase-04 work. This supersedes the
+earlier note that these 21 multi-cell symbols are still future work.
+
+All 21 symbols and their first-cell non-continuations are tested through
+production capture, matching, and dispatch, with real command-table
+validation, all-command recovery, split/Grade-2 build variants, pinned ZMK
+keycodes, 21 YAML sign fixtures and seven scoped examples. Both central-half
+firmware smoke builds pass. The separate printable cheatsheet is untouched;
+physical keyboard/VoiceOver acceptance remains user-owned.

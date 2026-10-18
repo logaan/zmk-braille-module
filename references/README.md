@@ -68,3 +68,78 @@ Multi-cell symbols and other literary signs are not implemented by this leaf.
   implementation reference. Its generated PDF is ignored by Git.
 - The separate `docs/braille-cheatsheet/` document is not modified here.
 - Physical keyboard/VoiceOver acceptance remains user-owned.
+
+## Implemented specified multi-cell symbols
+
+Task 9.3.1.2 extends `src/braille_rules_grade1.c` with the 21 ordered two-cell
+signs below. The table now contains 26 lowercase letters, seven core
+punctuation signs, and these 21 symbols. Each complete sequence dispatches
+one `&kp` press/release with the US-layout keycode, including implicit Shift
+where needed. No prefix cell emits a key by itself.
+
+| Result | Ordered masks | ZMK keycode |
+| --- | --- | --- |
+| `&` | `0x08` then `0x2f` | `AMPS` |
+| `*` | `0x10` then `0x14` | `STAR` |
+| `@` | `0x08` then `0x01` | `AT` |
+| `^` | `0x08` then `0x22` | `CARET` |
+| `#` | `0x38` then `0x39` | `HASH` |
+| `$` | `0x08` then `0x0e` | `DLLR` |
+| `%` | `0x28` then `0x34` | `PRCNT` |
+| `~` | `0x08` then `0x14` | `TILDE` |
+| `/` | `0x38` then `0x0c` | `FSLH` |
+| `_` | `0x28` then `0x24` | `UNDER` |
+| `+` | `0x10` then `0x16` | `PLUS` |
+| `=` | `0x10` then `0x36` | `EQUAL` |
+| `<` | `0x08` then `0x23` | `LT` |
+| `>` | `0x08` then `0x1c` | `GT` |
+| `(` | `0x10` then `0x23` | `LPAR` |
+| `)` | `0x10` then `0x1c` | `RPAR` |
+| `[` | `0x28` then `0x23` | `LBKT` |
+| `]` | `0x28` then `0x1c` | `RBKT` |
+| `{` | `0x38` then `0x23` | `LBRC` |
+| `}` | `0x38` then `0x1c` | `RBRC` |
+| `\` | `0x38` then `0x21` | `BSLH` |
+
+Dots 4 (`0x08`), 5 (`0x10`), 4,6 (`0x28`), and 4,5,6 (`0x38`) are strict
+prefixes held by the existing matcher without a timer. A non-continuation
+drops only the incomplete prefix with the existing notification hook; the
+following chord is read afresh. Thus dots 4 then 1 produce `@`, not `a`,
+while dots 4 then 1,3,5,6 produce `z` and a dropped-prefix notice. Another
+first cell can itself become a fresh pending prefix after such a drop.
+Factory space, Tab, Return, navigation, Delete, and modifier chords still
+run through their real phase-02 command table.
+
+All 21 rules have `any` predicates and no word-position restriction. Only
+`(`, `[`, and `{` carry the opening class (2.6.2, p.16); `<` is class other,
+as are the remaining symbols. No context transition is added. Numeric,
+capitals, Grade-1, and question/quotation policy remain phase-04 work.
+
+Only the needed multi-cell-symbol section of the historical research was
+recovered in [`research/ueb-literary-signs.yaml`](research/ueb-literary-signs.yaml).
+It records all ordered dots and each sign's authoritative rulebook section
+and printed page, checked against the unchanged PDF. It does not claim the
+other historical literary-sign research or deferred signs are implemented.
+
+`tests/host/test_symbols.py` requires PyYAML and a C compiler. Run it with
+`python3 -m unittest discover -s tests/host -p test_symbols.py -v` in an
+environment with PyYAML, or use `uv run --no-project --with pyyaml python -m
+unittest discover -s tests/host -p test_symbols.py -v`. It covers:
+
+- All 21 sequences through production key-edge capture, matching, and dispatch,
+  including the silent pending first cell, correct press/release usages and
+  Shift, reset/after-letter input, reversed order, and a continuous stream.
+- Every sign's first cell followed by a non-continuing `z`, verifying the
+  exact dropped-prefix notice and that `z` is emitted once and input recovers.
+- All four prefixes followed by another prefix and by every real factory
+  command; factory collision validation includes both real UEB1 tables.
+- Split/non-split and optional Grade-2 build configurations, plus the real
+  pinned ZMK keycode header when available.
+- The 21 existing YAML sign fixtures and seven scoped examples without any
+  premature implementation of their neighboring contextual acceptance cases.
+- All patterns on their cited ICEB pages when Poppler's `pdftotext` is available.
+
+The append-only implementation cheatsheet is rebuilt with Typst; the separate
+`docs/braille-cheatsheet/` files are untouched. QBF and Toucan central-half
+firmware smoke builds pass; physical keyboard/VoiceOver acceptance remains
+user-owned.

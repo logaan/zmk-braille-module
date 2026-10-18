@@ -1,0 +1,45 @@
+# Task 9.3.1.2: only the 21 specified context-free two-cell keyboard symbols.
+# The broader literary-sign research is historical; later tasks recover their
+# own requirements rather than implying they are implemented here.
+source:
+  rulebook: references/iceb/rules-of-unified-english-braille-2024.pdf
+  edition: The Rules of Unified English Braille, Third Edition 2024 (ICEB)
+  provenance: references/README.md
+  recovered_from: c786dd1:references/research/ueb-literary-signs.yaml
+  page: printed page number; PDF page = printed page + 28
+  verified: >-
+    These 21 patterns and citations were recovered from the prior research and
+    checked against the unchanged ICEB PDF's symbol lists and section headings.
+conventions:
+  dots: successive cells in order, each listing its raised dots (1-6)
+  braille: Unicode rendering for reading; dots is authoritative
+  print: one ordinary US-layout host keystroke, not Unicode Braille
+  predicate: any numeric, capitals, and word-start context; no state transition here
+  class: >-
+    The opening parenthesis, square bracket and curly bracket are opening (2.6.2,
+    p.16); all other rows are other, including the less-than/opening angle bracket.
+    Class metadata is reserved for phase-04 transitions, not implemented by this task.
+normative:
+  multi_cell_symbols:
+    signs:
+      - {braille: "⠈⠯", dots: [[4], [1, 2, 3, 4, 6]], print: "&", name: "ampersand", ref: {section: "3.1", page: 23}}
+      - {braille: "⠐⠔", dots: [[5], [3, 5]], print: "*", name: "asterisk", ref: {section: "3.3", page: 23}}
+      - {braille: "⠈⠁", dots: [[4], [1]], print: "@", name: "commercial at", ref: {section: "3.7", page: 27}}
+      - {braille: "⠈⠢", dots: [[4], [2, 6]], print: "^", name: "caret", ref: {section: "3.6", page: 26}}
+      - {braille: "⠸⠹", dots: [[4, 5, 6], [1, 4, 5, 6]], print: "#", name: "number sign", ref: {section: "3.19", page: 35}}
+      - {braille: "⠈⠎", dots: [[4], [2, 3, 4]], print: "$", name: "dollar sign", ref: {section: "3.10", page: 28}}
+      - {braille: "⠨⠴", dots: [[4, 6], [3, 5, 6]], print: "%", name: "percent sign", ref: {section: "3.21", page: 36}}
+      - {braille: "⠈⠔", dots: [[4], [3, 5]], print: "~", name: "tilde (swung dash)", ref: {section: "3.25", page: 38}}
+      - {braille: "⠸⠌", dots: [[4, 5, 6], [3, 4]], print: "/", name: "solidus (forward slash)", ref: {section: "7", page: 75}}
+      - {braille: "⠨⠤", dots: [[4, 6], [3, 6]], print: "_", name: "low line (underscore)", ref: {section: "7", page: 76}}
+      - {braille: "⠐⠖", dots: [[5], [2, 3, 5]], print: "+", name: "plus", ref: {section: "3.17", page: 33}}
+      - {braille: "⠐⠶", dots: [[5], [2, 3, 5, 6]], print: "=", name: "equals", ref: {section: "3.17", page: 33}}
+      - {braille: "⠈⠣", dots: [[4], [1, 2, 6]], print: "<", name: "less-than / opening angle bracket", ref: {section: "3.17", page: 33}}
+      - {braille: "⠈⠜", dots: [[4], [3, 4, 5]], print: ">", name: "greater-than / closing angle bracket", ref: {section: "3.17", page: 33}}
+      - {braille: "⠐⠣", dots: [[5], [1, 2, 6]], print: "(", name: "opening parenthesis", ref: {section: "7", page: 75}}
+      - {braille: "⠐⠜", dots: [[5], [3, 4, 5]], print: ")", name: "closing parenthesis", ref: {section: "7", page: 75}}
+      - {braille: "⠨⠣", dots: [[4, 6], [1, 2, 6]], print: "[", name: "opening square bracket", ref: {section: "7", page: 75}}
+      - {braille: "⠨⠜", dots: [[4, 6], [3, 4, 5]], print: "]", name: "closing square bracket", ref: {section: "7", page: 75}}
+      - {braille: "⠸⠣", dots: [[4, 5, 6], [1, 2, 6]], print: "{", name: "opening curly bracket", ref: {section: "7", page: 75}}
+      - {braille: "⠸⠜", dots: [[4, 5, 6], [3, 4, 5]], print: "}", name: "closing curly bracket", ref: {section: "7", page: 75}}
+      - {braille: "⠸⠡", dots: [[4, 5, 6], [1, 6]], print: "\\", name: "reverse solidus (backslash)", ref: {section: "7", page: 75}}
