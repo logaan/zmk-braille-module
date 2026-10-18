@@ -40,3 +40,14 @@ and ordered dispatch with the real factory command table. Colon and
 exclamation include the implicit Shift bit in the ZMK keycode; neither
 requires a separate sticky modifier action. QBF and Toucan central-half
 firmware builds pass, but host and physical-device acceptance are separate.
+
+= Printable quick-reference presentation
+
+The printable reference lives in `docs/braille-cheatsheet/`. Table bottom
+borders now match their top and sides, including column continuations.
+Braille columns and wrapped sequences are centered except in Capitals.
+Capitals includes the Grade 1 symbol, word, and passage indicator examples;
+its examples show UEB sequences only, while the short dot-7 rule remains.
+The separate Capitalised contractions section is omitted. All 182
+contractions and 22 keyboard chords remain. These are presentation changes,
+not changes to implemented mappings.

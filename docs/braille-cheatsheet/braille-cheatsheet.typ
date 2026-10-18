@@ -8,6 +8,7 @@
 #let teal = rgb("#006b68")
 #let rule = rgb("#d6e1e3")
 #let wash = rgb("#f0f5f5")
+#let table-border = 1pt + black // Match Typst's default top and side borders.
 #let mono = "Atkinson Hyperlegible Mono"
 #let page-margins = (left: 11mm, right: 11mm, top: 10mm, bottom: 13mm)
 
@@ -31,7 +32,7 @@
 #show heading: set block(above: 0pt, below: 0pt)
 #show heading.where(level: 1): set text(size: 13.5pt, weight: "bold")
 
-// Character data: (print, UEB 1, 8 dot). Capitals are generated, not listed A–Z.
+// Character data: (print, UEB 1, 8 dot). Capitals use examples, not an A–Z list.
 #let alphabet = "abcdefghijklmnopqrstuvwxyz".clusters().zip(
   "⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠅⠇⠍⠝⠕⠏⠟⠗⠎⠞⠥⠧⠺⠭⠽⠵".clusters(),
 ).map(((letter, cell)) => (letter, cell, cell))
@@ -74,24 +75,15 @@
   ("~", "⠈⠔", "⠘"),
 )
 #let characters = lowercase + digits + symbols
-#let eight-map = characters.fold((:), (map, entry) => {
-  map.insert(entry.at(0), entry.at(2))
-  map
-})
-#let eight-dot-word(word) = word.clusters().map(character => {
-  let code = character.to-unicode()
-  if 65 <= code and code <= 90 {
-    str.from-unicode(eight-map.at(str.from-unicode(code + 32)).to-unicode() + 0x40)
-  } else {
-    eight-map.at(character)
-  }
-}).join()
 #let capitals = (
   (scope: "Letter prefix", indicator: "⠠", example: "A", ueb1: "⠠⠁"),
   (scope: "Word prefix", indicator: "⠠⠠", example: "ABC", ueb1: "⠠⠠⠁⠃⠉"),
   (scope: "End capitals", indicator: "⠠⠄", example: "ABc", ueb1: "⠠⠠⠁⠃⠠⠄⠉"),
   (scope: "Passage prefix · 3+ words", indicator: "⠠⠠⠠", example: "A BIG CAT", ueb1: "⠠⠠⠠⠁ ⠃⠊⠛ ⠉⠁⠞⠠⠄"),
-).map(example => example + (eightdot: eight-dot-word(example.example)))
+  (scope: "Grade 1 symbol", indicator: "⠰", example: "b", ueb1: "⠰⠃"),
+  (scope: "Grade 1 word", indicator: "⠰⠰", example: "cd", ueb1: "⠰⠰⠉⠙"),
+  (scope: "Grade 1 passage", indicator: "⠰⠰⠰", example: "b c d", ueb1: "⠰⠰⠰⠃ ⠉ ⠙⠰⠄"),
+)
 
 // Chord data: (host key, simultaneously pressed braille keys).
 #let navigation = (
@@ -142,9 +134,6 @@
     ("be", "⠆"), ("enough", "⠢"), ("his", "⠦"),
     ("in", "⠔"), ("was", "⠴"), ("were", "⠶"),
   )),
-  (title: "Capitalised contractions", group: "Capitalisation", entries: (
-    ("Will", "⠠⠺"), ("CHILD", "⠠⠠⠡"), ("LITTLE", "⠠⠠⠇⠇"),
-  )),
   (title: "Strong contractions", group: "Strong contractions", entries: (
     ("and", "⠯"), ("for", "⠿"), ("of", "⠷"), ("the", "⠮"), ("with", "⠾"),
   )),
@@ -161,9 +150,6 @@
   )),
   (title: "Lower groupsigns · en / in", group: "Lower groupsigns · en / in", entries: (
     ("en", "⠢"), ("in", "⠔"),
-  )),
-  (title: "Grade 1 indicators", group: "Grade 1 indicators · literal letters", entries: (
-    ("b", "⠰⠃"), ("cd", "⠰⠰⠉⠙"), ("b c d", "⠰⠰⠰⠃ ⠉ ⠙⠰⠄"),
   )),
   (title: "Initial-letter contractions", group: "Initial-letter contractions", entries: (
     ("cannot", "⠸⠉"), ("character", "⠐⠡"), ("day", "⠐⠙"), ("ever", "⠐⠑"),
@@ -210,13 +196,9 @@
   .filter(code => not (65 <= code and code <= 90)).map(str.from-unicode))
 #assert(symbols.find(entry => entry.at(0) == "\"").at(1) == "⠠⠶")
 #assert(symbols.find(entry => entry.at(0) == "'").at(1) == "⠄")
-#assert(ueb2.filter(section => not (
-  "Capitalisation", "Grade 1 indicators · literal letters",
-).contains(section.group)).map(section => section.entries.len()).sum() == 182)
+#assert(ueb2.map(section => section.entries.len()).sum() == 182)
 #assert(navigation.len() == 17 and modifiers.len() == 5)
-#assert(capitals.map(example => example.eightdot) == (
-  "⡁", "⡁⡃⡉", "⡁⡃⠉", "⡁ ⡃⡊⡛ ⡉⡁⡞",
-))
+#assert(capitals.len() == 7)
 #assert(dot-mask((2, 3, 4, 5)) == 30)
 
 // The same vector cells are used for text, indicators, and command chords.
@@ -265,7 +247,7 @@
         width += gap + token-width
       }
       if current.len() > 0 { lines.push(line(current)) }
-      grid(columns: (1fr,), row-gutter: 2pt, align: right, ..lines)
+      grid(columns: (1fr,), row-gutter: 2pt, align: center, ..lines)
     })
   } else {
     line(tokens)
@@ -324,7 +306,7 @@
     columns: (1fr,) * count, rows: heights + (row,) * entries.len() + (0pt,),
     inset: inset,
     align: (x, y) => if count == 3 { center + horizon }
-      else if x == 0 { left + horizon } else { right + horizon },
+      else if x == 0 { left + horizon } else { center + horizon },
     stroke: (bottom: 0.3pt + rule),
     fill: (x, y) => if y >= header-rows and calc.even(y - header-rows) { wash } else { white },
     table.header(..head),
@@ -337,7 +319,7 @@
     // Repeat an explicit rule at every fragment's bottom, including the final
     // fragment. The footer itself is zero-height and contains no printed text.
     table.footer(
-      table.hline(stroke: 0.55pt + rgb("#aebfc4")),
+      table.hline(stroke: table-border),
       table.cell(colspan: count, inset: 0pt, stroke: none, context [
         #metadata((section: title)) <reference-table-bottom>
       ]),
@@ -363,9 +345,9 @@
 
 // Long passage examples keep their cells at full size: stack only the mode
 // label when its sequence would otherwise exceed the page-column width.
-#let mode-example(label, cells, eight: false, available: 100%) = {
+#let mode-example(label, cells, available: 100%) = {
   let name = text(size: 7.3pt, fill: muted, label)
-  let dots = sequence(cells, eight: eight)
+  let dots = sequence(cells)
   assert(measure(dots).width <= available, message: "A braille sequence exceeds its page column")
   if measure(name).width + 3pt + measure(dots).width <= available {
     box(grid(columns: (auto, auto), column-gutter: 3pt, align: horizon, name, dots))
@@ -375,26 +357,16 @@
     dots
   }
 }
-#let capital-example(example) = layout(size => {
-  let six = mode-example("UEB 1", example.ueb1, available: size.width)
-  let eight = mode-example("8 dot", example.eightdot, eight: true, available: size.width)
-  [
-    #grid(columns: (1fr, auto), align: horizon, column-gutter: 3pt,
-      text(size: 8.2pt, weight: "bold", example.scope), sequence(example.indicator),
-    )
-    #v(2pt)
-    #output(example.example, code: true, size: 8.7pt)
-    #v(2pt)
-    #if measure(six).width + 8pt + measure(eight).width <= size.width {
-      grid(columns: (auto, auto), column-gutter: 8pt, align: horizon, six, eight)
-    } else {
-      six
-      v(2pt)
-      eight
-    }
-    #v(3pt)
-  ]
-})
+#let capital-example(example) = layout(size => [
+  #grid(columns: (1fr, auto), align: horizon, column-gutter: 3pt,
+    text(size: 8.2pt, weight: "bold", example.scope), sequence(example.indicator),
+  )
+  #v(2pt)
+  #output(example.example, code: true, size: 8.7pt)
+  #v(2pt)
+  #mode-example("UEB 1", example.ueb1, available: size.width)
+  #v(3pt)
+])
 
 // All content follows the page's columns. Sections grow naturally; there are
 // no fixed 20-row chunks, side-by-side section grids, or manual column breaks.
@@ -459,3 +431,9 @@
 // chords remain, with no running headers, footers, or page numbers.
 // Every table uses equal-width tracks and an explicit repeated bottom rule;
 // long braille sequences wrap inside their cells without shrinking the dots.
+// Bottom borders match the top and sides on every fragment, including column
+// continuations, while internal row separators keep their lighter stroke.
+// The Capitalised contractions examples are omitted. Grade 1 indicators are
+// merged into Capitals, whose examples show only UEB sequences, not 8 dot.
+// Braille columns, including wrapped sequences and keyboard chords, are
+// centered in every other table; Capitals retains its left-aligned examples.
