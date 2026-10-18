@@ -105,3 +105,24 @@ validation, all-command recovery, split/Grade-2 build variants, pinned ZMK
 keycodes, 21 YAML sign fixtures and seven scoped examples. Both central-half
 firmware smoke builds pass. The separate printable cheatsheet is untouched;
 physical keyboard/VoiceOver acceptance remains user-owned.
+
+= Printable quick-reference mnemonics and layout
+
+The printable reference in `docs/braille-cheatsheet/` is split into modules:
+`style.typ`, `data.typ`, `cells.typ`, `mnemonics.typ`, `tables.typ`, and
+`validation.typ`, with `braille-cheatsheet.typ` as the entry point. The
+second heading is now "UEB Grade 2".
+
+Tables whose inputs are letters or letter-derived signs gain Output, Input,
+and Mnemonic columns: Navigation and Editing, Alphabetic wordsigns, Lower
+wordsigns, Lower groupsigns (all three), Initial-letter contractions,
+Final-letter groupsigns, and Shortforms. Mnemonics are derived from the
+actual cells: letter cells spell the letter, and the ten lowered a–j cells
+spell ↓ plus the letter. Non-letter signs stay vector braille; rows without
+any mnemonic show a dash. Strong wordsigns, Strong contractions, and Strong
+groupsigns are labeled Output and Input without a mnemonic column; Sticky
+modifiers is labeled Modifier and Input. Mapping data is unchanged: all 182
+contractions, 22 keyboard chords, and every character cell are identical.
+Compilation asserts the mnemonic spellings round-trip to the exact input
+cells and that labeled tables have one column per header. The reference
+still fits two A4 pages with no overlapping or out-of-bounds text.
