@@ -1,4 +1,4 @@
-#import "style.typ": teal, rule, wash, table-border, muted
+#import "style.typ": teal, blue, rule, wash, table-border, muted
 #import "cells.typ": sequence, output, command-keys, chord-cell
 #import "mnemonics.typ": mnemonic, mnemonic-spelling
 
@@ -9,7 +9,7 @@
 // Fixed-height heading rows keep the initial and continued layouts identical.
 #let section-table(title, group, modes, entries, render,
   columns: 2, headers: (), intro: none, row: 12.5pt, continuation: auto,
-  inset: (x: 2pt, y: 0.5pt), label-align: left,
+  inset: (x: 2pt, y: 0.5pt), label-align: left, color: teal,
 ) = {
   let count = columns
   let parts = counter("section-parts:" + group)
@@ -21,7 +21,7 @@
       let part = parts.get().first() + 1
       let displayed = if part == 1 { title } else { continued }
       [#metadata((section: title, part: part, heading: displayed)) <reference-fragment>]
-      heading(level: 2, text(size: 9.2pt, weight: "bold", fill: teal, displayed))
+      heading(level: 2, text(size: 9.2pt, weight: "bold", fill: color, displayed))
     },
   ),)
   let heights = (16pt,)
@@ -31,7 +31,7 @@
   }
   if headers.len() > 0 {
     head += headers.map(label => table.cell(
-      fill: teal, align: center + horizon,
+      fill: color, align: center + horizon,
       text(size: 7.3pt, weight: "bold", fill: white, label),
     ))
     heights.push(13pt)
@@ -84,7 +84,7 @@
     columns: if has-mnemonics { 3 } else { 2 },
     headers: if has-mnemonics { mnemonic-headers } else { section.at("headers", default: ()) },
     continuation: section.at("continuation", default: auto), row: auto,
-    inset: (x: 2pt, y: 0.2pt),
+    inset: (x: 2pt, y: 0.2pt), color: blue,
   )
 }
 #let chord-section(title, entries, headers: auto) = {

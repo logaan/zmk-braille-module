@@ -2,6 +2,7 @@
 #let ink = rgb("#172e37")
 #let muted = rgb("#4f6269")
 #let teal = rgb("#006b68")
+#let blue = rgb("#2b5d8f")
 #let rule = rgb("#d6e1e3")
 #let wash = rgb("#f0f5f5")
 #let table-border = 1pt + black // Match Typst's default top and side borders.

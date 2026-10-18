@@ -20,8 +20,10 @@
 #character-section("Symbols", "Punctuation & symbols", symbols)
 #digit-section("Digits · UEB 1", digit-ueb1)
 #digit-section("Digits · 8 dot", digit-eight)
+#align(center, text(size: 18pt, weight: "bold")[Quick Braille Fox])
+#colbreak()
 #chord-section("Navigation and Editing", chords)
-#pagebreak(weak: true)
 #for section in ueb2 { word-section(section) }
+#align(center, text(size: 18pt, weight: "bold")[Quick Braille Fox])
 
 #include "validation.typ"
