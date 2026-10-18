@@ -24,7 +24,7 @@
 #let mnemonic(cells, space: false) = {
   let spelling = mnemonic-spelling(cells)
   if spelling == none {
-    text(fill: muted)[—]
+    []
   } else {
     let tokens = if space { (space-key, text(size: 8pt, fill: muted)[+]) } else { () }
     let letters = ""

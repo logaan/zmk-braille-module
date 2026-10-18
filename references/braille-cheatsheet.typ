@@ -126,3 +126,13 @@ contractions, 22 keyboard chords, and every character cell are identical.
 Compilation asserts the mnemonic spellings round-trip to the exact input
 cells and that labeled tables have one column per header. The reference
 still fits two A4 pages with no overlapping or out-of-bounds text.
+
+= Printable quick-reference arrangement
+
+The printable reference drops the "Characters & keyboard chords" heading.
+Capitals follows Lowercase in the first page column; Digits occupies the
+second column and Symbols holds the third column alone through explicit
+weak column breaks, so the keyboard chords begin page 2 together. Missing
+mnemonics leave their cell empty instead of a dash. Compilation now
+requires all 22 chords to share one page rather than page 1. The reference
+is three A4 pages with no overlapping or out-of-bounds text.

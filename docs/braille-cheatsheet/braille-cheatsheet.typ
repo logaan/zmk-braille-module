@@ -7,16 +7,17 @@
 #show: cheatsheet
 
 // Sections flow naturally through the page columns; their table headers repeat
-// on continuation. Capitals keeps its own example layout without mnemonics.
-#heading(level: 1)[Characters & keyboard chords]
-#v(5pt)
+// on continuation. Capitals follows Lowercase; Symbols keeps a whole column to
+// itself and the keyboard chords begin the next page.
 #character-section("Lowercase", "Lowercase letters & Braille Space", lowercase)
-#character-section("Digits", "Digits", digits)
-#character-section("Symbols", "Punctuation & symbols", symbols)
 #section-table("Capitals", "Capitals", ("ueb1", "eight-dot"), capitals,
   example => (capital-example(example),), columns: 1, row: auto,
   intro: text(size: 8.2pt)[8 dot: add dot 7 to each uppercase letter.],
 )
+#character-section("Digits", "Digits", digits)
+#colbreak(weak: true)
+#character-section("Symbols", "Punctuation & symbols", symbols)
+#colbreak(weak: true)
 #chord-section("Navigation and Editing", navigation)
 #chord-section("Sticky modifiers", modifiers, headers: ("Modifier", "Input"))
 #heading(level: 1)[UEB Grade 2]

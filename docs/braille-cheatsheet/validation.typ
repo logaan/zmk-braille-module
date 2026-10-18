@@ -54,8 +54,9 @@
           message: "Every labeled table needs one column per header")
       }
     }
-    assert(query(<reference-chord>).all(chord => chord.location().page() == 1),
-      message: "Keyboard chords and sticky modifiers must stay on page 1")
+    let chord-pages = query(<reference-chord>).map(chord => chord.location().page())
+    assert(chord-pages.all(page => page == chord-pages.first()),
+      message: "Keyboard chords and sticky modifiers must stay on one page")
     let fragments = query(<reference-fragment>)
     let bottoms = query(<reference-table-bottom>)
     assert(query(table).all(table => table.columns.all(width => width == 1fr)),
