@@ -47,15 +47,57 @@ list and pin `revision` to the reviewed module commit:
   revision: <reviewed-module-commit>
 ```
 
-Production devicetree bindings and default nodes are not supplied yet. The
-registration hooks recognize `zmk,behavior-braille-dot`,
-`zmk,behavior-braille-space`, `zmk,behavior-braille-mode`, and
-`zmk,behavior-braille-settings`; they are not a functional keymap API yet.
+## Devicetree interface
+
+Include the module's default nodes explicitly in your central keymap:
+
+```dts
+#include <behaviors/braille.dtsi>
+```
+
+| Binding | Cells | Compatible | Meaning |
+| --- | --- | --- | --- |
+| `&bc N` | 1 | `zmk,behavior-braille-dot` | Dot number 1–8, not a bitmask |
+| `&bspc` | 0 | `zmk,behavior-braille-space` | Ninth chord bit; not conventional space |
+| `&bmode LAYER` | 1 | `zmk,behavior-braille-mode` | Hold target layer while chording; tap switches to it |
+| `&bsettings` | 0 | `zmk,behavior-braille-settings` | Settings-entry action, also usable by rule actions |
+
+These schemas and devices compile/link, but **callbacks still return
+`-ENOTSUP`**. The meanings above are the interface contract, not implemented
+runtime behavior. Chords will end only on the last Braille-key release; no
+chord timeout property exists. The mode key selects a layer, not a character
+table. Use an existing keymap layer number as its argument.
+
+The same include supplies the `braille` configuration node (`zmk,braille`).
+Its `default-mode` string defaults to `"ueb1"`. A keyboard may override it:
+
+```dts
+&braille {
+    default-mode = "computer8";
+};
+```
+
+This stable name is not an enum: future named tables need no schema change.
+It must name a compiled table. The later named-table/storage implementation
+will read `DT_PROP(DT_NODELABEL(braille), default_mode)` when no selection is
+saved or the saved mode is not compiled in. No tables, persisted selection,
+or runtime fallback algorithm are implemented yet.
+
+Zephyr 3.5 enforces the binding cell counts but cannot constrain individual
+phandle-array argument values in YAML. With the feature enabled,
+`src/braille_bindings.c` rejects dot arguments outside 1–8 at compile time in
+enabled nodes' `bindings` arrays, including custom dot devices. This does not
+validate dynamically constructed rule/Studio bindings; the later input driver
+must reject invalid runtime values as well. Parameterized macros should use
+a valid dot number as their replaceable placeholder, not zero.
 
 ## Source layout and checks
 
+- `dts/bindings/` and `dts/behaviors/braille.dtsi`: production schemas, default
+  devices, and named per-keyboard default-mode configuration.
 - `src/behavior_braille.c`: central-local ZMK device registration; unsupported
   callbacks until the input-routing leaf.
+- `src/braille_bindings.c`: build-time dot-argument assertions.
 - `src/braille_engine.c`: reserved shared matcher/buffer translation unit.
 - `include/braille_rules.h`: reserved common rule/action schema; only a forward
   declaration, not a temporary alternate output representation.
@@ -69,13 +111,24 @@ Run the focused host checks with Python 3, CMake, and a C compiler:
 python3 tests/host/test_build.py
 # With the pinned workspace present, also check the real Kconfig parser:
 PYTHONPATH=build/baseline/zephyr/scripts/kconfig python3 tests/host/test_kconfig.py
+# Production DT schemas + C assertions, using the same pinned workspace:
+python3 -m venv build/bindings/venv
+build/bindings/venv/bin/pip install PyYAML==6.0.3
+build/bindings/venv/bin/python tests/host/test_devicetree.py
 ```
 
 These check enabled/disabled source selection, optional Grade 2 isolation,
 compilation with/without behavior nodes, central locality, and the explicit
 unsupported callbacks. The host shim is not a Zephyr runtime and does not prove
-hardware behavior. The existing `tests/braille/*.yaml` files are future
-conformance data, not an executable engine test suite yet.
+hardware behavior. The devicetree tests run Zephyr's actual parser/header
+generator, then compile production assertions against real Zephyr headers with
+the host compiler (`CONFIG_ARCH_POSIX`); they test valid dots, rejected boundary
+values, cell schemas, custom devices, extensible names, and the `ueb1` default.
+Set `ZEPHYR_BASE` and `ZMK_APP` to use a different pinned workspace. They do not
+run a Zephyr kernel. `tests/firmware/bindings.overlay` is a Paintbrush-central
+compile/link fixture, not a usable keymap or a replacement for the later
+both-keyboard smoke/CI matrix. The existing `tests/braille/*.yaml` files are
+future conformance data, not an executable engine test suite yet.
 
 See [the implementation task](tasks/09-implement-the-zmk-braille-input-module/)
 for requirements and acceptance gates. The unchanged

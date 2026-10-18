@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: MIT
+
+description: Per-keyboard Braille input configuration
+
+compatible: "zmk,braille"
+
+properties:
+  default-mode:
+    type: string
+    default: "ueb1"
+    description: |
+      Stable name of the default character table. Used when no selected mode
+      is saved or the saved mode is not compiled in. Names are extensible,
+      not an enum; this setting must name a table compiled into the firmware.
+      Table availability and persisted-mode selection are runtime concerns.

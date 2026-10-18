@@ -10,8 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = {
-    "src/behavior_braille.c", "src/braille_engine.c", "src/braille_rules_grade1.c",
-    "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
+    "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_engine.c",
+    "src/braille_rules_grade1.c", "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
 }
 
 
@@ -62,6 +62,9 @@ include("{ROOT / 'CMakeLists.txt'}")
                 ], check=True)
                 subprocess.run([str(binary)], check=True)
             for source in sorted((ROOT / "src").glob("braille_*.c")):
+                if source.name == "braille_bindings.c":
+                    # Compiled against real generated DT headers by test_devicetree.py.
+                    continue
                 subprocess.run(cc + [
                     "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"),
                     "-c", str(source), "-o", str(Path(tmp) / (source.stem + ".o")),

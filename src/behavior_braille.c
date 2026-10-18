@@ -4,8 +4,8 @@
 #include <drivers/behavior.h>
 
 /*
- * Build/link scaffolding only. Binding schemas and default nodes are supplied
- * separately; capture, mode switching and settings entry are not implemented.
+ * Build/link scaffolding only. Production schemas/default nodes live in dts/;
+ * capture, mode switching and settings entry are not implemented.
  * Do not silently report successful input before those paths exist.
  */
 #if DT_HAS_COMPAT_STATUS_OKAY(zmk_behavior_braille_dot) ||                                             \

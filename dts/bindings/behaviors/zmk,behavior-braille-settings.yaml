@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+
+description: |
+  Enter the on-device Braille settings interface. A zero-parameter ZMK behavior
+  action, usable from a keymap or the shared rule action list.
+
+compatible: "zmk,behavior-braille-settings"
+
+include: zero_param.yaml

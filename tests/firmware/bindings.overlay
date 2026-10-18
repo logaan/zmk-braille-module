@@ -1,0 +1,11 @@
+/* SPDX-License-Identifier: MIT */
+
+/* Compile/link fixture for the Paintbrush central, not a usable Braille keymap. */
+#include <behaviors/braille.dtsi>
+
+&{/keymap/default_layer} {
+    bindings = <
+        &bc 1 &bc 2 &bc 3 &bc 4 &bc 5 &bc 6 &bc 7 &bc 8
+        &bspc &bmode 1 &bsettings &none &none &none &none &none
+    >;
+};

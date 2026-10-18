@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+
+description: |
+  Braille mode key. The parameter is the target keymap layer: hold keeps it
+  active while chording, and tap switches to it. This is a layer selector,
+  not a character-table selector.
+
+compatible: "zmk,behavior-braille-mode"
+
+include: one_param.yaml

@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+
+description: |
+  Braille space input, the ninth chord bit, distinct from conventional space.
+  Chords end when all Braille keys are released; there is no timeout.
+
+compatible: "zmk,behavior-braille-space"
+
+include: zero_param.yaml

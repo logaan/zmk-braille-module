@@ -1,0 +1,38 @@
+/* SPDX-License-Identifier: MIT */
+
+#ifndef ZMK_BRAILLE_BEHAVIORS_DTSI
+#define ZMK_BRAILLE_BEHAVIORS_DTSI
+
+/ {
+    braille: braille {
+        compatible = "zmk,braille";
+    };
+
+    behaviors {
+        bc: braille_dot {
+            compatible = "zmk,behavior-braille-dot";
+            #binding-cells = <1>;
+            display-name = "Braille Dot";
+        };
+
+        bspc: braille_space {
+            compatible = "zmk,behavior-braille-space";
+            #binding-cells = <0>;
+            display-name = "Braille Space";
+        };
+
+        bmode: braille_mode {
+            compatible = "zmk,behavior-braille-mode";
+            #binding-cells = <1>;
+            display-name = "Braille Mode Layer";
+        };
+
+        bsettings: braille_settings {
+            compatible = "zmk,behavior-braille-settings";
+            #binding-cells = <0>;
+            display-name = "Braille Settings";
+        };
+    };
+};
+
+#endif /* ZMK_BRAILLE_BEHAVIORS_DTSI */
