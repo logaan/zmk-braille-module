@@ -189,3 +189,11 @@ symbol to the row after its opening counterpart.
 Every cheatsheet table's internal row separators drop from 0.3pt to 0.2pt
 while the 1pt black top, side, and bottom frame rules and the 0.4pt Space
 key outlines stay unchanged. This is a presentation change only.
+
+= Printable quick-reference space symbol
+
+Input and Mnemonic columns replace the word Space inside the bordered key
+box with the open-box symbol ␣ (U+2423). The Navigation and Editing Space
+chord keeps its name Space in the Output column, and Capitals examples
+show ␣ wherever their braille sequences contain a space. Rendering and
+validation are unchanged; this is a presentation change.

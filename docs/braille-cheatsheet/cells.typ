@@ -27,7 +27,7 @@
 #let space-key = box(
   inset: (x: 2.4pt, y: 1.5pt), radius: 2pt,
   stroke: 0.4pt + rgb("#aebfc4"), fill: white,
-  text(size: 7pt, weight: "bold", fill: muted)[Space],
+  text(size: 7pt, weight: "bold", fill: muted)[␣],
 )
 #let sequence(cells, eight: false, wrap: false) = {
   let tokens = cells.clusters().map(cell => if cell == " " { space-key } else { braille(cell, eight: eight) })
