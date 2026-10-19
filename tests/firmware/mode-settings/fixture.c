@@ -4,6 +4,7 @@
 #include <zephyr/logging/log.h>
 #include <braille_chord.h>
 #include <braille_settings.h>
+#include <braille_engine.h>
 #include <zmk/keymap.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
@@ -12,13 +13,15 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static unsigned completed, pending, host_output, ui_chords, resets, notices, checkpoints;
 
-void braille_input_reset(void) {
-    pending = 0;
-    ++resets;
-}
 void braille_settings_changed(bool active, struct zmk_behavior_binding_event event) {
     (void)event;
-    __ASSERT(active == braille_settings_active() && !pending, "Transition ordering");
+    /* Observe the real engine's reset and gate before modelling this fixture
+     * consumer's reset. Contextual output/reset ordering is additionally tested
+     * through the real matcher in commands/fixture.c, without a consumer spy. */
+    __ASSERT(active == braille_settings_active() && !braille_engine_pending_count(),
+             "Transition ordering");
+    pending = 0;
+    ++resets;
     ++notices;
 }
 int braille_settings_chord(uint16_t mask, struct zmk_behavior_binding_event event) {
@@ -27,7 +30,7 @@ int braille_settings_chord(uint16_t mask, struct zmk_behavior_binding_event even
     ++ui_chords;
     return 0;
 }
-int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
+int __wrap_braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
     __ASSERT(!braille_settings_active(), "Host consumer called in settings");
     const uint16_t expected[] = {3, 0x100, 1, 0x80, 2};
     __ASSERT(completed < ARRAY_SIZE(expected) && mask == expected[completed], "Wrong chord");

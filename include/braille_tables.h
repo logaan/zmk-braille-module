@@ -36,11 +36,12 @@ struct braille_mode {
 };
 
 /* Compiled factory tables, defined by the rule-data units. `ueb1` carries
- * the alphabet and context-free signs; `computer8` carries all 94 printable
- * non-space ASCII cells (references/research/computer8.yaml). Contextual UEB1
- * and optional UEB2 data arrive in phases 04/07. Each mode's command table
- * carries the verified direct factory subset, including literal Braille
- * space and the dot-7/Delete and dot-8/Return positions. */
+ * contextual UEB Grade 1 for the US keyboard's printable characters;
+ * `computer8` carries all 94 printable non-space ASCII cells
+ * (references/research/computer8.yaml). Optional UEB2 data arrive in
+ * phase 07. Each mode's command table carries the verified direct factory
+ * subset, including literal Braille space and the dot-7/Delete and
+ * dot-8/Return positions. */
 extern const struct braille_rule_table braille_rules_ueb1_characters;
 extern const struct braille_rule_table braille_rules_computer8_characters;
 extern const struct braille_rule_table braille_rules_ueb1_commands;

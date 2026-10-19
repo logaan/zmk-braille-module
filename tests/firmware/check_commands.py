@@ -13,6 +13,7 @@ def check(log):
     assert actual == ["ueb1", "computer8", "keyboard-timeout", "globe-timeout", "ALL"], actual
     assert log.count("computer8_characters: PASS") == 1, "Real Computer8 HID checkpoint missing"
     assert log.count("context_boundaries: PASS") == 1, "Real context-event checkpoint missing"
+    assert log.count("ueb1_characters: PASS") == 1, "Real contextual UEB1 HID checkpoint missing"
 
 
 if __name__ == "__main__":
@@ -20,4 +21,4 @@ if __name__ == "__main__":
     parser.add_argument("log", type=Path)
     args = parser.parse_args()
     check(args.log.read_text())
-    print("PASS: both command tables, real Computer8 cells, ZMK sticky modifiers/Globe, HID and timeouts")
+    print("PASS: contextual UEB1, Computer8, context events, both command tables, sticky/HID and timeouts")

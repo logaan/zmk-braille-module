@@ -20,8 +20,9 @@ int __wrap_braille_chord_key_event(uint16_t bit, bool pressed,
     return __real_braille_chord_key_event(bit, pressed, event);
 }
 
-/* Only the not-yet-implemented engine is replaced, not chord capture. */
-int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
+/* Fixture downstream consumer observes capture independently of translation.
+ * Wrap the production entry point: do not redefine its now-strong symbol. */
+int __wrap_braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
     LOG_DBG("braille_chord: mask 0x%03x position %u layer %d", mask, event.position, event.layer);
     return 0;
 }

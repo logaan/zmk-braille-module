@@ -328,7 +328,8 @@ static int commit(const struct braille_rule *rule, enum braille_commit_cause cau
     if (ret < 0) {
         braille_engine_reset(); /* Never replay an action that may have partly executed. */
     } else if (generation == reset_generation) {
-        if (ws) {
+        if (ws && (rule->class == BRAILLE_CLASS_NEUTRAL ||
+                   sequence_is_command(rule->chords, 1))) {
             const struct braille_rule space = {.class = BRAILLE_CLASS_SPACE};
             transition(&space); /* Return/Tab aliases share space's passage-preserving path. */
         } else {

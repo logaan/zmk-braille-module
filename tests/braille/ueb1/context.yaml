@@ -1,0 +1,64 @@
+# Constructed cross-rule/lifecycle cases. Inputs follow the existing UEB1
+# fixture format; pending/dropped are exact cell sequences, not host output.
+# Context changes only on commit. Sources distinguish ICEB rules from the
+# firmware's timer-free pending policy. Every case starts at reset.
+mode: ueb1
+cases:
+  - name: single capital stays pending without a timer
+    inputs: [[6]]
+    outputs: []
+    pending: [[6]]
+    context: [false, none, true]
+    source: "constructed: ICEB 8.3.1 p.89; shared pending policy"
+  - name: numeric prefix stays pending without setting numeric mode
+    inputs: [[3, 4, 5, 6]]
+    outputs: []
+    pending: [[3, 4, 5, 6]]
+    context: [false, none, true]
+    source: "constructed: ICEB 6.1.1 p.65; shared pending policy"
+  - name: word capitals waits for possible passage extension
+    inputs: [[6], [6]]
+    outputs: []
+    pending: [[6], [6]]
+    context: [false, none, true]
+    source: "constructed: ICEB 8.4.1 p.90, 8.5.1 p.93; longest match policy"
+  - name: symbol Grade 1 waits for word or terminator extension
+    inputs: [[5, 6]]
+    outputs: []
+    pending: [[5, 6]]
+    context: [false, none, true]
+    source: "constructed: ICEB 5.2 p.57, 5.3 p.58, 5.5 p.59; longest match policy"
+  - name: word Grade 1 waits for passage extension
+    inputs: [[5, 6], [5, 6]]
+    outputs: []
+    pending: [[5, 6], [5, 6]]
+    context: [false, none, true]
+    source: "constructed: ICEB 5.3-5.4 p.58; longest match policy"
+  - name: passage Grade 1 commits silently
+    inputs: [[5, 6], [5, 6], [5, 6]]
+    outputs: []
+    context: [false, none, false]
+    source: "constructed: ICEB 5.4 p.58, 7.6.9 p.86"
+  - name: orphan numeric prefix does not change caps word context
+    inputs: [[6], [6], [1], [3, 4, 5, 6], [1, 3, 5, 6]]
+    outputs: [A, Z]
+    dropped: [[[3, 4, 5, 6]]]
+    context: [false, word, false]
+    source: "constructed: ICEB 8.4.1 p.90, 6.1.1 p.65; dropped prefixes have no transition"
+  - name: dropped symbol prefix can start a new quotation prefix
+    inputs: [[4], [4, 5], [2, 3, 6]]
+    outputs: ['"']
+    dropped: [[[4]]]
+    context: [false, none, true]
+    source: "constructed: ICEB 7.6.7 p.85; shared pending recovery policy"
+  - name: Grade 1 commits before a new incomplete capital
+    inputs: [[5, 6], [6]]
+    outputs: []
+    pending: [[6]]
+    context: [false, none, false]
+    source: "constructed: ICEB 5.8.1 p.61, 8.3.1 p.89"
+  - name: uncontracted wordsigns remain literal letters
+    inputs: [[1, 2], [], [1, 4], [], [1, 4, 5]]
+    outputs: [b, ' ', c, ' ', d]
+    context: [false, none, false]
+    source: "constructed: ICEB 2.5.2 p.14, 5.11.1 p.63; no Grade 2 wordsigns"

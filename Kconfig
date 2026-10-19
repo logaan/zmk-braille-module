@@ -11,10 +11,10 @@ menuconfig ZMK_FEATURE_BRAILLE
       all nine Braille bits until the last release, without a timer. The mode
       key composes ZMK hold-tap/layer behaviors; settings hooks suspend Braille
       typing until exit. The shared engine matches the selected mode's tables
-      and dispatches host keystrokes; the ueb1 table carries the 26 six-dot
-      alphabet cells as lowercase letters. Literary signs, real factory
-      command chords, context transitions, the settings UI, and persistence
-      are not implemented yet.
+      and dispatches host keystrokes; the ueb1 table carries contextual UEB
+      Grade 1 (numeric, capitalisation and Grade 1 indicators, word context
+      and the US keyboard's printable signs). Grade 2, the settings UI, and
+      persistence are not implemented yet.
 
 if ZMK_FEATURE_BRAILLE
 
