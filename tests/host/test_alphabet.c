@@ -128,7 +128,8 @@ static void test_table_shape(void) {
         assert(r->actions[0].param1 == KEY_USAGE(alphabet[letters].usage));
         assert(r->actions[0].param2 == 0);
         assert(r->word_position == BRAILLE_WORD_POSITION_ANY);
-        assert(r->when.numeric == BRAILLE_CONDITION_ANY);
+        assert(r->when.numeric == (alphabet[letters].usage <= 0x0d ?
+                                   BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY));
         assert(r->when.caps == BRAILLE_CONDITION_ANY);
         assert(r->when.word_start == BRAILLE_CONDITION_ANY);
         assert(r->class == BRAILLE_CLASS_LETTER);

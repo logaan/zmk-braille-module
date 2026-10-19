@@ -35,13 +35,37 @@
         .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = key}},       \
         .action_count = 1, .when = BRAILLE_WHEN_ANY, .class = cls,                            \
     }
-#define BRAILLE_LETTER_RULE(chord, usage)                                                    \
-    BRAILLE_CHARACTER_RULE(chord, BRAILLE_KEY_USAGE(usage), BRAILLE_CLASS_LETTER)
+#define BRAILLE_LETTER_RULE(chord, usage)                                                   \
+    {                                                                                     \
+        .chords = {chord}, .chord_count = 1,                                               \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),                      \
+                     .param1 = BRAILLE_KEY_USAGE(usage)}},                                 \
+        .action_count = 1, .class = BRAILLE_CLASS_LETTER,                                  \
+        .when = {.numeric = (usage <= 0x0D ? BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY)}, \
+    }
 #define BRAILLE_SYMBOL_RULE(first, second, key, cls)                                        \
     {                                                                                      \
         .chords = {first, second}, .chord_count = 2,                                         \
         .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = key}},       \
         .action_count = 1, .when = BRAILLE_WHEN_ANY, .class = cls,                            \
+    }
+
+/* 6.1/6.2/6.6: an indicator + digit, a digit in numeric mode, and
+ * a numeric space + digit. Each complete sign uses the common action path. */
+#define BRAILLE_DIGIT_RULE(chord, key)                                                     \
+    BRAILLE_SYMBOL_RULE(0x3C, chord, key, BRAILLE_CLASS_DIGIT),                             \
+    {                                                                                     \
+        .chords = {chord}, .chord_count = 1,                                               \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = key}},      \
+        .action_count = 1, .when = {.numeric = BRAILLE_CONDITION_SET},                      \
+        .class = BRAILLE_CLASS_DIGIT,                                                     \
+    },                                                                                    \
+    {                                                                                     \
+        .chords = {0x10, chord}, .chord_count = 2,                                         \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = SPACE},     \
+                    {.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = key}},     \
+        .action_count = 2, .when = {.numeric = BRAILLE_CONDITION_SET},                      \
+        .class = BRAILLE_CLASS_DIGIT,                                                     \
     }
 
 /* Dot bits: dot 1 = 0x01, dot 2 = 0x02, ..., dot 6 = 0x20 (dots 7/8 unused). */
@@ -72,6 +96,19 @@ static const struct braille_rule ueb1_character_rules[] = {
     BRAILLE_LETTER_RULE(0x2D, 0x1B), /* x: dots 1, 3, 4, 6    */
     BRAILLE_LETTER_RULE(0x3D, 0x1C), /* y: dots 1, 3, 4, 5, 6 */
     BRAILLE_LETTER_RULE(0x35, 0x1D), /* z: dots 1, 3, 5, 6    */
+
+    BRAILLE_DIGIT_RULE(0x01, N1), /* a -> 1 */
+    BRAILLE_DIGIT_RULE(0x03, N2), /* b -> 2 */
+    BRAILLE_DIGIT_RULE(0x09, N3), /* c -> 3 */
+    BRAILLE_DIGIT_RULE(0x19, N4), /* d -> 4 */
+    BRAILLE_DIGIT_RULE(0x11, N5), /* e -> 5 */
+    BRAILLE_DIGIT_RULE(0x0B, N6), /* f -> 6 */
+    BRAILLE_DIGIT_RULE(0x1B, N7), /* g -> 7 */
+    BRAILLE_DIGIT_RULE(0x13, N8), /* h -> 8 */
+    BRAILLE_DIGIT_RULE(0x0A, N9), /* i -> 9 */
+    BRAILLE_DIGIT_RULE(0x1A, N0), /* j -> 0 */
+    BRAILLE_SYMBOL_RULE(0x3C, 0x02, COMMA, BRAILLE_CLASS_DIGIT), /* decimal comma */
+    BRAILLE_SYMBOL_RULE(0x3C, 0x32, DOT, BRAILLE_CLASS_DIGIT),   /* decimal point */
 
     /* ICEB section 7, p.75. Comma/full stop remain numeric punctuation
      * (6.2.1); apostrophe is an opening symbol (2.6.2); hyphen bounds a
