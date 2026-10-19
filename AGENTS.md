@@ -10,7 +10,7 @@
         is elsewhere. TaskDown's own development tasks moved there;
         braille-module tasks remain here.
 2.  There may be other agents working in the same worktree.
-3.  Commit your own work as you go.
-4.  Before each commit, update `references/braille-cheatsheet.typ` with new
+3.  Commit your own work as you go. Push when you're done.
+4.  Before each push, update `references/braille-cheatsheet.typ` with new
     information and run `typst compile references/braille-cheatsheet.typ` to
-    rebuild its PDF.
+    rebuild its PDF. Commit those changes too.
