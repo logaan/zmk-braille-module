@@ -1,4 +1,4 @@
-/* Build-boundary probe only: no computer8 table/runtime mode exists yet. */
+/* Boot through the registered real Computer8 character/command tables. */
 &braille {
     default-mode = "computer8";
 };

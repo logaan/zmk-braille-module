@@ -35,10 +35,11 @@ struct braille_mode {
 };
 
 /* Compiled factory tables, defined by the rule-data units. `ueb1` carries
- * the 26 six-dot alphabet cells; the remaining character tables are empty
- * until their data tasks populate them (phases 03/04/07). Per-mode command
- * tables carry the verified direct factory subset; see the source audit in
- * references/research/factory-command-chords.yaml for gaps and limitations. */
+ * the alphabet and context-free signs; `computer8` carries all 94 printable
+ * non-space ASCII cells (references/research/computer8.yaml). Contextual UEB1
+ * and optional UEB2 data arrive in phases 04/07. Each mode's command table
+ * carries the verified direct factory subset, including literal Braille
+ * space and the dot-7/Delete and dot-8/Return positions. */
 extern const struct braille_rule_table braille_rules_ueb1_characters;
 extern const struct braille_rule_table braille_rules_computer8_characters;
 extern const struct braille_rule_table braille_rules_ueb1_commands;

@@ -159,6 +159,37 @@ static void test_sticky_modifiers(void) {
     expect_output(E, 0, true);
 }
 
+static void test_computer8_characters(void) {
+    /* Real registered cells, not override fixtures: exercise implicit Shift
+     * through unmodified ZMK kp/HID and verify it releases before the next cell. */
+    static const struct { uint16_t mask; uint32_t usage; uint8_t mods; } expected[] = {
+        {0x001, A, 0}, {0x041, A, 0x02}, {0x002, N1, 0}, {0x026, N8, 0},
+        {0x008, GRAVE, 0}, {0x033, BSLH, 0x02}, {0x038, MINUS, 0x02},
+        {0x039, FSLH, 0x02}, {0x018, GRAVE, 0x02}, {0x02a, LBKT, 0x02},
+        {0x03b, RBKT, 0x02}, {0x073, BSLH, 0}, {0x010, SQT, 0x02},
+        {0x020, COMMA, 0}, {0x03c, N3, 0x02}, {0x030, SEMI, 0},
+    };
+    __ASSERT(braille_rules_computer8_characters.count == 94, "Computer8 table incomplete");
+    for (size_t i = 0; i < ARRAY_SIZE(expected); ++i) {
+        begin_observation();
+        chord(expected[i].mask);
+        expect_output(expected[i].usage, expected[i].mods, false);
+    }
+    /* No dot-8 masking, no newline alias for dots 78, no stale key state. */
+    static const uint16_t reserved[] = {0x042, 0x081, 0x0c0, 0x0ff};
+    for (size_t i = 0; i < ARRAY_SIZE(reserved); ++i) {
+        begin_observation();
+        chord(reserved[i]);
+        __ASSERT(report_count == 0, "Reserved cell emitted a host key");
+        __ASSERT(zmk_hid_get_keyboard_report()->body.modifiers == 0, "Modifier leaked");
+        observing = false;
+    }
+    begin_observation();
+    chord(0x001);
+    expect_output(A, 0, false);
+    LOG_INF("computer8_characters: PASS");
+}
+
 static void run_suite(void) {
     BUILD_ASSERT(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL),
                  "Native command acceptance requires FULL consumer usages");
@@ -169,20 +200,12 @@ static void run_suite(void) {
         __ASSERT(braille_tables_select(mode->name) == 0, "Mode selection/collision failure");
         struct braille_override_layer overrides = braille_tables_overrides();
         *overrides.count = 0;
-        if (mode->characters->count == 0) {
-            /* computer8's real text arrives in Phase 03. Only these fixture
-             * letters use the real shared override layer; commands are real. */
-            overrides.rules[0] = (struct braille_rule){
-                .chords = {0x001}, .chord_count = 1, .action_count = 1,
-                .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = A}},
-            };
-            overrides.rules[1] = overrides.rules[0];
-            overrides.rules[1].chords[0] = 0x011;
-            overrides.rules[1].actions[0].param1 = E;
-            *overrides.count = 2;
-        }
+        __ASSERT(mode->characters->count > 0, "Real character table required");
         test_direct_commands();
         test_sticky_modifiers();
+        if (strcmp(mode->name, "computer8") == 0) {
+            test_computer8_characters();
+        }
         *overrides.count = 0;
         LOG_INF("factory_commands: %s PASS", mode->name);
     }

@@ -214,3 +214,37 @@ US table and the original fixture table. Run with `uv run --no-project --with
 pyyaml python -m unittest discover -s tests/host -p test_computer8_mapping.py -v`.
 This publishes and verifies the mapping; firmware implementation and physical
 acceptance are separate descendant tasks.
+
+## Implemented Computer8 characters
+
+Task 9.3.2.1.2 populates `src/braille_rules_computer8.c` with all 94
+printable non-space ASCII cells using the existing behavior-action schema.
+Each emits one US-layout `&kp` press/release; ZMK's implicit Shift encodes
+uppercase and shifted symbols. All rows have any predicates/word position
+and neutral class. No engine, capture, or dispatch special case is added.
+Reserved cells remain absent from the factory rule array: the shared matcher
+emits nothing and calls its existing notification hook, with no zero-action
+rule to collide with commands. The phase-05 display is not implemented.
+
+`tests/host/test_computer8.py` checks every mask through production capture,
+selection, matching and dispatch against independent raw HID expectations
+and the published matrix. It covers all original character/example and
+isolation fixtures, all 159 enterable reserved fixtures, exact notices and
+recovery, live override binding of each reserved cell, and a stream of all
+94 printable non-space characters with no factory buffering. Split/non-split,
+optional Grade-2 builds and the pinned real ZMK keycode header pass.
+
+The native `scripts/test-commands` fixture now requires real character tables
+instead of Computer8 override stand-ins. It checks representative letters,
+case, digits, backtick, bar, underscore, shifted symbols, and reserved cells
+through unmodified ZMK `kp`/HID, plus both command tables and real sticky-key/
+Globe semantics and timeouts. Its native USB endpoint diagnostics are expected
+because there is no physical USB endpoint; all asserted HID checkpoints pass.
+Smoke builds of QBF left, Toucan left and Toucan with the Computer8 boot-mode
+overlay pass. No device is flashed and no physical acceptance is claimed.
+
+The full host-suite attempt also exposes pre-existing failures in
+`test_cheatsheet.py` (stale document contract and removed research) and
+`test_coordinator.py` (obsolete tmux mocks). Both failure sets reproduce from
+starting commit `53e9439` in an isolated archive; they are not repaired by this
+mapping task. Install `kconfiglib` as well as PyYAML for the Kconfig tests.

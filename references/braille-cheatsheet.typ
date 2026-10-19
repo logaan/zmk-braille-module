@@ -325,3 +325,27 @@ The published matrix, 94 ASCII fixtures, all 159 enterable reserved
 fixtures, and installed VoiceOver definitions pass the mapping checks.
 This section publishes the mapping, not its firmware implementation or
 physical acceptance.
+
+= Implemented Computer8 character table
+
+Task 9.3.2.1.2 implements the 94 printable non-space ASCII cells as common
+single-cell, single-action rules. Uppercase and shifted punctuation use
+ZMK's implicit Shift; every row has any predicates/word position and the
+neutral class. Space and dot-7/Delete and dot-8/Return remain commands.
+Reserved entries have no factory rule, so the shared matcher emits nothing
+and calls the existing notice hook. No UEB or eight-dot special case is
+added to capture, matching, or dispatch.
+
+All 256 patterns and literal Braille space pass end-to-end host checks,
+including exact reserved notices, recovery, every enterable reserved cell
+bound by an override, and a stream of all 94 characters with no factory
+buffering. Original YAML character, reserved, and isolation cases pass in
+split/non-split and optional Grade-2 builds, including pinned ZMK keycodes.
+
+Native ZMK command acceptance now uses real Computer8 letters instead of
+fixture overrides and adds real HID case, digit, backtick, bar, underscore,
+shifted-symbol and reserved-cell checks. Both command tables, sticky
+modifiers/Globe and timeout checks pass. QBF left, Toucan left and the
+Toucan Computer8 boot-mode smoke builds pass. This supersedes the previous
+mapping-only implementation note; display presentation and physical
+acceptance remain unclaimed.
