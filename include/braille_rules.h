@@ -34,10 +34,10 @@
 #define BRAILLE_RULE_MAX_CHORDS 8
 #define BRAILLE_RULE_MAX_ACTIONS 16
 
-/* Plan-level word-position constraint (root plan 4.4.3). In the UEB context
- * representation the word-start constraint is the word_start field; ueb1
- * needs no word-middle or word-end rules, but the values exist for tables
- * that do. */
+/* Plan-level word position: START requires word_start at sequence start;
+ * END needs following whitespace/hyphen; MIDDLE requires !word_start and a
+ * following nonboundary character. END/MIDDLE wait for lookahead, not a timer.
+ * UEB1 uses the word_start predicate; overrides/future modes can use all four. */
 enum braille_word_position {
     BRAILLE_WORD_POSITION_ANY = 0,
     BRAILLE_WORD_POSITION_START,

@@ -5,6 +5,10 @@
 
 / {
     behaviors {
+        custom_dot: custom_dot {
+            compatible = "zmk,behavior-braille-dot";
+            #binding-cells = <1>;
+        };
         run_commands: run_commands {
             compatible = "braille,test-commands";
             #binding-cells = <1>;
@@ -17,6 +21,12 @@
             bindings = <
                 &bc 1 &bc 2 &bc 3 &bc 4 &bc 5 &bc 6 &bc 7 &bc 8
                 &bspc &run_commands 0 &run_commands 1 &run_commands 2 &none &none &none &none
+            >;
+        };
+        transparent_test {
+            bindings = <
+                &trans &none &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &custom_dot 1 &trans &trans &trans
             >;
         };
     };

@@ -32,6 +32,7 @@ struct braille_mode {
     const struct braille_rule_table *characters;
     const struct braille_rule_table *commands;
     const struct braille_whitespace_chords *whitespace;
+    uint8_t pending_limit;
 };
 
 /* Compiled factory tables, defined by the rule-data units. `ueb1` carries

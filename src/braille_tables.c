@@ -44,12 +44,14 @@ static const struct braille_mode modes[] = {
         .characters = &braille_rules_ueb1_characters,
         .commands = &braille_rules_ueb1_commands,
         .whitespace = &braille_commands_ueb1_whitespace,
+        .pending_limit = BRAILLE_RULE_MAX_CHORDS,
     },
     {
         .name = "computer8",
         .characters = &braille_rules_computer8_characters,
         .commands = &braille_rules_computer8_commands,
         .whitespace = &braille_commands_computer8_whitespace,
+        .pending_limit = BRAILLE_RULE_MAX_CHORDS,
     },
 #ifdef CONFIG_ZMK_BRAILLE_GRADE2
     {
@@ -57,6 +59,7 @@ static const struct braille_mode modes[] = {
         .characters = &braille_rules_ueb2_characters,
         .commands = &braille_rules_ueb2_commands,
         .whitespace = &braille_commands_ueb2_whitespace,
+        .pending_limit = BRAILLE_RULE_MAX_CHORDS,
     },
 #endif
 };
@@ -106,6 +109,10 @@ int braille_tables_select(const char *name) {
     /* Both factory tables are validated together; a colliding mode is
      * rejected here and the engine keeps the previous selection. */
     int ret = braille_engine_set_tables(mode->characters, mode->commands);
+    if (ret < 0) {
+        return ret;
+    }
+    ret = braille_engine_set_pending_limit(mode->pending_limit);
     if (ret < 0) {
         return ret;
     }

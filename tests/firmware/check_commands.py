@@ -12,6 +12,7 @@ def check(log):
     actual = re.findall(r"factory_commands: (.+) PASS", log)
     assert actual == ["ueb1", "computer8", "keyboard-timeout", "globe-timeout", "ALL"], actual
     assert log.count("computer8_characters: PASS") == 1, "Real Computer8 HID checkpoint missing"
+    assert log.count("context_boundaries: PASS") == 1, "Real context-event checkpoint missing"
 
 
 if __name__ == "__main__":

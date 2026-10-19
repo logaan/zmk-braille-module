@@ -39,6 +39,6 @@ int braille_dispatch_rule(const struct braille_rule *rule,
  * the host. */
 int braille_engine_commit_rule(const struct braille_rule *rule, enum braille_commit_cause cause,
                                struct zmk_behavior_binding_event event) {
-    (void)cause; /* Word-end/discard evidence is for phase-02 transitions. */
+    (void)cause; /* Context/lifecycle are owned by the shared matcher. */
     return braille_dispatch_rule(rule, event);
 }

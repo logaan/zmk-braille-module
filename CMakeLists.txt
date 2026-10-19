@@ -10,6 +10,7 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
     src/braille_chord.c
     src/braille_settings.c
     src/braille_engine.c
+    src/braille_context_events.c
     src/braille_dispatch.c
     src/braille_tables.c
     src/braille_rules_grade1.c

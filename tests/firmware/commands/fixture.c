@@ -11,6 +11,10 @@
 #include <braille_engine.h>
 #include <braille_tables.h>
 #include <zmk/hid.h>
+#include <zmk/keymap.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/position_state_changed.h>
+#include <braille_settings.h>
 
 LOG_MODULE_REGISTER(braille_commands_test, LOG_LEVEL_INF);
 
@@ -73,10 +77,10 @@ static void chord(uint16_t mask) {
                      "Braille binding failed");
         }
     }
-    __ASSERT(braille_engine_pending_count() == 0, "Direct command left pending input");
 }
 
 static void expect_output(uint32_t usage, uint8_t mods, bool globe) {
+    __ASSERT(braille_engine_pending_count() == 0, "Complete output left pending input");
     __ASSERT(report_count == 1, "Expected exactly one key, got %u", (unsigned)report_count);
     __ASSERT(reports[0].page == ZMK_HID_USAGE_PAGE(usage) &&
                  reports[0].key == ZMK_HID_USAGE_ID(usage), "Wrong host usage");
@@ -190,6 +194,54 @@ static void test_computer8_characters(void) {
     LOG_INF("computer8_characters: PASS");
 }
 
+static void position(uint32_t pos, bool pressed) {
+    __ASSERT(raise_zmk_position_state_changed((struct zmk_position_state_changed){
+        .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL, .position = pos,
+        .state = pressed, .timestamp = k_uptime_get()}) >= 0, "Position event failed");
+}
+
+static void test_context_boundaries(void) {
+    __ASSERT(braille_tables_select("ueb1") == 0, "Context fixture mode");
+    chord(0x008); /* pending real literary prefix */
+    __ASSERT(braille_engine_pending_count() == 1, "Missing prefix");
+    /* No output from a reset, and a conventional release alone does not reset. */
+    position(15, false);
+    __ASSERT(braille_engine_pending_count() == 1, "Conventional release reset context");
+    position(15, true); /* &none counts as a non-Braille key, not only &kp */
+    position(15, false);
+    __ASSERT(!braille_engine_pending_count(), "Non-Braille press kept pending input");
+    chord(0x008);
+    __ASSERT(zmk_keymap_layer_activate(1) == 0, "Layer activation");
+    __ASSERT(!braille_engine_pending_count(), "Layer activation kept pending input");
+    chord(0x008);
+    position(1, true); position(1, false); /* opaque &none shadows base &bc 2 */
+    __ASSERT(!braille_engine_pending_count(), "Shadowed Braille position misclassified");
+    /* Transparent lookup and a custom compatible device must not reset input.
+     * Observe only releases: every generated host key must also preserve UEB context. */
+    chord(0x008);
+    position(0, true); position(0, false); /* transparent -> base &bc 1: @ */
+    __ASSERT(!braille_engine_pending_count() && !braille_engine_context()->word_start,
+             "Transparent Braille press or generated &kp reset context");
+    position(12, true); position(12, false); /* custom &bc 1: a */
+    __ASSERT(!braille_engine_context()->word_start, "Custom dot device reset context");
+    /* A layer transition mid-chord discards it but keeps physical release ownership. */
+    position(0, true);
+    __ASSERT(zmk_keymap_layer_deactivate(1) == 0, "Layer deactivation");
+    begin_observation();
+    position(0, false);
+    __ASSERT(!report_count && !braille_engine_pending_count(), "Layer change leaked held chord");
+    observing = false;
+    /* The actual settings gate must reach the engine's strong reset hook. */
+    chord(0x008);
+    struct zmk_behavior_binding_event event = {.timestamp = k_uptime_get()};
+    __ASSERT(braille_settings_enter(event) == 0 && !braille_engine_pending_count(),
+             "Settings entry kept pending prefix");
+    __ASSERT(braille_settings_exit(event) == 0, "Settings exit");
+    __ASSERT(braille_engine_context()->word_start && !braille_engine_context()->numeric &&
+                 braille_engine_context()->caps == BRAILLE_CAPS_NONE, "Reset context stale");
+    LOG_INF("context_boundaries: PASS");
+}
+
 static void run_suite(void) {
     BUILD_ASSERT(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL),
                  "Native command acceptance requires FULL consumer usages");
@@ -209,6 +261,7 @@ static void run_suite(void) {
         *overrides.count = 0;
         LOG_INF("factory_commands: %s PASS", mode->name);
     }
+    test_context_boundaries();
     __ASSERT(braille_tables_select("ueb1") == 0, "Unable to restore UEB1");
     /* Let the real workqueue timer expire between mock scan checkpoints. */
     chord(0x148);

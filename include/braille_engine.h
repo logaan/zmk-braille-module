@@ -26,8 +26,9 @@
  *    then interpreted from scratch.
  *  - A rule is a candidate only when its `when` predicate holds in the
  *    context captured at the start of its sequence; pending cells do not
- *    change the context. This leaf never mutates the context: class-based
- *    transitions arrive with phase 02.
+ *    change the context. Committing a rule applies its class transition.
+ *  - START needs word_start; END waits for whitespace/hyphen lookahead;
+ *    MIDDLE needs neither a starting nor an ending boundary.
  *  - Space-only, dots-only, and space-plus-dot chords are treated
  *    identically; nothing branches on individual characters or commands.
  */
@@ -87,13 +88,32 @@ bool braille_engine_is_whitespace(uint16_t mask);
  * character-mode change, other command action, or settings entry. */
 void braille_engine_reset(void);
 
-/* The context `when` predicates are tested against. Const from the matcher's
- * side; the phase-02 context task owns transitions. Exposed for those
- * transitions and for tests. */
+/* The engine-owned UEB context; pending cells never mutate it. */
 const struct braille_context *braille_engine_context(void);
 
 /* Number of chords currently held pending (0..BRAILLE_RULE_MAX_CHORDS). */
 uint8_t braille_engine_pending_count(void);
+
+/* Inspection view, valid until the next engine call. Only pending_count
+ * entries are live; observers must copy cells they need to retain. */
+const uint16_t *braille_engine_pending_cells(void);
+
+/* Each named mode owns its pending bound (eight in the initial modes).
+ * A future larger-buffer mode can raise the storage/schema bound separately.
+ * Returns -EINVAL outside 1..BRAILLE_RULE_MAX_CHORDS; success resets input. */
+int braille_engine_set_pending_limit(uint8_t limit);
+
+enum braille_pending_change {
+    BRAILLE_PENDING_UPDATED,
+    BRAILLE_PENDING_COMMITTED,
+    BRAILLE_PENDING_DISCARDED,
+};
+/* Phase-05 display lifecycle hook. UPDATED carries the live buffer;
+ * COMMITTED/DISCARDED carry the consumed cells. pending_count/cells already
+ * reflect the new state. Called synchronously; copy, do not retain pointers.
+ * Reset/layer/key/settings discards are silent (no dropped-prefix notice). */
+void braille_engine_pending_changed(enum braille_pending_change change,
+                                    const uint16_t *cells, uint8_t count);
 
 /* Factory-table validation: two factory rules conflict when their chord
  * sequences are identical (neither is a strict prefix of the other) and their
