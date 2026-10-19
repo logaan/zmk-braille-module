@@ -1,25 +1,75 @@
-# Task 9.3.1.2: only the 21 specified context-free two-cell keyboard symbols.
-# The broader literary-sign research is historical; later tasks recover their
-# own requirements rather than implying they are implemented here.
+# UEB literary signs that give ueb1 the US keyboard's printable characters.
+# Phases 03/04 UEB1 keyboard scope; full research restored from 66c72c2^.
+# The earlier 21-symbol phase-03 subset is retained unchanged below.
+
+question: >-
+  Which rulebook-defined signs, beyond those already listed in the Grade 1 implementation
+  tasks, are needed to cover the US keyboard's printable characters, including quotation
+  marks, and where does the rulebook define each one?
+
 source:
   rulebook: references/iceb/rules-of-unified-english-braille-2024.pdf
   edition: The Rules of Unified English Braille, Third Edition 2024 (ICEB)
-  provenance: references/README.md
-  recovered_from: c786dd1:references/research/ueb-literary-signs.yaml
-  page: printed page number; PDF page = printed page + 28
+  page: printed page number; the PDF page is the printed page + 28
   verified: >-
-    These 21 patterns and citations were recovered from the prior research and
-    checked against the unchanged ICEB PDF's symbol lists and section headings.
+    Historical dot patterns and citations recovered from 66c72c2^; the pinned ICEB PDF
+    remains authoritative. Tests verify cited sign patterns against its pages and drive
+    the real C capture/matcher/dispatcher with the keyboard and rulebook fixtures.
+    Quotation variants produce straight US-layout quotes, not typographic Unicode.
+
 conventions:
-  dots: successive cells in order, each listing its raised dots (1-6)
-  braille: Unicode rendering for reading; dots is authoritative
-  print: one ordinary US-layout host keystroke, not Unicode Braille
-  predicate: any numeric, capitals, and word-start context; no state transition here
-  class: >-
-    The opening parenthesis, square bracket and curly bracket are opening (2.6.2,
-    p.16); all other rows are other, including the less-than/opening angle bracket.
-    Class metadata is reserved for phase-04 transitions, not implemented by this task.
+  dots: list of cells in order; each cell lists its raised dots (1-6); [] is the Braille space chord
+  braille: Unicode braille of the same cells, for reading only; dots is authoritative
+  print: host output as US-layout keystrokes
+
+related:
+  numeric_mode: references/research/ueb-numeric-mode.yaml
+  capitalisation: references/research/ueb-capitalisation.yaml
+  grade_1_indicators: references/research/ueb-grade-1-indicators.yaml
+  context_representation: references/research/ueb-indicator-context.yaml
+
 normative:
+  # Signs the Grade 1 tasks already list; all verified against the rulebook.
+  alphabet:
+    ref: {section: "4.1", page: 45}
+    signs:
+      - {braille: "⠁", dots: [[1]], print: "a"}
+      - {braille: "⠃", dots: [[1, 2]], print: "b"}
+      - {braille: "⠉", dots: [[1, 4]], print: "c"}
+      - {braille: "⠙", dots: [[1, 4, 5]], print: "d"}
+      - {braille: "⠑", dots: [[1, 5]], print: "e"}
+      - {braille: "⠋", dots: [[1, 2, 4]], print: "f"}
+      - {braille: "⠛", dots: [[1, 2, 4, 5]], print: "g"}
+      - {braille: "⠓", dots: [[1, 2, 5]], print: "h"}
+      - {braille: "⠊", dots: [[2, 4]], print: "i"}
+      - {braille: "⠚", dots: [[2, 4, 5]], print: "j"}
+      - {braille: "⠅", dots: [[1, 3]], print: "k"}
+      - {braille: "⠇", dots: [[1, 2, 3]], print: "l"}
+      - {braille: "⠍", dots: [[1, 3, 4]], print: "m"}
+      - {braille: "⠝", dots: [[1, 3, 4, 5]], print: "n"}
+      - {braille: "⠕", dots: [[1, 3, 5]], print: "o"}
+      - {braille: "⠏", dots: [[1, 2, 3, 4]], print: "p"}
+      - {braille: "⠟", dots: [[1, 2, 3, 4, 5]], print: "q"}
+      - {braille: "⠗", dots: [[1, 2, 3, 5]], print: "r"}
+      - {braille: "⠎", dots: [[2, 3, 4]], print: "s"}
+      - {braille: "⠞", dots: [[2, 3, 4, 5]], print: "t"}
+      - {braille: "⠥", dots: [[1, 3, 6]], print: "u"}
+      - {braille: "⠧", dots: [[1, 2, 3, 6]], print: "v"}
+      - {braille: "⠺", dots: [[2, 4, 5, 6]], print: "w"}
+      - {braille: "⠭", dots: [[1, 3, 4, 6]], print: "x"}
+      - {braille: "⠽", dots: [[1, 3, 4, 5, 6]], print: "y"}
+      - {braille: "⠵", dots: [[1, 3, 5, 6]], print: "z"}
+  core_punctuation:
+    ref: {section: "7", page: 75}
+    signs:
+      - {braille: "⠂", dots: [[2]], print: ",", name: "comma"}
+      - {braille: "⠆", dots: [[2, 3]], print: ";", name: "semicolon"}
+      - {braille: "⠒", dots: [[2, 5]], print: ":", name: "colon"}
+      - {braille: "⠖", dots: [[2, 3, 5]], print: "!", name: "exclamation mark"}
+      - {braille: "⠄", dots: [[3]], print: "'", name: "apostrophe; also the nondirectional single quotation mark (7.6.5, 7.6.6)"}
+      - {braille: "⠤", dots: [[3, 6]], print: "-", name: "hyphen (7.2)"}
+      - {braille: "⠲", dots: [[2, 5, 6]], print: ".", name: "full stop (period); an ellipsis is three of these (7.3)"}
+      - {braille: "⠦", dots: [[2, 3, 6]], print: "?", name: "question mark (7.5); read as an opening double quotation mark at the start of a word, see quotation_marks"}
   multi_cell_symbols:
     signs:
       - {braille: "⠈⠯", dots: [[4], [1, 2, 3, 4, 6]], print: "&", name: "ampersand", ref: {section: "3.1", page: 23}}
@@ -43,3 +93,174 @@ normative:
       - {braille: "⠸⠣", dots: [[4, 5, 6], [1, 2, 6]], print: "{", name: "opening curly bracket", ref: {section: "7", page: 75}}
       - {braille: "⠸⠜", dots: [[4, 5, 6], [3, 4, 5]], print: "}", name: "closing curly bracket", ref: {section: "7", page: 75}}
       - {braille: "⠸⠡", dots: [[4, 5, 6], [1, 6]], print: "\\", name: "reverse solidus (backslash)", ref: {section: "7", page: 75}}
+
+  # Signs this research adds to ueb1.
+  additional_signs:
+    quotation_marks:
+      summary: >-
+        UEB distinguishes opening, closing and nondirectional quotation marks (7.6). The US keyboard
+        has only the straight quotes, so every double form emits " and every single form emits '.
+      signs:
+        - {braille: "⠦", dots: [[2, 3, 6]], print: "\"", name: "opening double quotation mark, only at the start of a word (7.6.7)", ref: {section: "7.6.1", page: 82}}
+        - {braille: "⠴", dots: [[3, 5, 6]], print: "\"", name: "closing double quotation mark", ref: {section: "7.6.1", page: 82}}
+        - {braille: "⠘⠦", dots: [[4, 5], [2, 3, 6]], print: "\"", name: "two-cell opening double quotation mark", ref: {section: "7.6.7", page: 85}}
+        - {braille: "⠘⠴", dots: [[4, 5], [3, 5, 6]], print: "\"", name: "two-cell closing double quotation mark", ref: {section: "7.6.7", page: 85}}
+        - {braille: "⠠⠦", dots: [[6], [2, 3, 6]], print: "'", name: "opening single quotation mark", ref: {section: "7.6.2", page: 82}}
+        - {braille: "⠠⠴", dots: [[6], [3, 5, 6]], print: "'", name: "closing single quotation mark", ref: {section: "7.6.2", page: 82}}
+        - {braille: "⠠⠶", dots: [[6], [2, 3, 5, 6]], print: "\"", name: "nondirectional double quotation mark; also seconds and inches (3.11, 3.15)", ref: {section: "7.6.5", page: 83}}
+        - {braille: "⠄", dots: [[3]], print: "'", name: "nondirectional single quotation mark; same sign as the apostrophe", ref: {section: "7.6.5", page: 83}}
+      question_mark_or_opening_quote:
+        rule: >-
+          Dots 2,3,6 is an opening double quotation mark only at the beginning of a word, and a
+          question mark everywhere else. The beginning of a word follows a space, hyphen or dash, and
+          may be preceded by the 2.6.2 opening symbols. A question mark in a beginning-of-word position
+          takes a grade 1 symbol indicator, and dots 2,3,6 immediately after any grade 1 indicator is a
+          question mark.
+        refs:
+          - {rule: "opening quote must begin the word, else read as question mark", section: "7.6.7", page: 85}
+          - {rule: "question mark after space, hyphen or dash takes a grade 1 indicator", section: "7.5.4", page: 81}
+          - {rule: "standing-alone question mark takes a grade 1 indicator", section: "7.5.3", page: 81}
+          - {rule: "after a grade 1 indicator it is a question mark", section: "7.6.9", page: 86}
+          - {rule: "beginning of a word and the symbols that may intervene", section: "2.6.2", page: 16}
+        opening_symbols_2_6_2: >-
+          opening parenthesis, square or curly bracket; opening quotation mark of any kind;
+          nondirectional quotation mark of any kind; apostrophe; opening typeform indicator;
+          capitals indicator of any kind; opening transcriber's note indicator. Grade 1 indicators
+          and the opening angle bracket are not on the list (2.6.2 "But: <x, y>").
+    vertical_line:
+      sign:
+        - {braille: "⠸⠳", dots: [[4, 5, 6], [1, 2, 5, 6]], print: "|", name: "vertical line (U+007C)"}
+      refs:
+        - {rule: "vertical line in scansion", section: "15.1", page: 223}
+        - {rule: "Appendix 3 lists U+007C as vertical line in scansion (15.1) and vertical bar in mathematics (GTM)", section: "Appendix 3", page: 317}
+    grave_accent_alone:
+      sign:
+        - {braille: "⠨⠡", dots: [[4, 6], [1, 6]], print: "`", name: "grave accent alone (U+0060)"}
+      refs:
+        - {rule: "Appendix 3 lists U+0060 grave accent alone; it cites no section, and the appendix includes such symbols for completeness", section: "Appendix 3", page: 325}
+        - {rule: "Appendix 3 conventions", section: "Appendix 3", page: 289}
+      distinct_from:
+        - {braille: "⠘⠡", dots: [[4, 5], [1, 6]], name: "grave accent modifier above the following letter (U+0300)", ref: {section: "4.2", page: 46}}
+    space:
+      sign:
+        - {braille: " ", dots: [[]], print: " ", name: "space", ref: {section: "3.23", page: 37}}
+    digits: see references/research/ueb-numeric-mode.yaml
+    capital_letters: see references/research/ueb-capitalisation.yaml
+
+  keyboard_coverage:
+    summary: >-
+      With the signs above, every printable US keyboard character has a ueb1 sign. Letters take
+      capitals from the capitalisation research and digits from the numeric-mode research.
+    characters:
+      - {print: "`", braille: "⠨⠡", dots: [[4, 6], [1, 6]]}
+      - {print: "~", braille: "⠈⠔", dots: [[4], [3, 5]]}
+      - {print: "!", braille: "⠖", dots: [[2, 3, 5]]}
+      - {print: "@", braille: "⠈⠁", dots: [[4], [1]]}
+      - {print: "#", braille: "⠸⠹", dots: [[4, 5, 6], [1, 4, 5, 6]]}
+      - {print: "$", braille: "⠈⠎", dots: [[4], [2, 3, 4]]}
+      - {print: "%", braille: "⠨⠴", dots: [[4, 6], [3, 5, 6]]}
+      - {print: "^", braille: "⠈⠢", dots: [[4], [2, 6]]}
+      - {print: "&", braille: "⠈⠯", dots: [[4], [1, 2, 3, 4, 6]]}
+      - {print: "*", braille: "⠐⠔", dots: [[5], [3, 5]]}
+      - {print: "(", braille: "⠐⠣", dots: [[5], [1, 2, 6]]}
+      - {print: ")", braille: "⠐⠜", dots: [[5], [3, 4, 5]]}
+      - {print: "-", braille: "⠤", dots: [[3, 6]]}
+      - {print: "_", braille: "⠨⠤", dots: [[4, 6], [3, 6]]}
+      - {print: "=", braille: "⠐⠶", dots: [[5], [2, 3, 5, 6]]}
+      - {print: "+", braille: "⠐⠖", dots: [[5], [2, 3, 5]]}
+      - {print: "[", braille: "⠨⠣", dots: [[4, 6], [1, 2, 6]]}
+      - {print: "]", braille: "⠨⠜", dots: [[4, 6], [3, 4, 5]]}
+      - {print: "{", braille: "⠸⠣", dots: [[4, 5, 6], [1, 2, 6]]}
+      - {print: "}", braille: "⠸⠜", dots: [[4, 5, 6], [3, 4, 5]]}
+      - {print: "\\", braille: "⠸⠡", dots: [[4, 5, 6], [1, 6]]}
+      - {print: "|", braille: "⠸⠳", dots: [[4, 5, 6], [1, 2, 5, 6]]}
+      - {print: ";", braille: "⠆", dots: [[2, 3]]}
+      - {print: ":", braille: "⠒", dots: [[2, 5]]}
+      - {print: "'", braille: "⠄", dots: [[3]]}
+      - {print: "\"", braille: "⠴", dots: [[3, 5, 6]]}
+      - {print: ",", braille: "⠂", dots: [[2]]}
+      - {print: ".", braille: "⠲", dots: [[2, 5, 6]]}
+      - {print: "<", braille: "⠈⠣", dots: [[4], [1, 2, 6]]}
+      - {print: ">", braille: "⠈⠜", dots: [[4], [3, 4, 5]]}
+      - {print: "/", braille: "⠸⠌", dots: [[4, 5, 6], [3, 4]]}
+      - {print: "?", braille: "⠦", dots: [[2, 3, 6]]}
+    notes:
+      - '" also comes from ⠦ at the start of a word and from ⠘⠦, ⠘⠴ and ⠠⠶.'
+      - "' also comes from ⠠⠦ and ⠠⠴."
+      - "? needs the grade 1 indicator (⠰⠦) where ⠦ would begin a word."
+
+  not_keyboard_characters:
+    summary: >-
+      Rulebook signs whose print symbol is not a US keyboard character. ueb1 has no rule for them;
+      the shared pending-input policy handles their cells. This list is illustrative, not complete:
+      any sign absent from this file has no ueb1 rule.
+    signs:
+      - {braille: "⠠⠤", dots: [[6], [3, 6]], name: "dash (U+2013)", ref: {section: "7.2", page: 75}}
+      - {braille: "⠐⠠⠤", dots: [[5], [6], [3, 6]], name: "long dash (U+2014)", ref: {section: "7.2", page: 76}}
+      - {braille: "⠸⠦", dots: [[4, 5, 6], [2, 3, 6]], name: "left-pointing double angle quotation mark", ref: {section: "7.6.11", page: 86}}
+      - {braille: "⠸⠴", dots: [[4, 5, 6], [3, 5, 6]], name: "right-pointing double angle quotation mark", ref: {section: "7.6.11", page: 86}}
+      - {braille: "⠐⠤", dots: [[5], [3, 6]], name: "minus sign (U+2212)", ref: {section: "3.17", page: 33}}
+      - {braille: "⠐⠦", dots: [[5], [2, 3, 6]], name: "multiplication sign", ref: {section: "3.17", page: 33}}
+      - {braille: "⠐⠌", dots: [[5], [3, 4]], name: "division sign", ref: {section: "3.17", page: 33}}
+      - {braille: "⠘⠡", dots: [[4, 5], [1, 6]], name: "grave accent modifier; accented letters are outside the keyboard target", ref: {section: "4.2", page: 46}}
+      - {braille: "⠈⠉", dots: [[4], [1, 4]], name: "cent sign; other currency signs likewise", ref: {section: "3.10", page: 28}}
+      - {braille: "⠘⠚", dots: [[4, 5], [2, 4, 5]], name: "degree sign", ref: {section: "3.11", page: 29}}
+      - {braille: "⠸⠲", dots: [[4, 5, 6], [2, 5, 6]], name: "bullet", ref: {section: "3.5", page: 26}}
+      - {braille: "⠸", dots: [[4, 5, 6]], name: "line indicator", ref: {section: "15.1", page: 223}}
+      - {braille: "⠐⠂", dots: [[5], [2]], name: "ditto mark", ref: {section: "3.12", page: 30}}
+
+firmware_choices:
+  - choice: Every double quotation sign emits " (Shift+') and every single quotation sign emits '.
+    reason: The completeness target is the US keyboard's characters (root task 1.6); curly quotes are not on it.
+  - choice: A context reset (see ueb-indicator-context.yaml) leaves the engine at the beginning of a word.
+    reason: >-
+      The rulebook has no notion of a reset; treating it as a word start makes ⠦ after a reset an
+      opening quote, as after a space.
+  - choice: ⠴, ⠘⠴, ⠠⠴ and the other closing signs need no context in ueb1.
+    reason: Their only other meanings are Grade 2 wordsigns (10.5.1), which ueb1 does not have.
+
+fixtures:
+  from_rulebook:
+    - {print: "\"'Tis late.\"", braille: "⠦⠄⠠⠞⠊⠎ ⠇⠁⠞⠑⠲⠴", cells: [[2, 3, 6], [3], [6], [2, 3, 4, 5], [2, 4], [2, 3, 4], [], [1, 2, 3], [1], [2, 3, 4, 5], [1, 5], [2, 5, 6], [3, 5, 6]], ref: {section: "7.6.6", page: 84}}
+    - {print: "\"...", braille: "⠦⠲⠲⠲", cells: [[2, 3, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6]], ref: {section: "7.1.4", page: 78}}
+    - {print: "\":\"", braille: "⠦⠒⠴", cells: [[2, 3, 6], [2, 5], [3, 5, 6]], ref: {section: "7.1.4", page: 78}}
+    - {print: "...?\"", braille: "⠲⠲⠲⠦⠴", cells: [[2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 3, 6], [3, 5, 6]], ref: {section: "7.1.4", page: 78}}
+    - {print: "I don't th....\"", braille: "⠠⠊ ⠙⠕⠝⠄⠞ ⠞⠓⠲⠲⠲⠲⠴", cells: [[6], [2, 4], [], [1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5], [], [2, 3, 4, 5], [1, 2, 5], [2, 5, 6], [2, 5, 6], [2, 5, 6], [2, 5, 6], [3, 5, 6]], ref: {section: "7.3.1", page: 80}}
+    - {print: "X' Y\"", braille: "⠰⠠⠭⠄ ⠰⠠⠽⠠⠶", cells: [[5, 6], [6], [1, 3, 4, 6], [3], [], [5, 6], [6], [1, 3, 4, 5, 6], [6], [2, 3, 5, 6]], ref: {section: "2.6.3", page: 18}}
+    - {print: "\"yr-123", braille: "⠠⠶⠰⠽⠗⠤⠼⠁⠃⠉", cells: [[6], [2, 3, 5, 6], [5, 6], [1, 3, 4, 5, 6], [1, 2, 3, 5], [3, 6], [3, 4, 5, 6], [1], [1, 2], [1, 4]], ref: {section: "2.6.2", page: 16}}
+    - {print: "4' 11\"", braille: "⠼⠙⠄ ⠼⠁⠁⠠⠶", cells: [[3, 4, 5, 6], [1, 4, 5], [3], [], [3, 4, 5, 6], [1], [1], [6], [2, 3, 5, 6]], ref: {section: "3.15.1", page: 32}}
+    - {print: "[?]", braille: "⠨⠣⠰⠦⠨⠜", cells: [[4, 6], [1, 2, 6], [5, 6], [2, 3, 6], [4, 6], [3, 4, 5]], ref: {section: "2.6.5", page: 19}}
+    - {print: "?-1750", braille: "⠰⠦⠤⠼⠁⠛⠑⠚", cells: [[5, 6], [2, 3, 6], [3, 6], [3, 4, 5, 6], [1], [1, 2, 4, 5], [1, 5], [2, 4, 5]], ref: {section: "7.5.4", page: 81}}
+    - {print: "10:30-?", braille: "⠼⠁⠚⠒⠼⠉⠚⠤⠰⠦", cells: [[3, 4, 5, 6], [1], [2, 4, 5], [2, 5], [3, 4, 5, 6], [1, 4], [2, 4, 5], [3, 6], [5, 6], [2, 3, 6]], ref: {section: "7.5.4", page: 81}}
+    - {print: "don't", braille: "⠙⠕⠝⠄⠞", cells: [[1, 4, 5], [1, 3, 5], [1, 3, 4, 5], [3], [2, 3, 4, 5]], ref: {section: "7.6.6", page: 84}}
+    - {print: "rock 'n' roll", braille: "⠗⠕⠉⠅ ⠄⠰⠝⠄ ⠗⠕⠇⠇", cells: [[1, 2, 3, 5], [1, 3, 5], [1, 4], [1, 3], [], [3], [5, 6], [1, 3, 4, 5], [3], [], [1, 2, 3, 5], [1, 3, 5], [1, 2, 3], [1, 2, 3]], ref: {section: "7.6.6", page: 84}}
+    - {print: "&c (etc)", braille: "⠈⠯⠉ ⠐⠣⠑⠞⠉⠐⠜", cells: [[4], [1, 2, 3, 4, 6], [1, 4], [], [5], [1, 2, 6], [1, 5], [2, 3, 4, 5], [1, 4], [5], [3, 4, 5]], ref: {section: "3.1.1", page: 23}}
+    - {print: "M*A*S*H", braille: "⠠⠍⠐⠔⠠⠁⠐⠔⠠⠎⠐⠔⠠⠓", cells: [[6], [1, 3, 4], [5], [3, 5], [6], [1], [5], [3, 5], [6], [2, 3, 4], [5], [3, 5], [6], [1, 2, 5]], ref: {section: "3.3.1", page: 24}}
+    - {print: "AT&T", braille: "⠠⠠⠁⠞⠈⠯⠠⠞", cells: [[6], [6], [1], [2, 3, 4, 5], [4], [1, 2, 3, 4, 6], [6], [2, 3, 4, 5]], ref: {section: "3.1.1", page: 23}}
+    - {print: "Apt. #D", braille: "⠠⠁⠏⠞⠲ ⠸⠹⠠⠙", cells: [[6], [1], [1, 2, 3, 4], [2, 3, 4, 5], [2, 5, 6], [], [4, 5, 6], [1, 4, 5, 6], [6], [1, 4, 5]], ref: {section: "3.19.1", page: 35}}
+    - {print: "$19.95", braille: "⠈⠎⠼⠁⠊⠲⠊⠑", cells: [[4], [2, 3, 4], [3, 4, 5, 6], [1], [2, 4], [2, 5, 6], [2, 4], [1, 5]], ref: {section: "3.10.1", page: 28}}
+    - {print: "2.5%", braille: "⠼⠃⠲⠑⠨⠴", cells: [[3, 4, 5, 6], [1, 2], [2, 5, 6], [1, 5], [4, 6], [3, 5, 6]], ref: {section: "7.1.1", page: 76}}
+    - {print: "~s", braille: "⠈⠔⠎", cells: [[4], [3, 5], [2, 3, 4]], ref: {section: "2.6.2", page: 17}}
+    - {print: "{k-p}", braille: "⠸⠣⠰⠅⠤⠰⠏⠸⠜", cells: [[4, 5, 6], [1, 2, 6], [5, 6], [1, 3], [3, 6], [5, 6], [1, 2, 3, 4], [4, 5, 6], [3, 4, 5]], ref: {section: "2.6.3", page: 17}}
+    - {print: "ab/cd", braille: "⠁⠃⠸⠌⠉⠙", cells: [[1], [1, 2], [4, 5, 6], [3, 4], [1, 4], [1, 4, 5]], ref: {section: "2.6.3", page: 18}}
+    - {print: "c:\\desktop", braille: "⠉⠒⠸⠡⠙⠑⠎⠅⠞⠕⠏", cells: [[1, 4], [2, 5], [4, 5, 6], [1, 6], [1, 4, 5], [1, 5], [2, 3, 4], [1, 3], [2, 3, 4, 5], [1, 3, 5], [1, 2, 3, 4]], ref: {section: "7.1.1", page: 77}}
+    - {print: "jim@take2.com", braille: "⠚⠊⠍⠈⠁⠞⠁⠅⠑⠼⠃⠲⠰⠉⠕⠍", cells: [[2, 4, 5], [2, 4], [1, 3, 4], [4], [1], [2, 3, 4, 5], [1], [1, 3], [1, 5], [3, 4, 5, 6], [1, 2], [2, 5, 6], [5, 6], [1, 4], [1, 3, 5], [1, 3, 4]], ref: {section: "5.2.1", page: 58}}
+    - {print: "7(b)", braille: "⠼⠛⠐⠣⠃⠐⠜", cells: [[3, 4, 5, 6], [1, 2, 4, 5], [5], [1, 2, 6], [1, 2], [5], [3, 4, 5]], ref: {section: "6.3.1", page: 67}}
+    - {print: "idea(s)", braille: "⠊⠙⠑⠁⠐⠣⠎⠐⠜", cells: [[2, 4], [1, 4, 5], [1, 5], [1], [5], [1, 2, 6], [2, 3, 4], [5], [3, 4, 5]], ref: {section: "10.6.5", page: 131}}
+    - {print: "[be]hold", braille: "⠨⠣⠃⠑⠨⠜⠓⠕⠇⠙", cells: [[4, 6], [1, 2, 6], [1, 2], [1, 5], [4, 6], [3, 4, 5], [1, 2, 5], [1, 3, 5], [1, 2, 3], [1, 4, 5]], ref: {section: "10.6.2", page: 128}}
+    - {print: "Jan/Feb", braille: "⠠⠚⠁⠝⠸⠌⠠⠋⠑⠃", cells: [[6], [2, 4, 5], [1], [1, 3, 4, 5], [4, 5, 6], [3, 4], [6], [1, 2, 4], [1, 5], [1, 2]], ref: {section: "7.1.1", page: 77}}
+    - {print: "Ai!!ams", braille: "⠠⠁⠊⠰⠖⠖⠁⠍⠎", cells: [[6], [1], [2, 4], [5, 6], [2, 3, 5], [2, 3, 5], [1], [1, 3, 4], [2, 3, 4]], ref: {section: "7.1.3", page: 78}}
+    - {print: "lang:uk", braille: "⠇⠁⠝⠛⠰⠒⠥⠅", cells: [[1, 2, 3], [1], [1, 3, 4, 5], [1, 2, 4, 5], [5, 6], [2, 5], [1, 3, 6], [1, 3]], ref: {section: "7.1.3", page: 78}}
+    - {print: "a:o", braille: "⠁⠰⠒⠕", cells: [[1], [5, 6], [2, 5], [1, 3, 5]], ref: {section: "7.1.3", page: 78}}
+    - {print: ".doc", braille: "⠰⠲⠙⠕⠉", cells: [[5, 6], [2, 5, 6], [1, 4, 5], [1, 3, 5], [1, 4]], ref: {section: "7.1.3", page: 78}}
+    - {print: "U.S.A.", braille: "⠠⠥⠲⠠⠎⠲⠠⠁⠲", cells: [[6], [1, 3, 6], [2, 5, 6], [6], [2, 3, 4], [2, 5, 6], [6], [1], [2, 5, 6]], ref: {section: "7.1.1", page: 76}}
+  constructed:
+    # Derived from the rules above; the rulebook's own examples of these signs are contracted.
+    - {print: "'hi'", braille: "⠠⠦⠓⠊⠠⠴", cells: [[6], [2, 3, 6], [1, 2, 5], [2, 4], [6], [3, 5, 6]], note: "single quotation marks, 7.6.2"}
+    - {print: "\"hi\"", braille: "⠘⠦⠓⠊⠘⠴", cells: [[4, 5], [2, 3, 6], [1, 2, 5], [2, 4], [4, 5], [3, 5, 6]], note: "two-cell double quotation marks, 7.6.7"}
+    - {print: "say \"hi\"", braille: "⠎⠁⠽ ⠦⠓⠊⠴", cells: [[2, 3, 4], [1], [1, 3, 4, 5, 6], [], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6]], note: "⠦ begins a word: opening quote"}
+    - {print: "hi?", braille: "⠓⠊⠦", cells: [[1, 2, 5], [2, 4], [2, 3, 6]], note: "⠦ inside a word: question mark"}
+    - {print: "(\"hi\")", braille: "⠐⠣⠦⠓⠊⠴⠐⠜", cells: [[5], [1, 2, 6], [2, 3, 6], [1, 2, 5], [2, 4], [3, 5, 6], [5], [3, 4, 5]], note: "⠦ after an opening parenthesis still begins the word, 2.6.2"}
+    - {print: "a|b", braille: "⠁⠸⠳⠃", cells: [[1], [4, 5, 6], [1, 2, 5, 6], [1, 2]], note: "vertical line, 15.1"}
+    - {print: "`a`", braille: "⠨⠡⠁⠨⠡", cells: [[4, 6], [1, 6], [1], [4, 6], [1, 6]], note: "grave accent alone, Appendix 3"}
+    - {print: "<a>", braille: "⠈⠣⠁⠈⠜", cells: [[4], [1, 2, 6], [1], [4], [3, 4, 5]], note: "angle brackets, 7"}

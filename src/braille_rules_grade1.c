@@ -5,8 +5,8 @@
 #include <braille_tables.h>
 
 /*
- * The `ueb1` character table: the 26 six-dot alphabet cells, seven
- * context-free core punctuation signs, and 21 specified two-cell symbols.
+ * The `ueb1` keyboard character table: letters, numeric/capital/Grade 1
+ * indicators, punctuation, symbols and context-dependent quotation signs.
  * Authority: ICEB, The Rules of Unified English Braille, 3rd edition 2024,
  * sections 2.5, 3 and 7; per-symbol citations are recorded in
  * references/research/ueb-literary-signs.yaml.
@@ -14,10 +14,9 @@
  * Dot n is bit n-1 of the nine-bit chord mask (braille_chord.h); these
  * six-dot cells collide with neither space chords nor dot-7/8 commands.
  *
- * Letter usages have no modifiers, so they yield lowercase on a US host
- * layout. Punctuation and symbols use ZMK keycodes with implicit Shift
- * where required. Phase 04 owns capitalization and context-dependent signs;
- * dots 2,3,6 (question mark/opening quotation mark) must stay unmapped here.
+ * Disjoint numeric/caps predicates select letter/digit/case rows. Uppercase,
+ * punctuation and symbols use ZMK implicit Shift where required. Indicators
+ * are silent rules; transitions are class data applied by the common engine.
  *
  * ZMK_HID_USAGE(HID_USAGE_KEY, id) = (0x07 << 16) | id, as in
  * dt-bindings/zmk/keys.h; HID keyboard usage ids are dt-bindings/zmk/hid_usage.h
@@ -141,7 +140,7 @@ static const struct braille_rule ueb1_character_rules[] = {
 
     /* ICEB section 7, p.75. Comma/full stop remain numeric punctuation
      * (6.2.1); apostrophe is an opening symbol (2.6.2); hyphen bounds a
-     * word (2.6.1). Classes are data only until phase-04 transitions. */
+     * word (2.6.1). The engine applies the researched class transitions. */
     BRAILLE_CHARACTER_RULE(0x02, COMMA, BRAILLE_CLASS_NUMERIC_PUNCTUATION), /* comma: 2      */
     BRAILLE_CHARACTER_RULE(0x06, SEMI, BRAILLE_CLASS_OTHER),               /* semicolon: 23 */
     BRAILLE_CHARACTER_RULE(0x12, COLON, BRAILLE_CLASS_OTHER),              /* colon: 25     */
@@ -175,6 +174,26 @@ static const struct braille_rule ueb1_character_rules[] = {
     BRAILLE_SYMBOL_RULE(0x38, 0x23, LBRC, BRAILLE_CLASS_OPENING), /* {: 456 then 126; 7.1 */
     BRAILLE_SYMBOL_RULE(0x38, 0x1C, RBRC, BRAILLE_CLASS_OTHER),  /* }: 456 then 345; 7.1 */
     BRAILLE_SYMBOL_RULE(0x38, 0x21, BSLH, BRAILLE_CLASS_OTHER),  /* backslash: 456 then 16; 7.1 */
+
+    /* 7.5/7.6/2.6.2: dots 236 opens a double quote only at a word start.
+     * Grade 1 indicators clear that context, so 56 then 236 always means ?. */
+    {.chords = {0x26}, .chord_count = 1,
+     .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = DQT}},
+     .action_count = 1, .when = {.word_start = BRAILLE_CONDITION_SET},
+     .class = BRAILLE_CLASS_OPENING},
+    {.chords = {0x26}, .chord_count = 1,
+     .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)), .param1 = QMARK}},
+     .action_count = 1, .when = {.word_start = BRAILLE_CONDITION_CLEAR},
+     .class = BRAILLE_CLASS_OTHER},
+    BRAILLE_CHARACTER_RULE(0x34, DQT, BRAILLE_CLASS_OTHER), /* closing double quote */
+    BRAILLE_SYMBOL_RULE(0x18, 0x26, DQT, BRAILLE_CLASS_OPENING), /* two-cell opening double */
+    BRAILLE_SYMBOL_RULE(0x18, 0x34, DQT, BRAILLE_CLASS_OTHER),   /* two-cell closing double */
+    BRAILLE_SYMBOL_RULE(0x20, 0x26, SQT, BRAILLE_CLASS_OPENING), /* opening single quote */
+    BRAILLE_SYMBOL_RULE(0x20, 0x34, SQT, BRAILLE_CLASS_OTHER),   /* closing single quote */
+    BRAILLE_SYMBOL_RULE(0x20, 0x36, DQT, BRAILLE_CLASS_OPENING), /* nondirectional double */
+    BRAILLE_SYMBOL_RULE(0x38, 0x33, PIPE, BRAILLE_CLASS_OTHER), /* vertical line; 15.1 p.223 */
+    BRAILLE_SYMBOL_RULE(0x28, 0x21, GRAVE, BRAILLE_CLASS_OTHER), /* grave alone; App.3 p.325 */
+    /* No 45 then 16 rule: that is a letter modifier, NOT the backtick. */
 };
 
 const struct braille_rule_table braille_rules_ueb1_characters = {

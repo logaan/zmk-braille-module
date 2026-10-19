@@ -201,6 +201,54 @@ static void test_capitals_and_grade1(void) {
     puts("ok: single/word/passage capitals, every termination, silent Grade 1 indicators and interactions");
 }
 
+static void test_remaining_signs(void) {
+    static const struct { uint16_t first, second; uint32_t key; } signs[] = {
+        {0x26, 0, SHIFT(0x34)}, {0x34, 0, SHIFT(0x34)},
+        {0x18, 0x26, SHIFT(0x34)}, {0x18, 0x34, SHIFT(0x34)},
+        {0x20, 0x26, KEY(0x34)}, {0x20, 0x34, KEY(0x34)},
+        {0x20, 0x36, SHIFT(0x34)}, {0x04, 0, KEY(0x34)},
+        {0x38, 0x33, SHIFT(0x31)}, {0x28, 0x21, KEY(0x35)},
+    };
+    for (size_t i = 0; i < COUNT(signs); ++i) {
+        reset(); chord(signs[i].first);
+        if (signs[i].second) {
+            assert(!key_count && braille_engine_pending_count() == 1);
+            chord(signs[i].second);
+        }
+        expect_keys(&signs[i].key, 1);
+    }
+    reset(); chord(0x01); chord(0x26);
+    static const uint32_t question[] = {KEY(0x04), SHIFT(0x38)};
+    expect_keys(question, COUNT(question));
+    /* Each 2.6.2 opening sign preserves word-start only if it was already set. */
+    static const uint16_t openers[][2] = {
+        {0x10, 0x23}, {0x28, 0x23}, {0x38, 0x23}, {0x18, 0x26},
+        {0x20, 0x26}, {0x20, 0x36}, {0x04, 0},
+    };
+    for (size_t i = 0; i < COUNT(openers); ++i) {
+        for (unsigned after_letter = 0; after_letter < 2; ++after_letter) {
+            reset();
+            if (after_letter) chord(0x01);
+            chord(openers[i][0]);
+            if (openers[i][1]) chord(openers[i][1]);
+            chord(0x26);
+            assert(keys[key_count - 1] == (after_letter ? SHIFT(0x38) : SHIFT(0x34)));
+        }
+    }
+    reset(); chord(0x30); chord(0x26);
+    uint32_t q = SHIFT(0x38);
+    expect_keys(&q, 1); /* standalone ? must be Grade-1-prefixed */
+    reset(); chord(0x18); chord(0x21); /* grave modifier is not a standalone backtick */
+    assert(!key_count && !braille_engine_pending_count() && drop_count == 2);
+    chord(0x01);
+    assert(key_count == 1 && keys[0] == KEY(0x04));
+    const struct braille_rule_table *table = &braille_rules_ueb1_characters;
+    for (size_t r = 0; r < table->count; ++r)
+        for (uint8_t c = 0; c < table->rules[r].chord_count; ++c)
+            assert(!(table->rules[r].chords[c] & ~0x3f)); /* no literary dots 7/8/space */
+    puts("ok: every remaining sign, quote/question context, openers and excluded grave modifier");
+}
+
 static void print_observation(void) {
     printf("{\"keys\":[");
     for (size_t i = 0; i < key_count; ++i) printf("%s%u", i ? "," : "", (unsigned)keys[i]);
@@ -234,6 +282,7 @@ int main(int argc, char **argv) {
     }
     test_numbers();
     test_capitals_and_grade1();
+    test_remaining_signs();
     puts("all contextual UEB1 unit tests passed");
     return 0;
 }

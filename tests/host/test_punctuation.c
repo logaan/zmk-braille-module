@@ -195,28 +195,29 @@ static void test_alphabet_punctuation_and_commands_in_one_stream(void) {
     puts("ok: alphabet, all seven signs and phase-02 commands coexist in order");
 }
 
-static void test_dots_236_remain_deferred(void) {
+static void test_contextual_dots_236(void) {
     braille_engine_reset();
     output_count = 0;
-    chord(0x26); /* at reset: no premature opening-quote policy */
-    assert(output_count == 0);
+    chord(0x26); /* Phase 04: opening quote at reset. */
+    assert(output_count == 2);
+    expect_pair(0, SHIFTED(0x34), 0x26);
     chord(0x01); /* a */
-    assert(output_count == 2);
-    expect_pair(0, KEY(0x04), 0x01);
-    output_count = 0;
-    chord(0x26); /* after a letter: no premature question-mark policy */
-    assert(output_count == 0);
-    chord(0x03); /* no pending cells or lost next letter */
-    assert(output_count == 2);
-    expect_pair(0, KEY(0x05), 0x03);
-    puts("ok: dots 2,3,6 stay unassigned; phase-04 question/quote acceptance fixtures remain intact");
+    assert(output_count == 4);
+    expect_pair(2, KEY(0x04), 0x01);
+    chord(0x26); /* After a letter: question mark. */
+    assert(output_count == 6);
+    expect_pair(4, SHIFTED(0x38), 0x26);
+    chord(0x03);
+    assert(output_count == 8);
+    expect_pair(6, KEY(0x05), 0x03);
+    puts("ok: dots 2,3,6 now use phase-04 word context without losing following input");
 }
 
 int main(void) {
     test_rules_and_real_table_validation();
     test_every_sign_at_reset_and_after_letter();
     test_alphabet_punctuation_and_commands_in_one_stream();
-    test_dots_236_remain_deferred();
+    test_contextual_dots_236();
     puts("all core punctuation tests passed");
     return 0;
 }
