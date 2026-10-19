@@ -349,3 +349,29 @@ modifiers/Globe and timeout checks pass. QBF left, Toucan left and the
 Toucan Computer8 boot-mode smoke builds pass. This supersedes the previous
 mapping-only implementation note; display presentation and physical
 acceptance remain unclaimed.
+
+= Computer8 isolation, switching and coverage
+
+Tasks 9.3.2.1.3 and 9.3.2.2 verify every real Computer8 character in all
+12 seeded numeric/caps/word-start combinations: characters stay immediate
+and neutral. Context seeding is test-only; phase-04 UEB transitions remain
+unimplemented. Both directions of real-mode selection discard pending
+prefixes, reset context and retain the shared override data. Failed name
+selection changes neither input nor context.
+
+Mapped/reserved single-cell overrides and multi-cell overrides work in
+both modes; only explicit longer overrides add prefix delay. All real
+commands and Braille-space/Tab/Return whitespace paths remain available.
+The shared `references/key-coverage.md` records all 95 printable US ASCII
+characters: Computer8 covers all 95, while the current UEB1 subset covers
+55 and leaves 40 contextual/fallback characters open for later phases.
+
+QBF gains a test-only Computer8 boot-mode smoke target, matching Toucan's
+existing override. Both layouts parse correctly in Computer8; both real
+character tables link in all four central-half builds. QBF and Toucan
+UEB1 and Computer8 UF2 builds, native ZMK HID/command acceptance and all
+41 host tests outside the two pre-existing failing cheatsheet/coordinator
+suites pass. Production keyboard defaults/pins are unchanged; no device
+was flashed. Phase-03 software is delivered, but phase 03 itself remains
+started pending the user-owned hardware acceptance. Visual feedback,
+settings and persistence remain later work.

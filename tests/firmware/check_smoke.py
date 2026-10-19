@@ -65,7 +65,7 @@ def check_build(workspace, target):
     build = workspace / "build" / ("smoke-" + target)
     config = set((build / "zephyr/.config").read_text().splitlines())
     ninja = (build / "build.ninja").read_text()
-    central = target in ("qbf-left", "toucan-left", "toucan-computer8")
+    central = target in ("qbf-left", "qbf-computer8", "toucan-left", "toucan-computer8")
     assert ("CONFIG_ZMK_FEATURE_BRAILLE=y" in config) == central, target
     assert ("src/behavior_braille.c.obj:" in ninja) == central, target
     assert ("src/braille_bindings.c.obj:" in ninja) == central, target
@@ -96,7 +96,9 @@ def check_build(workspace, target):
             values = defines(header)
             link_map = (build / "zephyr/zmk.map").read_text()
             for symbol in ("braille_settings_enter", "braille_settings_exit",
-                           "braille_input_dispatch", "braille_chord_discard"):
+                           "braille_input_dispatch", "braille_chord_discard",
+                           "braille_rules_ueb1_characters", "braille_rules_computer8_characters",
+                           "braille_tables_select"):
                 assert symbol in link_map, (target, symbol)
             for device in ("dot", "space", "mode", "settings"):
                 ordinal = values[f"DT_N_S_behaviors_S_braille_{device}_ORD"]

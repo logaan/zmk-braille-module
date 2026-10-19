@@ -10,11 +10,11 @@ QBF="${QBF:-$(cd ../qbf-paintbrushes/basic-zmk && pwd)}"
 TOUCAN="${TOUCAN:-$(cd ../zmk-keyboard-toucan && pwd)}"
 [ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
 if [ "$#" -eq 0 ]; then
-  set -- qbf-left qbf-right toucan-left toucan-right toucan-computer8 qbf-reset toucan-reset
+  set -- qbf-left qbf-right qbf-computer8 toucan-left toucan-right toucan-computer8 qbf-reset toucan-reset
 fi
 for target in "$@"; do
   case "$target" in
-    qbf-left|qbf-right|toucan-left|toucan-right|toucan-computer8|qbf-reset|toucan-reset) ;;
+    qbf-left|qbf-right|qbf-computer8|toucan-left|toucan-right|toucan-computer8|qbf-reset|toucan-reset) ;;
     *) echo "Unknown target: $target" >&2; exit 2 ;;
   esac
 done
@@ -51,7 +51,7 @@ PY
     for target in $TARGETS; do
       args=()
       case "$target" in
-        qbf-left) board=nice_nano_v2; shield=qbf_paintbrush_left; config=/qbf/config ;;
+        qbf-left|qbf-computer8) board=nice_nano_v2; shield=qbf_paintbrush_left; config=/qbf/config ;;
         qbf-right) board=nice_nano_v2; shield=qbf_paintbrush_right; config=/qbf/config ;;
         qbf-reset) board=nice_nano_v2; shield=settings_reset; config=/qbf/config ;;
         toucan-left|toucan-computer8)
@@ -64,7 +64,7 @@ PY
       cmake_args=(-DSHIELD="$shield" -DZMK_CONFIG="$config")
       # Toucan itself is a keyboard module outside this development manifest.
       if [[ "$target" == toucan-* ]]; then cmake_args+=(-DZMK_EXTRA_MODULES=/toucan); fi
-      if [ "$target" = toucan-computer8 ]; then
+      if [[ "$target" == *-computer8 ]]; then
         cmake_args+=(-DEXTRA_DTC_OVERLAY_FILE=/work/zmk-braille-module/tests/firmware/computer8.overlay)
       fi
       # Retain failures and exact commands in per-target logs, including warnings.

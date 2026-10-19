@@ -248,3 +248,37 @@ The full host-suite attempt also exposes pre-existing failures in
 `test_coordinator.py` (obsolete tmux mocks). Both failure sets reproduce from
 starting commit `53e9439` in an isolated archive; they are not repaired by this
 mapping task. Install `kconfiglib` as well as PyYAML for the Kconfig tests.
+
+## Computer8 isolation and real-mode integration
+
+Tasks 9.3.2.1.3 and 9.3.2.2 add `tests/host/test_computer8_modes.py` and its
+production-path C tests. Every Computer8 row commits immediately and leaves
+context unchanged in all 12 seeded numeric/caps/word-start combinations.
+Context is seeded only in the test: phase-04 UEB transitions are not
+implemented by this work. Existing YAML isolation examples also pass.
+
+Both real modes are selected through `braille_tables_select`: a pending real
+UEB symbol prefix or user sequence is silently discarded on selection,
+context resets, and no old prefix completes in the new mode. A failed name
+selection changes neither pending input nor context. Shared in-memory
+single/multi-cell overrides stay active, including reserved cells and
+shadowed characters; ordinary factory characters are delayed only when an
+explicit longer override requires it. All real commands remain available,
+and space, Tab and all Return aliases preserve the pending-text whitespace
+path. Both real factory pairs pass collision validation.
+
+The shared [`key-coverage.md`](key-coverage.md) records all 95 printable US
+ASCII characters and ordinary keyboard functions for the later phase-04/06
+audits: Computer8 covers all 95; current UEB1 covers 55, with contextual and
+fallback requirements clearly left open. It is software evidence, not
+physical acceptance or settings/persistence evidence.
+
+`./scripts/smoke-build qbf-left qbf-computer8 toucan-left toucan-computer8`
+passes with both modes on each central half. The new QBF Computer8 target
+uses the same test-only overlay as Toucan; production keyboard defaults and
+pins are unchanged. The checker verifies both real character tables link,
+and the keyboard-contract host tests parse both Computer8 layouts. Central
+UF2s are under `build/baseline/build/smoke-<target>/zephyr/zmk.uf2`; no device
+is flashed. All 41 host tests excluding the two independently reproduced
+legacy failure suites pass, as do all nine Computer8 tests and the native
+ZMK HID/command suite. Phase-03 hardware acceptance remains user-owned.

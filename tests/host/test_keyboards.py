@@ -53,8 +53,10 @@ class KeyboardContract(unittest.TestCase):
             with self.subTest(keyboard=keyboard):
                 check_keymap(self.parse_keymap(keyboard), keyboard)
 
-    def test_configured_mode_preserves_toucan_layout(self):
-        check_keymap(self.parse_keymap("toucan", "computer8"), "toucan", "computer8")
+    def test_configured_mode_preserves_both_layouts(self):
+        for keyboard in ("qbf", "toucan"):
+            with self.subTest(keyboard=keyboard):
+                check_keymap(self.parse_keymap(keyboard, "computer8"), keyboard, "computer8")
 
     def test_matching_published_module_and_release_pins(self):
         projects = []

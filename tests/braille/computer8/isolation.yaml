@@ -1,7 +1,9 @@
 # computer8 isolation from UEB context
 #
 # computer8: UEB indicators, word-position rules and contractions do not apply; every cell is
-# its own character (phase 04 plan, isolate-computer8-from-ueb-context).
+# its own character (phase 03 plan, isolate-computer8-from-ueb-context).
+# These cases run through production capture/matching/dispatch in test_computer8.py;
+# test_computer8_modes.py also tests every row in every seeded UEB context.
 #
 # Format
 #   mode: the character table the cases run in (ueb1, ueb2 or computer8).
