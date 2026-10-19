@@ -73,7 +73,9 @@ class ICEBGrade1Conformance(unittest.TestCase):
                         count += 1
         self.assertEqual(count, 222)
 
-    @unittest.skipUnless(shutil.which("pdftotext"), "Poppler unavailable")
+    @unittest.skipUnless(shutil.which("pdftotext") and
+                         (ROOT / "references/iceb/rules-of-unified-english-braille-2024.pdf").exists(),
+                         "Poppler or the local ICEB rulebook PDF is unavailable")
     def test_normative_patterns_on_cited_pdf_pages(self):
         pages = subprocess.check_output([
             "pdftotext", "-layout", str(ROOT / "references/iceb/rules-of-unified-english-braille-2024.pdf"), "-",

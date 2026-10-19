@@ -60,14 +60,14 @@ selected mode and overrides (phase 05), final integration documentation
 unit exists behind `CONFIG_ZMK_BRAILLE_GRADE2`). Nothing here claims physical
 keyboard or VoiceOver acceptance.
 
-## Cheatsheets
+## Cheatsheet
 
-- [`references/braille-cheatsheet.pdf`](references/braille-cheatsheet.pdf) —
-  the implementation cheatsheet: every implemented mapping with its ICEB rule
-  citations and verification boundary. Sources: `references/braille-cheatsheet.typ`.
-- [`docs/braille-cheatsheet/braille-cheatsheet.pdf`](docs/braille-cheatsheet/braille-cheatsheet.pdf) —
-  a printable UEB quick-reference (all of Grade 1 and Grade 2, including
-  contractions the module does not implement yet). Sources: `docs/braille-cheatsheet/`.
+[`docs/braille-cheatsheet/braille-cheatsheet.pdf`](docs/braille-cheatsheet/braille-cheatsheet.pdf)
+is the printable UEB quick-reference: lowercase, capitals, punctuation and
+symbols, digits in both grades, keyboard chords, and the Grade 2 contraction
+tables. It is a Braille reference, not an implementation claim — the module
+currently implements the Grade 1 material. Sources live in
+`docs/braille-cheatsheet/` and compile with Typst.
 
 ## Using it
 
@@ -91,9 +91,9 @@ uv run --no-project --with pyyaml --with kconfiglib \
   python -m unittest discover -s tests/host
 ```
 
-Two legacy suites (`test_cheatsheet.py`, `test_coordinator.py`) fail for
-pre-existing, unrelated reasons that reproduce from an older baseline commit;
-they are not evidence about the module.
+One legacy suite (`test_coordinator.py`) fails for pre-existing, unrelated
+reasons that reproduce from an older baseline commit; it is not evidence about
+the module.
 
 Native acceptance runs the real unmodified ZMK stack under Docker against the
 pinned ZMK v0.3.0 workspace expected at `build/baseline`:
@@ -130,9 +130,10 @@ ZMK release (v0.3.0).
 - `dts/` — the `zmk,braille` configuration node and Braille behavior bindings.
 - `tests/` — host unit tests, YAML acceptance fixtures, and native ZMK
   firmware fixtures.
-- `references/` — the pinned ICEB rulebook PDF with provenance and license
-  (`references/README.md`), UEB and Computer8 research records, and the shared
-  key-coverage checklist (`references/key-coverage.md`).
+- `references/` — the ICEB rulebook provenance and license
+  (`references/README.md`; the PDF itself is not committed), UEB and Computer8
+  research records, and the shared key-coverage checklist
+  (`references/key-coverage.md`).
 - `tasks/` — TaskDown task history.
 
 ## License

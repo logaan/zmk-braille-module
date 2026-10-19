@@ -94,7 +94,6 @@ smoke configurations pass; their images are under
 These are central-half images; this work changes neither peripheral firmware
 nor the sibling keyboards' production defaults/pins. No firmware was flashed.
 
-All 41 host tests outside the known older cheatsheet/coordinator suites pass
-with PyYAML and kconfiglib. Those two excluded suites reproduce their existing
-failures at starting commit `53e9439`; see [`README.md`](README.md).
-They are not passing acceptance evidence.
+All host suites except the legacy `test_coordinator.py` pass with PyYAML and
+kconfiglib. That one suite reproduces its pre-existing failures from starting
+commit `53e9439`; it is not passing acceptance evidence.

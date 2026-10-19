@@ -124,7 +124,9 @@ class SpecifiedMultiCellSymbols(unittest.TestCase):
                 self.assertTrue(sign["ref"]["section"])
                 self.assertGreater(sign["ref"]["page"], 0)
 
-    @unittest.skipUnless(shutil.which("pdftotext"), "Poppler's pdftotext is not installed")
+    @unittest.skipUnless(shutil.which("pdftotext") and
+                         (ROOT / "references/iceb/rules-of-unified-english-braille-2024.pdf").exists(),
+                         "Poppler's pdftotext or the local ICEB rulebook PDF is missing")
     def test_patterns_on_cited_rulebook_pages(self):
         pages = subprocess.check_output([
             "pdftotext", "-layout",
