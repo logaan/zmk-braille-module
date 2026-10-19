@@ -13,5 +13,4 @@
 3.  Commit your own work as you go.
 4.  Before each commit, update `references/braille-cheatsheet.typ` with new
     information and run `typst compile references/braille-cheatsheet.typ` to
-    rebuild its PDF. Append information without spending time on layout or
-    reviewing the rendered PDF.
+    rebuild its PDF.
