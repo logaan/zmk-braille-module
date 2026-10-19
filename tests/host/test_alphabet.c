@@ -116,7 +116,7 @@ static void test_table_shape(void) {
     size_t letters = 0;
     for (size_t i = 0; i < t->count; ++i) {
         const struct braille_rule *r = &t->rules[i];
-        if (r->class != BRAILLE_CLASS_LETTER) {
+        if (r->class != BRAILLE_CLASS_LETTER || r->when.caps == BRAILLE_CONDITION_SET) {
             continue;
         }
         assert(letters < 26);
@@ -130,7 +130,7 @@ static void test_table_shape(void) {
         assert(r->word_position == BRAILLE_WORD_POSITION_ANY);
         assert(r->when.numeric == (alphabet[letters].usage <= 0x0d ?
                                    BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY));
-        assert(r->when.caps == BRAILLE_CONDITION_ANY);
+        assert(r->when.caps == BRAILLE_CONDITION_CLEAR);
         assert(r->when.word_start == BRAILLE_CONDITION_ANY);
         assert(r->class == BRAILLE_CLASS_LETTER);
         assert(r->sets == BRAILLE_CAPS_NONE);
@@ -197,13 +197,10 @@ static void test_alphabet_sequence(void) {
     printf("ok: alphabet sequence\n");
 }
 
-/* 5. Cells still outside the alphabet/core punctuation produce no host
- *    output and leave nothing pending; the alphabet still works afterwards.
- *    Dots 2,3,6 remain deferred to the phase-04 contextual task. */
+/* 5. Truly unmapped cells stay silent; indicator prefixes are checked in the
+ *    contextual UEB1 suite, rather than being mistaken for unmapped input. */
 static void test_unmapped_cells_silent(void) {
     static const uint16_t unmapped[] = {
-        0x20, /* dot 6            */
-        0x26, /* dots 2, 3, 6     */
         0x3F, /* dots 1-6 (⠿)    */
     };
     for (size_t i = 0; i < sizeof(unmapped) / sizeof(unmapped[0]); ++i) {

@@ -127,6 +127,80 @@ static void test_numbers(void) {
     puts("ok: twelve numeric indicators, runs, punctuation/spaces, termination and orphan prefix");
 }
 
+static void test_capitals_and_grade1(void) {
+    static const uint16_t letters[] = {
+        0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a,
+        0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f, 0x1f, 0x17, 0x0e, 0x1e,
+        0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35,
+    };
+    for (size_t i = 0; i < COUNT(letters); ++i) {
+        reset(); chord(0x20);
+        assert(!key_count && braille_engine_pending_count() == 1);
+        chord(letters[i]);
+        uint32_t expected = SHIFT(0x04 + i);
+        expect_keys(&expected, 1);
+        chord(0x03);
+        assert(key_count == 2 && keys[1] == KEY(0x05)); /* single capital has no stale Shift */
+    }
+    reset();
+    static const uint16_t caps_word[] = {0x20, 0x20, 0x01, 0x03, 0x20, 0x09, 0x19};
+    sequence(caps_word, COUNT(caps_word)); /* a single capital C ends word mode */
+    static const uint32_t word_expected[] = {SHIFT(0x04), SHIFT(0x05), SHIFT(0x06), KEY(0x07)};
+    expect_keys(word_expected, COUNT(word_expected));
+    static const uint16_t endings[] = {0x100, 0x24, 0x02, 0x32, 0x04, 0x12, 0x16};
+    for (size_t i = 0; i < COUNT(endings); ++i) {
+        reset(); chord(0x20); chord(0x20); chord(0x01); chord(endings[i]); chord(0x03);
+        assert(key_count == 3 && keys[0] == SHIFT(0x04) && keys[2] == KEY(0x05));
+        assert(braille_engine_context()->caps == BRAILLE_CAPS_NONE);
+    }
+    /* All four Grade 1 indicators are silent, terminate numbers/word caps,
+     * preserve a passage, and never introduce a word-start context. */
+    static const uint16_t grade1[][3] = {{0x30}, {0x30, 0x30}, {0x30, 0x30, 0x30}, {0x30, 0x04}};
+    static const size_t lengths[] = {1, 2, 3, 2};
+    for (size_t i = 0; i < COUNT(grade1); ++i) {
+        for (unsigned mode = 0; mode < 3; ++mode) {
+            reset();
+            if (mode < 2) {
+                chord(0x20); chord(0x20);
+                if (mode) chord(0x20);
+                chord(0x01);
+            } else {
+                chord(0x3c); chord(0x01);
+            }
+            sequence(grade1[i], lengths[i]);
+            chord(0x03); /* flush any indicator ambiguity and re-match b in changed context */
+            uint32_t expected[] = {mode < 2 ? SHIFT(0x04) : KEY(0x1e),
+                                   mode == 1 ? SHIFT(0x05) : KEY(0x05)};
+            expect_keys(expected, COUNT(expected));
+            assert(!braille_engine_context()->numeric && !braille_engine_context()->word_start);
+            assert(braille_engine_context()->caps == (mode == 1 ? BRAILLE_CAPS_PASSAGE : BRAILLE_CAPS_NONE));
+        }
+    }
+    reset();
+    static const uint16_t passage[] = {
+        0x20, 0x20, 0x20, 0x01, 0x100, 0x03, 0x16,
+        0x3c, 0x01, 0x0e, 0x100, 0x20, 0x20, 0x09, 0x100, 0x19, 0x20, 0x04, 0x11,
+    };
+    sequence(passage, COUNT(passage)); /* A B!1S C De; embedded word prefix preserves passage */
+    static const uint32_t passage_expected[] = {
+        SHIFT(0x04), KEY(0x2c), SHIFT(0x05), SHIFT(0x1e), KEY(0x1e), SHIFT(0x16),
+        KEY(0x2c), SHIFT(0x06), KEY(0x2c), SHIFT(0x07), KEY(0x08),
+    };
+    expect_keys(passage_expected, COUNT(passage_expected));
+    assert(braille_engine_context()->caps == BRAILLE_CAPS_NONE);
+    reset(); chord(0x20); chord(0x04); chord(0x01);
+    uint32_t a = KEY(0x04);
+    expect_keys(&a, 1); /* terminator with no active capitals prints nothing */
+    reset(); chord(0x3c); chord(0x01); chord(0x20); chord(0x03); chord(0x09);
+    static const uint32_t numeric_capitals[] = {KEY(0x1e), SHIFT(0x05), KEY(0x06)};
+    expect_keys(numeric_capitals, COUNT(numeric_capitals));
+    assert(!braille_engine_context()->numeric);
+    reset(); chord(0x20); chord(0x24);
+    assert(key_count == 1 && keys[0] == KEY(0x2d) && drop_count == 1 && dropped[0][0] == 0x20);
+    assert(!braille_engine_pending_count());
+    puts("ok: single/word/passage capitals, every termination, silent Grade 1 indicators and interactions");
+}
+
 static void print_observation(void) {
     printf("{\"keys\":[");
     for (size_t i = 0; i < key_count; ++i) printf("%s%u", i ? "," : "", (unsigned)keys[i]);
@@ -159,6 +233,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     test_numbers();
+    test_capitals_and_grade1();
     puts("all contextual UEB1 unit tests passed");
     return 0;
 }

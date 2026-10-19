@@ -41,7 +41,22 @@
         .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),                      \
                      .param1 = BRAILLE_KEY_USAGE(usage)}},                                 \
         .action_count = 1, .class = BRAILLE_CLASS_LETTER,                                  \
-        .when = {.numeric = (usage <= 0x0D ? BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY)}, \
+        .when = {.numeric = (usage <= 0x0D ? BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY), \
+                 .caps = BRAILLE_CONDITION_CLEAR},                                        \
+    },                                                                                    \
+    {                                                                                     \
+        .chords = {chord}, .chord_count = 1,                                               \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),                      \
+                     .param1 = LS(BRAILLE_KEY_USAGE(usage))}},                             \
+        .action_count = 1, .class = BRAILLE_CLASS_LETTER,                                  \
+        .when = {.numeric = (usage <= 0x0D ? BRAILLE_CONDITION_CLEAR : BRAILLE_CONDITION_ANY), \
+                 .caps = BRAILLE_CONDITION_SET},                                          \
+    },                                                                                    \
+    {                                                                                     \
+        .chords = {0x20, chord}, .chord_count = 2,                                         \
+        .actions = {{.behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),                      \
+                     .param1 = LS(BRAILLE_KEY_USAGE(usage))}},                             \
+        .action_count = 1, .class = BRAILLE_CLASS_CAPITAL_LETTER,                           \
     }
 #define BRAILLE_SYMBOL_RULE(first, second, key, cls)                                        \
     {                                                                                      \
@@ -96,6 +111,20 @@ static const struct braille_rule ueb1_character_rules[] = {
     BRAILLE_LETTER_RULE(0x2D, 0x1B), /* x: dots 1, 3, 4, 6    */
     BRAILLE_LETTER_RULE(0x3D, 0x1C), /* y: dots 1, 3, 4, 5, 6 */
     BRAILLE_LETTER_RULE(0x35, 0x1D), /* z: dots 1, 3, 5, 6    */
+
+    /* 8.4-8.6: indicators are silent whole sequences, not sticky host keys. */
+    {.chords = {0x20, 0x20}, .chord_count = 2,
+     .class = BRAILLE_CLASS_CAPS_INDICATOR, .sets = BRAILLE_CAPS_WORD},
+    {.chords = {0x20, 0x20, 0x20}, .chord_count = 3,
+     .class = BRAILLE_CLASS_CAPS_INDICATOR, .sets = BRAILLE_CAPS_PASSAGE},
+    {.chords = {0x20, 0x04}, .chord_count = 2,
+     .class = BRAILLE_CLASS_CAPS_INDICATOR, .sets = BRAILLE_CAPS_NONE},
+    /* 5.2-5.5/5.11: no contractions in UEB1, but every Grade 1 indicator
+     * ends numeric/caps-word context and disambiguates a following question. */
+    {.chords = {0x30}, .chord_count = 1, .class = BRAILLE_CLASS_GRADE1_INDICATOR},
+    {.chords = {0x30, 0x30}, .chord_count = 2, .class = BRAILLE_CLASS_GRADE1_INDICATOR},
+    {.chords = {0x30, 0x30, 0x30}, .chord_count = 3, .class = BRAILLE_CLASS_GRADE1_INDICATOR},
+    {.chords = {0x30, 0x04}, .chord_count = 2, .class = BRAILLE_CLASS_GRADE1_INDICATOR},
 
     BRAILLE_DIGIT_RULE(0x01, N1), /* a -> 1 */
     BRAILLE_DIGIT_RULE(0x03, N2), /* b -> 2 */
