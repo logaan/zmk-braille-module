@@ -9,7 +9,6 @@
 #include <string.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/device.h>
-#include <braille_chord.h>
 #include <braille_engine.h>
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
@@ -63,9 +62,10 @@ static int context_listener(const zmk_event_t *eh) {
     const struct zmk_position_state_changed *position = as_zmk_position_state_changed(eh);
     if (as_zmk_layer_state_changed(eh) ||
         (position && position->state && !position_is_braille(position->position))) {
-        /* Keep press-time ownership until the physical chord is idle; later
-         * releases must not type a fragment across a conventional-key/layer boundary. */
-        braille_chord_discard();
+        /* Reset completed/pending engine input, not physical capture. Existing
+         * press-time release ownership and release-terminated chord capture
+         * survive layer changes; a later completed chord starts in reset context.
+         * The settings gate separately discards live capture while it owns input. */
         braille_engine_reset();
     }
     return ZMK_EV_EVENT_BUBBLE;

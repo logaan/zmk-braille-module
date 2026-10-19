@@ -375,3 +375,89 @@ suites pass. Production keyboard defaults/pins are unchanged; no device
 was flashed. Phase-03 software is delivered, but phase 03 itself remains
 started pending the user-owned hardware acceptance. Visual feedback,
 settings and persistence remain later work.
+
+= Implemented contextual UEB Grade 1
+
+Task 9.4 completes `ueb1` as contextual uncontracted UEB on the one shared
+matcher, action path and capture path. The researched indicator-context
+representation is restored as `references/research/ueb-indicator-context.yaml`
+with the numeric, capitalisation and Grade 1 research files; the class
+transition table in it is now engine behaviour, not future design.
+
+#table(
+  columns: (auto, auto, auto),
+  [Contextual rule group], [Input], [Result],
+  [Numeric indicator], [dots 3456 then a--j], [digits 1--0; sets numeric mode],
+  [Decimal comma / point], [dots 3456 then dot 2 / dots 256], [`,` / `.` inside numbers],
+  [Digit run], [a--j while numeric mode is on], [digits continue without a new indicator],
+  [Numeric space], [dot 5 then a--j in numeric mode], [space, then the digit; mode stays on],
+  [Capital letter], [dot 6 then a--z], [uppercase letter; ends word capitals],
+  [Capitalised word], [dot 6, dot 6], [letters capitalised until space, punctuation,
+    a single capital, or the terminator],
+  [Capitalised passage], [dot 6, dot 6, dot 6], [capitalisation across spaces,
+    punctuation and numbers until the terminator],
+  [Capitals terminator], [dot 6 then dot 3], [ends word and passage capitals; silent],
+  [Grade 1 indicators], [dots 56 once, twice, three times; dots 56 then dot 3],
+    [silent; end numeric mode and word capitals; the next sign does not begin a word],
+  [Opening double quote / question], [dots 236], [`"` at a word start; `?` elsewhere],
+  [Closing double quote], [dots 356], [`"`],
+  [Two-cell double quotes], [dots 45 then 236 / 356], [`"`],
+  [Single quotes], [dot 6 then 236 / 356], [`'`],
+  [Nondirectional double quote], [dot 6 then 2356], [`"`],
+  [Vertical line], [dots 456 then 1256], [`|`],
+  [Grave accent alone], [dots 46 then 16], [#raw("`")],
+)
+
+Authority: ICEB 2024 sections 2.6, 3, 4.1, 5.2--5.11, 6, 7.5--7.6, 8.3--8.7,
+10 and 15.1 and Appendix 3, printed pages as recorded per sign in the
+research files. Uppercase and shifted characters use ZMK implicit Shift, so
+output stays ordinary host keystrokes. Quotes are straight US keyboard
+characters, not typographic Unicode.
+
+Word context follows rule 2.6.2: space, hyphen, and the opening brackets,
+quotation signs and apostrophe preserve the start-of-word state that makes
+dots 236 read as an opening quote; letters, digits and other punctuation
+clear it. The grave accent modifier (dots 45 then 16) stays deliberately
+unmapped so it cannot be confused with the standalone backtick sign.
+
+= Implemented context transitions and pending lifecycle
+
+The engine now applies a per-class transition after every commit: letters
+clear numeric mode; digits set it; numeric punctuation keeps it; space and
+hyphen end word capitals and set word start; openings keep word start;
+caps indicators set word, passage or terminator scope; Grade 1 indicators
+end numeric mode and word capitals; neutral rows (Computer8 and user
+overrides) leave context untouched. Whitespace commands share the space
+transition, so Return and Tab preserve a capitalised passage.
+
+Word-position constraints are enforced with lookahead rather than timers:
+word-start rules need the word-start context, word-end rules wait for a
+following whitespace or hyphen chord, and word-middle rules need a following
+non-boundary character. Lookahead cells are never consumed or buffered past
+the eight-cell bound. A complete fallback commits the longest valid prefix
+and reprocesses the remaining cells exactly once in the newly committed
+context; command chords discard prior pending cells without host output.
+
+Pending cells and their update, commit and discard events are exposed to the
+phase-05 display. Resets from layer changes, non-Braille keys, mode changes,
+settings entry, whitespace-preserving commands and partial dispatch failures
+are silent and cannot resurrect stale input. A read-only ZMK event listener
+resets context on layer transitions and non-Braille presses while honouring
+transparent layers, custom Braille devices, generated host keystrokes and
+press-time release ownership.
+
+= Contextual UEB1 verification boundary
+
+All 456 existing UEB1 acceptance fixtures, all 222 recovered rulebook and
+labelled constructed examples, and an exhaustive 95-character US keyboard
+audit pass through the real C capture, registry, matcher and dispatcher, in
+split and non-split builds with and without optional Grade 2 compilation and
+against the pinned ZMK keycode header. Native unmodified ZMK acceptance now
+also covers contextual HID output, layer and non-Braille event boundaries,
+and the transparent and custom keymap nodes; routing and mode/settings
+native suites pass with engine symbols wrapped instead of redefined. QBF and
+Toucan UEB1 and Computer8 central-half UF2 builds pass against clean HEAD
+snapshots of both keyboard repositories. `references/key-coverage.md` now
+records both modes covering all 95 printable characters in software. No
+physical keyboard or VoiceOver acceptance, display feedback, settings UI,
+persistence, or Grade 2 support is claimed.
