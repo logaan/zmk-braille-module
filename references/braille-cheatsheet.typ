@@ -297,3 +297,31 @@ The Quick Braille Fox subheads drop the "qk brl fox" label, its key
 box, and the two-column grid; each subhead is now just the centred
 braille sequence. Word gaps widen from the fixed 6pt to three
 non-breaking spaces ([~~~]) plus the usual cell gutter.
+
+= Published Computer8 mapping
+
+Task 9.3.2.1.1 publishes all 256 dot patterns in
+`references/research/computer8.yaml`: 94 printable non-space ASCII entries,
+dot 7 Delete and dot 8 Return command positions, and 160 reserved entries
+including zero. The 16-by-16 matrix is indexed by mask high and low nibble.
+Braille-space-only (0x100) emits literal ASCII space; zero dots is not a chord.
+
+The verified source is VoiceOver's installed Liblouis U.S. English (EBAE)
+eight-dot table on macOS 26.6.2, registered as `en_US-comp8-ext.tbl`.
+All printable ASCII definitions match the original `en-us-comp8.ctb`
+fixtures. File fingerprints, Liblouis 3.36.0 provenance, and version-pinned
+upstream links are recorded in the research. This is not the legacy
+Duxbury US variant: that provider's underscore uses dots 4,5,6,7, whereas
+this selected Liblouis table uses 4,5,6.
+
+Dots 7 and 8 are independent bits, not prior UEB indicators. Uppercase
+letters add dot 7 in the same cell; no printable ASCII character uses dot 8.
+Backtick is dot 4 and vertical bar is dots 1,2,5,6. Nonzero reserved cells,
+including dots 7,8 together, send nothing and use the dropped-prefix notice
+hook; phase 05 supplies its brief visual presentation. User overrides can
+bind them. Dot 7 and dot 8 alone belong only to the command table.
+
+The published matrix, 94 ASCII fixtures, all 159 enterable reserved
+fixtures, and installed VoiceOver definitions pass the mapping checks.
+This section publishes the mapping, not its firmware implementation or
+physical acceptance.

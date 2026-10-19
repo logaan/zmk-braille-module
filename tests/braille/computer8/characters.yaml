@@ -8,8 +8,9 @@
 # en-us-comp8.ctb 23194fbfa9cc2a4f771094aee830825128c44565b797c55815c4a949415dc29f,
 # latinLetterDef8Dots.uti 3b6d481e1c568ce6642e9300c3f039bda1effd2f8342cd5e5a4129faa674ebee,
 # loweredDigits6Dots.uti 7dc6e70c78258c393dd7a8fad0280c3f0163621f051a3ac6b4ffc97f9ca49221.
-# The plan requires the table macOS VoiceOver uses; confirming that it matches this one is the
-# phase 04 task publish-the-computer8-mapping. Update these cases if that table differs.
+# Confirmed against VoiceOver's installed Liblouis en_US-comp8-ext.tbl on macOS 26.6.2:
+# all 94 non-space ASCII definitions match. This is not the legacy Duxbury variant
+# (whose underscore differs). Provenance and all 256 entries: references/research/computer8.yaml.
 #
 # Format
 #   mode: the character table the cases run in (ueb1, ueb2 or computer8).
@@ -25,7 +26,7 @@
 
 mode: computer8
 cases:
-  - {name: "Braille space chord: space", inputs: [[]], outputs: [" "], source: "phase 04 plan: Braille-space-only emits a literal space"}
+  - {name: "Braille space chord: space", inputs: [[]], outputs: [" "], source: "phase 03 plan: Braille-space-only emits a literal space"}
   - {name: "symbol !", inputs: [[2, 3, 4, 6]], outputs: ["!"], source: "liblouis en-us-comp8.ctb"}
   - {name: "symbol \"", inputs: [[5]], outputs: ["\""], source: "liblouis en-us-comp8.ctb"}
   - {name: "symbol #", inputs: [[3, 4, 5, 6]], outputs: ["#"], source: "liblouis en-us-comp8.ctb"}

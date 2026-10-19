@@ -2,11 +2,12 @@
 #
 # computer8: every eight-dot pattern that maps to no printable character sends nothing to the host.
 #
-# The phase 04 plan makes these reserved entries: no host output and a brief display notice;
-# user overrides may bind them. The zero-dot pattern is not a chord and cannot be entered.
-# Dot 7 alone, dot 8 alone and dots 7-8 are left out: the phase 02 command research assigns
-# VoiceOver's dot 7 and dot 8 commands (Delete and Return), and phase 04 decides those collisions.
-# Mapped patterns come from the table named in characters.yaml.
+# These phase-03 entries have no host output and use the dropped-prefix notification hook;
+# phase 05 supplies its brief display presentation. User overrides may bind them.
+# The zero-dot pattern is not a chord and cannot be entered. Dot 7 alone and dot 8 alone
+# are Delete and Return in the factory command table; dots 7-8 together ARE reserved.
+# All 159 enterable reserved patterns appear here. references/research/computer8.yaml
+# publishes all 256 entries and documents the ASCII-only policy (not extended Unicode).
 #
 # Format
 #   mode: the character table the cases run in (ueb1, ueb2 or computer8).
@@ -22,6 +23,7 @@
 
 mode: computer8
 cases:
+  - {name: "reserved pattern 78", inputs: [[7, 8]], outputs: [], source: "phase 03 plan: reserved entry"}
   - {name: "reserved pattern 27", inputs: [[2, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
   - {name: "reserved pattern 37", inputs: [[3, 7]], outputs: [], source: "phase 04 plan: reserved entry"}
   - {name: "reserved pattern 237", inputs: [[2, 3, 7]], outputs: [], source: "phase 04 plan: reserved entry"}

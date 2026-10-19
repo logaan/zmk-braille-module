@@ -1,0 +1,86 @@
+# SPDX-License-Identifier: MIT
+# Project mapping facts and policy, not a redistributed upstream table.
+mode: computer8
+verified_on: 2026-10-19
+source:
+  name: VoiceOver Liblouis U.S. English (EBAE) 8-dot computer braille
+  macos: {version: 26.6.2, build: 25G83}
+  resources: /System/Library/ScreenReader/BrailleTables/LiblouisBrailleTranslator.brailletable/Contents/Resources
+  registration:
+    file: Tables.plist
+    sha256: 0b0608dec236e981a30c40511817a9a146913055147edeaead8ce5dba860645b
+    entries:
+      eng-xna_8dot: {table: en_US-comp8-ext.tbl}
+      eng-xna: {8Dot: en_US-comp8-ext.tbl}
+      eng-xueb: {8Dot: en_US-comp8-ext.tbl}
+  version_file: LiblouisBrailleTables.plist
+  version_sha256: ec772d2aa1d13ff9d9bbf1b5eb3c563fa10066053c9e32f29f8083f32f7e9e59
+  liblouis_version: 3.36.0
+  liblouis_commit: b798a79ebc9ffe7f5fc56c09e87c75c17d3583e8
+  upstream: https://github.com/liblouis/liblouis/tree/v3.36.0/tables
+  files:
+    - {name: en_US-comp8-ext.tbl, sha256: 478946d8b7de2ac51570ee462779f7209249cc32ae8feac50d8ad194cd12ef28}
+    - {name: en-us-comp8-ext.utb, sha256: bf73d68461820d7dd3b8dc31638d3bbd1acc7fb74c5deb4a96464bcee8fde23c}
+    - {name: latinLetterDef8Dots.uti, sha256: 3b6d481e1c568ce6642e9300c3f039bda1effd2f8342cd5e5a4129faa674ebee}
+    - {name: loweredDigits6Dots.uti, sha256: 7dc6e70c78258c393dd7a8fad0280c3f0163621f051a3ac6b4ffc97f9ca49221}
+    - {name: en-us-comp8.ctb, sha256: 23194fbfa9cc2a4f771094aee830825128c44565b797c55815c4a949415dc29f}
+  upstream_comparison: >-
+    At the recorded upstream commit, en-us-comp8-ext.utb, en-us-comp8.ctb and both
+    letter/digit includes are byte-identical to the installed files. The wrapper
+    en_US-comp8-ext.tbl differs only in metadata comments; its upstream SHA-256
+    is 8a74616bed7cb2b9d8d117588f6920aa843074189574becd63b9fd42ca94b179.
+  evidence: >-
+    The installed VoiceOver provider registers en_US-comp8-ext.tbl, which includes
+    en-us-comp8-ext.utb and the Latin-letter and lowered-digit includes. Its 94
+    printable non-space ASCII definitions equal en-us-comp8.ctb plus its includes,
+    the source of the original project fixtures. This is a VoiceOver-supported
+    Liblouis variant, not a claim about every VoiceOver provider or user selection.
+  other_provider: >-
+    Duxbury.brailletable/Contents/Resources/en-US.8dot.plist instead assigns
+    underscore to dots 4567 and DEL to 456. This project selects the Liblouis US
+    variant (underscore 456); do not describe it as identical to legacy Duxbury.
+  license: >-
+    Upstream Liblouis tables are LGPL-2.1-or-later; follow their own license if
+    redistributing them. No upstream table files or Apple bundles are copied here.
+  apple_translation: https://support.apple.com/en-au/guide/voiceover/vo3017c92426/mac
+  apple_commands: https://support.apple.com/en-us/103560
+policy:
+  mask: Dot n is bit n-1; dots 7 and 8 are independent bits 0x40 and 0x80.
+  characters: The 94 printable non-space US ASCII characters, one cell each.
+  space: Braille-space-only (0x100) emits literal ASCII space via the command table.
+  zero: Reserved; no keys means no chord, no host output and no notice.
+  reserved: >-
+    Nonzero reserved patterns emit nothing and invoke the existing dropped-prefix
+    notification hook once. Phase 05 will present its brief unassigned display
+    notice. User overrides may bind them; zero cannot be physically entered.
+  commands: >-
+    Dot 7 alone (0x40) is Delete/Backspace, dot 8 alone (0x80) is Return, per
+    Apple's 8-dot commands. Both are reserved from the character table and occur
+    only in the mode's command table. Space-bearing commands use bit 8 and cannot
+    collide with dot-only character cells. Dots 78 (0xc0) are reserved, not a
+    newline (the upstream table has nonprintable/extended mappings outside scope).
+  context: Every character rule has any predicates, any word position, and neutral class.
+  latency: >-
+    Factory characters commit on final release without indicators, contractions,
+    or a timer. Explicit user multi-chord overrides still use common longest-prefix matching.
+  counts: {character: 94, command: 2, reserved: 160, enterable_reserved: 159}
+# A 16x16 matrix enumerates each mask 0x00..0xff exactly once, in mask order.
+# Entry [high nibble][low nibble] is an ASCII code point, `reserved`, or a
+# command (`delete`/`return`: character-reserved, owned by the command table).
+patterns:
+  - [reserved, 97, 49, 98, 39, 107, 50, 108, 96, 99, 105, 102, 47, 109, 115, 112] # 0x00..0x0f
+  - [34, 101, 51, 104, 57, 111, 54, 114, 126, 100, 106, 103, 62, 110, 116, 113] # 0x10..0x1f
+  - [44, 42, 53, 60, 45, 117, 56, 118, 46, 37, 123, 36, 43, 120, 33, 38] # 0x20..0x2f
+  - [59, 58, 52, 124, 48, 122, 55, 40, 95, 63, 119, 125, 35, 121, 41, 61] # 0x30..0x3f
+  - [delete, 65, reserved, 66, reserved, 75, reserved, 76, 64, 67, 73, 70, reserved, 77, 83, 80] # 0x40..0x4f
+  - [reserved, 69, reserved, 72, reserved, 79, reserved, 82, 94, 68, 74, 71, reserved, 78, 84, 81] # 0x50..0x5f
+  - [reserved, reserved, reserved, reserved, reserved, 85, reserved, 86, reserved, reserved, 91, reserved, reserved, 88, reserved, reserved] # 0x60..0x6f
+  - [reserved, reserved, reserved, 92, reserved, 90, reserved, reserved, reserved, reserved, 87, 93, reserved, 89, reserved, reserved] # 0x70..0x7f
+  - [return, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0x80..0x8f
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0x90..0x9f
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xa0..0xaf
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xb0..0xbf
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xc0..0xcf
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xd0..0xdf
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xe0..0xef
+  - [reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved, reserved] # 0xf0..0xff

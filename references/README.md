@@ -143,3 +143,74 @@ The append-only implementation cheatsheet is rebuilt with Typst; the separate
 `docs/braille-cheatsheet/` files are untouched. QBF and Toucan central-half
 firmware smoke builds pass; physical keyboard/VoiceOver acceptance remains
 user-owned.
+
+## Published Computer8 mapping and VoiceOver provenance
+
+Task 9.3.2.1.1 publishes [`research/computer8.yaml`](research/computer8.yaml).
+Its 16-by-16 matrix gives an explicit entry for every mask `0x00`–`0xff`:
+94 printable non-space ASCII code points, two character-reserved command
+positions (dot 7 Delete and dot 8 Return), and 160 reserved patterns including
+unenterable zero. Matrix row/column are the mask's high/low nibbles. ASCII
+space is a separate Braille-space-only chord, `0x100`.
+
+The source is the **Liblouis U.S. English (EBAE) eight-dot table supported by
+VoiceOver**, not a claim that every VoiceOver installation or user chooses
+one universal US table. On macOS 26.6.2 (25G83), inspect:
+
+```text
+/System/Library/ScreenReader/BrailleTables/
+  LiblouisBrailleTranslator.brailletable/Contents/Resources/
+    Tables.plist
+    LiblouisBrailleTables.plist
+    liblouis/tables/en_US-comp8-ext.tbl
+    liblouis/tables/en-us-comp8-ext.utb
+    liblouis/tables/latinLetterDef8Dots.uti
+    liblouis/tables/loweredDigits6Dots.uti
+```
+
+`Tables.plist` registers `eng-xna_8dot.table`, `eng-xna.8Dot`, and
+`eng-xueb.8Dot` as `en_US-comp8-ext.tbl`. That wrapper includes
+`en-us-comp8-ext.utb`; its 94 non-space ASCII definitions equal the original
+project fixture source `en-us-comp8.ctb` and its letter/digit includes.
+`LiblouisBrailleTables.plist` identifies Liblouis 3.36.0, commit
+`b798a79ebc9ffe7f5fc56c09e87c75c17d3583e8`.
+The research records installed file SHA-256 values and
+[version-pinned upstream sources](https://github.com/liblouis/liblouis/tree/v3.36.0/tables).
+The upstream character tables and includes match the installed bytes; only
+the wrapper's metadata comments differ. No Apple bundle or upstream table
+is redistributed; upstream tables retain their LGPL-2.1-or-later license.
+
+Apple's [Translation settings documentation](https://support.apple.com/en-au/guide/voiceover/vo3017c92426/mac)
+confirms separately selectable input/output tables and six/eight-dot input;
+it does not publish the exhaustive ASCII mapping. The installed registration
+and definitions supply that evidence. The legacy **Duxbury** US table
+(`Duxbury.brailletable/Contents/Resources/en-US.8dot.plist`) differs: it puts
+underscore on dots 4,5,6,7, not the selected Liblouis dots 4,5,6. Do not
+silently mix those variants.
+
+Dot n is bit n−1, including independent dot 7 (`0x40`) and dot 8 (`0x80`).
+Uppercase letters use the lowercase pattern plus dot 7 in the *same* cell;
+no prior indicator changes the next cell. No printable ASCII row uses dot 8.
+Backtick is dot 4, vertical bar is dots 1,2,5,6, and underscore is dots 4,5,6.
+
+The module intentionally takes only printable ASCII, **not** the source's
+extended Unicode or control-character mappings. Nonzero reserved patterns,
+including dots 7,8 together (`0xc0`), must emit no host output and invoke the
+existing dropped-prefix notice hook; phase 05 supplies its brief unassigned
+display presentation. They remain available to user overrides. Zero dots
+is reserved but cannot form a chord, so it emits neither output nor notice.
+
+[Apple's 8-dot command table](https://support.apple.com/en-us/103560) assigns
+dot 7 alone to Delete and dot 8 alone to Return. Those stay exclusively in
+`computer8`'s factory command table, not as duplicate character or no-output
+rules. Space-bearing commands (including Tab `0x11e`) cannot collide with
+dot-only character rows. No general command-over-character priority is
+introduced: the existing factory collision validator must accept the pair.
+
+`tests/host/test_computer8_mapping.py` checks all 256 entries, the 94 original
+ASCII fixtures, all 159 enterable reserved fixtures, and independent dot-bit
+policy. When the macOS provider exists it also compares the actual registered
+US table and the original fixture table. Run with `uv run --no-project --with
+pyyaml python -m unittest discover -s tests/host -p test_computer8_mapping.py -v`.
+This publishes and verifies the mapping; firmware implementation and physical
+acceptance are separate descendant tasks.
