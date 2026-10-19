@@ -26,23 +26,28 @@ def observe(binary, masks):
         [str(binary), "--sequence", *map(hex, masks)], text=True))
 
 
+def build(tmp, split=1, grade2=False, real_keycodes=False):
+    tmp = Path(tmp)
+    includes = []
+    if real_keycodes:
+        headers = tmp / "headers"
+        headers.mkdir()
+        (headers / "dt-bindings").symlink_to(ZMK / "include/dt-bindings", target_is_directory=True)
+        includes = ["-I", str(headers)]
+    binary = tmp / "ueb1"
+    subprocess.run(shlex.split(os.environ.get("CC", "cc")) + [
+        "-std=c11", "-Wall", "-Wextra", "-Werror", f"-DCONFIG_ZMK_SPLIT={split}",
+        *(["-DCONFIG_ZMK_BRAILLE_GRADE2=1"] if grade2 else []), *includes,
+        "-I", str(ROOT / "tests/host/stubs"), "-I", str(ROOT / "include"),
+        *[str(ROOT / source) for source in SOURCES], "-o", str(binary),
+    ], check=True)
+    return binary
+
+
 class ContextualUEB1(unittest.TestCase):
     def compile_and_run(self, split, grade2, real_keycodes=False):
         with tempfile.TemporaryDirectory() as tmp:
-            tmp = Path(tmp)
-            includes = []
-            if real_keycodes:
-                headers = tmp / "headers"
-                headers.mkdir()
-                (headers / "dt-bindings").symlink_to(ZMK / "include/dt-bindings", target_is_directory=True)
-                includes = ["-I", str(headers)]
-            binary = tmp / "ueb1"
-            subprocess.run(shlex.split(os.environ.get("CC", "cc")) + [
-                "-std=c11", "-Wall", "-Wextra", "-Werror", f"-DCONFIG_ZMK_SPLIT={split}",
-                *(["-DCONFIG_ZMK_BRAILLE_GRADE2=1"] if grade2 else []), *includes,
-                "-I", str(ROOT / "tests/host/stubs"), "-I", str(ROOT / "include"),
-                *[str(ROOT / source) for source in SOURCES], "-o", str(binary),
-            ], check=True)
+            binary = build(tmp, split, grade2, real_keycodes)
             subprocess.run([str(binary)], check=True)
 
     def test_contextual_rules(self):
