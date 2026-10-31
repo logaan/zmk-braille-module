@@ -162,7 +162,12 @@ static int braille_settings_pressed(struct zmk_behavior_binding *binding,
     if (binding->param1 || binding->param2) {
         return -EINVAL;
     }
+#if IS_ENABLED(CONFIG_ZMK_BRAILLE_SETTINGS_UI)
     return braille_settings_enter(event);
+#else
+    (void)event;
+    return -ENOTSUP;
+#endif
 }
 
 static int braille_settings_released(struct zmk_behavior_binding *binding,

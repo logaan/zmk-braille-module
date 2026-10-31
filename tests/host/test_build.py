@@ -57,11 +57,11 @@ include("{ROOT / 'CMakeLists.txt'}")
     def test_host_c_build_and_registration(self):
         cc = shlex.split(os.environ.get("CC", "cc"))
         with tempfile.TemporaryDirectory() as tmp:
-            for no_nodes in (0, 1):
+            for no_nodes, editor in ((0, 0), (1, 0), (0, 1)):
                 binary = Path(tmp) / f"behavior-{no_nodes}"
                 subprocess.run(cc + [
                     "-std=c11", "-Wall", "-Wextra", "-Werror",
-                    f"-DTEST_NO_NODES={no_nodes}", "-I", str(ROOT / "tests/host/stubs"),
+                    f"-DTEST_NO_NODES={no_nodes}", f"-DCONFIG_ZMK_BRAILLE_SETTINGS_UI={editor}", "-I", str(ROOT / "tests/host/stubs"),
                     "-I", str(ROOT / "include"),
                     str(ROOT / "tests/host/test_behavior_scaffold.c"),
                     str(ROOT / "src/braille_chord.c"), str(ROOT / "src/braille_settings.c"),

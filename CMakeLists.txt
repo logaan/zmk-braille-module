@@ -21,5 +21,17 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
     src/braille_rules_computer8.c
   )
   zephyr_library_sources_ifdef(CONFIG_ZMK_BRAILLE_STORAGE src/braille_storage.c src/braille_storage_zmk.c)
+  if(CONFIG_ZMK_BRAILLE_SETTINGS_UI)
+    set(BRAILLE_KEYCODES ${CMAKE_CURRENT_BINARY_DIR}/braille_keycodes.inc)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate-braille-keycodes.py
+      ${APPLICATION_SOURCE_DIR}/include/dt-bindings/zmk/keys.h ${BRAILLE_KEYCODES}
+      COMMAND_ERROR_IS_FATAL ANY)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+      ${APPLICATION_SOURCE_DIR}/include/dt-bindings/zmk/keys.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate-braille-keycodes.py)
+    zephyr_library_include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    zephyr_library_sources(src/braille_editor.c src/braille_editor_zmk.c src/braille_search.c)
+  endif()
   zephyr_library_sources_ifdef(CONFIG_ZMK_BRAILLE_GRADE2 src/braille_rules_grade2.c)
 endif()

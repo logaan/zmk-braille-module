@@ -13,8 +13,8 @@ menuconfig ZMK_FEATURE_BRAILLE
       typing until exit. The shared engine matches the selected mode's tables
       and dispatches host keystrokes; the ueb1 table carries contextual UEB
       Grade 1 (numeric, capitalisation and Grade 1 indicators, word context
-      and the US keyboard's printable signs). Grade 2, the settings UI, and
-      persistence are not implemented yet.
+      and the US keyboard's printable signs). Optional Grade 2, persistent
+      overrides, and a display-based settings editor extend these modes.
 
 if ZMK_FEATURE_BRAILLE
 
@@ -22,9 +22,8 @@ config ZMK_BRAILLE_GRADE2
     bool "Optional UEB Grade 2 rules"
     default n
     help
-      Include the optional Grade 2 rule-data translation unit. It is currently
-      a placeholder, not a working contracted Braille table. The initial
-      feature set does not require it.
+      Include contracted UEB reading, Grade 1 fallback and bounded 32-cell
+      word buffering. The initial modes work without it.
 
 config ZMK_BRAILLE_STORAGE
     bool "Persistent Braille modes and user overrides"
@@ -44,5 +43,20 @@ config ZMK_BRAILLE_STORAGE_POOL_SIZE
     help
       Allows 256 small overrides without reserving 16 actions for every rule.
       Saving fails visibly when the byte pool or flash capacity is exhausted.
+
+config ZMK_BRAILLE_SETTINGS_UI
+    bool "On-device Braille settings editor"
+    depends on ZMK_BRAILLE_STORAGE
+    select ZMK_BEHAVIOR_METADATA
+    default n
+    help
+      Edit persistent bindings through Braille chords without sending search
+      or capture input to the host. A display renderer must show the snapshot.
+
+config ZMK_BRAILLE_SEARCH_RESULTS
+    int "Maximum settings search results"
+    depends on ZMK_BRAILLE_SETTINGS_UI
+    default 16
+    range 4 32
 
 endif # ZMK_FEATURE_BRAILLE

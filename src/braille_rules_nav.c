@@ -14,7 +14,7 @@
  * the candidate catalog; Home/End are first/last-item analogues, NOT macOS
  * line-start/end shortcuts (compose sticky Command + Left/Right for those).
  * Each mode owns a separate array, validated with its character table before
- * selection. No settings-entry chord is assigned until Phase 05 has a UI.
+ * selection. Settings entry is included only with the on-device editor.
  */
 
 #if defined(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
@@ -78,8 +78,15 @@
     /* Mac VoiceOver Fn position (space+57): project-required Globe substitution, NOT Fn. */ \
     BRAILLE_SK_RULE(0x150, GLOBE)
 
+#ifdef CONFIG_ZMK_BRAILLE_SETTINGS_UI
+/* Project-local settings shortcut, deliberately not a claimed VoiceOver command. */
+#define BRAILLE_SETTINGS_RULE , BRAILLE_ACTION_RULE(0x13f, bsettings, 0, BRAILLE_CLASS_NEUTRAL)
+#else
+#define BRAILLE_SETTINGS_RULE
+#endif
+
 #define BRAILLE_COMMAND_TABLE(name)                                                        \
-    static const struct braille_rule name##_rules[] = {BRAILLE_NAV_RULES, BRAILLE_KEY_RULES};                   \
+    static const struct braille_rule name##_rules[] = {BRAILLE_NAV_RULES, BRAILLE_KEY_RULES BRAILLE_SETTINGS_RULE};                   \
     const struct braille_rule_table braille_rules_##name##_commands = {                     \
         .rules = name##_rules,                                                              \
         .count = sizeof(name##_rules) / sizeof(name##_rules[0]),                             \

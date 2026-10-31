@@ -44,10 +44,15 @@ int main(void) {
 #endif
 #if TEST_SETTINGS_NODES
     assert(settings->locality == BEHAVIOR_LOCALITY_CENTRAL);
+#if IS_ENABLED(CONFIG_ZMK_BRAILLE_SETTINGS_UI)
     assert(settings->binding_pressed(&binding, event) == 0);
     assert(braille_settings_active());
+#else
+    assert(settings->binding_pressed(&binding, event) == -ENOTSUP);
+    assert(!braille_settings_active());
+#endif
     assert(settings->binding_released(&binding, event) == 0);
-    assert(braille_settings_active());
+    assert(braille_settings_active() == IS_ENABLED(CONFIG_ZMK_BRAILLE_SETTINGS_UI));
     assert(braille_settings_exit(event) == 0);
 #endif
     (void)binding;
