@@ -53,7 +53,14 @@ int main(void) {
   assert(strstr(out, "1 12 13456"));
   strcpy(b.pending, "12345678 12345678 12345678");
   braille_small_screen(&e, &b, 4, 16, 0, out, sizeof(out));
-  assert(strstr(out, "... "));
+  joined[0] = 0;
+  for (const char *p = out; *p; p++)
+    if (*p != '\n') {
+      size_t n = strlen(joined);
+      joined[n] = *p;
+      joined[n + 1] = 0;
+    }
+  assert(strstr(joined, "... 12345678"));
   char guard[2] = {'x', 'z'};
   braille_small_screen(&e, &b, 4, 16, 0, guard, 1);
   assert(!guard[0] && guard[1] == 'z');
