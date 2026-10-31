@@ -4,27 +4,165 @@
     "references/research/computer8.yaml": "74e0c1521a7aa83be611eb013af2980c5b2c15bbe5c267038a6e6dffe98ecef9",
     "references/research/ueb-grade2-contractions.yaml": "4a9b77ef41df69775025359119dedf965fb0647ec3f0be2fb9cd05e41983ea3b",
     "src/braille_rules_computer8.c": "ae548381ca870ea3e859b00fce80bca05f49fc777f0e4daf4c381e75d3d5e6c5",
-    "src/braille_rules_nav.c": "69034db9e5aaaf9441ba96bec7533e03fefd0cab37c832c93187b45132095908"
+    "src/braille_rules_nav.c": "69034db9e5aaaf9441ba96bec7533e03fefd0cab37c832c93187b45132095908",
+    "src/braille_rules_grade1.c": "028e916aad6c3ccdbb35c171eeff1402adee8ae79edb9b6e4361fd3bd586d8db"
   },
-  "strict_compatibility_policy": "Preserving every existing Computer8 literal sequence leaves no unchanged-spelling shorthand subset.",
+  "comparison_policy": "Equal definitions are compatible. A shorthand expansion differing from literal typing is expected and is not by itself a semantic conflict. Symbol and indicator differences require contextual review.",
+  "shared_lowercase_letters": [
+    {
+      "letter": "a",
+      "cell": 1,
+      "dots": "1"
+    },
+    {
+      "letter": "b",
+      "cell": 3,
+      "dots": "12"
+    },
+    {
+      "letter": "c",
+      "cell": 9,
+      "dots": "14"
+    },
+    {
+      "letter": "d",
+      "cell": 25,
+      "dots": "145"
+    },
+    {
+      "letter": "e",
+      "cell": 17,
+      "dots": "15"
+    },
+    {
+      "letter": "f",
+      "cell": 11,
+      "dots": "124"
+    },
+    {
+      "letter": "g",
+      "cell": 27,
+      "dots": "1245"
+    },
+    {
+      "letter": "h",
+      "cell": 19,
+      "dots": "125"
+    },
+    {
+      "letter": "i",
+      "cell": 10,
+      "dots": "24"
+    },
+    {
+      "letter": "j",
+      "cell": 26,
+      "dots": "245"
+    },
+    {
+      "letter": "k",
+      "cell": 5,
+      "dots": "13"
+    },
+    {
+      "letter": "l",
+      "cell": 7,
+      "dots": "123"
+    },
+    {
+      "letter": "m",
+      "cell": 13,
+      "dots": "134"
+    },
+    {
+      "letter": "n",
+      "cell": 29,
+      "dots": "1345"
+    },
+    {
+      "letter": "o",
+      "cell": 21,
+      "dots": "135"
+    },
+    {
+      "letter": "p",
+      "cell": 15,
+      "dots": "1234"
+    },
+    {
+      "letter": "q",
+      "cell": 31,
+      "dots": "12345"
+    },
+    {
+      "letter": "r",
+      "cell": 23,
+      "dots": "1235"
+    },
+    {
+      "letter": "s",
+      "cell": 14,
+      "dots": "234"
+    },
+    {
+      "letter": "t",
+      "cell": 30,
+      "dots": "2345"
+    },
+    {
+      "letter": "u",
+      "cell": 37,
+      "dots": "136"
+    },
+    {
+      "letter": "v",
+      "cell": 39,
+      "dots": "1236"
+    },
+    {
+      "letter": "w",
+      "cell": 58,
+      "dots": "2456"
+    },
+    {
+      "letter": "x",
+      "cell": 45,
+      "dots": "1346"
+    },
+    {
+      "letter": "y",
+      "cell": 61,
+      "dots": "13456"
+    },
+    {
+      "letter": "z",
+      "cell": 53,
+      "dots": "1356"
+    }
+  ],
   "implementation_interpretation": {
     "user_clarification": "it should be a mode, just like ueb2 is now.",
-    "interpretation_not_verbatim_approval": "A separate automatic mode may buffer words and expand the 120 multi-cell spellings, while excluding 62 direct single-cell redefinitions. Original Computer8 stays unchanged.",
-    "remaining_review": "All 182 conflicts remain documented for review; multi-cell expansions still reinterpret literal ASCII sequences in the new mode.",
-    "proposed_multi_cell_expansions": 120,
-    "excluded_single_cell_redefinitions": 62,
+    "interpretation_not_verbatim_approval": "Current implementation buffers words and expands the 120 multi-cell spellings, while excluding all 62 single-cell contractions. This length-based policy is not a conclusion that the excluded definitions are genuine conflicts. Original Computer8 stays unchanged.",
+    "remaining_review": "Review actual differing symbol/indicator meanings and the current single-cell exclusion policy. Expected contextual shorthand expansion alone is not a conflict.",
+    "currently_enabled_multi_cell_expansions": 120,
+    "currently_excluded_single_cell_contractions": 62,
     "explicit_prefix_required": false
   },
   "counts": {
     "contractions": 182,
-    "existing_character_conflicts": 62,
-    "literal_sequence_conflicts": 120,
-    "unchanged_spelling_compatible_subset": 0,
+    "single_cell_contractions": 62,
+    "multi_cell_contractions": 120,
+    "identical_raw_outputs": 0,
+    "shared_lowercase_letter_definitions": 26,
+    "single_cell_shared_letter_wordsigns": 23,
+    "multi_cell_shared_letter_shortforms": 49,
+    "single_cell_symbol_uses": 39,
+    "multi_cell_symbol_uses": 71,
     "mapped_nonzero_six_dot_cells": 63
   },
-  "context_note": "Word-position restrictions do not remove collisions: the same literal ASCII input remains valid at those positions.",
+  "context_note": "UEB2 letters can act as wordsigns in context. For example b and ab expanding to but and about is intentional shorthand, not evidence of incompatible base letter definitions.",
   "timing_note": "Computer8 emits mapped cells immediately. Buffering a literal prefix to wait for shorthand is also an observable change.",
-  "indicator_conflicts": [
+  "indicator_meaning_differences": [
     {
       "ueb": "capital indicator",
       "dots": "6",
@@ -42,21 +180,7 @@
     }
   ],
   "commands_note": "Dot7 Delete, dot8 Return, and space-bearing factory commands are existing definitions and must remain intact.",
-  "additive_options_for_review": [
-    {
-      "name": "explicit_prefix",
-      "dots": "78",
-      "mask": 192,
-      "current_definition": "reserved",
-      "description": "An unused prefix can explicitly enter a bounded shorthand sequence; raw Computer8 remains literal outside it."
-    },
-    {
-      "name": "dot8_on_first_cell",
-      "currently_reserved_first_cells": true,
-      "description": "Adding dot8 to a nonzero six-dot first cell uses reserved input, but invents new spellings and needs a clear scope/termination policy."
-    }
-  ],
-  "conflicts": [
+  "mappings": [
     {
       "contraction": "as",
       "cells": [
@@ -68,8 +192,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "z",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "but",
@@ -82,8 +208,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "b",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "can",
@@ -96,8 +224,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "c",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "do",
@@ -110,8 +240,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "d",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "every",
@@ -124,8 +256,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "e",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "from",
@@ -138,8 +272,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "f",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "go",
@@ -152,8 +288,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "g",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "have",
@@ -166,8 +304,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "h",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "it",
@@ -180,8 +320,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "x",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "just",
@@ -194,8 +336,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "j",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "knowledge",
@@ -208,8 +352,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "k",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "like",
@@ -222,8 +368,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "l",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "more",
@@ -236,8 +384,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "m",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "not",
@@ -250,8 +400,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "n",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "people",
@@ -264,8 +416,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "p",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "quite",
@@ -278,8 +432,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "q",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "rather",
@@ -292,8 +448,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "r",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "so",
@@ -306,8 +464,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "s",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "that",
@@ -320,8 +480,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "t",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "us",
@@ -334,8 +496,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "u",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "very",
@@ -348,8 +512,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "v",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "will",
@@ -362,8 +528,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "w",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "you",
@@ -376,8 +544,10 @@
       "condition": "ALPHA",
       "iceb_section": "10.1",
       "computer8_literal": "y",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "child",
@@ -390,8 +560,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": "*",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "out",
@@ -404,8 +576,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": "|",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "shall",
@@ -418,8 +592,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": "%",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "still",
@@ -432,8 +608,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": "/",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "this",
@@ -446,8 +624,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": "?",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "which",
@@ -460,8 +640,10 @@
       "condition": "WORD",
       "iceb_section": "10.2",
       "computer8_literal": ":",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "be",
@@ -474,8 +656,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "2",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "enough",
@@ -488,8 +672,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "5",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "his",
@@ -502,8 +688,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "8",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "in",
@@ -516,8 +704,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "9",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "was",
@@ -530,8 +720,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "0",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "were",
@@ -544,8 +736,10 @@
       "condition": "LOWER_WORD",
       "iceb_section": "10.5",
       "computer8_literal": "7",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "and",
@@ -558,8 +752,10 @@
       "condition": "ANY",
       "iceb_section": "10.3",
       "computer8_literal": "&",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "for",
@@ -572,8 +768,10 @@
       "condition": "ANY",
       "iceb_section": "10.3",
       "computer8_literal": "=",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "of",
@@ -586,8 +784,10 @@
       "condition": "ANY",
       "iceb_section": "10.3",
       "computer8_literal": "(",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "the",
@@ -600,8 +800,10 @@
       "condition": "ANY",
       "iceb_section": "10.3",
       "computer8_literal": "!",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "with",
@@ -614,8 +816,10 @@
       "condition": "ANY",
       "iceb_section": "10.3",
       "computer8_literal": ")",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ar",
@@ -628,8 +832,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": ">",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ch",
@@ -642,8 +848,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "*",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ed",
@@ -656,8 +864,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "$",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "er",
@@ -670,8 +880,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "}",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "gh",
@@ -684,8 +896,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "<",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ing",
@@ -698,8 +912,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "+",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ou",
@@ -712,8 +928,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "|",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ow",
@@ -726,8 +944,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "{",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "sh",
@@ -740,8 +960,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "%",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "st",
@@ -754,8 +976,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "/",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "th",
@@ -768,8 +992,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": "?",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "wh",
@@ -782,8 +1008,10 @@
       "condition": "ANY",
       "iceb_section": "10.4",
       "computer8_literal": ":",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "be",
@@ -796,8 +1024,10 @@
       "condition": "START",
       "iceb_section": "10.6",
       "computer8_literal": "2",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "con",
@@ -810,8 +1040,10 @@
       "condition": "START",
       "iceb_section": "10.6",
       "computer8_literal": "3",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "dis",
@@ -824,8 +1056,10 @@
       "condition": "START",
       "iceb_section": "10.6",
       "computer8_literal": "4",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "bb",
@@ -838,8 +1072,10 @@
       "condition": "MIDDLE",
       "iceb_section": "10.6",
       "computer8_literal": "2",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "cc",
@@ -852,8 +1088,10 @@
       "condition": "MIDDLE",
       "iceb_section": "10.6",
       "computer8_literal": "3",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ea",
@@ -866,8 +1104,10 @@
       "condition": "MIDDLE",
       "iceb_section": "10.6",
       "computer8_literal": "1",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "ff",
@@ -880,8 +1120,10 @@
       "condition": "MIDDLE",
       "iceb_section": "10.6",
       "computer8_literal": "6",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "gg",
@@ -894,8 +1136,10 @@
       "condition": "MIDDLE",
       "iceb_section": "10.6",
       "computer8_literal": "7",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "en",
@@ -908,8 +1152,10 @@
       "condition": "ANY",
       "iceb_section": "10.6",
       "computer8_literal": "5",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "in",
@@ -922,8 +1168,10 @@
       "condition": "ANY",
       "iceb_section": "10.6",
       "computer8_literal": "9",
-      "conflict": "existing_character",
-      "decision": "exclude_from_proposed_automatic_mode"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_excluded_single_cell"
     },
     {
       "contraction": "cannot",
@@ -938,8 +1186,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_c",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "character",
@@ -954,8 +1204,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"*",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "day",
@@ -970,8 +1222,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"d",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ever",
@@ -986,8 +1240,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"e",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "father",
@@ -1002,8 +1258,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"f",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "had",
@@ -1018,8 +1276,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_h",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "here",
@@ -1034,8 +1294,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"h",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "know",
@@ -1050,8 +1312,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"k",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "lord",
@@ -1066,8 +1330,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"l",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "many",
@@ -1082,8 +1348,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_m",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "mother",
@@ -1098,8 +1366,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"m",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "name",
@@ -1114,8 +1384,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"n",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "one",
@@ -1130,8 +1402,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"o",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ought",
@@ -1146,8 +1420,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"|",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "part",
@@ -1162,8 +1438,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"p",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "question",
@@ -1178,8 +1456,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"q",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "right",
@@ -1194,8 +1474,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"r",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "some",
@@ -1210,8 +1492,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"s",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "spirit",
@@ -1226,8 +1510,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_s",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "their",
@@ -1242,8 +1528,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_!",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "there",
@@ -1258,8 +1546,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"!",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "these",
@@ -1274,8 +1564,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "~!",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "those",
@@ -1290,8 +1582,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "~?",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "through",
@@ -1306,8 +1600,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"?",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "time",
@@ -1322,8 +1618,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"t",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "under",
@@ -1338,8 +1636,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"u",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "upon",
@@ -1354,8 +1654,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "~u",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "where",
@@ -1370,8 +1672,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\":",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "whose",
@@ -1386,8 +1690,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "~:",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "word",
@@ -1402,8 +1708,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "~w",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "work",
@@ -1418,8 +1726,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"w",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "world",
@@ -1434,8 +1744,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "_w",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "young",
@@ -1450,8 +1762,10 @@
       "condition": "ANY",
       "iceb_section": "10.7",
       "computer8_literal": "\"y",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ance",
@@ -1466,8 +1780,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ".e",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ence",
@@ -1482,8 +1798,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";e",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ful",
@@ -1498,8 +1816,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";l",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ity",
@@ -1514,8 +1834,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";y",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "less",
@@ -1530,8 +1852,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ".s",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ment",
@@ -1546,8 +1870,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";t",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ness",
@@ -1562,8 +1888,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";s",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ong",
@@ -1578,8 +1906,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";g",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ound",
@@ -1594,8 +1924,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ".d",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ount",
@@ -1610,8 +1942,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ".t",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "sion",
@@ -1626,8 +1960,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ".n",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "tion",
@@ -1642,8 +1978,10 @@
       "condition": "FINAL",
       "iceb_section": "10.8",
       "computer8_literal": ";n",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "about",
@@ -1658,8 +1996,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ab",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "above",
@@ -1676,8 +2016,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "abv",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "according",
@@ -1692,8 +2034,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ac",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "across",
@@ -1710,8 +2054,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "acr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "after",
@@ -1726,8 +2072,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "af",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "afternoon",
@@ -1744,8 +2092,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "afn",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "afterward",
@@ -1762,8 +2112,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "afw",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "again",
@@ -1778,8 +2130,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ag",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "against",
@@ -1796,8 +2150,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ag/",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "almost",
@@ -1814,8 +2170,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "alm",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "already",
@@ -1832,8 +2190,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "alr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "also",
@@ -1848,8 +2208,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "al",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "although",
@@ -1866,8 +2228,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "al?",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "altogether",
@@ -1884,8 +2248,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "alt",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "always",
@@ -1902,8 +2268,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "alw",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "because",
@@ -1918,8 +2286,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2c",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "before",
@@ -1934,8 +2304,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2f",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "behind",
@@ -1950,8 +2322,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2h",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "below",
@@ -1966,8 +2340,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2l",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "beneath",
@@ -1982,8 +2358,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2n",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "beside",
@@ -1998,8 +2376,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2s",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "between",
@@ -2014,8 +2394,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2t",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "beyond",
@@ -2030,8 +2412,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "2y",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "blind",
@@ -2046,8 +2430,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "bl",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "braille",
@@ -2064,8 +2450,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "brl",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "children",
@@ -2080,8 +2468,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "*n",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "conceive",
@@ -2098,8 +2488,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "3cv",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "conceiving",
@@ -2118,8 +2510,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "3cvg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "could",
@@ -2134,8 +2528,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "cd",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "deceive",
@@ -2152,8 +2548,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "dcv",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "deceiving",
@@ -2172,8 +2570,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "dcvg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "declare",
@@ -2190,8 +2590,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "dcl",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "declaring",
@@ -2210,8 +2612,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "dclg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "either",
@@ -2226,8 +2630,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ei",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "first",
@@ -2242,8 +2648,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "f/",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "friend",
@@ -2258,8 +2666,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "fr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "good",
@@ -2274,8 +2684,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "gd",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "great",
@@ -2292,8 +2704,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "grt",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "herself",
@@ -2310,8 +2724,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "h}f",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "him",
@@ -2326,8 +2742,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "hm",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "himself",
@@ -2344,8 +2762,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "hmf",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "immediate",
@@ -2362,8 +2782,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "imm",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "its",
@@ -2378,8 +2800,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "xs",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "itself",
@@ -2394,8 +2818,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "xf",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "letter",
@@ -2410,8 +2836,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "lr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "little",
@@ -2426,8 +2854,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "ll",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "much",
@@ -2442,8 +2872,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "m*",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "must",
@@ -2458,8 +2890,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "m/",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "myself",
@@ -2476,8 +2910,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "myf",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "necessary",
@@ -2494,8 +2930,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "nec",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "neither",
@@ -2512,8 +2950,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "nei",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "oneself",
@@ -2530,8 +2970,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "\"of",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "ourselves",
@@ -2550,8 +2992,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "|rvs",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "paid",
@@ -2566,8 +3010,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "pd",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "perceive",
@@ -2586,8 +3032,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "p}cv",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "perceiving",
@@ -2608,8 +3056,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "p}cvg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "perhaps",
@@ -2626,8 +3076,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "p}h",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "quick",
@@ -2642,8 +3094,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "qk",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "receive",
@@ -2660,8 +3114,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "rcv",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "receiving",
@@ -2680,8 +3136,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "rcvg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "rejoice",
@@ -2698,8 +3156,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "rjc",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "rejoicing",
@@ -2718,8 +3178,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "rjcg",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "said",
@@ -2734,8 +3196,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "sd",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "should",
@@ -2750,8 +3214,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "%d",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "such",
@@ -2766,8 +3232,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "s*",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "themselves",
@@ -2786,8 +3254,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "!mvs",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "thyself",
@@ -2804,8 +3274,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "?yf",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "includes_computer8_symbols",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "today",
@@ -2820,8 +3292,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "td",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "together",
@@ -2838,8 +3312,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "tgr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "tomorrow",
@@ -2854,8 +3330,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "tm",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "tonight",
@@ -2870,8 +3348,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "tn",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "would",
@@ -2886,8 +3366,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "wd",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "your",
@@ -2902,8 +3384,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "yr",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "yourself",
@@ -2920,8 +3404,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "yrf",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     },
     {
       "contraction": "yourselves",
@@ -2940,8 +3426,10 @@
       "condition": "SHORT",
       "iceb_section": "10.9",
       "computer8_literal": "yrvs",
-      "conflict": "literal_sequence",
-      "decision": "proposed_automatic_sequence_expansion_pending_review"
+      "raw_output_difference": true,
+      "input_kind": "shared_letters",
+      "semantic_conflict": "not_inferred_from_expansion",
+      "decision": "currently_enabled_contextual_expansion"
     }
   ]
 }

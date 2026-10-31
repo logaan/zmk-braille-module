@@ -35,21 +35,32 @@ discards the pending buffer. Ordinary Computer8 continues to emit its cells
 immediately. User overrides remain shared across modes and take precedence,
 including overrides containing command or whitespace cells.
 
-## Conflicts for review
+## Compatibility and review
 
-The exhaustive [compatibility audit](../references/research/computer8-shorthand-conflicts.json)
-records all 182 UEB2 mappings. The phase-08 TaskDown conflict-review task remains
-ready for user review:
+All 26 lowercase letter patterns have the same base meaning in the project's
+Computer8 table and UEB fallback. Shared definitions are compatible.
 
-- All 62 single-cell contractions are excluded because they replace existing
-  Computer8 definitions.
-- All 120 multi-cell mappings are eligible under their positional and lexical
-  rules. Their literal Computer8 spellings are therefore ambiguous in this
-  separate mode; all 120 are documented, rather than being silently treated
-  as conflict-free.
-- Ordinary fallback and commands come from Computer8. Word and punctuation
-  boundaries use Computer8 ASCII meaning. Appendix 1 longer words and the
-  supported productive shortform extensions reuse the UEB2 dictionary rules.
+The [audit](../references/research/computer8-shorthand-conflicts.json) compares
+182 contraction entries with their literal Computer8 spellings. A different
+expanded output does **not** by itself establish a conflict in a shorthand
+mode: `ab` becoming `about` is the intended feature. The earlier TaskDown
+statement that all 182 entries conflict used an overly strict literal-preservation
+criterion and is superseded by the clarified review.
+
+The entries divide into 23 single-letter contextual wordsigns and 49 all-letter
+multi-cell shortforms, plus 39 single-cell and 71 multi-cell entries involving
+Computer8 digits or punctuation. Those last 110 entries need symbol-policy
+review; that is not a finding that all 110 are incompatible. For example, dots
+35 mean `9` in Computer8 but can mean `in` in UEB2.
+
+The current implementation still excludes all 62 single-cell contractions and
+enables the 120 multi-cell mappings under their contextual rules. This records
+what was implemented, not a conclusion that all 62 exclusions are necessary.
+The clarified audit does not yet change runtime behaviour.
+
+Ordinary fallback and commands come from Computer8. Word and punctuation
+boundaries use Computer8 ASCII meaning. Appendix 1 longer words and the
+supported productive shortform extensions reuse the UEB2 dictionary rules.
 
 The original UEB2 mode retains all its own indicators and contractions. The
 existing cheatsheet's Computer8 mapping and UEB2 tables remain reference data
