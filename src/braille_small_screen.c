@@ -72,8 +72,19 @@ unsigned braille_small_screen(const struct braille_editor_snapshot *editor,
       pending += n - columns * 4;
     add(body, sizeof(body), pending);
   }
-  /* Titles occupy up to four portrait rows, two landscape rows. */
-  unsigned heading = columns < 8 ? 4 : 2, content = rows - heading - 1;
+  /* The four-column OLED uses a one-row stage code, leaving fourteen rows
+   * for the selected action and captured input. Wider displays keep titles. */
+  if (columns < 8) {
+    static const char *const stages[] = {
+        "MENU", "MODE", "HOLD", "INPT", "EXST", "POS", "ACT",  "KEY",
+        "MODS", "CMD",  "BT",   "MORE", "SAVE", "DEL", "DEL?", "RST?"};
+    if (editor->active &&
+        (unsigned)editor->screen < sizeof(stages) / sizeof(*stages))
+      snprintf(title, sizeof(title), "%s", stages[editor->screen]);
+    else if (!strcmp(braille->mode, "computer8"))
+      snprintf(title, sizeof(title), "8DOT");
+  }
+  unsigned heading = columns < 8 ? 1 : 2, content = rows - heading - 1;
   if (!content)
     return 1;
   for (unsigned i = 0; i < heading; i++) {

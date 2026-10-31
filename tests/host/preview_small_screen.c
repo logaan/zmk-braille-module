@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
   lv_disp_drv_register(&drv);
   lv_obj_t *screen = lv_obj_create(NULL), *canvas = lv_canvas_create(screen);
   static lv_color_t portrait[4096], rotated[4096];
-  struct braille_editor_snapshot e = {.active = true};
+  struct braille_editor_snapshot e = {.active = true, .screen = BR_ED_CONFIRM};
   struct braille_display_snapshot b = {0};
   snprintf(e.title, sizeof(e.title), "Confirm binding");
   snprintf(e.body, sizeof(e.body),

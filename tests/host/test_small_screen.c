@@ -8,7 +8,7 @@ void braille_display_cells(const uint16_t *cells, size_t count, char *out,
   snprintf(out, size, "%s", count ? "13456" : "");
 }
 int main(void) {
-  struct braille_editor_snapshot e = {.active = true};
+  struct braille_editor_snapshot e = {.active = true, .screen = BR_ED_CONFIRM};
   struct braille_display_snapshot b = {0};
   char out[512], joined[1024] = {0};
   strcpy(e.title, "Confirm binding");
@@ -25,7 +25,7 @@ int main(void) {
       char *end = strchr(line, '\n');
       assert(end);
       assert(end - line <= 4);
-      if (row >= 4 && row < 15)
+      if (row >= 1 && row < 15)
         strncat(joined, line, end - line);
       line = end + 1;
       row++;

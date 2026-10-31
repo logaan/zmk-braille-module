@@ -11,7 +11,9 @@ down. The canvas is rotated into the controller's 128×32 framebuffer, following
 the existing clockwise/anticlockwise option. The standalone Toucan uses a
 144×168 text overlay on braille layer 5. Peripheral screens remain unchanged.
 
-Settings show the screen title, selected item first, and the input/query or
+The narrow OLED uses one-row stage codes such as SAVE, ACT, KEY, and MODE,
+leaving fourteen rows for content. Wider displays retain full screen titles.
+Settings show the selected item first, and the input/query or
 confirmation context. Long content advances through numbered pages every four
 seconds; changing the selected item returns to page one. Every action name and
 parameter remains available for review. Unselected menu rows are omitted on
