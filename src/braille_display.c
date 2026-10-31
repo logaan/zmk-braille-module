@@ -5,6 +5,9 @@
 #include <braille_chord.h>
 #include <braille_engine.h>
 #include <braille_tables.h>
+#ifdef CONFIG_ZMK_BRAILLE_STORAGE
+#include <braille_storage.h>
+#endif
 #include <dt-bindings/zmk/keys.h>
 
 static void append(char *out, size_t size, const char *text) {
@@ -57,18 +60,63 @@ void braille_display_rule(const struct braille_rule *rule, char *out, size_t siz
     }
 }
 
+/* The display polls at 20 Hz. Reuse unchanged input rather than replaying a
+ * complete contracted word on the system work queue on every frame. The small
+ * transient table is compared too, because that public view is mutable. */
+static struct {
+    bool valid;
+    uint16_t held, cells[BRAILLE_WORD_MAX_CELLS];
+    uint8_t count;
+    const char *mode;
+    struct braille_context context;
+    uint32_t storage_revision;
+    size_t override_count;
+    struct braille_rule overrides[BRAILLE_TABLES_OVERRIDE_CAPACITY];
+    bool waiting;
+    char preview[BRAILLE_DISPLAY_TEXT_SIZE];
+} cached;
+
 void braille_display_snapshot(struct braille_display_snapshot *out) {
     memset(out, 0, sizeof(*out));
     const char *mode = braille_tables_active();
     snprintf(out->mode, sizeof(out->mode), "%s", mode ? mode : "--");
     out->held = braille_chord_held_mask();
     out->pending_count = braille_engine_pending_count();
-    braille_display_cells(braille_engine_pending_cells(), out->pending_count,
-                          out->pending, sizeof(out->pending));
-    if (out->held) {
-        struct braille_rule rule;
-        if (braille_engine_preview_rule(out->held, &rule, &out->waiting) > 0)
-            braille_display_rule(&rule, out->preview, sizeof(out->preview));
-        else snprintf(out->preview, sizeof(out->preview), "%s", out->waiting ? "prefix..." : "unmapped");
+    const uint16_t *cells = braille_engine_pending_cells();
+    braille_display_cells(cells, out->pending_count, out->pending, sizeof(out->pending));
+    if (!out->held) { cached.valid = false; return; }
+    struct braille_override_layer overrides = braille_tables_overrides();
+    size_t count = *overrides.count;
+    uint32_t revision = 0;
+#ifdef CONFIG_ZMK_BRAILLE_STORAGE
+    revision = braille_storage_revision();
+#endif
+    const struct braille_context *context = braille_engine_context();
+    bool cacheable = count <= BRAILLE_TABLES_OVERRIDE_CAPACITY;
+    bool same = cacheable && cached.valid && cached.held == out->held &&
+        cached.mode == mode && cached.count == out->pending_count &&
+        cached.storage_revision == revision && cached.override_count == count &&
+        !memcmp(&cached.context, context, sizeof(*context)) &&
+        !memcmp(cached.cells, cells, out->pending_count * sizeof(*cells)) &&
+        (!count || !memcmp(cached.overrides, overrides.rules, count * sizeof(*overrides.rules)));
+    if (same) {
+        out->waiting = cached.waiting;
+        memcpy(out->preview, cached.preview, sizeof(out->preview));
+        return;
     }
+    struct braille_rule rule;
+    if (braille_engine_preview_rule(out->held, &rule, &out->waiting) > 0)
+        braille_display_rule(&rule, out->preview, sizeof(out->preview));
+    else snprintf(out->preview, sizeof(out->preview), "%s", out->waiting ? "prefix..." : "unmapped");
+    cached.valid = cacheable;
+    cached.held = out->held;
+    cached.mode = mode;
+    cached.count = out->pending_count;
+    cached.context = *context;
+    cached.storage_revision = revision;
+    cached.override_count = count;
+    memcpy(cached.cells, cells, out->pending_count * sizeof(*cells));
+    if (cacheable && count) memcpy(cached.overrides, overrides.rules, count * sizeof(*overrides.rules));
+    cached.waiting = out->waiting;
+    memcpy(cached.preview, out->preview, sizeof(out->preview));
 }

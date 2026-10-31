@@ -18,6 +18,8 @@ static struct slot_info slots[BRAILLE_STORAGE_SLOTS];
 #endif
 static uint8_t pool[CONFIG_ZMK_BRAILLE_STORAGE_POOL_SIZE];
 static size_t pool_used;
+static uint32_t revision;
+uint32_t braille_storage_revision(void) { return revision; }
 size_t braille_storage_count(void) {
   size_t count = 0;
   for (unsigned i = 0; i < BRAILLE_STORAGE_SLOTS; i++)
@@ -119,6 +121,7 @@ static bool fits(unsigned slot, const struct braille_rule *r) {
          sizeof(pool);
 }
 static void unpublish(unsigned slot) {
+  ++revision;
   struct slot_info *s = &slots[slot];
   if (!s->valid)
     return;
@@ -233,6 +236,7 @@ int braille_storage_reset(void) {
   return result(0);
 }
 void braille_storage_begin_load(void) {
+  ++revision;
   loading = true;
   memset(slots, 0, sizeof(slots));
   pool_used = 0;

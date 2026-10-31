@@ -58,20 +58,27 @@ class KeyboardContract(unittest.TestCase):
             with self.subTest(keyboard=keyboard):
                 check_keymap(self.parse_keymap(keyboard, "computer8"), keyboard, "computer8")
 
-    def test_matching_published_module_and_release_pins(self):
+    def test_keyboard_module_pins_and_supported_zmk_baselines(self):
         projects = []
         for path in (QBF / "config/west.yml", TOUCAN / "config/west.yml", ROOT / "west/west.yml"):
             data = yaml.safe_load(path.read_text())["manifest"]["projects"]
             projects.append({project["name"]: project for project in data})
-            self.assertEqual(projects[-1]["zmk"]["revision"], "v0.3.0")
-        qbf, toucan, _ = projects
-        self.assertEqual(qbf["zmk-braille-module"], toucan["zmk-braille-module"])
-        module = qbf["zmk-braille-module"]
-        self.assertEqual(module["url"], "https://github.com/logaan/zmk-braille-module")
-        self.assertRegex(module["revision"], r"^[0-9a-f]{40}$")
-        # Pin must contain the production include, not just a registration stub.
+        qbf, toucan, baseline = projects
+        self.assertEqual(qbf["zmk"]["revision"], "v0.3.0")
+        self.assertEqual(baseline["zmk"]["revision"], "v0.3.0")
+        # Toucan's Prospector requires Zephyr 4.1; QBF retains the release baseline.
+        self.assertEqual(toucan["zmk"]["revision"], "4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85")
+        for keyboard in (qbf, toucan):
+            module = keyboard["zmk-braille-module"]
+            self.assertEqual(module["url"], "https://github.com/logaan/zmk-braille-module")
+            self.assertRegex(module["revision"], r"^[0-9a-f]{40}$")
+            result = subprocess.run(["git", "-C", str(ROOT), "cat-file", "-e",
+                                     module["revision"] + ":dts/behaviors/braille.dtsi"])
+            self.assertEqual(result.returncode, 0)
+        # A pinned selector binding must be present in the referenced module commit.
         result = subprocess.run(["git", "-C", str(ROOT), "cat-file", "-e",
-                                 module["revision"] + ":dts/behaviors/braille.dtsi"])
+                                 toucan["zmk-braille-module"]["revision"] +
+                                 ":src/behavior_braille_select.c"])
         self.assertEqual(result.returncode, 0)
 
     def test_qbf_legends_track_base_layout(self):

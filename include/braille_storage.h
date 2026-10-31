@@ -32,3 +32,6 @@ void braille_storage_notice(unsigned skipped, int error);
 /* Compact live pool supplies ordinary common rules to the shared matcher. */
 size_t braille_storage_count(void);
 int braille_storage_rule(size_t index, struct braille_rule *out);
+
+/* Changes whenever the live override pool changes; used by read-only previews. */
+uint32_t braille_storage_revision(void);

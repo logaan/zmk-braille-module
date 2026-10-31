@@ -51,6 +51,8 @@ def check_keymap(header, keyboard, mode="ueb1"):
         for index, dot in ((13, 7), (14, 3), (15, 2), (16, 1), (19, 4), (20, 5), (21, 6), (22, 8)):
             binding("braille", index, "braille_dot", dot)
         binding("braille", 39, "braille_space")
+        for index, mode_id in ((0, 1), (5, 0), (6, 2), (41, 3)):
+            binding("braille", index, "braille_select", mode_id)
         for index in (11, 36):
             binding("braille", index, "to_layer", 0)
         # Every existing number/bracket combo is BASE-only, not a chord timeout.
@@ -71,8 +73,8 @@ def check_build(workspace, target):
     assert ("src/braille_bindings.c.obj:" in ninja) == central, target
     assert ("src/braille_settings.c.obj:" in ninja) == central, target
     assert "mode-settings/fixture.c" not in ninja and "routing/edge_spy.c" not in ninja, target
-    assert "CONFIG_ZMK_BRAILLE_GRADE2=y" not in config, target
-    assert "src/braille_rules_grade2.c.obj:" not in ninja, target
+    grade2 = "CONFIG_ZMK_BRAILLE_GRADE2=y" in config
+    assert ("src/braille_rules_grade2.c.obj:" in ninja) == grade2, target
     assert (build / "zephyr/zmk.uf2").stat().st_size > 0, target
     assert (workspace / "logs" / f"smoke-{target}.exit").read_text().strip() == "0", target
     cache = (build / "CMakeCache.txt").read_text()
@@ -89,8 +91,11 @@ def check_build(workspace, target):
                 assert "CONFIG_ZMK_STUDIO=y" in config, target
                 assert "nice_view_gem" in ninja and "zmk-rgbled-widget" in ninja, target
             else:
-                assert "input_pinnacle.c.obj:" in ninja, target
-        header = (build / "zephyr/include/generated/devicetree_generated.h").read_text()
+                assert "tps43.c.obj:" in ninja, target
+        header_path = build / "zephyr/include/generated/devicetree_generated.h"
+        if not header_path.exists():
+            header_path = build / "zephyr/include/generated/zephyr/devicetree_generated.h"
+        header = header_path.read_text()
         check_keymap(header, target.split("-")[0], "computer8" if target.endswith("computer8") else "ueb1")
         if central:
             values = defines(header)

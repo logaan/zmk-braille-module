@@ -16,3 +16,13 @@ class Display(unittest.TestCase):
                 ['-std=c11','-Wall','-Wextra','-Werror','-I',str(ROOT/'include'),'-I',str(ROOT/'tests/host/stubs')] +
                 [str(ROOT/s) for s in sources] + ['-o',str(exe)], check=True)
             subprocess.run([str(exe)], check=True)
+
+    def test_unchanged_frames_and_all_cache_invalidations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            exe = Path(tmp) / 'display-cache'
+            subprocess.run(shlex.split(os.environ.get('CC','cc')) +
+                ['-std=c11','-Wall','-Wextra','-Werror','-DCONFIG_ZMK_BRAILLE_STORAGE=1',
+                 '-I',str(ROOT/'include'),'-I',str(ROOT/'tests/host/stubs'),
+                 str(ROOT/'src/braille_display.c'),str(ROOT/'tests/host/test_display_cache.c'),
+                 '-o',str(exe)],check=True)
+            subprocess.run([str(exe)],check=True)

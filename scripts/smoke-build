@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 # Real pinned firmware builds; requires the existing build/baseline west workspace.
-# Optional arguments select targets; defaults include both halves, reset images,
-# and a test-only named-mode override. No hardware is flashed.
+# Defaults cover QBF on ZMK v0.3.0. For Toucan use a separate modern
+# west workspace: WORKSPACE=/path/to/workspace scripts/smoke-build toucan-left.
+# No hardware is flashed; do not mix the two firmware baselines in one run.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
 WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
+IMAGE=zmkfirmware/zmk-build-arm:3.5
+FAMILY=qbf
 QBF="${QBF:-$(cd ../qbf-paintbrushes/basic-zmk && pwd)}"
 TOUCAN="${TOUCAN:-$(cd ../zmk-keyboard-toucan && pwd)}"
 [ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
 if [ "$#" -eq 0 ]; then
-  set -- qbf-left qbf-right qbf-computer8 toucan-left toucan-right toucan-computer8 qbf-reset toucan-reset
+  set -- qbf-left qbf-right qbf-computer8 qbf-reset
 fi
 for target in "$@"; do
   case "$target" in
@@ -18,11 +21,15 @@ for target in "$@"; do
     *) echo "Unknown target: $target" >&2; exit 2 ;;
   esac
 done
+if [[ "$1" == toucan-* ]]; then FAMILY=toucan; IMAGE=zmkfirmware/zmk-build-arm:stable; fi
+for target in "$@"; do
+  [[ "$target" == "$FAMILY"-* ]] || { echo "Run QBF and Toucan in separate pinned workspaces." >&2; exit 2; }
+done
 mkdir -p "$WORKSPACE/logs"
 docker run --rm \
   -v "$WORKSPACE:/work" -v "$ROOT:/work/zmk-braille-module:ro" \
   -v "$QBF:/qbf:ro" -v "$TOUCAN:/toucan:ro" -w /work \
-  -e TARGETS="$*" zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
+  -e TARGETS="$*" -e FAMILY="$FAMILY" "$IMAGE" bash -ceuo pipefail '
     # Add the local source as an ordinary west project, so these builds verify
     # manifest-based module discovery, NOT a module ZMK_EXTRA_MODULES bypass.
     # The generated manifest/config change is temporary; upstream pins stay put.
@@ -31,14 +38,17 @@ docker run --rm \
     python3 - <<"PY"
 from pathlib import Path
 import yaml
+import os
 root = Path("/work/zmk-braille-module")
-manifest = yaml.safe_load((root / "west/west.yml").read_text())
+family = os.environ["FAMILY"]
+manifest_path = root / "west/west.yml" if family == "qbf" else Path("/toucan/config/west.yml")
+manifest = yaml.safe_load(manifest_path.read_text())
 def module(path):
     data = yaml.safe_load(Path(path).read_text())["manifest"]
     return next(p for p in data["projects"] if p["name"] == "zmk-braille-module")
-project = module("/qbf/config/west.yml")
-assert project == module("/toucan/config/west.yml"), "Keyboard module pins differ"
-manifest["manifest"]["projects"].append(project)
+project = module(f"/{family}/config/west.yml")
+if not any(p["name"] == "zmk-braille-module" for p in manifest["manifest"]["projects"]):
+    manifest["manifest"]["projects"].append(project)
 manifest["manifest"]["self"]["path"] = "smoke-manifest"
 Path("smoke-manifest").mkdir(exist_ok=True)
 Path("smoke-manifest/west.yml").write_text(yaml.safe_dump(manifest, sort_keys=False))
@@ -46,7 +56,8 @@ PY
     west config manifest.path smoke-manifest
     west manifest --validate
     west list zmk-braille-module | tee logs/smoke-discovery.log
-    test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
+    if [ "$FAMILY" = qbf ]; then expected=edf5c0814fd3ea202e43aad2d68fd32e882a518c; else expected=4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85; fi
+    test "$(git -C zmk rev-parse HEAD)" = "$expected"
     west zephyr-export
     for target in $TARGETS; do
       args=()
@@ -55,11 +66,11 @@ PY
         qbf-right) board=nice_nano_v2; shield=qbf_paintbrush_right; config=/qbf/config ;;
         qbf-reset) board=nice_nano_v2; shield=settings_reset; config=/qbf/config ;;
         toucan-left|toucan-computer8)
-          board=seeeduino_xiao_ble; shield="toucan_left rgbled_adapter nice_view_gem"; config=/toucan/config
+          board=xiao_ble//zmk; shield="toucan_left rgbled_adapter nice_view_gem"; config=/toucan/config
           args=(-S studio-rpc-usb-uart)
           ;;
-        toucan-right) board=seeeduino_xiao_ble; shield="toucan_right rgbled_adapter"; config=/toucan/config ;;
-        toucan-reset) board=seeeduino_xiao_ble; shield=settings_reset; config=/toucan/config ;;
+        toucan-right) board=xiao_ble//zmk; shield="toucan_right rgbled_adapter"; config=/toucan/config ;;
+        toucan-reset) board=xiao_ble//zmk; shield=settings_reset; config=/toucan/config ;;
       esac
       cmake_args=(-DSHIELD="$shield" -DZMK_CONFIG="$config")
       # Toucan itself is a keyboard module outside this development manifest.
