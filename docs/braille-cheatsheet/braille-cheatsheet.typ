@@ -31,8 +31,5 @@
   contractions remain Computer8 digits/punctuation. Ordinary 8-dot stays literal.]
 ]
 #for section in ueb2 { word-section(section) }
-#linebreak()
-#align(center, text(size: 18pt, weight: "bold", fill: blue)[Quick Braille Fox])
-#align(center, sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: [~~~]))
 
 #include "validation.typ"
