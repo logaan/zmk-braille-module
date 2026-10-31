@@ -3,7 +3,52 @@
 Software evidence is separate from physical acceptance. These checks do not
 flash any board or claim Bluetooth, panel, macOS, or VoiceOver acceptance.
 
-## Verified software results
+## Eight-dot shorthand verification
+
+Final runtime snapshot `4d57483` passed all **92 host tests**, including all 120
+multi-cell mappings, all 256 single-cell Computer8 comparisons, opening
+punctuation overrides, productive-shortform punctuation/digit boundaries,
+saved-mode fallback, every optional mode configuration and preview consistency.
+Address/undefined-behavior sanitizers passed **57,600 deterministic random cells**
+across all four modes, with resets and previews after every input. Independent
+review also compared 1,162 deterministic words containing no permitted
+multi-cell pattern against plain Computer8 with identical output.
+
+`./scripts/test-commands --shorthand` executes the actual ZMK kernel,
+production capture/dispatch and HID path: `ab` stays buffered then emits
+`about` plus Space, navigation discards the word, and dot-7 capital A stays
+literal. The existing disabled-mode native suite also passed. No physical
+keyboard or USB/Bluetooth endpoint is simulated as hardware acceptance.
+
+The actual Toucan dashboard renderer shows pending dot 1 and held dots 12,
+previewing `about` in the saved shorthand example. The production label reads
+`8dot+short`; the narrow OLED uses `8SHR`. The existing Computer8 and UEB2
+cheatsheet mappings are unchanged; the hybrid's exclusions and literal-sequence
+ambiguities are explained in the [mode guide](computer8-shorthand.md) and td.
+
+Clean committed keyboard archives `bb2e1b9` (Toucan) and `0838782` (QBF), with
+module `4d57483`, were used for local final builds. Later keyboard commits
+`75766c4` and `bf00337` update only the manifest pin to that module revision.
+User-owned uncommitted Toucan display changes are absent from these archives.
+
+| Target | Flash bytes | RAM bytes | Result |
+|---|---:|---:|---|
+| Toucan Prospector dongle | 602,428 | 228,538 | Four modes, storage, editor, dashboard |
+| Toucan standalone left | 545,592 | 163,702 | Four modes, storage, editor, widget |
+| QBF left | 408,504 | 114,132 | Four modes, storage, editor, rotated OLED |
+| QBF right | 245,152 | 50,476 | Peripheral; no braille engine |
+
+Artifacts, SHA-256 hashes and static stack evidence are retained locally in
+ignored `build/shorthand-integration/`. Integrated checks verify the mode-4
+selector, enabled feature, linked matcher and production display source.
+ARM GCC reports 728 bytes for preview, 992 for word resolution, 64 for the
+shorthand matcher, 288 for longer-word matching and 352 for its dictionary
+matcher. Including display and editor snapshots gives about 3,224 bytes of
+local frames before event/library/queue overhead. The configured 6 KiB system
+workqueue remains the required budget; these are static frames, not measured
+hardware high-water marks. No board was flashed.
+
+## Previous publication baseline results
 
 - All 82 host tests in committed snapshot `764ed49` passed, including the 11
   retired coordinator regressions. Full discovery passed 80 tests and skipped
@@ -87,6 +132,7 @@ workspace, and execute the real unmodified kernel/HID path:
 
 ```sh
 ./scripts/test-commands
+./scripts/test-commands --shorthand
 ./scripts/test-routing
 ./scripts/test-mode-settings
 ```
@@ -160,7 +206,8 @@ revision.
 3. Type all printable US characters and required command chords from the
    [shared coverage checklist](../references/key-coverage.md). Verify actual
    host output on a US layout in every mode and switch while a chord is held.
-4. Verify UEB2 word buffering, 32-cell boundaries, capital/numeric/Grade 1
+4. Verify eight-dot shorthand expansions, literal fallback and mode changes,
+   then UEB2 word buffering, 32-cell boundaries, capital/numeric/Grade 1
    indicators, overridden commands and no duplicated output.
 5. Exercise settings capture, search, complete action confirmation, cancel,
    failed/capacity saves, removal and reset. Confirm mode and bindings survive

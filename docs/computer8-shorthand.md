@@ -2,7 +2,7 @@
 
 `computer8_short` is a separate, optional mode displayed as **8dot+short**
 (**8SHR** on the narrow OLED). It is a project-defined hybrid: Computer8 cells
-plus compatible multi-cell UEB2 contractions. It is not an assertion that
+plus selected multi-cell UEB2 contractions. It is not an assertion that
 standard eight-dot computer Braille uses UEB contractions.
 
 Enable both `CONFIG_ZMK_BRAILLE_GRADE2=y` and
@@ -24,8 +24,8 @@ sending output. This preview remains provisional until a boundary is entered.
 For example, dots 1 followed by dots 12 represent `ab` in Computer8. In this
 mode they preview and commit `about` when standing alone. A single dot 1 still
 means `a`, and dots 13456 still mean `y`; single-cell UEB2 wordsigns do not
-replace them. Raw eight-dot capitals, digits and punctuation retain Computer8
-meaning. Capitals are not case-folded into contraction spellings: literal
+replace them. Unmatched eight-dot capital, digit and punctuation cells retain Computer8
+meaning; matched multi-cell sequences can include punctuation cells. Capitals are not case-folded into contraction spellings: literal
 uppercase `AB` stays `AB`. UEB capital, numeric and Grade 1 indicators are not
 interpreted here; their cells retain their Computer8 characters.
 
