@@ -47,9 +47,18 @@ int main(void) {
     assert(output_count == 4); // failed selection preserves live capture
 #endif
     assert(select_mode(BRAILLE_MODE_NEXT) == 0);
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+    assert(!strcmp(braille_tables_active(), "computer8_short"));
+    assert(select_mode(BRAILLE_MODE_COMPUTER8_SHORT) == 0);
+    assert(braille_chord_resolved(1, event) == 0);
+    assert(braille_engine_pending_count() == 1);
+    assert(select_mode(BRAILLE_MODE_NEXT) == 0);
+#else
+    assert(select_mode(BRAILLE_MODE_COMPUTER8_SHORT) == -ENOENT);
+#endif
     assert(!strcmp(braille_tables_active(), "ueb1"));
     assert(select_mode(BRAILLE_MODE_UEB1) == 0);
-    struct zmk_behavior_binding bad = {.param1 = 4};
+    struct zmk_behavior_binding bad = {.param1 = 5};
     assert(select_device->binding_pressed(&bad, event) == -EINVAL);
     assert(select_device->binding_released(&bad, event) == -EINVAL);
     bad.param1 = 0; bad.param2 = 1;

@@ -3,7 +3,7 @@
 description: |
   Select the Braille character mode, independently of keyboard layers.
   Parameters from dt-bindings/zmk/braille.h select UEB1, Computer8, optional
-  UEB2, or the next compiled mode. Selection discards pending and held input.
+  UEB2, optional Computer8 shorthand, or the next compiled mode. Selection discards pending and held input.
 
 compatible: "zmk,behavior-braille-select"
 include: one_param.yaml

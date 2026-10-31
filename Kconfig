@@ -25,6 +25,16 @@ config ZMK_BRAILLE_GRADE2
       Include contracted UEB reading, Grade 1 fallback and bounded 32-cell
       word buffering. The initial modes work without it.
 
+config ZMK_BRAILLE_COMPUTER8_SHORT
+    bool "Optional Computer8 with automatic shorthand"
+    depends on ZMK_BRAILLE_GRADE2
+    default n
+    help
+      Add computer8_short: Computer8 characters and commands with automatic
+      multi-cell contractions and 32-cell word buffering. Single-cell UEB2
+      contractions are excluded; literal sequence ambiguities are documented
+      in the phase-08 TaskDown conflict review.
+
 config ZMK_BRAILLE_STORAGE
     bool "Persistent Braille modes and user overrides"
     default y if SETTINGS

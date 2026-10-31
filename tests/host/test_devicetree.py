@@ -76,10 +76,10 @@ class DevicetreeContract(unittest.TestCase):
 
     def test_runtime_mode_bindings(self):
         with tempfile.TemporaryDirectory() as tmp:
-            result = self.generate(tmp, "&bselect BRAILLE_MODE_COMPUTER8 &bselect BRAILLE_MODE_UEB1 &bselect BRAILLE_MODE_UEB2 &bselect BRAILLE_MODE_NEXT")
+            result = self.generate(tmp, "&bselect BRAILLE_MODE_COMPUTER8 &bselect BRAILLE_MODE_UEB1 &bselect BRAILLE_MODE_UEB2 &bselect BRAILLE_MODE_NEXT &bselect BRAILLE_MODE_COMPUTER8_SHORT")
             self.assertEqual(result.returncode, 0, result.stderr)
             header = (Path(tmp) / "include/generated/devicetree_generated.h").read_text()
-            for index, value in enumerate((1, 0, 2, 3)):
+            for index, value in enumerate((1, 0, 2, 3, 4)):
                 self.assertIn(f"DT_N_S_keymap_S_base_P_bindings_IDX_{index}_VAL_param1 {value}", header)
 
     def test_braille_only_keymap_retains_factory_behaviors(self):

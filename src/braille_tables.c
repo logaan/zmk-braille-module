@@ -62,6 +62,15 @@ static const struct braille_mode modes[] = {
         .pending_limit = BRAILLE_WORD_MAX_CELLS,
     },
 #endif
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+    {
+        .name = "computer8_short",
+        .characters = &braille_rules_computer8_short_characters,
+        .commands = &braille_rules_computer8_commands,
+        .whitespace = &braille_commands_computer8_whitespace,
+        .pending_limit = BRAILLE_WORD_MAX_CELLS,
+    },
+#endif
 };
 
 /* The one user override layer, active in every mode. */

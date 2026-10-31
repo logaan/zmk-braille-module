@@ -161,6 +161,18 @@ int main(void) {
   enter();
   text("m");
   is(BR_ED_MODES);
+  struct braille_editor_snapshot mode_menu;
+  braille_editor_snapshot(&mode_menu);
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+  text("s");
+  assert(!strcmp(braille_tables_active(), "computer8_short"));
+  braille_editor_snapshot(&mode_menu);
+  assert(strstr(mode_menu.body, "s computer8_short"));
+#else
+  assert(!strstr(mode_menu.body, "computer8_short"));
+  text("s");
+  assert(!strcmp(braille_tables_active(), "computer8"));
+#endif
   text("c");
   assert(!strcmp(braille_tables_active(), "computer8"));
   text("u");

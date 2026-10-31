@@ -33,7 +33,7 @@ Menu letter shortcuts use Grade 1 dot letters:
 | Menu | Shortcuts |
 |---|---|
 | Main | `m` mode, `n` new binding, `u` unbind, `r` reset overrides, `d` done |
-| Character mode | `c` Computer8, `u` UEB1, `t` UEB2 (two), when compiled |
+| Character mode | `c` Computer8, `u` UEB1, `t` UEB2 (two), `s` Computer8 shorthand; only compiled modes are listed |
 | Captured input | `a` add chord, `f` finish, `c` cancel |
 | Existing mapping | `o` override, `r` re-record, `c` cancel |
 | Position | `a` any, `s` word start, `m` word middle, `e` word end |

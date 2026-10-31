@@ -61,6 +61,13 @@ int main(void) {
       joined[n + 1] = 0;
     }
   assert(strstr(joined, "... 12345678"));
+  strcpy(b.mode, "computer8_short");
+  braille_small_screen(&e, &b, 18, 20, 0, out, sizeof(out));
+  assert(strstr(out, "8dot+short"));
+  braille_small_screen(&e, &b, 4, 16, 0, out, sizeof(out));
+  assert(!strncmp(out, "8SHR\n", 5));
+  assert(braille_display_computer8_mode(b.mode));
+  assert(!braille_display_computer8_mode("ueb2"));
   char guard[2] = {'x', 'z'};
   braille_small_screen(&e, &b, 4, 16, 0, guard, 1);
   assert(!guard[0] && guard[1] == 'z');

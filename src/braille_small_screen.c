@@ -54,7 +54,7 @@ unsigned braille_small_screen(const struct braille_editor_snapshot *editor,
     if (editor->error)
       add(body, sizeof(body), editor->footer);
   } else {
-    snprintf(title, sizeof(title), "%s", braille->mode);
+    snprintf(title, sizeof(title), "%s", braille_display_mode_label(braille->mode));
     snprintf(body, sizeof(body), "%s%s\n",
              braille->preview[0] ? braille->preview : "Ready",
              braille->waiting ? "?" : "");
@@ -88,6 +88,8 @@ unsigned braille_small_screen(const struct braille_editor_snapshot *editor,
     if (editor->active &&
         (unsigned)editor->screen < sizeof(stages) / sizeof(*stages))
       snprintf(title, sizeof(title), "%s", stages[editor->screen]);
+    else if (!strcmp(braille->mode, "computer8_short"))
+      snprintf(title, sizeof(title), "8SHR");
     else if (!strcmp(braille->mode, "computer8"))
       snprintf(title, sizeof(title), "8DOT");
   }

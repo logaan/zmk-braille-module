@@ -43,6 +43,17 @@ source "{ROOT / 'Kconfig'}"
                                              "y" if available and grade2 else "n")
                             self.assertEqual(config.warnings, [])
 
+    def test_shorthand_requires_grade2_and_stays_opt_in(self):
+        for grade2 in (False, True):
+            config = self.config(False, True, True, grade2)
+            self.assertEqual(config.syms["ZMK_BRAILLE_COMPUTER8_SHORT"].str_value, "n")
+            config.syms["ZMK_BRAILLE_COMPUTER8_SHORT"].set_value("y")
+            self.assertEqual(config.syms["ZMK_BRAILLE_COMPUTER8_SHORT"].str_value,
+                             "y" if grade2 else "n")
+        config = self.config(True, False, True, True)
+        config.syms["ZMK_BRAILLE_COMPUTER8_SHORT"].set_value("y")
+        self.assertEqual(config.syms["ZMK_BRAILLE_COMPUTER8_SHORT"].str_value, "n")
+
     def test_disabled_defaults(self):
         config = self.config(False, False, None, None)
         self.assertEqual(config.syms["ZMK_FEATURE_BRAILLE"].str_value, "n")

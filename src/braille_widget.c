@@ -31,7 +31,7 @@ void braille_engine_notify_dropped_prefix(
   (void)event;
   const char *mode = braille_tables_active();
   snprintf(notice, sizeof(notice), "%s",
-           mode && !strcmp(mode, "computer8") ? "Reserved cell"
+           braille_display_computer8_mode(mode) ? "Reserved cell"
                                               : "Incomplete input dropped");
   notice_until = k_uptime_get() + 3000;
 }

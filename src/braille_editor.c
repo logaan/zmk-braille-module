@@ -392,6 +392,7 @@ int braille_settings_chord(uint16_t mask,
     const char *name = c == 'c'   ? "computer8"
                        : c == 'u' ? "ueb1"
                        : c == 't' ? "ueb2"
+                       : c == 's' ? "computer8_short"
                                   : NULL;
     for (size_t i = 0; name && i < braille_tables_count(); ++i) {
       if (!strcmp(name, braille_tables_mode(i)->name)) {
@@ -473,6 +474,7 @@ static const char *choice(size_t i, char *tmp, size_t size) {
     const char *name = braille_tables_mode(i)->name;
     char shortcut = !strcmp(name, "computer8") ? 'c'
                     : !strcmp(name, "ueb1")    ? 'u'
+                    : !strcmp(name, "computer8_short") ? 's'
                                                : 't';
     snprintf(tmp, size, "%c %s", shortcut, name);
     return tmp;

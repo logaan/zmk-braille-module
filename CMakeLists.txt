@@ -34,5 +34,6 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
     zephyr_library_sources(src/braille_editor.c src/braille_editor_zmk.c src/braille_search.c)
   endif()
   zephyr_library_sources_ifdef(CONFIG_ZMK_BRAILLE_WIDGET src/braille_widget.c src/braille_small_screen.c src/braille_small_canvas.c)
+  # Computer8 shorthand shares this data unit and depends on GRADE2 in Kconfig.
   zephyr_library_sources_ifdef(CONFIG_ZMK_BRAILLE_GRADE2 src/braille_rules_grade2.c)
 endif()

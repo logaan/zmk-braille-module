@@ -8,11 +8,16 @@ import unittest
 ROOT=Path(__file__).resolve().parents[2]
 class Editor(unittest.TestCase):
     def test_isolated_settings_workflow(self):
+        self.editor_workflow(False)
+    def test_shorthand_mode_settings(self):
+        self.editor_workflow(True)
+    def editor_workflow(self, shorthand):
         with tempfile.TemporaryDirectory() as tmp:
             exe=Path(tmp)/'editor'
             sources=['tests/host/test_editor.c']+['src/braille_'+s+'.c' for s in
-                ('editor','search','settings','chord','engine','tables','display','rules_grade1','rules_nav','rules_computer8')]
+                ('editor','search','settings','chord','engine','tables','display','rules_grade1','rules_nav','rules_computer8','rules_grade2')]
             subprocess.run(shlex.split(os.environ.get('CC','cc'))+['-std=c11','-Wall','-Wextra','-Werror',
+                *(['-DCONFIG_ZMK_BRAILLE_GRADE2=1','-DCONFIG_ZMK_BRAILLE_COMPUTER8_SHORT=1'] if shorthand else []),
                 '-I',str(ROOT/'include'),'-I',str(ROOT/'tests/host/stubs')]+[str(ROOT/s) for s in sources]+['-o',str(exe)],check=True)
             subprocess.run([str(exe)],check=True)
     def test_compiled_registry_metadata_filtering(self):

@@ -14,6 +14,7 @@
  * noncharacter functions), and the one shared user override layer stays
  * active in every mode. `ueb1` and `computer8` are always compiled; `ueb2`
  * is exposed only when its rules are included (CONFIG_ZMK_BRAILLE_GRADE2).
+ * `computer8_short` additionally requires CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT.
  * Future named language tables are further entries in the same
  * representation: capture, matching, and navigation do not change.
  *
@@ -52,6 +53,10 @@ extern const struct braille_whitespace_chords braille_commands_computer8_whitesp
 extern const struct braille_rule_table braille_rules_ueb2_characters;
 extern const struct braille_rule_table braille_rules_ueb2_commands;
 extern const struct braille_whitespace_chords braille_commands_ueb2_whitespace;
+#endif
+
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+extern const struct braille_rule_table braille_rules_computer8_short_characters;
 #endif
 
 /* In-memory user override layer owned by the registry and re-registered

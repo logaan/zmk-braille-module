@@ -10,7 +10,7 @@
 static int select_pressed(struct zmk_behavior_binding *binding,
                           struct zmk_behavior_binding_event event) {
     (void)event;
-    if (binding->param2 || binding->param1 > BRAILLE_MODE_NEXT) {
+    if (binding->param2 || binding->param1 > BRAILLE_MODE_COMPUTER8_SHORT) {
         return -EINVAL;
     }
     const char *name = NULL;
@@ -18,6 +18,7 @@ static int select_pressed(struct zmk_behavior_binding *binding,
     case BRAILLE_MODE_UEB1: name = "ueb1"; break;
     case BRAILLE_MODE_COMPUTER8: name = "computer8"; break;
     case BRAILLE_MODE_UEB2: name = "ueb2"; break;
+    case BRAILLE_MODE_COMPUTER8_SHORT: name = "computer8_short"; break;
     case BRAILLE_MODE_NEXT: {
         size_t count = braille_tables_count();
         if (!count) { return -ENOENT; }
@@ -45,14 +46,14 @@ static int select_pressed(struct zmk_behavior_binding *binding,
 static int select_released(struct zmk_behavior_binding *binding,
                            struct zmk_behavior_binding_event event) {
     (void)event;
-    return binding->param2 || binding->param1 > BRAILLE_MODE_NEXT ? -EINVAL : 0;
+    return binding->param2 || binding->param1 > BRAILLE_MODE_COMPUTER8_SHORT ? -EINVAL : 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 static const struct behavior_parameter_value_metadata select_values[] = {
-    {.display_name = "UEB1=0, Computer8=1, UEB2=2, Next=3",
+    {.display_name = "UEB1=0, Computer8=1, UEB2=2, Next=3, Computer8 short=4",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
-     .range = {.min = BRAILLE_MODE_UEB1, .max = BRAILLE_MODE_NEXT}},
+     .range = {.min = BRAILLE_MODE_UEB1, .max = BRAILLE_MODE_COMPUTER8_SHORT}},
 };
 static const struct behavior_parameter_metadata_set select_sets[] = {
     {.param1_values_len = ARRAY_SIZE(select_values), .param1_values = select_values},

@@ -2,6 +2,7 @@
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
+#include <braille_mode_labels.h>
 #include <braille_rules.h>
 
 /* Read-only rendering. Call in the same serialized context as braille input.

@@ -7,5 +7,7 @@
 #define BRAILLE_MODE_COMPUTER8 1
 #define BRAILLE_MODE_UEB2 2
 #define BRAILLE_MODE_NEXT 3
+/* NEXT is a stable existing action; new modes append after it. */
+#define BRAILLE_MODE_COMPUTER8_SHORT 4
 
 #endif
