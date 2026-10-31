@@ -1,17 +1,28 @@
 // SPDX-License-Identifier: MIT
+#include <errno.h>
 #define main ueb1_test_main
 #include "test_ueb1.c"
 #undef main
 int main(int argc, char **argv) {
     assert(argc > 1);
     assert(!braille_tables_select(argv[1]));
+    if (!strcmp(argv[1], "ueb2")) {
+        assert(!braille_engine_set_pending_limit(32));
+        assert(braille_engine_set_pending_limit(33) == -EINVAL);
+    } else {
+        assert(braille_engine_set_pending_limit(9) == -EINVAL);
+        assert(braille_engine_set_pending_limit(32) == -EINVAL);
+    }
     for (int i = 2; i < argc; ++i) {
-        if (!strcmp(argv[i], "override")) {
+        if (!strncmp(argv[i], "override", 8)) {
             assert(i + 2 < argc);
             struct braille_override_layer layer = braille_tables_overrides();
             struct braille_rule *r = &layer.rules[(*layer.count)++];
             memset(r, 0, sizeof(*r));
             r->class = BRAILLE_CLASS_NEUTRAL;
+            r->word_position = !strcmp(argv[i], "override-start") ? BRAILLE_WORD_POSITION_START :
+                !strcmp(argv[i], "override-middle") ? BRAILLE_WORD_POSITION_MIDDLE :
+                !strcmp(argv[i], "override-end") ? BRAILLE_WORD_POSITION_END : BRAILLE_WORD_POSITION_ANY;
             for (char *token = strtok(argv[++i], ","); token; token = strtok(NULL, ","))
                 r->chords[r->chord_count++] = strtoul(token, NULL, 0);
             r->action_count = 1;

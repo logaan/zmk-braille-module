@@ -139,6 +139,10 @@ int main(void) {
   struct braille_search_result result[2];
   assert(braille_search_score("kp", "Key Press") > INT_MIN);
   assert(braille_search_score("key press", "Key_Press") > INT_MIN);
+  assert(braille_search_score("a ab", "a aab") > INT_MIN);
+  assert(braille_search_score("a ab", "A_AAB") > INT_MIN);
+  assert(braille_search_score("a ab", "A-AAB") > INT_MIN);
+  assert(braille_search_score("a ab", "aaab") == INT_MIN);
   assert(braille_search_score("zz", "Key Press") == INT_MIN);
   assert(braille_search("", 6, braille_editor_behavior, result, 2) == 2 &&
          result[0].index == 2);

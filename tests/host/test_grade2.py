@@ -106,6 +106,23 @@ class Grade2(unittest.TestCase):
         self.check(['override','3,9','z',3,9,256],'z ')
         self.check(['override',1,'z',1,3,256],'about ')
         self.assertEqual(self.observe(['override',48,'x','preview',48])['keys'],[HOST_KEYS['x']])
+    def test_command_cells_complete_or_extend_overrides(self):
+        # Factory navigation/whitespace cells retain normal common-rule
+        # precedence when they belong to a multi-cell user binding.
+        for command in (257, 256, 128, 286):
+            with self.subTest(command=command):
+                self.check(['override',f'1,{command}','x',1,command,256], 'x ')
+                self.check(['override',f'1,{command},9','x',1,command,9,256], 'x ')
+                self.check(['override',f'1,{command}','x',9,1,command,256], 'cx ')
+        self.check(['override-middle','1,257','x',9,1,257,25,256], 'cxd ')
+        self.check(['override-end','1,257','x',9,1,257,256], 'cx ')
+        self.check(['override-start','1,257','x',1,257,256], 'x ')
+        # An irrelevant suffix, invalid start position, or one-cell command
+        # replacement must not accidentally commit the pending word.
+        left_then_space = [0x70050, HOST_KEYS[' ']]
+        self.assertEqual(self.observe(['override','1,257','x',9,257,256])['keys'], left_then_space)
+        self.assertEqual(self.observe(['override-start','1,257','x',9,1,257,256])['keys'], left_then_space)
+        self.check(['override',257,'x',1,257,256], 'x ')
     def test_appendix_data(self):
         data=json.loads((ROOT/'references/research/ueb-grade2-shortforms.json').read_text())
         self.assertEqual(len(data['longer_words']),328)

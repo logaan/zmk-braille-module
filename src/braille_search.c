@@ -32,7 +32,12 @@ int braille_search_score(const char *query, const char *name) {
     char c = query[--q];
     if (boundary(c))
       continue;
-    while (at && fold(name[at - 1]) != fold(c))
+    /* Tightening must retain the word-start requirement of the forward
+     * match. Otherwise an interior repeated letter can hide a valid match
+     * (for example "a ab" in "a aab"). */
+    bool word_start = q && boundary(query[q - 1]);
+    while (at && (fold(name[at - 1]) != fold(c) ||
+                  (word_start && at > 1 && !boundary(name[at - 2]))))
       --at;
     if (!at)
       return INT_MIN;
