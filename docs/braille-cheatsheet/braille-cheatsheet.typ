@@ -25,6 +25,11 @@
 #align(center, sequence("⠟⠅ ⠃⠗⠇ ⠋⠕⠭", space: [~~~]))
 #colbreak()
 #chord-section("Navigation and Editing", chords)
+#block(inset: 3pt)[
+  #text(size: 8pt)[*8-dot shorthand:* use the UEB2 multi-cell contractions and
+  23 letter wordsigns (standing-alone b → but, y → you). Single-cell symbol
+  contractions remain Computer8 digits/punctuation. Ordinary 8-dot stays literal.]
+]
 #for section in ueb2 { word-section(section) }
 #linebreak()
 #align(center, text(size: 18pt, weight: "bold", fill: blue)[Quick Braille Fox])

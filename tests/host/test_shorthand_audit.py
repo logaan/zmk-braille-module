@@ -44,11 +44,24 @@ class ShorthandCompatibility(unittest.TestCase):
         self.assertEqual((rows['but']['computer8_literal'], rows['but']['input_kind']), ('b', 'shared_letters'))
         self.assertEqual((rows['about']['computer8_literal'], rows['about']['input_kind']), ('ab', 'shared_letters'))
         self.assertEqual(rows['and']['computer8_literal'], '&')
-        self.assertEqual(rows['but']['decision'], 'currently_excluded_single_cell')
-        self.assertEqual(rows['about']['decision'], 'currently_enabled_contextual_expansion')
+        self.assertEqual(rows['but']['decision'], 'enabled_contextual_letter_wordsign')
+        self.assertEqual(rows['about']['decision'], 'enabled_contextual_multi_cell_expansion')
         for row in rows.values():
             self.assertEqual(row['raw_output_difference'], row['computer8_literal'] != row['contraction'])
-            self.assertEqual(row['semantic_conflict'], 'not_inferred_from_expansion')
+            if len(row['cells']) > 1 or row['condition'] == 'ALPHA':
+                self.assertEqual(row['semantic_conflict'],
+                                 'enabled_symbol_sequence_ambiguity' if row['input_kind'] == 'includes_computer8_symbols'
+                                 else 'none_expected_contextual_shorthand')
+                self.assertTrue(row['decision'].startswith('enabled_'))
+            else:
+                self.assertEqual(row['decision'], 'retain_computer8_symbol_pending_review')
+        self.assertEqual(rows['and']['semantic_conflict'], 'related_meaning_distinct_symbol_output')
+        self.assertEqual(rows['child']['semantic_conflict'], 'different_symbol_definition')
+        self.assertEqual(audit_module.audit()['counts']['enabled_contractions'], 143)
+        self.assertEqual(audit_module.audit()['counts']['excluded_symbol_contractions'], 39)
+        self.assertEqual(audit_module.audit()['counts']['distinct_excluded_symbol_cells'], 27)
+        self.assertEqual(rows['day']['computer8_literal'], '"d')
+        self.assertEqual(rows['young']['semantic_conflict'], 'enabled_symbol_sequence_ambiguity')
 
 
 if __name__ == '__main__':

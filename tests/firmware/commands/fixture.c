@@ -335,6 +335,22 @@ static void test_shorthand(void) {
     }
     __ASSERT(!braille_engine_pending_count(), "Shorthand boundary pending");
     begin_observation();
+    chord(0x003); /* b -> but only once a boundary resolves it */
+    __ASSERT(report_count == 0 && braille_engine_pending_count() == 1,
+             "Wordsign emitted before boundary");
+    chord(0x100);
+    const uint32_t wordsign[] = {B, U, T, SPACE};
+    __ASSERT(report_count == ARRAY_SIZE(wordsign), "Wordsign HID report count");
+    for (size_t i = 0; i < ARRAY_SIZE(wordsign); ++i)
+        __ASSERT(reports[i].key == ZMK_HID_USAGE_ID(wordsign[i]) &&
+                 reports[i].page == HID_USAGE_KEY && reports[i].mods == 0,
+                 "Wordsign HID output mismatch");
+    begin_observation();
+    chord(0x014); chord(0x100); /* dots35 stay digit9, not UEB2 in */
+    __ASSERT(report_count == 2 && reports[0].key == ZMK_HID_USAGE_ID(N9) &&
+             reports[0].mods == 0 && reports[1].key == ZMK_HID_USAGE_ID(SPACE),
+             "Symbol conflict changed Computer8 digit");
+    begin_observation();
     chord(0x001); chord(0x003); chord(0x101); /* navigation discards word */
     expect_output(LEFT_ARROW, 0, false);
     begin_observation();

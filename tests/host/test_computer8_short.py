@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Automatic multi-cell shorthand with exact Computer8 single-cell fallback."""
+"""Contextual letter wordsigns and multi-cell shorthand with Computer8 symbols."""
 import json
 import os
 from pathlib import Path
@@ -30,14 +30,58 @@ class Computer8Short(unittest.TestCase):
         observed=self.observe(seq)
         self.assertEqual(observed['keys'],[HOST_KEYS[c] for c in text])
         self.assertEqual(observed['pending'],[])
-    def test_all_256_cells_and_commands_preserve_computer8(self):
+    def test_all_256_cells_and_commands_preserve_computer8_except_wordsigns(self):
+        wordsigns={r['cells'][0]:r['text'] for r in ROWS if r['condition']=='ALPHA'}
+        self.assertEqual(len(wordsigns),23)
         for mask in range(256):
             with self.subTest(mask=mask):
-                self.assertEqual(self.observe([mask,256])['keys'],
-                                 self.observe([mask,256],'computer8')['keys'])
+                if mask in wordsigns:
+                    self.check([mask,256],wordsigns[mask]+' ')
+                else:
+                    self.assertEqual(self.observe([mask,256])['keys'],
+                                     self.observe([mask,256],'computer8')['keys'])
         for mask in (256,257,264,259,265,281,286,273,320,384,328,324,322,321,336):
             with self.subTest(command=mask):
                 self.assertEqual(self.observe([mask])['keys'],self.observe([mask],'computer8')['keys'])
+    def test_letter_wordsigns_use_standing_alone_context(self):
+        wordsigns=[r for r in ROWS if r['condition']=='ALPHA']
+        for row in wordsigns:
+            mask=row['cells'][0]
+            # Every shared-letter wordsign keeps the same UEB2 standing-alone expansion.
+            with self.subTest(word=row['text']):
+                self.assertEqual(self.observe([mask,256])['keys'],
+                                 self.observe([mask,256],'ueb2')['keys'])
+                self.assertEqual(self.observe(['preview',mask])['keys'],
+                                 [HOST_KEYS[c] for c in row['text']])
+                for opening,closing in ((0x37,0x3e),):
+                    self.check([opening,mask,closing,256],
+                               ('(' if opening==0x37 else '"')+row['text']+
+                               (')' if closing==0x3e else '"')+' ')
+                # Adjacent letters, digits and slash keep letters literal.
+                for seq in ([mask,1],[1,mask,1],[mask,2],[2,mask]):
+                    self.assertEqual(self.observe(seq+[256])['keys'],
+                                     self.observe(seq+[256],'computer8')['keys'])
+                self.assertEqual(self.observe([mask|64,256])['keys'],
+                                 self.observe([mask|64,256],'computer8')['keys'])
+        for suffix,plain in (([25],"d"),([7,7],"ll"),([23,17],"re"),
+                             ([14],"s"),([30],"t"),([39,17],"ve")):
+            self.check([61,4]+suffix+[256],"you'"+plain+' ')
+        self.check([61,4,14,2,256],"y's1 ")
+        self.check([3,12,1,256],'b/a ')
+        self.check([1,12,3,256],'a/b ')
+        self.check([16,3,16,256],'"but" ')
+        # Existing multi-cell contractions retain longest-match priority even
+        # when their prefix is also a Computer8 punctuation character.
+        self.check([16,25,16,256],'day" ')
+        self.check([61,36,3,256],'you-but ')
+        self.check([61,40,256],'you. ')
+        self.assertEqual(self.observe([3,'reset'])['keys'],[])
+        self.assertEqual(self.observe([3,'computer8'])['keys'],[])
+        self.check([3,128],'but\n')
+        self.check([3,286],'but\t')
+        # Equal-length user override remains ahead of a factory wordsign.
+        self.check(['override','3','x',3,256],'x ')
+
     def test_all_120_multi_cell_contractions(self):
         rows=[r for r in ROWS if len(r['cells'])>1]
         self.assertEqual(len(rows),120)
@@ -110,7 +154,7 @@ class Computer8Short(unittest.TestCase):
         self.assertEqual(self.observe([1]*32+[3])['pending'],[3])
         self.assertEqual(self.observe([1,'preview',3])['keys'],[HOST_KEYS[c] for c in 'about'])
         self.assertEqual(self.observe([1,'preview',9])['keys'],[HOST_KEYS[c] for c in 'according'])
-        self.assertEqual(self.observe(['preview',3])['keys'],[HOST_KEYS['b']])
+        self.assertEqual(self.observe(['preview',3])['keys'],[HOST_KEYS[c] for c in 'but'])
         self.assertEqual(self.observe([1,3,'preview',0x43])['keys'],[HOST_KEYS['B']])
     def test_override_precedence_and_command_extensions(self):
         self.check(['override','1,3','x',1,3,256],'x ')
@@ -119,8 +163,8 @@ class Computer8Short(unittest.TestCase):
         self.check(['override','1,256','x',1,256,256],'x ')
         self.check(['override-middle','1,257','x',53,1,257,53,256],'zxz ')
         self.check(['override-end','1,3','x',1,3,256],'x ')
-        self.check(['override-end','1,3','x',1,3,36,53,256],'x-z ')
-        self.check(['override-start','1,3','x',53,36,1,3,256],'z-x ')
+        self.check(['override-end','1,3','x',1,3,36,53,256],'x-as ')
+        self.check(['override-start','1,3','x',53,36,1,3,256],'as-x ')
         for opening,closing,text in ((16,16,'\"x\" '),(0x37,0x3e,'(x) ')):
             self.check(['override-start','1,3','x',opening,1,3,closing,256],text)
             self.assertEqual(self.observe(['override-start','1,3','x',opening,1,'preview',3])['keys'],[HOST_KEYS['x']])

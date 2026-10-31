@@ -31,9 +31,9 @@ config ZMK_BRAILLE_COMPUTER8_SHORT
     default n
     help
       Add computer8_short: Computer8 characters and commands with automatic
-      multi-cell contractions and 32-cell word buffering. Single-cell UEB2
-      contractions are excluded; literal sequence ambiguities are documented
-      in the phase-08 TaskDown conflict review.
+      multi-cell contractions, contextual letter wordsigns and 32-cell word
+      buffering. Single-cell symbol contractions are excluded to preserve
+      Computer8 digits and punctuation; see the phase-08 conflict review.
 
 config ZMK_BRAILLE_STORAGE
     bool "Persistent Braille modes and user overrides"

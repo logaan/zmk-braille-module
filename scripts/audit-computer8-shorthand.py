@@ -43,6 +43,8 @@ def audit(root=ROOT):
         if not all(isinstance(value, int) for value in values):
             raise ValueError('Reassess this audit: a contraction uses an unmapped cell')
         literal = ''.join(chr(value) for value in values)
+        shared_letter = len(cells) == 1 and item['condition'] == 'ALPHA' and literal.isalpha()
+        symbol_conflict = len(cells) == 1 and not shared_letter
         rows.append({
             'contraction': item['text'], 'cells': cells,
             'dots': [dots(cell) for cell in cells],
@@ -50,9 +52,13 @@ def audit(root=ROOT):
             'computer8_literal': literal,
             'raw_output_difference': literal != item['text'],
             'input_kind': 'shared_letters' if literal.isalpha() else 'includes_computer8_symbols',
-            'semantic_conflict': 'not_inferred_from_expansion',
-            'decision': ('currently_excluded_single_cell' if len(cells) == 1
-                         else 'currently_enabled_contextual_expansion'),
+            'semantic_conflict': ('related_meaning_distinct_symbol_output' if symbol_conflict and literal == '&' and item['text'] == 'and'
+                                  else 'different_symbol_definition' if symbol_conflict
+                                  else 'enabled_symbol_sequence_ambiguity' if not literal.isalpha()
+                                  else 'none_expected_contextual_shorthand'),
+            'decision': ('retain_computer8_symbol_pending_review' if symbol_conflict
+                         else 'enabled_contextual_letter_wordsign' if shared_letter
+                         else 'enabled_contextual_multi_cell_expansion'),
         })
     sources = ['references/research/computer8.yaml', source,
                'src/braille_rules_computer8.c', 'src/braille_rules_nav.c', 'src/braille_rules_grade1.c']
@@ -65,14 +71,18 @@ def audit(root=ROOT):
                                      for cell, letter in letters],
         'implementation_interpretation': {
             'user_clarification': 'it should be a mode, just like ueb2 is now.',
-            'interpretation_not_verbatim_approval': 'Current implementation buffers words and expands the 120 multi-cell spellings, while excluding all 62 single-cell contractions. This length-based policy is not a conclusion that the excluded definitions are genuine conflicts. Original Computer8 stays unchanged.',
-            'remaining_review': 'Review actual differing symbol/indicator meanings and the current single-cell exclusion policy. Expected contextual shorthand expansion alone is not a conflict.',
+            'interpretation_not_verbatim_approval': 'Enable all 120 multi-cell contractions and the 23 contextual alphabetic wordsigns. Retain Computer8 digits and punctuation for the other 39 single-cell entries pending symbol-policy review. Original Computer8 stays unchanged.',
+            'remaining_review': 'Review the 39 single-cell symbol-based entries and three indicator meanings. Ampersand and and have related meaning but distinct host output; preserve the symbol pending review. The 71 multi-cell entries involving symbols remain enabled as requested, not removal candidates.',
             'currently_enabled_multi_cell_expansions': 120,
-            'currently_excluded_single_cell_contractions': 62,
+            'currently_enabled_single_cell_wordsigns': 23,
+            'currently_excluded_single_cell_contractions': 39,
             'explicit_prefix_required': False,
         },
         'counts': {
             'contractions': len(rows),
+            'enabled_contractions': sum(r['decision'].startswith('enabled_') for r in rows),
+            'excluded_symbol_contractions': sum(r['decision'] == 'retain_computer8_symbol_pending_review' for r in rows),
+            'distinct_excluded_symbol_cells': len({r['cells'][0] for r in rows if r['decision'] == 'retain_computer8_symbol_pending_review'}),
             'single_cell_contractions': sum(len(r['cells']) == 1 for r in rows),
             'multi_cell_contractions': sum(len(r['cells']) > 1 for r in rows),
             'identical_raw_outputs': sum(not r['raw_output_difference'] for r in rows),

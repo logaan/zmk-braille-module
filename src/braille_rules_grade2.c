@@ -421,8 +421,9 @@ bool braille_grade2_match(const uint16_t *s, uint8_t count, uint8_t offset,
 
 #ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
 /* Separate marker: the common word resolver falls back to Computer8, not UEB1.
- * The raw 120 multi-cell spellings are intentional sequence ambiguities; all
- * 62 single-cell contractions and every silent UEB indicator are excluded. */
+ * All 120 multi-cell spellings and the 23 shared-letter wordsigns are
+ * contextual shorthand. Single-cell symbol contractions and silent UEB
+ * indicators retain their distinct Computer8 meanings instead. */
 const struct braille_rule_table braille_rules_computer8_short_characters = {0};
 
 static char computer8_ascii(uint16_t cell) {
@@ -456,6 +457,17 @@ static bool c8_right(const uint16_t *s, unsigned n) {
         if (!c || !strchr("\"')]}.,;:!?", c)) return false;
     }
     return true;
+}
+static bool c8_apostrophe_suffix(const uint16_t *s, unsigned n) {
+    if (n < 2 || computer8_ascii(s[0]) != '\'') return false;
+    static const char *const endings[] = {"d", "ll", "re", "s", "t", "ve"};
+    for (unsigned k = 0; k < sizeof(endings) / sizeof(*endings); ++k) {
+        unsigned j = 0;
+        while (j + 1 < n && endings[k][j] &&
+               computer8_ascii(s[j + 1]) == endings[k][j]) ++j;
+        if (!endings[k][j] && c8_right(s + j + 1, n - j - 1)) return true;
+    }
+    return false;
 }
 static bool c8_possessive(const uint16_t *s, unsigned n) {
     return n >= 2 && computer8_ascii(s[0]) == '\'' && computer8_ascii(s[1]) == 's' &&
@@ -567,10 +579,16 @@ bool braille_computer8_short_match(const uint16_t *s, uint8_t count, uint8_t off
     const struct contraction *best = NULL;
     for (unsigned i = 0; i < sizeof(contractions) / sizeof(*contractions); ++i) {
         const struct contraction *r = &contractions[i];
-        if (r->count < 2 || !matches(r, s + offset, count - offset)) continue;
+        bool shared_wordsign = r->count == 1 && r->condition == G2_ALPHA &&
+            letter(r->cells[0]) && letter(r->cells[0]) == computer8_ascii(r->cells[0]);
+        if ((r->count < 2 && !shared_wordsign) ||
+            !matches(r, s + offset, count - offset)) continue;
         unsigned next = offset + r->count;
         bool eligible = r->condition == G2_ANY ||
             (r->condition == G2_FINAL && after_letter);
+        if (shared_wordsign)
+            eligible = c8_left(s, offset) && (c8_right(s + next, count - next) ||
+                        c8_apostrophe_suffix(s + next, count - next));
         if (r->condition == G2_SHORT)
             eligible = (c8_left(s, offset) && (c8_right(s + next, count - next) ||
                          c8_possessive(s + next, count - next))) ||

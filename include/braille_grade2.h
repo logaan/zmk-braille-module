@@ -8,7 +8,7 @@
 bool braille_grade2_match(const uint16_t *cells, uint8_t count, uint8_t offset,
                           const struct braille_context *ctx, bool after_letter,
                           struct braille_rule *out);
-/* Computer8 shorthand keeps only multi-cell contraction spellings. */
+/* Computer8 shorthand supports multi-cell contractions and contextual letter wordsigns. */
 bool braille_computer8_short_match(const uint16_t *cells, uint8_t count, uint8_t offset,
                                   bool after_letter, struct braille_rule *out);
 bool braille_computer8_cell_is_letter(uint16_t cell);

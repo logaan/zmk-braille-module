@@ -42,8 +42,10 @@ space-only, and space-plus-dot chords all flow through the same path.
 - `computer8_short` — optional eight-dot shorthand
   (`CONFIG_ZMK_BRAILLE_GRADE2=y` and `CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT=y`).
   A separate word-buffered mode combining Computer8 literal cells with the
-  120 multi-cell UEB2 contractions; the 62 single-cell contractions stay
-  excluded. For example `ab` becomes `about` at a word boundary. See the
+  120 multi-cell UEB2 contractions and 23 contextual letter wordsigns.
+  The 39 single-cell symbol contractions remain excluded to preserve Computer8
+  digits and punctuation. For example `ab` becomes `about` and standing-alone
+  `b` becomes `but`. See the
   [mode guide and conflict policy](docs/computer8-shorthand.md).
 
 **Factory commands** — 22 shared command chords per mode following macOS VoiceOver braille

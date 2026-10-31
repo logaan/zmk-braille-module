@@ -2,7 +2,7 @@
 
 `computer8_short` is a separate, optional mode displayed as **8dot+short**
 (**8SHR** on the narrow OLED). It is a project-defined hybrid: Computer8 cells
-plus selected multi-cell UEB2 contractions. It is not an assertion that
+plus UEB2 multi-cell contractions and contextual letter wordsigns. It is not an assertion that
 standard eight-dot computer Braille uses UEB contractions.
 
 Enable both `CONFIG_ZMK_BRAILLE_GRADE2=y` and
@@ -23,8 +23,9 @@ sending output. This preview remains provisional until a boundary is entered.
 
 For example, dots 1 followed by dots 12 represent `ab` in Computer8. In this
 mode they preview and commit `about` when standing alone. A single dot 1 still
-means `a`, and dots 13456 still mean `y`; single-cell UEB2 wordsigns do not
-replace them. Unmatched eight-dot capital, digit and punctuation cells retain Computer8
+means `a`. Shared letter cells also act as UEB2 wordsigns when standing alone:
+`b` becomes `but`, and `y` (dots 13456) becomes `you`. Within an ordinary word
+they remain letters. The provisional preview follows these contextual rules. Unmatched eight-dot capital, digit and punctuation cells retain Computer8
 meaning; matched multi-cell sequences can include punctuation cells. Capitals are not case-folded into contraction spellings: literal
 uppercase `AB` stays `AB`. UEB capital, numeric and Grade 1 indicators are not
 interpreted here; their cells retain their Computer8 characters.
@@ -49,14 +50,22 @@ criterion and is superseded by the clarified review.
 
 The entries divide into 23 single-letter contextual wordsigns and 49 all-letter
 multi-cell shortforms, plus 39 single-cell and 71 multi-cell entries involving
-Computer8 digits or punctuation. Those last 110 entries need symbol-policy
-review; that is not a finding that all 110 are incompatible. For example, dots
-35 mean `9` in Computer8 but can mean `in` in UEB2.
+Computer8 digits or punctuation. The 71 multi-cell entries are retained as
+intentional shorthand expansions. The 39 single-cell entries have distinct
+Computer8 symbol outputs; for example, dots 35 mean `9` in Computer8 but can
+mean `in` in UEB2.
 
-The current implementation still excludes all 62 single-cell contractions and
-enables the 120 multi-cell mappings under their contextual rules. This records
-what was implemented, not a conclusion that all 62 exclusions are necessary.
-The clarified audit does not yet change runtime behaviour.
+The reassessed implementation enables all 23 shared-letter wordsigns and keeps
+all 120 multi-cell mappings enabled under their contextual rules: 143 entries
+in total. The remaining 39 single-cell symbol contractions stay excluded to
+preserve Computer8 digits and punctuation. Their exact cell meanings and
+context are listed in the [symbol conflict report](computer8-symbol-conflicts.md).
+For example, `&` and the word `and` are related in meaning but produce different
+host text; they are documented as an output distinction, not unrelated concepts.
+
+To type a literal standalone letter such as `b` or `y`, select ordinary
+Computer8 before starting the word. No UEB Grade 1 escape is introduced in
+this hybrid; its indicator cell remains Computer8 punctuation.
 
 Ordinary fallback and commands come from Computer8. Word and punctuation
 boundaries use Computer8 ASCII meaning. Appendix 1 longer words and the
