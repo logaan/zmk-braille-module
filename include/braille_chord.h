@@ -32,6 +32,9 @@ int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_bind
  */
 void braille_chord_discard(void);
 
+/* Physical keys held now, excluding discarded captures; not the accumulated chord. */
+uint16_t braille_chord_held_mask(void);
+
 /*
  * One resolution per last release, with all bits pressed since idle and the
  * unchanged last-release event. State is idle before this synchronous call.

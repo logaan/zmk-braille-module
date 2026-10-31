@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 
 if(CONFIG_ZMK_FEATURE_BRAILLE)
+  zephyr_include_directories(include)
   zephyr_library()
   # ZMK v0.3 keeps the behavior API in the application's private include tree.
   zephyr_library_include_directories(include ${APPLICATION_SOURCE_DIR}/include)
@@ -8,6 +9,7 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
     src/behavior_braille_select.c
     src/behavior_braille.c
     src/braille_bindings.c
+    src/braille_display.c
     src/braille_chord.c
     src/braille_settings.c
     src/braille_engine.c

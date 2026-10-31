@@ -91,3 +91,10 @@ int braille_chord_key_event(uint16_t bit, bool pressed, struct zmk_behavior_bind
     chord_mask |= bit;
     return 0;
 }
+
+uint16_t braille_chord_held_mask(void) {
+    if (discarded) return 0;
+    uint16_t mask = 0;
+    for (size_t i = 0; i < ZMK_KEYMAP_LEN; ++i) mask |= held_keys[i].bit;
+    return mask;
+}

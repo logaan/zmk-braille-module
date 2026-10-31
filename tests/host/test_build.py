@@ -11,7 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 SOURCES = {
     "src/behavior_braille_select.c", "src/behavior_braille.c", "src/braille_bindings.c", "src/braille_chord.c", "src/braille_engine.c",
-    "src/braille_dispatch.c", "src/braille_context_events.c",
+    "src/braille_display.c", "src/braille_dispatch.c", "src/braille_context_events.c",
     "src/braille_settings.c", "src/braille_tables.c",
     "src/braille_rules_grade1.c", "src/braille_rules_nav.c", "src/braille_rules_computer8.c",
 }
@@ -29,6 +29,8 @@ set(CONFIG_ZMK_FEATURE_BRAILLE {"ON" if enabled else "OFF"})
 set(CONFIG_ZMK_BRAILLE_GRADE2 {"ON" if grade2 else "OFF"})
 function(zephyr_library)
   file(APPEND "{output}" "library\\n")
+endfunction()
+function(zephyr_include_directories)
 endfunction()
 function(zephyr_library_include_directories)
   file(APPEND "{output}" "include:${{ARGV}}\\n")
