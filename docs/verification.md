@@ -3,6 +3,39 @@
 Software evidence is separate from physical acceptance. These checks do not
 flash any board or claim Bluetooth, panel, macOS, or VoiceOver acceptance.
 
+## Shared-letter wordsign reassessment
+
+Runtime snapshot `e52269e` replaces the blanket single-cell exclusion with
+23 contextual alphabetic wordsigns while preserving all 120 multi-cell
+contractions. The remaining 39 symbol entries (27 distinct cells) retain their
+Computer8 output. The exact review is in
+[the symbol report](computer8-symbol-conflicts.md).
+
+All **94 host tests pass**. Targeted checks cover all 23 wordsigns against UEB2, non-mutating previews,
+all 256 cells with the explicit wordsign exceptions, all 120 multi-cell entries,
+word boundaries, apostrophe suffixes, capitals, commands and override precedence.
+Native ZMK/HID checks include `b` becoming `but` and dots 35 remaining digit 9.
+
+Toucan commit `e443fea` and QBF commit `4a33808` publish the module pin
+`e52269e640f713c0b8f413bc59ab4a8844408d6f`; the aggregate workspace pin is
+local commit `90f202b` (that repository has no remote). Clean committed
+keyboard snapshots exclude unrelated user work.
+
+All three clean firmware builds and integrated checks pass:
+
+| Target | Flash bytes | RAM bytes |
+| --- | ---: | ---: |
+| Toucan dongle | 603820 | 228666 |
+| Toucan standalone with Studio | 545880 | 163702 |
+| QBF left | 408792 | 114132 |
+
+Logs and artifacts are in `build/wordsigns-integration/`. Publication CI was
+running at delivery: [Toucan](https://github.com/logaan/zmk-keyboard-toucan/actions/runs/41212429015)
+and [QBF](https://github.com/logaan/qbf-paintbrushes/actions/runs/41212431715).
+
+The updated cheatsheet was compiled and visually inspected at two pages.
+No hardware was flashed or accepted by these checks.
+
 ## Eight-dot shorthand verification
 
 Final runtime snapshot `4d57483` passed all **92 host tests**, including all 120
