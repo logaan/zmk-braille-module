@@ -5,9 +5,12 @@ flash any board or claim Bluetooth, panel, macOS, or VoiceOver acceptance.
 
 ## Verified software results
 
-- 68 module host tests passed, with the 11 retired coordinator tests explicitly
-  excluded. The prior complete discovery run reported eight errors inside that
-  legacy coordinator suite; firmware failures were repaired and rerun.
+- All 82 host tests in committed snapshot `764ed49` passed, including the 11
+  retired coordinator regressions. Full discovery passed 80 tests and skipped
+  two optional PDF checks because the archive omitted the local rulebook;
+  both checks then passed after linking that existing local reference. No
+  coordinator exclusion is required. The new shorthand feature is verified
+  separately from this publication baseline.
 - Address/undefined-behavior sanitizers passed 38,400 deterministic random cells
   across UEB1, Computer8 and UEB2, with resets and previews after each input.
 - Native ZMK command/character/HID/sticky-modifier tests passed, including the
@@ -40,6 +43,24 @@ Local build artifacts and SHA-256 hashes are retained in ignored
 checks also passed; that test run includes its user's pre-existing display
 changes, whereas the firmware builds above deliberately use committed source.
 
+## Published firmware verification
+
+After user-authorized pushes on 2026-11-01, GitHub built the published manifests
+successfully, including targets beyond the four local builds above:
+
+- [Toucan run 41205917402](https://github.com/logaan/zmk-keyboard-toucan/actions/runs/41205917402)
+  verified commit `d937941`: host tests, keymap drawing, standalone central,
+  shared right, peripheral left, Prospector dongle and settings-reset firmware.
+  The workflow produced `qbf-toucan-firmware-build-50` and
+  `qbf-toucan-keymap-build-50` artifacts.
+- [QBF run 41205918241](https://github.com/logaan/qbf-paintbrushes/actions/runs/41205918241)
+  verified commit `d0d013c`: left, right and settings-reset firmware. The
+  workflow produced `qbf-paintbrush-build-25`.
+
+Both manifests resolve module `c8dfed8` from its published repository. The
+module repository has no separate GitHub Actions workflow. These are software
+build results, not physical acceptance.
+
 ## Reproduce the software checks
 
 Run the host suite from the module checkout with a C compiler, Python, the
@@ -50,24 +71,11 @@ uv run --no-project --with pyyaml --with kconfiglib \
   python -m unittest discover -s tests/host
 ```
 
-The legacy `test_coordinator.py` belongs to the retired alphabet-worker script
-and has known failures against its current implementation. Keep those failures
-separate from firmware results; do not interpret the full command as green.
-To run only the module's software tests while retaining that explicit exclusion:
-
-```sh
-uv run --no-project --with pyyaml --with kconfiglib python - <<'PY'
-import sys, unittest
-from pathlib import Path
-sys.path.insert(0, 'tests/host')
-suite = unittest.TestSuite()
-for test in sorted(Path('tests/host').glob('test_*.py')):
-    if test.name != 'test_coordinator.py':
-        suite.addTests(unittest.defaultTestLoader.loadTestsFromName(test.stem))
-result = unittest.TextTestRunner(verbosity=1).run(suite)
-raise SystemExit(not result.wasSuccessful())
-PY
-```
+The retired `test_coordinator.py` remains a regression suite for the old
+alphabet-worker script. Its stale mocks were repaired in `764ed49`; all 11 tests
+now isolate terminal reaping, worker startup and interactive verification, and
+reject any unmocked subprocess call. The script itself is unchanged. No suite
+exclusion is needed.
 
 This includes deterministic address/undefined-behavior sanitizer coverage of
 38,400 random cells across all modes, boundary resets, and held-cell previews.

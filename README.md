@@ -155,9 +155,9 @@ uv run --no-project --with pyyaml --with kconfiglib \
   python -m unittest discover -s tests/host
 ```
 
-One legacy suite (`test_coordinator.py`) fails for pre-existing, unrelated
-reasons that reproduce from an older baseline commit; it is not evidence about
-the module.
+The retired coordinator's 11 regression tests are included. Its terminal and
+model-process boundaries are mocked and reject any unmocked subprocess call;
+running the tests never launches workers or contacts a model.
 
 Native acceptance runs the real unmodified ZMK stack under Docker against the
 pinned ZMK v0.3.0 workspace expected at `build/baseline`:
