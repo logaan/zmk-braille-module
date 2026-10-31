@@ -538,6 +538,18 @@ static bool c8_short_longer(const uint16_t *s, unsigned count, unsigned pos,
         i += best ? best->count : 1;
     }
     text[used] = 0;
+    /* Productive extensions are longer words, not arbitrary Computer8
+     * strings. A digit, slash or embedded punctuation must not bypass the
+     * standing-alone boundary checks above. A terminal possessive is allowed;
+     * other explicitly listed punctuation spellings were checked by Appendix
+     * membership before this fallback. */
+    unsigned lexical_end = used;
+    if (lexical_end >= 2 && text[lexical_end - 2] == '\'' && text[lexical_end - 1] == 's')
+        lexical_end -= 2;
+    for (unsigned i = 0; i < lexical_end; ++i)
+        if (!((text[i] >= 'a' && text[i] <= 'z') ||
+              (text[i] >= 'A' && text[i] <= 'Z')))
+            return false;
     bool vowel = text[after] && strchr("aeiouyAEIOUY", text[after]);
     const char *word = wanted->text;
     if (!strcmp(word, "braille") || !strcmp(word, "great")) return true;

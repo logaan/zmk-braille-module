@@ -76,6 +76,28 @@ class Computer8Short(unittest.TestCase):
         # Computer8 character, and cannot justify an Appendix contraction.
         self.check([7,0x14,5,7,23,256],'l9klr ')
 
+    def test_productive_shortforms_require_letter_sequences(self):
+        productive = ('braille', 'great', 'children', 'blind', 'first',
+                      'friend', 'good', 'letter', 'little', 'quick')
+        for word in productive:
+            row = next(r for r in ROWS if r['condition'] == 'SHORT' and r['text'] == word)
+            # Digits and non-boundary punctuation are literal Computer8 text,
+            # not longer words that may license a productive shortform.
+            for suffix in ([2], [12], [60], [4, 1]):
+                seq = row['cells'] + suffix + [256]
+                with self.subTest(word=word, suffix=suffix):
+                    self.assertEqual(self.observe(seq)['keys'],
+                                     self.observe(seq, 'computer8')['keys'])
+        friend = next(r['cells'] for r in ROWS if r['text'] == 'friend')
+        self.check(friend + [14, 256], 'friends ')
+        self.check(friend + [14, 19, 10, 15, 256], 'friendship ')
+        self.check(friend + [4, 14, 256], "friend's ")
+        # Eight-dot capitals in suffixes still obey the no-following-vowel
+        # condition; they must not be silently folded or treated as consonants.
+        for vowel in (0x41, 0x51):
+            seq = friend + [vowel, 256]
+            self.assertEqual(self.observe(seq)['keys'], self.observe(seq, 'computer8')['keys'])
+
     def test_buffer_preview_resets_and_limits(self):
         self.assertEqual(self.observe([1,3])['keys'],[])
         self.assertEqual(self.observe([1,3])['pending'],[1,3])
