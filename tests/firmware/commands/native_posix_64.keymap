@@ -20,7 +20,7 @@
             /* Deliberately no &kp or &sk bindings: the module must retain them. */
             bindings = <
                 &bc 1 &bc 2 &bc 3 &bc 4 &bc 5 &bc 6 &bc 7 &bc 8
-                &bspc &run_commands 0 &run_commands 1 &run_commands 2 &none &none &none &none
+                &bspc &run_commands 0 &run_commands 1 &run_commands 2 &none &bselect BRAILLE_MODE_COMPUTER8 &bselect BRAILLE_MODE_UEB2 &none
             >;
         };
         transparent_test {

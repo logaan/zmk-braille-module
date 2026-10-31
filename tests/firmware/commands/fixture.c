@@ -261,6 +261,22 @@ static void position(uint32_t pos, bool pressed) {
 }
 
 static void test_context_boundaries(void) {
+    /* The observer must not reset before selection knows whether a mode exists. */
+    __ASSERT(braille_tables_select("ueb1") == 0, "UEB1 selection failed");
+    live_context_and_prefix();
+    /* ZMK propagates the unavailable behavior error; it is expected here. */
+    __ASSERT(raise_zmk_position_state_changed((struct zmk_position_state_changed){
+        .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL, .position = 14,
+        .state = true, .timestamp = k_uptime_get()}) == -ENOENT,
+        "Unavailable selector should report ENOENT");
+    position(14, false);
+    __ASSERT(braille_engine_pending_count() == 1 && braille_engine_context()->numeric &&
+                 braille_engine_context()->caps == BRAILLE_CAPS_PASSAGE,
+             "Unavailable physical selector reset context");
+    position(13, true); position(13, false); /* Computer8 is available. */
+    __ASSERT(!strcmp(braille_tables_active(), "computer8"), "Physical selector did not run");
+    expect_reset_context();
+
     __ASSERT(braille_tables_select("ueb1") == 0, "Context fixture mode");
     live_context_and_prefix();
     /* No output from a reset, and a conventional release alone does not reset. */

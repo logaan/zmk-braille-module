@@ -21,6 +21,8 @@
 static const char *const input_devices[] = {
     DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_dot, BRAILLE_DEVICE_NAME)
     DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_space, BRAILLE_DEVICE_NAME)
+    /* Selection owns its successful reset; an unavailable mode is a no-op. */
+    DT_FOREACH_STATUS_OKAY(zmk_behavior_braille_select, BRAILLE_DEVICE_NAME)
     NULL,
 };
 static const char *const transparent_devices[] = {
