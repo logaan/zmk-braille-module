@@ -1,0 +1,2939 @@
+{
+  "scope": "Raw, unchanged UEB2 contraction spellings in the project Computer8 mapping",
+  "source_sha256": {
+    "references/research/computer8.yaml": "74e0c1521a7aa83be611eb013af2980c5b2c15bbe5c267038a6e6dffe98ecef9",
+    "references/research/ueb-grade2-contractions.yaml": "4a9b77ef41df69775025359119dedf965fb0647ec3f0be2fb9cd05e41983ea3b",
+    "src/braille_rules_computer8.c": "ae548381ca870ea3e859b00fce80bca05f49fc777f0e4daf4c381e75d3d5e6c5",
+    "src/braille_rules_nav.c": "69034db9e5aaaf9441ba96bec7533e03fefd0cab37c832c93187b45132095908"
+  },
+  "policy": "Existing Computer8 characters, literal sequences, and commands win.",
+  "counts": {
+    "contractions": 182,
+    "existing_character_conflicts": 62,
+    "literal_sequence_conflicts": 120,
+    "unchanged_spelling_compatible_subset": 0,
+    "mapped_nonzero_six_dot_cells": 63
+  },
+  "context_note": "Word-position restrictions do not remove collisions: the same literal ASCII input remains valid at those positions.",
+  "timing_note": "Computer8 emits mapped cells immediately. Buffering a literal prefix to wait for shorthand is also an observable change.",
+  "indicator_conflicts": [
+    {
+      "ueb": "capital indicator",
+      "dots": "6",
+      "computer8": ","
+    },
+    {
+      "ueb": "numeric indicator",
+      "dots": "3456",
+      "computer8": "#"
+    },
+    {
+      "ueb": "grade-1 indicator",
+      "dots": "56",
+      "computer8": ";"
+    }
+  ],
+  "commands_note": "Dot7 Delete, dot8 Return, and space-bearing factory commands are existing definitions and must remain intact.",
+  "additive_options_for_review": [
+    {
+      "name": "explicit_prefix",
+      "dots": "78",
+      "mask": 192,
+      "current_definition": "reserved",
+      "description": "An unused prefix can explicitly enter a bounded shorthand sequence; raw Computer8 remains literal outside it."
+    },
+    {
+      "name": "dot8_on_first_cell",
+      "currently_reserved_first_cells": true,
+      "description": "Adding dot8 to a nonzero six-dot first cell uses reserved input, but invents new spellings and needs a clear scope/termination policy."
+    }
+  ],
+  "conflicts": [
+    {
+      "contraction": "as",
+      "cells": [
+        53
+      ],
+      "dots": [
+        "1356"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "z",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "but",
+      "cells": [
+        3
+      ],
+      "dots": [
+        "12"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "b",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "can",
+      "cells": [
+        9
+      ],
+      "dots": [
+        "14"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "c",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "do",
+      "cells": [
+        25
+      ],
+      "dots": [
+        "145"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "d",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "every",
+      "cells": [
+        17
+      ],
+      "dots": [
+        "15"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "e",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "from",
+      "cells": [
+        11
+      ],
+      "dots": [
+        "124"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "f",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "go",
+      "cells": [
+        27
+      ],
+      "dots": [
+        "1245"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "g",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "have",
+      "cells": [
+        19
+      ],
+      "dots": [
+        "125"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "h",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "it",
+      "cells": [
+        45
+      ],
+      "dots": [
+        "1346"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "x",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "just",
+      "cells": [
+        26
+      ],
+      "dots": [
+        "245"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "j",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "knowledge",
+      "cells": [
+        5
+      ],
+      "dots": [
+        "13"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "k",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "like",
+      "cells": [
+        7
+      ],
+      "dots": [
+        "123"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "l",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "more",
+      "cells": [
+        13
+      ],
+      "dots": [
+        "134"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "m",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "not",
+      "cells": [
+        29
+      ],
+      "dots": [
+        "1345"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "n",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "people",
+      "cells": [
+        15
+      ],
+      "dots": [
+        "1234"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "p",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "quite",
+      "cells": [
+        31
+      ],
+      "dots": [
+        "12345"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "q",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "rather",
+      "cells": [
+        23
+      ],
+      "dots": [
+        "1235"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "r",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "so",
+      "cells": [
+        14
+      ],
+      "dots": [
+        "234"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "s",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "that",
+      "cells": [
+        30
+      ],
+      "dots": [
+        "2345"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "t",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "us",
+      "cells": [
+        37
+      ],
+      "dots": [
+        "136"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "u",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "very",
+      "cells": [
+        39
+      ],
+      "dots": [
+        "1236"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "v",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "will",
+      "cells": [
+        58
+      ],
+      "dots": [
+        "2456"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "w",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "you",
+      "cells": [
+        61
+      ],
+      "dots": [
+        "13456"
+      ],
+      "condition": "ALPHA",
+      "iceb_section": "10.1",
+      "computer8_literal": "y",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "child",
+      "cells": [
+        33
+      ],
+      "dots": [
+        "16"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": "*",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "out",
+      "cells": [
+        51
+      ],
+      "dots": [
+        "1256"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": "|",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "shall",
+      "cells": [
+        41
+      ],
+      "dots": [
+        "146"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": "%",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "still",
+      "cells": [
+        12
+      ],
+      "dots": [
+        "34"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": "/",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "this",
+      "cells": [
+        57
+      ],
+      "dots": [
+        "1456"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": "?",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "which",
+      "cells": [
+        49
+      ],
+      "dots": [
+        "156"
+      ],
+      "condition": "WORD",
+      "iceb_section": "10.2",
+      "computer8_literal": ":",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "be",
+      "cells": [
+        6
+      ],
+      "dots": [
+        "23"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "2",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "enough",
+      "cells": [
+        34
+      ],
+      "dots": [
+        "26"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "5",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "his",
+      "cells": [
+        38
+      ],
+      "dots": [
+        "236"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "8",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "in",
+      "cells": [
+        20
+      ],
+      "dots": [
+        "35"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "9",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "was",
+      "cells": [
+        52
+      ],
+      "dots": [
+        "356"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "0",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "were",
+      "cells": [
+        54
+      ],
+      "dots": [
+        "2356"
+      ],
+      "condition": "LOWER_WORD",
+      "iceb_section": "10.5",
+      "computer8_literal": "7",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "and",
+      "cells": [
+        47
+      ],
+      "dots": [
+        "12346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.3",
+      "computer8_literal": "&",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "for",
+      "cells": [
+        63
+      ],
+      "dots": [
+        "123456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.3",
+      "computer8_literal": "=",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "of",
+      "cells": [
+        55
+      ],
+      "dots": [
+        "12356"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.3",
+      "computer8_literal": "(",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "the",
+      "cells": [
+        46
+      ],
+      "dots": [
+        "2346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.3",
+      "computer8_literal": "!",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "with",
+      "cells": [
+        62
+      ],
+      "dots": [
+        "23456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.3",
+      "computer8_literal": ")",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ar",
+      "cells": [
+        28
+      ],
+      "dots": [
+        "345"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": ">",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ch",
+      "cells": [
+        33
+      ],
+      "dots": [
+        "16"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "*",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ed",
+      "cells": [
+        43
+      ],
+      "dots": [
+        "1246"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "$",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "er",
+      "cells": [
+        59
+      ],
+      "dots": [
+        "12456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "}",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "gh",
+      "cells": [
+        35
+      ],
+      "dots": [
+        "126"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "<",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ing",
+      "cells": [
+        44
+      ],
+      "dots": [
+        "346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "+",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ou",
+      "cells": [
+        51
+      ],
+      "dots": [
+        "1256"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "|",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ow",
+      "cells": [
+        42
+      ],
+      "dots": [
+        "246"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "{",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "sh",
+      "cells": [
+        41
+      ],
+      "dots": [
+        "146"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "%",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "st",
+      "cells": [
+        12
+      ],
+      "dots": [
+        "34"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "/",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "th",
+      "cells": [
+        57
+      ],
+      "dots": [
+        "1456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": "?",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "wh",
+      "cells": [
+        49
+      ],
+      "dots": [
+        "156"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.4",
+      "computer8_literal": ":",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "be",
+      "cells": [
+        6
+      ],
+      "dots": [
+        "23"
+      ],
+      "condition": "START",
+      "iceb_section": "10.6",
+      "computer8_literal": "2",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "con",
+      "cells": [
+        18
+      ],
+      "dots": [
+        "25"
+      ],
+      "condition": "START",
+      "iceb_section": "10.6",
+      "computer8_literal": "3",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "dis",
+      "cells": [
+        50
+      ],
+      "dots": [
+        "256"
+      ],
+      "condition": "START",
+      "iceb_section": "10.6",
+      "computer8_literal": "4",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "bb",
+      "cells": [
+        6
+      ],
+      "dots": [
+        "23"
+      ],
+      "condition": "MIDDLE",
+      "iceb_section": "10.6",
+      "computer8_literal": "2",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "cc",
+      "cells": [
+        18
+      ],
+      "dots": [
+        "25"
+      ],
+      "condition": "MIDDLE",
+      "iceb_section": "10.6",
+      "computer8_literal": "3",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ea",
+      "cells": [
+        2
+      ],
+      "dots": [
+        "2"
+      ],
+      "condition": "MIDDLE",
+      "iceb_section": "10.6",
+      "computer8_literal": "1",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ff",
+      "cells": [
+        22
+      ],
+      "dots": [
+        "235"
+      ],
+      "condition": "MIDDLE",
+      "iceb_section": "10.6",
+      "computer8_literal": "6",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "gg",
+      "cells": [
+        54
+      ],
+      "dots": [
+        "2356"
+      ],
+      "condition": "MIDDLE",
+      "iceb_section": "10.6",
+      "computer8_literal": "7",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "en",
+      "cells": [
+        34
+      ],
+      "dots": [
+        "26"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.6",
+      "computer8_literal": "5",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "in",
+      "cells": [
+        20
+      ],
+      "dots": [
+        "35"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.6",
+      "computer8_literal": "9",
+      "conflict": "existing_character",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "cannot",
+      "cells": [
+        56,
+        9
+      ],
+      "dots": [
+        "456",
+        "14"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_c",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "character",
+      "cells": [
+        16,
+        33
+      ],
+      "dots": [
+        "5",
+        "16"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"*",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "day",
+      "cells": [
+        16,
+        25
+      ],
+      "dots": [
+        "5",
+        "145"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"d",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ever",
+      "cells": [
+        16,
+        17
+      ],
+      "dots": [
+        "5",
+        "15"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"e",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "father",
+      "cells": [
+        16,
+        11
+      ],
+      "dots": [
+        "5",
+        "124"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"f",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "had",
+      "cells": [
+        56,
+        19
+      ],
+      "dots": [
+        "456",
+        "125"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_h",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "here",
+      "cells": [
+        16,
+        19
+      ],
+      "dots": [
+        "5",
+        "125"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"h",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "know",
+      "cells": [
+        16,
+        5
+      ],
+      "dots": [
+        "5",
+        "13"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"k",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "lord",
+      "cells": [
+        16,
+        7
+      ],
+      "dots": [
+        "5",
+        "123"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"l",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "many",
+      "cells": [
+        56,
+        13
+      ],
+      "dots": [
+        "456",
+        "134"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_m",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "mother",
+      "cells": [
+        16,
+        13
+      ],
+      "dots": [
+        "5",
+        "134"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"m",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "name",
+      "cells": [
+        16,
+        29
+      ],
+      "dots": [
+        "5",
+        "1345"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"n",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "one",
+      "cells": [
+        16,
+        21
+      ],
+      "dots": [
+        "5",
+        "135"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"o",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ought",
+      "cells": [
+        16,
+        51
+      ],
+      "dots": [
+        "5",
+        "1256"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"|",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "part",
+      "cells": [
+        16,
+        15
+      ],
+      "dots": [
+        "5",
+        "1234"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"p",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "question",
+      "cells": [
+        16,
+        31
+      ],
+      "dots": [
+        "5",
+        "12345"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"q",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "right",
+      "cells": [
+        16,
+        23
+      ],
+      "dots": [
+        "5",
+        "1235"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"r",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "some",
+      "cells": [
+        16,
+        14
+      ],
+      "dots": [
+        "5",
+        "234"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"s",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "spirit",
+      "cells": [
+        56,
+        14
+      ],
+      "dots": [
+        "456",
+        "234"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_s",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "their",
+      "cells": [
+        56,
+        46
+      ],
+      "dots": [
+        "456",
+        "2346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_!",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "there",
+      "cells": [
+        16,
+        46
+      ],
+      "dots": [
+        "5",
+        "2346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"!",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "these",
+      "cells": [
+        24,
+        46
+      ],
+      "dots": [
+        "45",
+        "2346"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "~!",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "those",
+      "cells": [
+        24,
+        57
+      ],
+      "dots": [
+        "45",
+        "1456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "~?",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "through",
+      "cells": [
+        16,
+        57
+      ],
+      "dots": [
+        "5",
+        "1456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"?",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "time",
+      "cells": [
+        16,
+        30
+      ],
+      "dots": [
+        "5",
+        "2345"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"t",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "under",
+      "cells": [
+        16,
+        37
+      ],
+      "dots": [
+        "5",
+        "136"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"u",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "upon",
+      "cells": [
+        24,
+        37
+      ],
+      "dots": [
+        "45",
+        "136"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "~u",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "where",
+      "cells": [
+        16,
+        49
+      ],
+      "dots": [
+        "5",
+        "156"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\":",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "whose",
+      "cells": [
+        24,
+        49
+      ],
+      "dots": [
+        "45",
+        "156"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "~:",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "word",
+      "cells": [
+        24,
+        58
+      ],
+      "dots": [
+        "45",
+        "2456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "~w",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "work",
+      "cells": [
+        16,
+        58
+      ],
+      "dots": [
+        "5",
+        "2456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"w",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "world",
+      "cells": [
+        56,
+        58
+      ],
+      "dots": [
+        "456",
+        "2456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "_w",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "young",
+      "cells": [
+        16,
+        61
+      ],
+      "dots": [
+        "5",
+        "13456"
+      ],
+      "condition": "ANY",
+      "iceb_section": "10.7",
+      "computer8_literal": "\"y",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ance",
+      "cells": [
+        40,
+        17
+      ],
+      "dots": [
+        "46",
+        "15"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ".e",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ence",
+      "cells": [
+        48,
+        17
+      ],
+      "dots": [
+        "56",
+        "15"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";e",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ful",
+      "cells": [
+        48,
+        7
+      ],
+      "dots": [
+        "56",
+        "123"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";l",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ity",
+      "cells": [
+        48,
+        61
+      ],
+      "dots": [
+        "56",
+        "13456"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";y",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "less",
+      "cells": [
+        40,
+        14
+      ],
+      "dots": [
+        "46",
+        "234"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ".s",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ment",
+      "cells": [
+        48,
+        30
+      ],
+      "dots": [
+        "56",
+        "2345"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";t",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ness",
+      "cells": [
+        48,
+        14
+      ],
+      "dots": [
+        "56",
+        "234"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";s",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ong",
+      "cells": [
+        48,
+        27
+      ],
+      "dots": [
+        "56",
+        "1245"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";g",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ound",
+      "cells": [
+        40,
+        25
+      ],
+      "dots": [
+        "46",
+        "145"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ".d",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ount",
+      "cells": [
+        40,
+        30
+      ],
+      "dots": [
+        "46",
+        "2345"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ".t",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "sion",
+      "cells": [
+        40,
+        29
+      ],
+      "dots": [
+        "46",
+        "1345"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ".n",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "tion",
+      "cells": [
+        48,
+        29
+      ],
+      "dots": [
+        "56",
+        "1345"
+      ],
+      "condition": "FINAL",
+      "iceb_section": "10.8",
+      "computer8_literal": ";n",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "about",
+      "cells": [
+        1,
+        3
+      ],
+      "dots": [
+        "1",
+        "12"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ab",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "above",
+      "cells": [
+        1,
+        3,
+        39
+      ],
+      "dots": [
+        "1",
+        "12",
+        "1236"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "abv",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "according",
+      "cells": [
+        1,
+        9
+      ],
+      "dots": [
+        "1",
+        "14"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ac",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "across",
+      "cells": [
+        1,
+        9,
+        23
+      ],
+      "dots": [
+        "1",
+        "14",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "acr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "after",
+      "cells": [
+        1,
+        11
+      ],
+      "dots": [
+        "1",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "af",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "afternoon",
+      "cells": [
+        1,
+        11,
+        29
+      ],
+      "dots": [
+        "1",
+        "124",
+        "1345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "afn",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "afterward",
+      "cells": [
+        1,
+        11,
+        58
+      ],
+      "dots": [
+        "1",
+        "124",
+        "2456"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "afw",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "again",
+      "cells": [
+        1,
+        27
+      ],
+      "dots": [
+        "1",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ag",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "against",
+      "cells": [
+        1,
+        27,
+        12
+      ],
+      "dots": [
+        "1",
+        "1245",
+        "34"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ag/",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "almost",
+      "cells": [
+        1,
+        7,
+        13
+      ],
+      "dots": [
+        "1",
+        "123",
+        "134"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "alm",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "already",
+      "cells": [
+        1,
+        7,
+        23
+      ],
+      "dots": [
+        "1",
+        "123",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "alr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "also",
+      "cells": [
+        1,
+        7
+      ],
+      "dots": [
+        "1",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "al",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "although",
+      "cells": [
+        1,
+        7,
+        57
+      ],
+      "dots": [
+        "1",
+        "123",
+        "1456"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "al?",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "altogether",
+      "cells": [
+        1,
+        7,
+        30
+      ],
+      "dots": [
+        "1",
+        "123",
+        "2345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "alt",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "always",
+      "cells": [
+        1,
+        7,
+        58
+      ],
+      "dots": [
+        "1",
+        "123",
+        "2456"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "alw",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "because",
+      "cells": [
+        6,
+        9
+      ],
+      "dots": [
+        "23",
+        "14"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2c",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "before",
+      "cells": [
+        6,
+        11
+      ],
+      "dots": [
+        "23",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2f",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "behind",
+      "cells": [
+        6,
+        19
+      ],
+      "dots": [
+        "23",
+        "125"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2h",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "below",
+      "cells": [
+        6,
+        7
+      ],
+      "dots": [
+        "23",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2l",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "beneath",
+      "cells": [
+        6,
+        29
+      ],
+      "dots": [
+        "23",
+        "1345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2n",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "beside",
+      "cells": [
+        6,
+        14
+      ],
+      "dots": [
+        "23",
+        "234"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2s",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "between",
+      "cells": [
+        6,
+        30
+      ],
+      "dots": [
+        "23",
+        "2345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2t",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "beyond",
+      "cells": [
+        6,
+        61
+      ],
+      "dots": [
+        "23",
+        "13456"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "2y",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "blind",
+      "cells": [
+        3,
+        7
+      ],
+      "dots": [
+        "12",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "bl",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "braille",
+      "cells": [
+        3,
+        23,
+        7
+      ],
+      "dots": [
+        "12",
+        "1235",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "brl",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "children",
+      "cells": [
+        33,
+        29
+      ],
+      "dots": [
+        "16",
+        "1345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "*n",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "conceive",
+      "cells": [
+        18,
+        9,
+        39
+      ],
+      "dots": [
+        "25",
+        "14",
+        "1236"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "3cv",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "conceiving",
+      "cells": [
+        18,
+        9,
+        39,
+        27
+      ],
+      "dots": [
+        "25",
+        "14",
+        "1236",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "3cvg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "could",
+      "cells": [
+        9,
+        25
+      ],
+      "dots": [
+        "14",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "cd",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "deceive",
+      "cells": [
+        25,
+        9,
+        39
+      ],
+      "dots": [
+        "145",
+        "14",
+        "1236"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "dcv",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "deceiving",
+      "cells": [
+        25,
+        9,
+        39,
+        27
+      ],
+      "dots": [
+        "145",
+        "14",
+        "1236",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "dcvg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "declare",
+      "cells": [
+        25,
+        9,
+        7
+      ],
+      "dots": [
+        "145",
+        "14",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "dcl",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "declaring",
+      "cells": [
+        25,
+        9,
+        7,
+        27
+      ],
+      "dots": [
+        "145",
+        "14",
+        "123",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "dclg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "either",
+      "cells": [
+        17,
+        10
+      ],
+      "dots": [
+        "15",
+        "24"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ei",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "first",
+      "cells": [
+        11,
+        12
+      ],
+      "dots": [
+        "124",
+        "34"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "f/",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "friend",
+      "cells": [
+        11,
+        23
+      ],
+      "dots": [
+        "124",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "fr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "good",
+      "cells": [
+        27,
+        25
+      ],
+      "dots": [
+        "1245",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "gd",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "great",
+      "cells": [
+        27,
+        23,
+        30
+      ],
+      "dots": [
+        "1245",
+        "1235",
+        "2345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "grt",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "herself",
+      "cells": [
+        19,
+        59,
+        11
+      ],
+      "dots": [
+        "125",
+        "12456",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "h}f",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "him",
+      "cells": [
+        19,
+        13
+      ],
+      "dots": [
+        "125",
+        "134"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "hm",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "himself",
+      "cells": [
+        19,
+        13,
+        11
+      ],
+      "dots": [
+        "125",
+        "134",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "hmf",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "immediate",
+      "cells": [
+        10,
+        13,
+        13
+      ],
+      "dots": [
+        "24",
+        "134",
+        "134"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "imm",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "its",
+      "cells": [
+        45,
+        14
+      ],
+      "dots": [
+        "1346",
+        "234"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "xs",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "itself",
+      "cells": [
+        45,
+        11
+      ],
+      "dots": [
+        "1346",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "xf",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "letter",
+      "cells": [
+        7,
+        23
+      ],
+      "dots": [
+        "123",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "lr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "little",
+      "cells": [
+        7,
+        7
+      ],
+      "dots": [
+        "123",
+        "123"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "ll",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "much",
+      "cells": [
+        13,
+        33
+      ],
+      "dots": [
+        "134",
+        "16"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "m*",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "must",
+      "cells": [
+        13,
+        12
+      ],
+      "dots": [
+        "134",
+        "34"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "m/",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "myself",
+      "cells": [
+        13,
+        61,
+        11
+      ],
+      "dots": [
+        "134",
+        "13456",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "myf",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "necessary",
+      "cells": [
+        29,
+        17,
+        9
+      ],
+      "dots": [
+        "1345",
+        "15",
+        "14"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "nec",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "neither",
+      "cells": [
+        29,
+        17,
+        10
+      ],
+      "dots": [
+        "1345",
+        "15",
+        "24"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "nei",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "oneself",
+      "cells": [
+        16,
+        21,
+        11
+      ],
+      "dots": [
+        "5",
+        "135",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "\"of",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "ourselves",
+      "cells": [
+        51,
+        23,
+        39,
+        14
+      ],
+      "dots": [
+        "1256",
+        "1235",
+        "1236",
+        "234"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "|rvs",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "paid",
+      "cells": [
+        15,
+        25
+      ],
+      "dots": [
+        "1234",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "pd",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "perceive",
+      "cells": [
+        15,
+        59,
+        9,
+        39
+      ],
+      "dots": [
+        "1234",
+        "12456",
+        "14",
+        "1236"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "p}cv",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "perceiving",
+      "cells": [
+        15,
+        59,
+        9,
+        39,
+        27
+      ],
+      "dots": [
+        "1234",
+        "12456",
+        "14",
+        "1236",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "p}cvg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "perhaps",
+      "cells": [
+        15,
+        59,
+        19
+      ],
+      "dots": [
+        "1234",
+        "12456",
+        "125"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "p}h",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "quick",
+      "cells": [
+        31,
+        5
+      ],
+      "dots": [
+        "12345",
+        "13"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "qk",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "receive",
+      "cells": [
+        23,
+        9,
+        39
+      ],
+      "dots": [
+        "1235",
+        "14",
+        "1236"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "rcv",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "receiving",
+      "cells": [
+        23,
+        9,
+        39,
+        27
+      ],
+      "dots": [
+        "1235",
+        "14",
+        "1236",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "rcvg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "rejoice",
+      "cells": [
+        23,
+        26,
+        9
+      ],
+      "dots": [
+        "1235",
+        "245",
+        "14"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "rjc",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "rejoicing",
+      "cells": [
+        23,
+        26,
+        9,
+        27
+      ],
+      "dots": [
+        "1235",
+        "245",
+        "14",
+        "1245"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "rjcg",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "said",
+      "cells": [
+        14,
+        25
+      ],
+      "dots": [
+        "234",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "sd",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "should",
+      "cells": [
+        41,
+        25
+      ],
+      "dots": [
+        "146",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "%d",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "such",
+      "cells": [
+        14,
+        33
+      ],
+      "dots": [
+        "234",
+        "16"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "s*",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "themselves",
+      "cells": [
+        46,
+        13,
+        39,
+        14
+      ],
+      "dots": [
+        "2346",
+        "134",
+        "1236",
+        "234"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "!mvs",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "thyself",
+      "cells": [
+        57,
+        61,
+        11
+      ],
+      "dots": [
+        "1456",
+        "13456",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "?yf",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "today",
+      "cells": [
+        30,
+        25
+      ],
+      "dots": [
+        "2345",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "td",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "together",
+      "cells": [
+        30,
+        27,
+        23
+      ],
+      "dots": [
+        "2345",
+        "1245",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "tgr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "tomorrow",
+      "cells": [
+        30,
+        13
+      ],
+      "dots": [
+        "2345",
+        "134"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "tm",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "tonight",
+      "cells": [
+        30,
+        29
+      ],
+      "dots": [
+        "2345",
+        "1345"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "tn",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "would",
+      "cells": [
+        58,
+        25
+      ],
+      "dots": [
+        "2456",
+        "145"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "wd",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "your",
+      "cells": [
+        61,
+        23
+      ],
+      "dots": [
+        "13456",
+        "1235"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "yr",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "yourself",
+      "cells": [
+        61,
+        23,
+        11
+      ],
+      "dots": [
+        "13456",
+        "1235",
+        "124"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "yrf",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    },
+    {
+      "contraction": "yourselves",
+      "cells": [
+        61,
+        23,
+        39,
+        14
+      ],
+      "dots": [
+        "13456",
+        "1235",
+        "1236",
+        "234"
+      ],
+      "condition": "SHORT",
+      "iceb_section": "10.9",
+      "computer8_literal": "yrvs",
+      "conflict": "literal_sequence",
+      "decision": "preserve_computer8_pending_user_review"
+    }
+  ]
+}
