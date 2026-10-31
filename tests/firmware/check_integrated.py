@@ -13,12 +13,12 @@ def check(build, keyboard):
     check_keymap(header.read_text(),keyboard)
     central='CONFIG_ZMK_FEATURE_BRAILLE=y' in config
     if central:
-        for feature in ('ZMK_BRAILLE_GRADE2','ZMK_BRAILLE_STORAGE','ZMK_BRAILLE_SETTINGS_UI'):
+        for feature in ('ZMK_BRAILLE_GRADE2','ZMK_BRAILLE_COMPUTER8_SHORT','ZMK_BRAILLE_STORAGE','ZMK_BRAILLE_SETTINGS_UI'):
             assert f'CONFIG_{feature}=y' in config,feature
         stack=next(int(s.split('=')[1]) for s in config if s.startswith('CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE='))
         assert stack>=6144,('system workqueue stack',stack)
         linked=(build/'zephyr/zmk.map').read_text()
-        for name in ('braille_engine_preview_rule','braille_grade2_match','braille_storage_save',
+        for name in ('braille_engine_preview_rule','braille_computer8_short_match','braille_grade2_match','braille_storage_save',
                      'braille_editor_snapshot','braille_tables_select'):
             assert name in linked,name
         for source in ('braille_rules_grade2','braille_storage','braille_editor','braille_editor_zmk'):

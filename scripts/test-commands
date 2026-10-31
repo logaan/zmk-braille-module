@@ -4,16 +4,19 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
 WORKSPACE="${WORKSPACE:-$ROOT/build/baseline}"
-[ "$#" -eq 0 ] || { echo 'Usage: scripts/test-commands' >&2; exit 2; }
+SHORTHAND=n
+if [ "${1:-}" = --shorthand ]; then SHORTHAND=y; shift; fi
+[ "$#" -eq 0 ] || { echo 'Usage: scripts/test-commands [--shorthand]' >&2; exit 2; }
 [ -f "$WORKSPACE/.west/config" ] || { echo 'Initialize build/baseline using README.md first.' >&2; exit 1; }
 mkdir -p "$WORKSPACE/logs"
-docker run --rm \
+docker run --rm -e SHORTHAND="$SHORTHAND" \
   -v "$WORKSPACE:/work" -v "$ROOT:/braille:ro" -w /work \
   zmkfirmware/zmk-build-arm:3.5 bash -ceuo pipefail '
     test "$(git -C zmk rev-parse HEAD)" = edf5c0814fd3ea202e43aad2d68fd32e882a518c
     west zephyr-export
     west build -p always -d build/commands-native -s zmk/app -b native_posix_64 -- \
       -DZMK_CONFIG=/braille/tests/firmware/commands \
+      -DCONFIG_ZMK_BRAILLE_GRADE2=$SHORTHAND -DCONFIG_ZMK_BRAILLE_COMPUTER8_SHORT=$SHORTHAND \
       "-DZMK_EXTRA_MODULES=/braille;/braille/tests/firmware/commands" \
       2>&1 | tee logs/commands-build.log
     timeout 30 build/commands-native/zephyr/zmk.exe 2>&1 | tee logs/commands-native.log

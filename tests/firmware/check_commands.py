@@ -10,6 +10,10 @@ def check(log):
     if re.search(r"ASSERTION FAIL|ZEPHYR FATAL ERROR|LOG_DROPPED|messages dropped", log, re.I):
         raise AssertionError("Native test asserted, crashed or dropped log messages")
     actual = re.findall(r"factory_commands: (.+) PASS", log)
+    if "computer8_shorthand: PASS" in log:
+        assert actual == ["keyboard-timeout", "globe-timeout", "ALL"], actual
+        assert log.count("computer8_shorthand: PASS") == 1
+        return
     assert actual == ["ueb1", "computer8", "keyboard-timeout", "globe-timeout", "ALL"], actual
     assert log.count("computer8_characters: PASS") == 1, "Real Computer8 HID checkpoint missing"
     assert log.count("context_boundaries: PASS") == 1, "Real context-event checkpoint missing"
@@ -21,4 +25,4 @@ if __name__ == "__main__":
     parser.add_argument("log", type=Path)
     args = parser.parse_args()
     check(args.log.read_text())
-    print("PASS: contextual UEB1, Computer8, context events, both command tables, sticky/HID and timeouts")
+    print("PASS: native ZMK command/HID checkpoints (including shorthand when enabled)")

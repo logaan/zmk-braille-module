@@ -14,9 +14,9 @@ int braille_engine_commit_rule(const struct braille_rule *r, enum braille_commit
 }
 int main(void) {
  struct zmk_behavior_binding_event e={0};
- const char *modes[]={"ueb2","ueb1","computer8"};
- for(unsigned batch=0;batch<400;batch++) {
-  assert(!braille_tables_select(modes[batch%3]));
+ const char *modes[]={"ueb2","ueb1","computer8","computer8_short"};
+ for(unsigned batch=0;batch<600;batch++) {
+  assert(!braille_tables_select(modes[batch%4]));
   for(unsigned i=0;i<96;i++) {
    uint16_t cell=(next()%4)?(next()%63)+1:(next()%511)+1;
    assert(!braille_chord_resolved(cell,e));

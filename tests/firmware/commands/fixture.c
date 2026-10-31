@@ -317,9 +317,42 @@ static void test_context_boundaries(void) {
     LOG_INF("context_boundaries: PASS");
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT)
+static void test_shorthand(void) {
+    __ASSERT(braille_tables_count() == 4, "Four modes required");
+    __ASSERT(braille_tables_select("computer8_short") == 0, "Shorthand selection");
+    begin_observation();
+    chord(0x001); chord(0x003); /* ab -> about */
+    __ASSERT(report_count == 0 && braille_engine_pending_count() == 2,
+             "Shorthand emitted before word boundary");
+    chord(0x100);
+    const uint32_t expected[] = {A, B, O, U, T, SPACE};
+    __ASSERT(report_count == ARRAY_SIZE(expected), "Shorthand HID report count");
+    for (size_t i = 0; i < ARRAY_SIZE(expected); ++i) {
+        __ASSERT(reports[i].key == ZMK_HID_USAGE_ID(expected[i]) &&
+                 reports[i].page == HID_USAGE_KEY && reports[i].mods == 0,
+                 "Shorthand HID output mismatch");
+    }
+    __ASSERT(!braille_engine_pending_count(), "Shorthand boundary pending");
+    begin_observation();
+    chord(0x001); chord(0x003); chord(0x101); /* navigation discards word */
+    expect_output(LEFT_ARROW, 0, false);
+    begin_observation();
+    chord(0x041); chord(0x100); /* dot 7 capital A stays Computer8 */
+    __ASSERT(report_count == 2 && reports[0].key == ZMK_HID_USAGE_ID(A) &&
+             reports[0].mods == MOD_LSFT && reports[1].key == ZMK_HID_USAGE_ID(SPACE),
+             "Shorthand literal capital changed");
+    observing = false;
+    LOG_INF("computer8_shorthand: PASS");
+}
+#endif
+
 static void run_suite(void) {
     BUILD_ASSERT(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL),
                  "Native command acceptance requires FULL consumer usages");
+#if IS_ENABLED(CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT)
+    test_shorthand();
+#else
     __ASSERT(braille_tables_count() == 2, "Initial mode registry changed");
     for (size_t m = 0; m < braille_tables_count(); ++m) {
         const struct braille_mode *mode = braille_tables_mode(m);
@@ -338,6 +371,7 @@ static void run_suite(void) {
     }
     test_ueb1_characters();
     test_context_boundaries();
+#endif
     __ASSERT(braille_tables_select("ueb1") == 0, "Unable to restore UEB1");
     /* Let the real workqueue timer expire between mock scan checkpoints. */
     chord(0x148);

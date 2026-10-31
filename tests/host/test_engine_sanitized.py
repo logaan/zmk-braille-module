@@ -15,6 +15,6 @@ class SanitizedEngine(unittest.TestCase):
                 ('engine','tables','rules_grade1','rules_grade2','rules_computer8','rules_nav')]
             subprocess.run(shlex.split(os.environ.get('CC','cc'))+[
                 '-std=c11','-O1','-g','-fsanitize=address,undefined','-fno-omit-frame-pointer',
-                '-DCONFIG_ZMK_BRAILLE_GRADE2=1','-I',str(ROOT/'include'),
+                '-DCONFIG_ZMK_BRAILLE_GRADE2=1','-DCONFIG_ZMK_BRAILLE_COMPUTER8_SHORT=1','-I',str(ROOT/'include'),
                 '-I',str(ROOT/'tests/host/stubs'),*[str(ROOT/s) for s in sources],'-o',str(exe)],check=True)
             subprocess.run([str(exe)],check=True,timeout=60)

@@ -51,7 +51,7 @@ def check_keymap(header, keyboard, mode="ueb1"):
         for index, dot in ((13, 7), (14, 3), (15, 2), (16, 1), (19, 4), (20, 5), (21, 6), (22, 8)):
             binding("braille", index, "braille_dot", dot)
         binding("braille", 39, "braille_space")
-        for index, mode_id in ((0, 1), (5, 0), (6, 2), (41, 3)):
+        for index, mode_id in ((0, 1), (5, 0), (6, 2), (18, 4), (41, 3)):
             binding("braille", index, "braille_select", mode_id)
         for index in (11, 36):
             binding("braille", index, "to_layer", 0)

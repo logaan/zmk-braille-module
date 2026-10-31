@@ -10,7 +10,7 @@ adopt it through their `zmk-config` manifest alone.
 
 ## What it can do today
 
-Computer8, contextual UEB1, optional contracted UEB2, persistent modes and
+Computer8, contextual UEB1, optional contracted UEB2 and eight-dot shorthand, persistent modes and
 overrides, and on-device settings are implemented. Software tests and firmware
 builds are recorded in [verification](docs/verification.md). Physical keyboard
 and macOS/VoiceOver acceptance remain user-owned.
@@ -20,7 +20,7 @@ and macOS/VoiceOver acceptance remain user-owned.
 key held from first press to last release; there are no timers. Dot-only,
 space-only, and space-plus-dot chords all flow through the same path.
 
-**Three character modes**, selected by name:
+**Four character modes**, selected by name:
 
 - `ueb1` — contextual UEB Grade 1 covering all 95 printable US characters:
   lowercase letters, digits via the numeric indicator with digit runs and
@@ -38,6 +38,13 @@ space-only, and space-plus-dot chords all flow through the same path.
   ICEB 2024. It buffers a word until Braille space, Return, or Tab. At 32 cells
   it resolves a synthetic word boundary; the next cell starts a new word.
   Numeric, capitals and Grade 1 indicators control uncontracted fallback.
+
+- `computer8_short` — optional eight-dot shorthand
+  (`CONFIG_ZMK_BRAILLE_GRADE2=y` and `CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT=y`).
+  A separate word-buffered mode combining Computer8 literal cells with the
+  120 multi-cell UEB2 contractions; the 62 single-cell contractions stay
+  excluded. For example `ab` becomes `about` at a word boundary. See the
+  [mode guide and conflict policy](docs/computer8-shorthand.md).
 
 **Factory commands** — 22 shared command chords per mode following macOS VoiceOver braille
 conventions (sources noted in `src/braille_rules_nav.c`): Braille space,
