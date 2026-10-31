@@ -34,7 +34,7 @@ class DevicetreeContract(unittest.TestCase):
     };
 };
 ''' + extra)
-        includes = [ROOT / "dts", ZMK / "dts", ZMK / "include", ZEPHYR / "dts", ZEPHYR / "include"]
+        includes = [ROOT / "include", ROOT / "dts", ZMK / "dts", ZMK / "include", ZEPHYR / "dts", ZEPHYR / "include"]
         preprocessed = tmp / "test.pre.dts"
         with preprocessed.open("w") as output:
             subprocess.run(CC + ["-E", "-P", "-x", "assembler-with-cpp", "-nostdinc", "-undef"]
@@ -73,6 +73,14 @@ class DevicetreeContract(unittest.TestCase):
             self.assertNotIn("DT_N_S_keymap_S_base_P_bindings_IDX_10_VAL_param1", header)
             result = self.compile(tmp)
             self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_runtime_mode_bindings(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self.generate(tmp, "&bselect BRAILLE_MODE_COMPUTER8 &bselect BRAILLE_MODE_UEB1 &bselect BRAILLE_MODE_UEB2 &bselect BRAILLE_MODE_NEXT")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            header = (Path(tmp) / "include/generated/devicetree_generated.h").read_text()
+            for index, value in enumerate((1, 0, 2, 3)):
+                self.assertIn(f"DT_N_S_keymap_S_base_P_bindings_IDX_{index}_VAL_param1 {value}", header)
 
     def test_braille_only_keymap_retains_factory_behaviors(self):
         with tempfile.TemporaryDirectory() as tmp:

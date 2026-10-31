@@ -78,7 +78,15 @@ currently implements the Grade 1 material. Sources live in
    `&bc 1`–`&bc 8` for dots, `&bspc` for Braille space, `&bmode <layer>` for
    the braille-mode key (hold to chord on the target layer, tap to switch),
    and `&bsettings` for the settings-entry action.
-4. Optionally set the boot mode with `&braille { default-mode = "computer8"; };`
+4. Select character modes at runtime with `&bselect BRAILLE_MODE_COMPUTER8`,
+   `&bselect BRAILLE_MODE_UEB1`, or `&bselect BRAILLE_MODE_UEB2`. The constants
+   are included by `behaviors/braille.dtsi`. `&bselect BRAILLE_MODE_NEXT` cycles
+   through the compiled modes (UEB1, Computer8, then optional UEB2). UEB2 needs
+   `CONFIG_ZMK_BRAILLE_GRADE2=y`. Selection is independent of layers and
+   discards pending input and any held chord; release all dots before typing
+   in the new mode. An unavailable mode leaves the selection unchanged.
+   Runtime selections are not yet saved across reboot.
+5. Optionally set the boot mode with `&braille { default-mode = "computer8"; };`
    in an overlay (defaults to `ueb1`).
 
 ## Building and testing

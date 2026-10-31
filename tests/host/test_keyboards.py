@@ -36,7 +36,7 @@ class KeyboardContract(unittest.TestCase):
                 subprocess.run(shlex.split(os.environ.get("CC", "cc")) + [
                     "-E", "-P", "-x", "assembler-with-cpp", "-nostdinc", "-undef",
                     "-DCONFIG_ZMK_STUDIO=1", "-DCONFIG_ZMK_POINTING=1",
-                ] + [arg for inc in (ROOT / "dts", ZMK / "dts", ZMK / "include", ZEPHYR / "dts", ZEPHYR / "include")
+                ] + [arg for inc in (ROOT / "include", ROOT / "dts", ZMK / "dts", ZMK / "include", ZEPHYR / "dts", ZEPHYR / "include")
                      for arg in ("-I", str(inc))] + [str(source)], stdout=output, check=True)
             result = subprocess.run([
                 sys.executable, str(ZEPHYR / "scripts/dts/gen_defines.py"),

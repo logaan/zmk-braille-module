@@ -3,6 +3,7 @@
 #ifndef ZMK_BRAILLE_BEHAVIORS_DTSI
 #define ZMK_BRAILLE_BEHAVIORS_DTSI
 
+#include <dt-bindings/zmk/braille.h>
 #include <behaviors/key_press.dtsi>
 #include <behaviors/sticky_key.dtsi>
 #include <behaviors/momentary_layer.dtsi>
@@ -44,6 +45,12 @@
             compatible = "zmk,behavior-braille-mode";
             #binding-cells = <1>;
             display-name = "Braille Mode Layer";
+        };
+
+        bselect: braille_select {
+            compatible = "zmk,behavior-braille-select";
+            #binding-cells = <1>;
+            display-name = "Braille Character Mode";
         };
 
         bsettings: braille_settings {

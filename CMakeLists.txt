@@ -5,6 +5,7 @@ if(CONFIG_ZMK_FEATURE_BRAILLE)
   # ZMK v0.3 keeps the behavior API in the application's private include tree.
   zephyr_library_include_directories(include ${APPLICATION_SOURCE_DIR}/include)
   zephyr_library_sources(
+    src/behavior_braille_select.c
     src/behavior_braille.c
     src/braille_bindings.c
     src/braille_chord.c
