@@ -45,7 +45,8 @@ def audit(root=ROOT):
             'condition': item['condition'], 'iceb_section': item['section'],
             'computer8_literal': literal,
             'conflict': 'existing_character' if len(cells) == 1 else 'literal_sequence',
-            'decision': 'preserve_computer8_pending_user_review',
+            'decision': ('exclude_from_proposed_automatic_mode' if len(cells) == 1
+                         else 'proposed_automatic_sequence_expansion_pending_review'),
         })
     sources = ['references/research/computer8.yaml', source,
                'src/braille_rules_computer8.c', 'src/braille_rules_nav.c']
@@ -53,7 +54,15 @@ def audit(root=ROOT):
         'scope': 'Raw, unchanged UEB2 contraction spellings in the project Computer8 mapping',
         'source_sha256': {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
                           for name in sources},
-        'policy': 'Existing Computer8 characters, literal sequences, and commands win.',
+        'strict_compatibility_policy': 'Preserving every existing Computer8 literal sequence leaves no unchanged-spelling shorthand subset.',
+        'implementation_interpretation': {
+            'user_clarification': 'it should be a mode, just like ueb2 is now.',
+            'interpretation_not_verbatim_approval': 'A separate automatic mode may buffer words and expand the 120 multi-cell spellings, while excluding 62 direct single-cell redefinitions. Original Computer8 stays unchanged.',
+            'remaining_review': 'All 182 conflicts remain documented for review; multi-cell expansions still reinterpret literal ASCII sequences in the new mode.',
+            'proposed_multi_cell_expansions': 120,
+            'excluded_single_cell_redefinitions': 62,
+            'explicit_prefix_required': False,
+        },
         'counts': {
             'contractions': len(rows),
             'existing_character_conflicts': sum(len(r['cells']) == 1 for r in rows),

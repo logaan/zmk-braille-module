@@ -34,6 +34,8 @@ class ShorthandCompatibility(unittest.TestCase):
         self.assertEqual((rows['but']['computer8_literal'], rows['but']['conflict']), ('b', 'existing_character'))
         self.assertEqual((rows['about']['computer8_literal'], rows['about']['conflict']), ('ab', 'literal_sequence'))
         self.assertEqual(rows['and']['computer8_literal'], '&')
+        self.assertEqual(rows['but']['decision'], 'exclude_from_proposed_automatic_mode')
+        self.assertEqual(rows['about']['decision'], 'proposed_automatic_sequence_expansion_pending_review')
         for row in rows.values():
             self.assertNotEqual(row['computer8_literal'], row['contraction'])
 
