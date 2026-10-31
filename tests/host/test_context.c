@@ -99,7 +99,7 @@ static void test_every_class_transition(void) {
             for (unsigned numeric = 0; numeric < 2; ++numeric) {
                 for (int caps = BRAILLE_CAPS_NONE; caps <= BRAILLE_CAPS_PASSAGE; ++caps) {
                     for (unsigned start = 0; start < 2; ++start) {
-                        struct braille_context before = {numeric, caps, start}, expected = before;
+                        struct braille_context before = {.numeric=numeric, .caps=caps, .word_start=start}, expected = before;
                         seed(before);
                         clear_log();
                         /* Independent expectations from the research's class rows. */
@@ -196,7 +196,7 @@ static void test_full_tail_reprocessing_and_context(void) {
     chord(X);
     assert(output_count == 4 && output[0] == 1 && output[1] == 2 && output[2] == 3 && output[3] == 4);
     assert(!drops && !braille_engine_pending_count());
-    context_is((struct braille_context){false, BRAILLE_CAPS_NONE, false});
+    context_is((struct braille_context){.numeric=false, .caps=BRAILLE_CAPS_NONE, .word_start=false});
     puts("ok: complete fallback tail is reprocessed once in its newly committed context");
 }
 
@@ -228,7 +228,7 @@ static void test_limits_resets_and_dispatch_failure(void) {
     rules[1].chords[1] = B; rules[1].chord_count = 2;
     setup(2);
     chord(A);
-    seed((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+    seed((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
     braille_input_reset();
     assert(!output_count && !drops && discards == 1 && !braille_engine_pending_count());
     context_is(BRAILLE_CONTEXT_INIT);
@@ -250,11 +250,11 @@ static void test_whitespace_and_other_command_context(void) {
     setup(0);
     static const uint16_t ws[] = {SPACE, ENTER, TAB, 0x80, 0x180};
     for (size_t i = 0; i < COUNT(ws); ++i) {
-        seed((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+        seed((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
         chord(ws[i]);
-        context_is((struct braille_context){false, BRAILLE_CAPS_PASSAGE, true});
+        context_is((struct braille_context){.numeric=false, .caps=BRAILLE_CAPS_PASSAGE, .word_start=true});
     }
-    seed((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+    seed((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
     chord(NAV);
     context_is(BRAILLE_CONTEXT_INIT);
     puts("ok: whitespace preserves passages, other commands reset context");

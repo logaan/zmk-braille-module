@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+description: Test-only entry into the settings routing gate
+compatible: "braille,test-entry"
+include: zero_param.yaml

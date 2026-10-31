@@ -163,7 +163,10 @@ static void test_exact_tab_not_alphabet(void) {
         chord(0x118); /* removed fixture: space + 45 is VoiceOver Translate. */
         assert(output_count == 0);
         assert(!braille_engine_is_whitespace(0x118));
-        assert(braille_engine_pending_count() == 0);
+        /* UEB2 buffers any non-command cell until the word boundary. */
+        assert(braille_engine_pending_count() ==
+               (strcmp(braille_tables_active(), "ueb2") == 0 ? 1 : 0));
+        braille_engine_reset();
     }
     assert(braille_tables_select("ueb1") == 0);
     output_count = 0;

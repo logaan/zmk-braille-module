@@ -7,6 +7,7 @@
 / {
     behaviors {
         check: test_check { compatible = "braille,test-check"; #binding-cells = <1>; };
+        enter_settings: test_entry { compatible = "braille,test-entry"; #binding-cells = <0>; };
         exit_settings: test_exit { compatible = "braille,test-exit"; #binding-cells = <0>; };
     };
     keymap {
@@ -14,13 +15,13 @@
         base {
             bindings = <
                 &kp A &kp B &kp SPACE &none &none &none &none &none
-                &none &none &none &to 0 &bmode 1 &bsettings &exit_settings &check 0
+                &none &none &none &to 0 &bmode 1 &enter_settings &exit_settings &check 0
             >;
         };
         braille {
             bindings = <
                 &bc 1 &bc 2 &bspc &bc 8 &none &none &none &none
-                &none &none &none &to 0 &bmode 0 &bsettings &exit_settings &check 0
+                &none &none &none &to 0 &bmode 0 &enter_settings &exit_settings &check 0
             >;
         };
     };
@@ -50,7 +51,7 @@
         ZMK_MOCK_PRESS(1, 4, 10) ZMK_MOCK_PRESS(0, 0, 10)
         ZMK_MOCK_RELEASE(1, 4, 10) ZMK_MOCK_RELEASE(0, 0, 10)
         CHECK
-        /* Use a fixture rule action (dot 8) to invoke production bsettings. */
+        /* Use a fixture rule action (dot 8) to invoke the real settings gate through a test entry. */
         TAP(1, 4) TAP(0, 3) CHECK
         /* Active settings chords never reach the typing consumer. */
         TAP(0, 1) CHECK

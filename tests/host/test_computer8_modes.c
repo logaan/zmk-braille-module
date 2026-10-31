@@ -92,7 +92,7 @@ static void test_context_isolation(void) {
     for (unsigned numeric = 0; numeric < 2; ++numeric) {
         for (int caps = BRAILLE_CAPS_NONE; caps <= BRAILLE_CAPS_PASSAGE; ++caps) {
             for (unsigned word_start = 0; word_start < 2; ++word_start) {
-                struct braille_context context = {numeric, caps, word_start};
+                struct braille_context context = {.numeric=numeric, .caps=caps, .word_start=word_start};
                 seed_context(context);
                 for (size_t r = 0; r < table->count; ++r) {
                     const struct braille_rule *rule = &table->rules[r];
@@ -130,7 +130,7 @@ static void test_switch_discards_real_ueb_prefix(void) {
     clear_output();
     chord(0x08); /* real strict prefix for @ etc. */
     assert(!output_count && !notice_count && braille_engine_pending_count() == 1);
-    seed_context((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+    seed_context((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
     assert(braille_tables_select("computer8") == 0);
     assert(!output_count && !notice_count && !braille_engine_pending_count());
     expect_context(BRAILLE_CONTEXT_INIT);
@@ -141,7 +141,7 @@ static void test_switch_discards_real_ueb_prefix(void) {
     clear_output();
     chord(0x02);
     expect_one(KEY(0x1e));
-    seed_context((struct braille_context){true, BRAILLE_CAPS_WORD, false});
+    seed_context((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_WORD, .word_start=false});
     assert(braille_tables_select("ueb1") == 0);
     expect_context(BRAILLE_CONTEXT_INIT);
     clear_output();
@@ -242,10 +242,10 @@ static void test_switch_discards_override_prefix_in_both_directions(void) {
         clear_output();
         chord(0x08);
         assert(!output_count && !notice_count && braille_engine_pending_count() == 1);
-        seed_context((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+        seed_context((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
         assert(braille_tables_select("missing-mode") == -ENOENT);
         assert(braille_engine_pending_count() == 1); /* failed selection changes nothing */
-        expect_context((struct braille_context){true, BRAILLE_CAPS_PASSAGE, false});
+        expect_context((struct braille_context){.numeric=true, .caps=BRAILLE_CAPS_PASSAGE, .word_start=false});
         assert(braille_tables_select(names[1 - m]) == 0);
         assert(!output_count && !notice_count && !braille_engine_pending_count());
         expect_context(BRAILLE_CONTEXT_INIT);

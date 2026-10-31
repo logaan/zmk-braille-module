@@ -200,7 +200,7 @@ static void test_rule_data(void) {
         for (unsigned numeric = 0; numeric < 2; ++numeric) {
             for (int caps = BRAILLE_CAPS_NONE; caps <= BRAILLE_CAPS_PASSAGE; ++caps) {
                 for (unsigned word_start = 0; word_start < 2; ++word_start) {
-                    struct braille_context context = {numeric, caps, word_start};
+                    struct braille_context context = {.numeric=numeric, .caps=caps, .word_start=word_start};
                     assert(braille_rule_when_holds(&rule->when, &context));
                 }
             }

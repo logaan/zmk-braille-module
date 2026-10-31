@@ -42,7 +42,7 @@ int __wrap_braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_eve
     } else if (mask == 0x80) {
         /* Fixture action only, not an alternate production rule representation. */
         struct zmk_behavior_binding action = {
-            .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(bsettings)),
+            .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(enter_settings)),
         };
         __ASSERT(zmk_behavior_invoke_binding(&action, event, true) == 0, "Entry failed");
         __ASSERT(zmk_behavior_invoke_binding(&action, event, false) == 0, "Release failed");
@@ -109,6 +109,14 @@ static int check_pressed(struct zmk_behavior_binding *binding,
     LOG_DBG("mode_settings_checkpoint: %u PASS", i);
     return 0;
 }
+/* This fixture tests the core routing gate without a display editor. Public
+ * bsettings deliberately rejects headless entry; actual editor behavior is
+ * verified by test_editor and display firmware integration. */
+static int enter_pressed(struct zmk_behavior_binding *binding,
+                         struct zmk_behavior_binding_event event) {
+    (void)binding;
+    return braille_settings_enter(event);
+}
 static int exit_pressed(struct zmk_behavior_binding *binding,
                         struct zmk_behavior_binding_event event) {
     (void)binding;
@@ -131,3 +139,10 @@ BEHAVIOR_DT_DEFINE(DT_NODELABEL(check), NULL, NULL, NULL, NULL, POST_KERNEL,
                    CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &check_api);
 BEHAVIOR_DT_DEFINE(DT_NODELABEL(exit_settings), NULL, NULL, NULL, NULL, POST_KERNEL,
                    CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &exit_api);
+
+static const struct behavior_driver_api entry_api = {
+    .binding_pressed = enter_pressed,
+    .binding_released = released,
+};
+BEHAVIOR_DT_DEFINE(DT_NODELABEL(enter_settings), NULL, NULL, NULL, NULL, POST_KERNEL,
+                   CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &entry_api);

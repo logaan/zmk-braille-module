@@ -150,10 +150,11 @@ static void test_non_chord_behaviors(void) {
     assert(settings->binding_pressed(&binding, event) == -EINVAL);
     assert(settings->binding_released(&binding, event) == -EINVAL);
     binding.param1 = binding.param2 = 0;
-    assert(settings->binding_pressed(&binding, event) == 0);
-    assert(braille_settings_active());
+    /* This routing fixture does not compile a display editor. */
+    assert(settings->binding_pressed(&binding, event) == -ENOTSUP);
+    assert(!braille_settings_active());
     assert(settings->binding_released(&binding, event) == 0);
-    assert(braille_settings_active());
+    assert(!braille_settings_active());
     assert(braille_settings_exit(event) == 0);
     assert(!braille_settings_active());
     assert(sink.calls == calls);

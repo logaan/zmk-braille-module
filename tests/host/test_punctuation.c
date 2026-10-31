@@ -134,7 +134,7 @@ static void test_rules_and_real_table_validation(void) {
         for (unsigned numeric = 0; numeric < 2; ++numeric) {
             for (int caps = BRAILLE_CAPS_NONE; caps <= BRAILLE_CAPS_PASSAGE; ++caps) {
                 for (unsigned word_start = 0; word_start < 2; ++word_start) {
-                    struct braille_context ctx = {numeric, caps, word_start};
+                    struct braille_context ctx = {.numeric=numeric, .caps=caps, .word_start=word_start};
                     assert(braille_rule_when_holds(&found->when, &ctx));
                 }
             }

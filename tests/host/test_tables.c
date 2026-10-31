@@ -154,9 +154,14 @@ static void test_overrides_active_in_every_mode(void) {
         assert(braille_tables_select(braille_tables_mode(i)->name) == 0);
         log_reset();
         chord(DOT_A);
-        assert(commit_count == 1);
+        bool word_mode = !strcmp(braille_tables_active(), "ueb2");
+        if (word_mode) {
+            assert(commit_count == 0 && braille_engine_pending_count() == 1);
+            chord(CMD_SPACE);
+        }
+        assert(commit_count == (word_mode ? 2u : 1u));
         assert(commits[0] == ovr); /* the override, not a factory rule */
-        assert(causes[0] == BRAILLE_COMMIT_CLEAN);
+        assert(causes[0] == (word_mode ? BRAILLE_COMMIT_WORD_END : BRAILLE_COMMIT_CLEAN));
     }
 
     /* The override wins over a factory rule with the same input: rebind the

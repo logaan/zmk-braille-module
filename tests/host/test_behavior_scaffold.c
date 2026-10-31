@@ -52,7 +52,11 @@ int main(void) {
     assert(!braille_settings_active());
 #endif
     assert(settings->binding_released(&binding, event) == 0);
-    assert(braille_settings_active() == IS_ENABLED(CONFIG_ZMK_BRAILLE_SETTINGS_UI));
+#if IS_ENABLED(CONFIG_ZMK_BRAILLE_SETTINGS_UI)
+    assert(braille_settings_active());
+#else
+    assert(!braille_settings_active());
+#endif
     assert(braille_settings_exit(event) == 0);
 #endif
     (void)binding;
