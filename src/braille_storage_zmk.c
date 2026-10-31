@@ -50,7 +50,7 @@ static int storage_set(const char *name, size_t len, settings_read_cb read_cb,
   if (name[2] == 0 || *end || slot >= BRAILLE_STORAGE_SLOTS)
     return 0;
   /* A malformed/oversize record occupies its slot and remains untouched. */
-  uint8_t data[BRAILLE_STORAGE_RECORD_MAX];
+  static uint8_t data[BRAILLE_STORAGE_RECORD_MAX];
   if (!len)
     return 0; /* settings tombstone */
   if (len > sizeof(data) || read_cb(arg, data, len) != (ssize_t)len) {
