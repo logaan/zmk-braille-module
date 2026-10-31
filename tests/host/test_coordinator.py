@@ -24,7 +24,23 @@ def snapshot(done=12):
 
 class CoordinatorTests(unittest.TestCase):
     def setUp(self):
-        self.args = argparse.Namespace(pane="%1", luna_model="gpt-6-luna", sol_model="gpt-6.1-sol")
+        self.args = argparse.Namespace(pane="%1", luna_model="gpt-6-luna",
+                                       sol_model="gpt-6.1-sol", verify_model="gpt-6.1-sol")
+        # Scheduling tests never inspect or alter real terminal panes. Reaping
+        # and interactive startup are external boundaries, just like model calls.
+        for name, result in (("reap", []), ("wait_for_pane", None)):
+            patcher = patch.object(coordinator, name, return_value=result)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        # Any newly introduced process call must be mocked explicitly by its
+        # test. This fails before tmux or a model CLI could be contacted.
+        for name in ("run", "check_output"):
+            patcher = patch.object(
+                coordinator.subprocess, name,
+                side_effect=AssertionError("Unmocked external process in coordinator test"),
+            )
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
     def test_snapshot_folds_status_across_questions_and_skips_containers(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -63,10 +79,14 @@ class CoordinatorTests(unittest.TestCase):
         for marker, expected in [("ALPHABET_VERIFIED", "done"),
                                  ("COORDINATOR_CONTINUE", "wait"),
                                  ("COORDINATOR_BLOCKED", "blocked")]:
-            with self.subTest(marker=marker), patch.object(coordinator, "run_pi", side_effect=[
-                '{"action":"verify"}', marker]) as run:
+            with self.subTest(marker=marker), patch.object(
+                coordinator, "run_pi", return_value='{"action":"verify"}'
+            ) as run, patch.object(coordinator, "run_sol", return_value=marker) as verify:
                 self.assertEqual(coordinator.check_once(self.args, Path("unused")), expected)
-                self.assertEqual(run.call_args.args[:2], ("gpt-6.1-sol", "high"))
+                self.assertEqual(run.call_count, 1)
+                verify.assert_called_once()
+                self.assertIs(verify.call_args.args[0], self.args)
+                self.assertIn(coordinator.VERIFY, verify.call_args.args[1])
 
     @patch.object(coordinator, "task_snapshot", side_effect=lambda: snapshot())
     def test_active_worker_prevents_even_luna_requested_sol_handoff(self, rows):
@@ -99,7 +119,8 @@ class CoordinatorTests(unittest.TestCase):
             coordinator.start_leaf(self.args, snapshot(12))  # Stale input must not matter.
             self.assertTrue(all(call.args[1] == "software-5" for call in td.call_args_list))
             command = launch.call_args.args[0][-1]
-            self.assertIn("--print", command)
+            self.assertNotIn("--print", command)
+            self.assertIn("--name alphabet-leaf-06", command)
             self.assertIn("software-5", command)
             self.assertNotIn("software-6", command)
 
@@ -113,7 +134,7 @@ class CoordinatorTests(unittest.TestCase):
 
     def test_multiple_workers_fail_before_any_model_call(self):
         with patch.object(coordinator, "task_snapshot", return_value=snapshot()), \
-             patch.object(coordinator, "workers", return_value=[{}, {}]), \
+             patch.object(coordinator, "workers", return_value=[{"task": "software-0"}, {"task": "software-1"}]), \
              patch.object(coordinator, "run_pi") as run:
             with self.assertRaises(RuntimeError):
                 coordinator.check_once(self.args, Path("unused"))
