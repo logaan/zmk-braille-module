@@ -1,0 +1,1633 @@
+# SPDX-License-Identifier: MIT
+# Mapping facts recovered from ICEB 2024 sections 10.1–10.9.
+{
+  "source": "https://iceb.org/wp-content/uploads/2025/10/Rules-of-Unified-English-Braille-2024.pdf",
+  "edition": "Third edition 2024",
+  "contractions": [
+    {
+      "text": "as",
+      "cells": [
+        53
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "but",
+      "cells": [
+        3
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "can",
+      "cells": [
+        9
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "do",
+      "cells": [
+        25
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "every",
+      "cells": [
+        17
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "from",
+      "cells": [
+        11
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "go",
+      "cells": [
+        27
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "have",
+      "cells": [
+        19
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "it",
+      "cells": [
+        45
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "just",
+      "cells": [
+        26
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "knowledge",
+      "cells": [
+        5
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "like",
+      "cells": [
+        7
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "more",
+      "cells": [
+        13
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "not",
+      "cells": [
+        29
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "people",
+      "cells": [
+        15
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "quite",
+      "cells": [
+        31
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "rather",
+      "cells": [
+        23
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "so",
+      "cells": [
+        14
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "that",
+      "cells": [
+        30
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "us",
+      "cells": [
+        37
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "very",
+      "cells": [
+        39
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "will",
+      "cells": [
+        58
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "you",
+      "cells": [
+        61
+      ],
+      "condition": "ALPHA",
+      "section": "10.1"
+    },
+    {
+      "text": "child",
+      "cells": [
+        33
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "out",
+      "cells": [
+        51
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "shall",
+      "cells": [
+        41
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "still",
+      "cells": [
+        12
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "this",
+      "cells": [
+        57
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "which",
+      "cells": [
+        49
+      ],
+      "condition": "WORD",
+      "section": "10.2"
+    },
+    {
+      "text": "be",
+      "cells": [
+        6
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "enough",
+      "cells": [
+        34
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "his",
+      "cells": [
+        38
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "in",
+      "cells": [
+        20
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "was",
+      "cells": [
+        52
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "were",
+      "cells": [
+        54
+      ],
+      "condition": "LOWER_WORD",
+      "section": "10.5"
+    },
+    {
+      "text": "and",
+      "cells": [
+        47
+      ],
+      "condition": "ANY",
+      "section": "10.3"
+    },
+    {
+      "text": "for",
+      "cells": [
+        63
+      ],
+      "condition": "ANY",
+      "section": "10.3"
+    },
+    {
+      "text": "of",
+      "cells": [
+        55
+      ],
+      "condition": "ANY",
+      "section": "10.3"
+    },
+    {
+      "text": "the",
+      "cells": [
+        46
+      ],
+      "condition": "ANY",
+      "section": "10.3"
+    },
+    {
+      "text": "with",
+      "cells": [
+        62
+      ],
+      "condition": "ANY",
+      "section": "10.3"
+    },
+    {
+      "text": "ar",
+      "cells": [
+        28
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "ch",
+      "cells": [
+        33
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "ed",
+      "cells": [
+        43
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "er",
+      "cells": [
+        59
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "gh",
+      "cells": [
+        35
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "ing",
+      "cells": [
+        44
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "ou",
+      "cells": [
+        51
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "ow",
+      "cells": [
+        42
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "sh",
+      "cells": [
+        41
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "st",
+      "cells": [
+        12
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "th",
+      "cells": [
+        57
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "wh",
+      "cells": [
+        49
+      ],
+      "condition": "ANY",
+      "section": "10.4"
+    },
+    {
+      "text": "be",
+      "cells": [
+        6
+      ],
+      "condition": "START",
+      "section": "10.6"
+    },
+    {
+      "text": "con",
+      "cells": [
+        18
+      ],
+      "condition": "START",
+      "section": "10.6"
+    },
+    {
+      "text": "dis",
+      "cells": [
+        50
+      ],
+      "condition": "START",
+      "section": "10.6"
+    },
+    {
+      "text": "bb",
+      "cells": [
+        6
+      ],
+      "condition": "MIDDLE",
+      "section": "10.6"
+    },
+    {
+      "text": "cc",
+      "cells": [
+        18
+      ],
+      "condition": "MIDDLE",
+      "section": "10.6"
+    },
+    {
+      "text": "ea",
+      "cells": [
+        2
+      ],
+      "condition": "MIDDLE",
+      "section": "10.6"
+    },
+    {
+      "text": "ff",
+      "cells": [
+        22
+      ],
+      "condition": "MIDDLE",
+      "section": "10.6"
+    },
+    {
+      "text": "gg",
+      "cells": [
+        54
+      ],
+      "condition": "MIDDLE",
+      "section": "10.6"
+    },
+    {
+      "text": "en",
+      "cells": [
+        34
+      ],
+      "condition": "ANY",
+      "section": "10.6"
+    },
+    {
+      "text": "in",
+      "cells": [
+        20
+      ],
+      "condition": "ANY",
+      "section": "10.6"
+    },
+    {
+      "text": "cannot",
+      "cells": [
+        56,
+        9
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "character",
+      "cells": [
+        16,
+        33
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "day",
+      "cells": [
+        16,
+        25
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "ever",
+      "cells": [
+        16,
+        17
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "father",
+      "cells": [
+        16,
+        11
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "had",
+      "cells": [
+        56,
+        19
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "here",
+      "cells": [
+        16,
+        19
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "know",
+      "cells": [
+        16,
+        5
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "lord",
+      "cells": [
+        16,
+        7
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "many",
+      "cells": [
+        56,
+        13
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "mother",
+      "cells": [
+        16,
+        13
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "name",
+      "cells": [
+        16,
+        29
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "one",
+      "cells": [
+        16,
+        21
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "ought",
+      "cells": [
+        16,
+        51
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "part",
+      "cells": [
+        16,
+        15
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "question",
+      "cells": [
+        16,
+        31
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "right",
+      "cells": [
+        16,
+        23
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "some",
+      "cells": [
+        16,
+        14
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "spirit",
+      "cells": [
+        56,
+        14
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "their",
+      "cells": [
+        56,
+        46
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "there",
+      "cells": [
+        16,
+        46
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "these",
+      "cells": [
+        24,
+        46
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "those",
+      "cells": [
+        24,
+        57
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "through",
+      "cells": [
+        16,
+        57
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "time",
+      "cells": [
+        16,
+        30
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "under",
+      "cells": [
+        16,
+        37
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "upon",
+      "cells": [
+        24,
+        37
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "where",
+      "cells": [
+        16,
+        49
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "whose",
+      "cells": [
+        24,
+        49
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "word",
+      "cells": [
+        24,
+        58
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "work",
+      "cells": [
+        16,
+        58
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "world",
+      "cells": [
+        56,
+        58
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "young",
+      "cells": [
+        16,
+        61
+      ],
+      "condition": "ANY",
+      "section": "10.7"
+    },
+    {
+      "text": "ance",
+      "cells": [
+        40,
+        17
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ence",
+      "cells": [
+        48,
+        17
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ful",
+      "cells": [
+        48,
+        7
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ity",
+      "cells": [
+        48,
+        61
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "less",
+      "cells": [
+        40,
+        14
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ment",
+      "cells": [
+        48,
+        30
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ness",
+      "cells": [
+        48,
+        14
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ong",
+      "cells": [
+        48,
+        27
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ound",
+      "cells": [
+        40,
+        25
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "ount",
+      "cells": [
+        40,
+        30
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "sion",
+      "cells": [
+        40,
+        29
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "tion",
+      "cells": [
+        48,
+        29
+      ],
+      "condition": "FINAL",
+      "section": "10.8"
+    },
+    {
+      "text": "about",
+      "cells": [
+        1,
+        3
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "above",
+      "cells": [
+        1,
+        3,
+        39
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "according",
+      "cells": [
+        1,
+        9
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "across",
+      "cells": [
+        1,
+        9,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "after",
+      "cells": [
+        1,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "afternoon",
+      "cells": [
+        1,
+        11,
+        29
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "afterward",
+      "cells": [
+        1,
+        11,
+        58
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "again",
+      "cells": [
+        1,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "against",
+      "cells": [
+        1,
+        27,
+        12
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "almost",
+      "cells": [
+        1,
+        7,
+        13
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "already",
+      "cells": [
+        1,
+        7,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "also",
+      "cells": [
+        1,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "although",
+      "cells": [
+        1,
+        7,
+        57
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "altogether",
+      "cells": [
+        1,
+        7,
+        30
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "always",
+      "cells": [
+        1,
+        7,
+        58
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "because",
+      "cells": [
+        6,
+        9
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "before",
+      "cells": [
+        6,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "behind",
+      "cells": [
+        6,
+        19
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "below",
+      "cells": [
+        6,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "beneath",
+      "cells": [
+        6,
+        29
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "beside",
+      "cells": [
+        6,
+        14
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "between",
+      "cells": [
+        6,
+        30
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "beyond",
+      "cells": [
+        6,
+        61
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "blind",
+      "cells": [
+        3,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "braille",
+      "cells": [
+        3,
+        23,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "children",
+      "cells": [
+        33,
+        29
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "conceive",
+      "cells": [
+        18,
+        9,
+        39
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "conceiving",
+      "cells": [
+        18,
+        9,
+        39,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "could",
+      "cells": [
+        9,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "deceive",
+      "cells": [
+        25,
+        9,
+        39
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "deceiving",
+      "cells": [
+        25,
+        9,
+        39,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "declare",
+      "cells": [
+        25,
+        9,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "declaring",
+      "cells": [
+        25,
+        9,
+        7,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "either",
+      "cells": [
+        17,
+        10
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "first",
+      "cells": [
+        11,
+        12
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "friend",
+      "cells": [
+        11,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "good",
+      "cells": [
+        27,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "great",
+      "cells": [
+        27,
+        23,
+        30
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "herself",
+      "cells": [
+        19,
+        59,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "him",
+      "cells": [
+        19,
+        13
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "himself",
+      "cells": [
+        19,
+        13,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "immediate",
+      "cells": [
+        10,
+        13,
+        13
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "its",
+      "cells": [
+        45,
+        14
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "itself",
+      "cells": [
+        45,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "letter",
+      "cells": [
+        7,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "little",
+      "cells": [
+        7,
+        7
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "much",
+      "cells": [
+        13,
+        33
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "must",
+      "cells": [
+        13,
+        12
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "myself",
+      "cells": [
+        13,
+        61,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "necessary",
+      "cells": [
+        29,
+        17,
+        9
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "neither",
+      "cells": [
+        29,
+        17,
+        10
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "oneself",
+      "cells": [
+        16,
+        21,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "ourselves",
+      "cells": [
+        51,
+        23,
+        39,
+        14
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "paid",
+      "cells": [
+        15,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "perceive",
+      "cells": [
+        15,
+        59,
+        9,
+        39
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "perceiving",
+      "cells": [
+        15,
+        59,
+        9,
+        39,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "perhaps",
+      "cells": [
+        15,
+        59,
+        19
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "quick",
+      "cells": [
+        31,
+        5
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "receive",
+      "cells": [
+        23,
+        9,
+        39
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "receiving",
+      "cells": [
+        23,
+        9,
+        39,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "rejoice",
+      "cells": [
+        23,
+        26,
+        9
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "rejoicing",
+      "cells": [
+        23,
+        26,
+        9,
+        27
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "said",
+      "cells": [
+        14,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "should",
+      "cells": [
+        41,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "such",
+      "cells": [
+        14,
+        33
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "themselves",
+      "cells": [
+        46,
+        13,
+        39,
+        14
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "thyself",
+      "cells": [
+        57,
+        61,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "today",
+      "cells": [
+        30,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "together",
+      "cells": [
+        30,
+        27,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "tomorrow",
+      "cells": [
+        30,
+        13
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "tonight",
+      "cells": [
+        30,
+        29
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "would",
+      "cells": [
+        58,
+        25
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "your",
+      "cells": [
+        61,
+        23
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "yourself",
+      "cells": [
+        61,
+        23,
+        11
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    },
+    {
+      "text": "yourselves",
+      "cells": [
+        61,
+        23,
+        39,
+        14
+      ],
+      "condition": "SHORT",
+      "section": "10.9"
+    }
+  ]
+}

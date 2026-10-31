@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #include <braille_rules.h>
+#include <braille_grade2.h>
 #include <zmk/behavior.h>
 
 /*
@@ -91,7 +92,7 @@ void braille_engine_reset(void);
 /* The engine-owned UEB context; pending cells never mutate it. */
 const struct braille_context *braille_engine_context(void);
 
-/* Number of chords currently held pending (0..BRAILLE_RULE_MAX_CHORDS). */
+/* Number of chords currently held pending (0..BRAILLE_WORD_MAX_CELLS). */
 uint8_t braille_engine_pending_count(void);
 
 /* Inspection view, valid until the next engine call. Only pending_count
@@ -100,7 +101,7 @@ const uint16_t *braille_engine_pending_cells(void);
 
 /* Each named mode owns its pending bound (eight in the initial modes).
  * A future larger-buffer mode can raise the storage/schema bound separately.
- * Returns -EINVAL outside 1..BRAILLE_RULE_MAX_CHORDS; success resets input. */
+ * Returns -EINVAL outside 1..BRAILLE_WORD_MAX_CELLS; success resets input. */
 int braille_engine_set_pending_limit(uint8_t limit);
 
 enum braille_pending_change {
@@ -144,5 +145,8 @@ int braille_engine_commit_rule(const struct braille_rule *rule, enum braille_com
                                struct zmk_behavior_binding_event event);
 void braille_engine_notify_dropped_prefix(const uint16_t *cells, uint8_t count,
                                           struct zmk_behavior_binding_event event);
+
+/* Side-effect-free provisional translation of pending cells plus held dots. */
+int braille_engine_preview_rule(uint16_t held, struct braille_rule *out, bool *waiting);
 
 #endif /* BRAILLE_ENGINE_H */

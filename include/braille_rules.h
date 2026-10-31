@@ -75,6 +75,9 @@ enum braille_caps_mode {
  * plan's reset events; changed only when a rule commits. */
 struct braille_context {
     bool numeric;
+    /* UEB2 only: none, word, passage, or numeric-induced Grade 1. */
+    uint8_t grade1;
+    bool grade1_symbol;
     enum braille_caps_mode caps;
     bool word_start;
 };

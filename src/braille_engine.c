@@ -3,11 +3,15 @@
 #include <errno.h>
 #include <string.h>
 
-#include <zephyr/toolchain.h>
-#include <drivers/behavior.h>
 #include <braille_chord.h>
 #include <braille_engine.h>
 #include <braille_settings.h>
+#include <braille_tables.h>
+#include <drivers/behavior.h>
+#include <zephyr/toolchain.h>
+#ifdef CONFIG_ZMK_BRAILLE_STORAGE
+#include <braille_storage.h>
+#endif
 
 /* One matcher for characters, commands and overrides. Context is captured at
  * the first pending cell and changes only on commit. No indicator dispatch,
@@ -17,6 +21,7 @@ struct match_result {
     const struct braille_rule *rule;
     enum match_layer layer;
     uint8_t chords;
+    struct braille_rule storage;
 };
 
 static const struct braille_rule_table *character_table;
@@ -25,7 +30,7 @@ static const struct braille_rule_table *override_table;
 static struct braille_whitespace_chords whitespace;
 static struct braille_context context = BRAILLE_CONTEXT_INIT;
 static struct braille_context pending_ctx = BRAILLE_CONTEXT_INIT;
-static uint16_t pending[BRAILLE_RULE_MAX_CHORDS];
+static uint16_t pending[BRAILLE_WORD_MAX_CELLS];
 static uint8_t pending_len;
 static uint8_t pending_limit = BRAILLE_RULE_MAX_CHORDS;
 /* A layer/settings/mode reset during a dispatched action must not be undone
@@ -73,6 +78,14 @@ void braille_engine_set_overrides(const struct braille_rule_table *overrides) {
     override_table = overrides;
 }
 
+static bool word_mode(void) {
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+    return character_table == &braille_rules_ueb2_characters;
+#else
+    return false;
+#endif
+}
+
 static bool conditions_disjoint(enum braille_condition a, enum braille_condition b) {
     return (a == BRAILLE_CONDITION_SET && b == BRAILLE_CONDITION_CLEAR) ||
            (a == BRAILLE_CONDITION_CLEAR && b == BRAILLE_CONDITION_SET);
@@ -80,8 +93,7 @@ static bool conditions_disjoint(enum braille_condition a, enum braille_condition
 
 bool braille_engine_when_disjoint(const struct braille_rule_when *a,
                                   const struct braille_rule_when *b) {
-    return conditions_disjoint(a->numeric, b->numeric) ||
-           conditions_disjoint(a->caps, b->caps) ||
+    return conditions_disjoint(a->numeric, b->numeric) || conditions_disjoint(a->caps, b->caps) ||
            conditions_disjoint(a->word_start, b->word_start);
 }
 
@@ -108,13 +120,13 @@ bool braille_engine_rules_collide(const struct braille_rule *a, const struct bra
      * END may overlap (a one-sign word); MIDDLE excludes both boundaries. */
     for (unsigned bits = 0; bits < 16; ++bits) {
         struct braille_context ctx = {
-            .numeric = bits & 1, .caps = bits & 2 ? BRAILLE_CAPS_WORD : BRAILLE_CAPS_NONE,
+            .numeric = bits & 1,
+            .caps = bits & 2 ? BRAILLE_CAPS_WORD : BRAILLE_CAPS_NONE,
             .word_start = bits & 4,
         };
-        if (braille_rule_when_holds(&a->when, &ctx) &&
-            braille_rule_when_holds(&b->when, &ctx) && position_at_start(a, &ctx) &&
-            position_at_start(b, &ctx) && position_at_end(a, bits & 8) &&
-            position_at_end(b, bits & 8)) {
+        if (braille_rule_when_holds(&a->when, &ctx) && braille_rule_when_holds(&b->when, &ctx) &&
+            position_at_start(a, &ctx) && position_at_start(b, &ctx) &&
+            position_at_end(a, bits & 8) && position_at_end(b, bits & 8)) {
             return true;
         }
     }
@@ -178,7 +190,7 @@ int braille_engine_set_tables(const struct braille_rule_table *character,
 }
 
 int braille_engine_set_pending_limit(uint8_t limit) {
-    if (!limit || limit > BRAILLE_RULE_MAX_CHORDS) {
+    if (!limit || limit > BRAILLE_WORD_MAX_CELLS) {
         return -EINVAL;
     }
     pending_limit = limit;
@@ -210,6 +222,28 @@ static bool sequence_is_command(const uint16_t *seq, uint8_t count) {
     return false;
 }
 
+static size_t table_count(const struct braille_rule_table *t) {
+    size_t count = t ? t->count : 0;
+#ifdef CONFIG_ZMK_BRAILLE_STORAGE
+    if (t == override_table)
+        count += braille_storage_count();
+#endif
+    return count;
+}
+
+static const struct braille_rule *table_rule(const struct braille_rule_table *t, size_t index,
+                                             struct braille_rule *scratch) {
+    if (t && index < t->count)
+        return &t->rules[index];
+#ifdef CONFIG_ZMK_BRAILLE_STORAGE
+    if (t == override_table && !braille_storage_rule(index - (t ? t->count : 0), scratch))
+        return scratch;
+#else
+    (void)scratch;
+#endif
+    return NULL;
+}
+
 static bool is_boundary(uint16_t cell, const struct braille_context *ctx) {
     if (braille_engine_is_whitespace(cell)) {
         return true;
@@ -218,10 +252,13 @@ static bool is_boundary(uint16_t cell, const struct braille_context *ctx) {
     const struct braille_rule_table *sources[] = {override_table, character_table};
     for (size_t s = 0; s < ARRAY_SIZE(sources); ++s) {
         const struct braille_rule_table *t = sources[s];
-        for (size_t i = 0; t && i < t->count; ++i) {
-            const struct braille_rule *r = &t->rules[i];
-            if (r->chord_count == 1 && r->chords[0] == cell &&
-                r->class == BRAILLE_CLASS_HYPHEN && braille_rule_when_holds(&r->when, ctx)) {
+        for (size_t i = 0; i < table_count(t); ++i) {
+            struct braille_rule scratch;
+            const struct braille_rule *r = table_rule(t, i, &scratch);
+            if (!r)
+                continue;
+            if (r->chord_count == 1 && r->chords[0] == cell && r->class == BRAILLE_CLASS_HYPHEN &&
+                braille_rule_when_holds(&r->when, ctx)) {
                 return true;
             }
         }
@@ -235,14 +272,22 @@ static bool is_boundary(uint16_t cell, const struct braille_context *ctx) {
  * character; neither consumes that following cell. */
 static void match_sequence(const uint16_t *seq, uint8_t count, const struct braille_context *ctx,
                            struct match_result *best, bool *wait, uint8_t *orphan) {
-    const struct braille_rule_table *sources[] = {override_table, character_table, command_table};
+    const struct braille_rule_table *sources[] = {override_table, character_table, command_table,
+                                                  NULL};
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+    if (word_mode())
+        sources[3] = &braille_rules_ueb1_characters;
+#endif
     memset(best, 0, sizeof(*best));
     *wait = false;
     *orphan = 0;
     for (size_t s = 0; s < ARRAY_SIZE(sources); ++s) {
         const struct braille_rule_table *t = sources[s];
-        for (size_t i = 0; t && i < t->count; ++i) {
-            const struct braille_rule *r = &t->rules[i];
+        for (size_t i = 0; i < table_count(t); ++i) {
+            struct braille_rule scratch;
+            const struct braille_rule *r = table_rule(t, i, &scratch);
+            if (!r)
+                continue;
             /* Overrides are mutable: never let an invalid row overrun storage. */
             if (!r->chord_count || r->chord_count > pending_limit ||
                 r->action_count > BRAILLE_RULE_MAX_ACTIONS ||
@@ -276,7 +321,13 @@ static void match_sequence(const uint16_t *seq, uint8_t count, const struct brai
             enum match_layer layer = s == 0 ? LAYER_OVERRIDE : LAYER_FACTORY;
             if (r->chord_count > best->chords ||
                 (r->chord_count == best->chords && layer > best->layer)) {
-                *best = (struct match_result){r, layer, r->chord_count};
+                if (r == &scratch) {
+                    best->storage = *r;
+                    best->rule = &best->storage;
+                } else
+                    best->rule = r;
+                best->layer = layer;
+                best->chords = r->chord_count;
             }
         }
     }
@@ -284,9 +335,11 @@ static void match_sequence(const uint16_t *seq, uint8_t count, const struct brai
 
 /* Class-based transitions from the researched context table. KEEP is encoded
  * as -1; capitals either stay, end word mode only, or take the rule's sets. */
-static void transition(const struct braille_rule *rule) {
+static void transition(struct braille_context *ctx, const struct braille_rule *rule) {
     enum { KEEP = -1, END_WORD = 0, SET_CAPS = 1 };
-    static const struct { int8_t numeric, caps, word_start; } transitions[] = {
+    static const struct {
+        int8_t numeric, caps, word_start;
+    } transitions[] = {
         [BRAILLE_CLASS_LETTER] = {0, KEEP, 0},
         [BRAILLE_CLASS_CAPITAL_LETTER] = {0, END_WORD, 0},
         [BRAILLE_CLASS_DIGIT] = {1, END_WORD, 0},
@@ -303,16 +356,16 @@ static void transition(const struct braille_rule *rule) {
         return;
     }
     if (transitions[rule->class].numeric != KEEP) {
-        context.numeric = transitions[rule->class].numeric;
+        ctx->numeric = transitions[rule->class].numeric;
     }
     if (transitions[rule->class].word_start != KEEP) {
-        context.word_start = transitions[rule->class].word_start;
+        ctx->word_start = transitions[rule->class].word_start;
     }
-    if (transitions[rule->class].caps == END_WORD && context.caps == BRAILLE_CAPS_WORD) {
-        context.caps = BRAILLE_CAPS_NONE;
+    if (transitions[rule->class].caps == END_WORD && ctx->caps == BRAILLE_CAPS_WORD) {
+        ctx->caps = BRAILLE_CAPS_NONE;
     } else if (transitions[rule->class].caps == SET_CAPS &&
-               !(rule->sets == BRAILLE_CAPS_WORD && context.caps == BRAILLE_CAPS_PASSAGE)) {
-        context.caps = rule->sets;
+               !(rule->sets == BRAILLE_CAPS_WORD && ctx->caps == BRAILLE_CAPS_PASSAGE)) {
+        ctx->caps = rule->sets;
     }
 }
 
@@ -326,17 +379,193 @@ static int commit(const struct braille_rule *rule, enum braille_commit_cause cau
     braille_engine_pending_changed(BRAILLE_PENDING_COMMITTED, rule->chords, rule->chord_count);
     int ret = braille_engine_commit_rule(rule, cause, event);
     if (ret < 0) {
-        braille_engine_reset(); /* Never replay an action that may have partly executed. */
+        braille_engine_reset(); /* Never replay an action that may have partly
+                                   executed. */
     } else if (generation == reset_generation) {
-        if (ws && (rule->class == BRAILLE_CLASS_NEUTRAL ||
-                   sequence_is_command(rule->chords, 1))) {
+        if (ws && (rule->class == BRAILLE_CLASS_NEUTRAL || sequence_is_command(rule->chords, 1))) {
             const struct braille_rule space = {.class = BRAILLE_CLASS_SPACE};
-            transition(&space); /* Return/Tab aliases share space's passage-preserving path. */
+            transition(&context, &space); /* Return/Tab aliases share space's
+                                             passage-preserving path. */
         } else {
-            transition(rule);
+            transition(&context, rule);
         }
     }
     return ret;
+}
+
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+/* Resolve the complete word through common rules and commit(), never a new
+ * dispatch path. Word buffering supplies finite lookahead to the contraction
+ * selector, while the existing matcher supplies UEB1 and override fallback. */
+static int resolve_word(struct zmk_behavior_binding_event event) {
+    uint16_t cells[BRAILLE_WORD_MAX_CELLS];
+    uint8_t count = pending_len;
+    memcpy(cells, pending, count * sizeof(*cells));
+    pending_len = 0;
+    bool after_letter = false;
+    for (uint8_t pos = 0; pos < count;) {
+        struct braille_rule contracted;
+        struct match_result best;
+        bool wait;
+        uint8_t orphan;
+        match_sequence(cells + pos, count - pos, &context, &best, &wait, &orphan);
+        bool has = braille_grade2_match(cells, count, pos, &context, after_letter, &contracted);
+        if (has &&
+            (!best.rule || best.layer != LAYER_OVERRIDE || best.chords < contracted.chord_count)) {
+            best.rule = &contracted;
+            best.chords = contracted.chord_count;
+        }
+        /* 5.2–5.6: a final-letter groupsign wins over the symbol indicator.
+         * Indicators themselves use the common silent-rule commit path. */
+        if (cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
+            (!has || best.rule != &contracted)) {
+            uint8_t n = 1;
+            while (pos + n < count && cells[pos + n] == 0x30 && n < 3)
+                ++n;
+            bool end = pos + 1 < count && cells[pos + 1] == 4;
+            if (end)
+                n = 2;
+            struct braille_rule indicator = {.chord_count = n, .class = BRAILLE_CLASS_NEUTRAL};
+            memcpy(indicator.chords, cells + pos, n * sizeof(*cells));
+            uint32_t generation = reset_generation;
+            int ret = commit(&indicator, BRAILLE_COMMIT_WORD_END, event);
+            if (ret < 0 || generation != reset_generation)
+                return ret;
+            if (end) {
+                context.grade1 = 0;
+                context.grade1_symbol = false;
+                context.numeric = false;
+            } else if (n == 1) {
+                context.grade1_symbol = true;
+                context.numeric = false;
+            } else {
+                context.grade1 = n == 3 ? 2 : 1;
+                context.grade1_symbol = false;
+                context.numeric = false;
+            }
+            context.word_start = false;
+            if (context.caps == BRAILLE_CAPS_WORD)
+                context.caps = BRAILLE_CAPS_NONE;
+            pos += n;
+            continue;
+        }
+        if (!best.rule) {
+            braille_engine_pending_changed(BRAILLE_PENDING_DISCARDED, cells + pos, 1);
+            braille_engine_notify_dropped_prefix(cells + pos, 1, event);
+            ++pos;
+            after_letter = false;
+            continue;
+        }
+        uint8_t consumed = best.chords;
+        bool numeric_indicator = cells[pos] == 0x3c;
+        bool hyphen = best.rule->class == BRAILLE_CLASS_HYPHEN ||
+                      (consumed >= 2 && cells[pos + consumed - 1] == 0x24);
+        enum braille_rule_class cls = best.rule->class;
+        uint32_t generation = reset_generation;
+        int ret = commit(best.rule, BRAILLE_COMMIT_WORD_END, event);
+        if (ret < 0 || generation != reset_generation)
+            return ret;
+        if (numeric_indicator && context.grade1 != 2)
+            context.grade1 = 3;
+        if (hyphen && context.grade1 == 3)
+            context.grade1 = 0;
+        if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
+            context.grade1_symbol = false;
+        after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+        pos += consumed;
+    }
+    return 0;
+}
+#endif
+
+int braille_engine_preview_rule(uint16_t held, struct braille_rule *out, bool *waiting) {
+    if (!out || !waiting)
+        return -EINVAL;
+    uint16_t cells[BRAILLE_WORD_MAX_CELLS + 1];
+    uint8_t n = pending_len;
+    memcpy(cells, pending, n * sizeof(*cells));
+    if (held)
+        cells[n++] = held & BRAILLE_CHORD_MASK;
+    *waiting = word_mode();
+    if (!n)
+        return 0;
+    struct braille_context ctx = pending_len ? pending_ctx : context;
+    uint8_t pos = 0;
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+    bool after_letter = false;
+#endif
+    while (pos < n) {
+        struct match_result best;
+        bool wait;
+        uint8_t orphan;
+        match_sequence(cells + pos, n - pos, &ctx, &best, &wait, &orphan);
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+        struct braille_rule contracted;
+        if (word_mode()) {
+            bool has = braille_grade2_match(cells, n, pos, &ctx, after_letter, &contracted);
+            if (has && (!best.rule || best.layer != LAYER_OVERRIDE ||
+                        best.chords < contracted.chord_count)) {
+                best.rule = &contracted;
+                best.chords = contracted.chord_count;
+            }
+            if (cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
+                (!has || best.rule != &contracted)) {
+                uint8_t k = 1;
+                while (pos + k < n && cells[pos + k] == 0x30 && k < 3)
+                    ++k;
+                bool end = pos + 1 < n && cells[pos + 1] == 4;
+                if (end)
+                    k = 2;
+                if (pos + k == n) {
+                    memset(out, 0, sizeof(*out));
+                    return 1;
+                }
+                if (end) {
+                    ctx.grade1 = 0;
+                    ctx.grade1_symbol = false;
+                    ctx.numeric = false;
+                } else if (k == 1) {
+                    ctx.grade1_symbol = true;
+                    ctx.numeric = false;
+                } else {
+                    ctx.grade1 = k == 3 ? 2 : 1;
+                    ctx.grade1_symbol = false;
+                    ctx.numeric = false;
+                }
+                ctx.word_start = false;
+                if (ctx.caps == BRAILLE_CAPS_WORD)
+                    ctx.caps = BRAILLE_CAPS_NONE;
+                pos += k;
+                continue;
+            }
+        }
+#endif
+        *waiting |= wait;
+        if (!best.rule) {
+            ++pos;
+            continue;
+        }
+        if (!word_mode() || pos + best.chords >= n) {
+            *out = *best.rule;
+            return 1;
+        }
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+        bool numeric = cells[pos] == 0x3c;
+        bool hyphen = best.rule->class == BRAILLE_CLASS_HYPHEN ||
+                      (best.chords >= 2 && cells[pos + best.chords - 1] == 0x24);
+        enum braille_rule_class cls = best.rule->class;
+        transition(&ctx, best.rule);
+        if (numeric && ctx.grade1 != 2)
+            ctx.grade1 = 3;
+        if (hyphen && ctx.grade1 == 3)
+            ctx.grade1 = 0;
+        if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
+            ctx.grade1_symbol = false;
+        after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+#endif
+        pos += best.chords;
+    }
+    return 0;
 }
 
 int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event event) {
@@ -344,6 +573,41 @@ int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event even
     if (!mask) {
         return 0;
     }
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+    if (word_mode()) {
+        bool command = sequence_is_command(&mask, 1);
+        if (!command) {
+            if (pending_len == pending_limit) {
+                int ret = resolve_word(event);
+                if (ret < 0)
+                    return ret;
+                context.word_start = true;
+            }
+            if (!pending_len)
+                pending_ctx = context;
+            pending[pending_len++] = mask;
+            braille_engine_pending_changed(BRAILLE_PENDING_UPDATED, pending, pending_len);
+            /* The 32nd cell resolves immediately at a synthetic boundary. */
+            if (pending_len == pending_limit) {
+                int ret = resolve_word(event);
+                context.word_start = true;
+                if (context.grade1 != 2)
+                    context.grade1 = 0;
+                return ret;
+            }
+            return 0;
+        }
+        if (braille_engine_is_whitespace(mask)) {
+            int ret = resolve_word(event);
+            if (ret < 0)
+                return ret;
+            if (context.grade1 != 2)
+                context.grade1 = 0;
+            context.grade1_symbol = false;
+        } else
+            braille_engine_reset();
+    }
+#endif
     uint16_t cells[BRAILLE_RULE_MAX_CHORDS + 1];
     uint8_t count = pending_len + 1;
     memcpy(cells, pending, pending_len * sizeof(*cells));
@@ -382,9 +646,10 @@ int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event even
         uint8_t consumed;
         if (best.rule) {
             consumed = best.chords;
-            enum braille_commit_cause cause = consumed == count ? BRAILLE_COMMIT_CLEAN :
-                (is_boundary(cells[consumed], &ctx) ? BRAILLE_COMMIT_WORD_END :
-                                                     BRAILLE_COMMIT_RULED_OUT);
+            enum braille_commit_cause cause =
+                consumed == count ? BRAILLE_COMMIT_CLEAN
+                                  : (is_boundary(cells[consumed], &ctx) ? BRAILLE_COMMIT_WORD_END
+                                                                        : BRAILLE_COMMIT_RULED_OUT);
             uint32_t generation = reset_generation;
             int ret = commit(best.rule, cause, event);
             if (ret < 0 || generation != reset_generation) {
@@ -399,7 +664,8 @@ int braille_chord_resolved(uint16_t mask, struct zmk_behavior_binding_event even
         }
         count -= consumed;
         memmove(cells, cells + consumed, count * sizeof(*cells));
-        ctx = context; /* Re-evaluate every tail exactly once AFTER its predecessor commits. */
+        ctx = context; /* Re-evaluate every tail exactly once AFTER its predecessor
+                          commits. */
     }
     pending_ctx = context;
     return 0;
