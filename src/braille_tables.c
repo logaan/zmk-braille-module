@@ -59,7 +59,7 @@ static const struct braille_mode modes[] = {
         .characters = &braille_rules_ueb2_characters,
         .commands = &braille_rules_ueb2_commands,
         .whitespace = &braille_commands_ueb2_whitespace,
-        .pending_limit = BRAILLE_RULE_MAX_CHORDS,
+        .pending_limit = BRAILLE_WORD_MAX_CELLS,
     },
 #endif
 };
@@ -72,6 +72,8 @@ static struct braille_rule_table override_layer = {
 };
 
 static const struct braille_mode *active_mode;
+
+__attribute__((weak)) void braille_storage_mode_changed(const char *name) { (void)name; }
 
 struct braille_override_layer braille_tables_overrides(void) {
     return (struct braille_override_layer){
@@ -120,6 +122,7 @@ int braille_tables_select(const char *name) {
     /* Re-register the one override layer so it stays active in every mode. */
     braille_engine_set_overrides(&override_layer);
     active_mode = mode;
+    braille_storage_mode_changed(mode->name);
     return 0;
 }
 

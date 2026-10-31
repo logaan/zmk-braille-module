@@ -57,8 +57,8 @@ extern const struct braille_whitespace_chords braille_commands_ueb2_whitespace;
 /* In-memory user override layer owned by the registry and re-registered
  * with the engine on every selection, so overrides stay active in every
  * mode. The matcher re-reads `count` on every chord, so rules appended here
- * take effect immediately. The capacity is a small fixture while phase 05
- * builds editing and persistence for the plan's 256 overrides. */
+ * take effect immediately. Persistent overrides use a separate compact pool; this eight-row view
+ * remains available for lightweight transient rules and host fixtures. */
 #ifndef BRAILLE_TABLES_OVERRIDE_CAPACITY
 #define BRAILLE_TABLES_OVERRIDE_CAPACITY 8
 #endif
