@@ -48,6 +48,25 @@ local frames before event/library/queue overhead. The configured 6 KiB system
 workqueue remains the required budget; these are static frames, not measured
 hardware high-water marks. No board was flashed.
 
+### Published shorthand firmware
+
+GitHub Actions also passed against the exact published keyboard revisions,
+both pinned to module `4d57483`:
+
+- [Toucan run 41207174016](https://github.com/logaan/zmk-keyboard-toucan/actions/runs/41207174016),
+  commit `75766c4036d9f7d605aecdc40c306d875ca3bd12`: host checks,
+  keymap drawing, standalone left, dongle, right, left peripheral and reset
+  firmware all passed. Nonexpired downloads are
+  `qbf-toucan-firmware-build-51` (1,198,466 bytes) and
+  `qbf-toucan-keymap-build-51` (49,517 bytes).
+- [QBF run 41207175805](https://github.com/logaan/qbf-paintbrushes/actions/runs/41207175805),
+  commit `bf003371e5170bb608ad071af2ec883cf55582f4`: left, right and reset
+  firmware all passed. The nonexpired firmware download is
+  `qbf-paintbrush-build-26` (492,266 bytes).
+
+Both workflows completed successfully, including artifact merging. This
+confirms publication/build reproducibility; physical acceptance remains open.
+
 ## Previous publication baseline results
 
 - All 82 host tests in committed snapshot `764ed49` passed, including the 11
