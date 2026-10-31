@@ -51,6 +51,9 @@ int main(void) {
   assert(strstr(out, "Held:13456"));
   assert(strstr(out, "Buf:3"));
   assert(strstr(out, "1 12 13456"));
+  strcpy(b.pending, "12345678 12345678 12345678");
+  braille_small_screen(&e, &b, 4, 16, 0, out, sizeof(out));
+  assert(strstr(out, "... "));
   char guard[2] = {'x', 'z'};
   braille_small_screen(&e, &b, 4, 16, 0, guard, 1);
   assert(!guard[0] && guard[1] == 'z');

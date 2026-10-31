@@ -68,8 +68,15 @@ unsigned braille_small_screen(const struct braille_editor_snapshot *editor,
      * engine. The pending count makes truncation explicit. */
     const char *pending = braille->pending;
     size_t n = strlen(pending);
-    if (n > columns * 4)
+    if (n > columns * 4) {
       pending += n - columns * 4;
+      /* Never display a suffix of a cell as though it were a complete chord. */
+      while (*pending && *pending != ' ')
+        ++pending;
+      if (*pending)
+        ++pending;
+      add(body, sizeof(body), "... ");
+    }
     add(body, sizeof(body), pending);
   }
   /* The four-column OLED uses a one-row stage code, leaving fourteen rows
