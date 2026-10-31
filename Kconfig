@@ -59,4 +59,20 @@ config ZMK_BRAILLE_SEARCH_RESULTS
     default 16
     range 4 32
 
+config ZMK_BRAILLE_WIDGET
+    bool "Small-display Braille overlay"
+    depends on ZMK_BRAILLE_SETTINGS_UI && ZMK_DISPLAY
+    select LV_USE_LABEL
+    select LV_FONT_UNSCII_8
+    default n
+    help
+      Show the editor and pending/held input on a central display. The keyboard
+      must call braille_widget_init after creating its status screen.
+
+config ZMK_BRAILLE_WIDGET_LAYER
+    int "Layer showing the Braille overlay"
+    depends on ZMK_BRAILLE_WIDGET
+    default 0
+    range 0 31
+
 endif # ZMK_FEATURE_BRAILLE
