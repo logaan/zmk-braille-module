@@ -418,3 +418,163 @@ bool braille_grade2_match(const uint16_t *s, uint8_t count, uint8_t offset,
     }
     return true;
 }
+
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+/* Separate marker: the common word resolver falls back to Computer8, not UEB1.
+ * The raw 120 multi-cell spellings are intentional sequence ambiguities; all
+ * 62 single-cell contractions and every silent UEB indicator are excluded. */
+const struct braille_rule_table braille_rules_computer8_short_characters = {0};
+
+static char computer8_ascii(uint16_t cell) {
+    /* The production table is in complete printable ASCII order (33..126).
+     * Reuse its actual masks rather than introducing a second dot mapping. */
+    for (size_t i = 0; i < braille_rules_computer8_characters.count; ++i)
+        if (braille_rules_computer8_characters.rules[i].chords[0] == cell)
+            return (char)(33 + i);
+    return 0;
+}
+bool braille_computer8_cell_is_letter(uint16_t cell) {
+    char c = computer8_ascii(cell);
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+bool braille_computer8_cell_is_opening(uint16_t cell) {
+    char c = computer8_ascii(cell);
+    return c && strchr("\"'([{", c);
+}
+static bool c8_left(const uint16_t *s, unsigned pos) {
+    while (pos) {
+        char c = computer8_ascii(s[--pos]);
+        if (c == '-') return true;
+        if (!c || !strchr("\"'([{", c)) return false;
+    }
+    return true;
+}
+static bool c8_right(const uint16_t *s, unsigned n) {
+    for (unsigned i = 0; i < n; ++i) {
+        char c = computer8_ascii(s[i]);
+        if (c == '-') return true;
+        if (!c || !strchr("\"')]}.,;:!?", c)) return false;
+    }
+    return true;
+}
+static bool c8_possessive(const uint16_t *s, unsigned n) {
+    return n >= 2 && computer8_ascii(s[0]) == '\'' && computer8_ascii(s[1]) == 's' &&
+           c8_right(s + 2, n - 2);
+}
+/* Appendix membership explores only the same multi-cell spellings the hybrid
+ * may emit. It never erases commas as UEB capitals or reads digits as lower
+ * groupsigns. Fixed 33x64-bit reachability bounds memory and execution. */
+static bool c8_dictionary(const uint16_t *s, unsigned start, unsigned end,
+                          unsigned wanted_pos, const struct contraction *wanted,
+                          const char *text) {
+    size_t length = strlen(text);
+    if (length > 63 || end > BRAILLE_WORD_MAX_CELLS) return false;
+    uint64_t reachable[BRAILLE_WORD_MAX_CELLS + 1] = {0};
+    reachable[start] = 1;
+    for (unsigned i = start; i < end; ++i)
+        for (unsigned j = 0; j <= length; ++j) {
+            if (!(reachable[i] & (UINT64_C(1) << j))) continue;
+            for (unsigned k = 0; k <= sizeof(contractions) / sizeof(*contractions); ++k) {
+                const struct contraction *r = k < sizeof(contractions) / sizeof(*contractions)
+                    ? &contractions[k] : NULL;
+                unsigned n = r ? r->count : 1;
+                if (i == wanted_pos && r != wanted) continue;
+                if (i < wanted_pos && i + n > wanted_pos) continue;
+                if (r && (r->count < 2 || !matches(r, s + i, end - i))) continue;
+                if (r && r->condition == G2_FINAL && i == start) continue;
+                char one[2] = {computer8_ascii(s[i]), 0};
+                if (!r && !one[0]) continue;
+                const char *out = r ? r->text : one;
+                size_t len = strlen(out);
+                if (j + len <= length && !memcmp(text + j, out, len))
+                    reachable[i + n] |= UINT64_C(1) << (j + len);
+            }
+        }
+    return (reachable[end] & (UINT64_C(1) << length)) != 0;
+}
+static bool c8_short_longer(const uint16_t *s, unsigned count, unsigned pos,
+                            const struct contraction *wanted) {
+    unsigned start = pos, end = pos + wanted->count;
+    while (start && computer8_ascii(s[start - 1]) != '-') --start;
+    while (start < pos && c8_left(s, start + 1)) ++start;
+    while (end < count && !c8_right(s + end, count - end)) ++end;
+    if (!c8_left(s, start) || !c8_right(s + end, count - end)) return false;
+    /* Exact Appendix entries and their plural/possessive suffixes. */
+    for (unsigned k = 0; k < sizeof(longer_words) / sizeof(*longer_words); ++k) {
+        if (!strstr(longer_words[k], wanted->text)) continue;
+        unsigned begin = strchr(longer_words[k], '-') || longer_words[k][0] == '\'' ? 0 : start;
+        if (c8_dictionary(s, begin, end, pos, wanted, longer_words[k])) return true;
+        char extended[64];
+        size_t len = strlen(longer_words[k]);
+        if (len + 3 >= sizeof(extended)) continue;
+        memcpy(extended, longer_words[k], len);
+        strcpy(extended + len, "s");
+        if (c8_dictionary(s, begin, end, pos, wanted, extended)) return true;
+        strcpy(extended + len, "'s");
+        if (c8_dictionary(s, begin, end, pos, wanted, extended)) return true;
+    }
+    /* 10.9.3 productive extensions are eligible with Computer8 literal
+     * suffixes. No case folding changes the meaning of 8-dot capitals. */
+    char text[192];
+    unsigned used = 0, at = 0, after = 0;
+    for (unsigned i = start; i < end;) {
+        const struct contraction *best = NULL;
+        for (unsigned k = 0; k < sizeof(contractions) / sizeof(*contractions); ++k) {
+            const struct contraction *r = &contractions[k];
+            if (r->count < 2 || !matches(r, s + i, end - i) ||
+                (r->condition == G2_FINAL && i == start)) continue;
+            if (!best || r->count > best->count ||
+                (r->count == best->count && r->condition == G2_SHORT)) best = r;
+        }
+        if (i == pos) best = wanted;
+        char one[2] = {computer8_ascii(s[i]), 0};
+        const char *out = best ? best->text : one;
+        if (!out[0]) return false;
+        size_t len = strlen(out);
+        if (used + len >= sizeof(text)) return false;
+        if (i == pos) at = used;
+        memcpy(text + used, out, len); used += len;
+        if (i == pos) after = used;
+        i += best ? best->count : 1;
+    }
+    text[used] = 0;
+    bool vowel = text[after] && strchr("aeiouyAEIOUY", text[after]);
+    const char *word = wanted->text;
+    if (!strcmp(word, "braille") || !strcmp(word, "great")) return true;
+    if (!strcmp(word, "children") && !vowel) return true;
+    if (at == 0 && !vowel && (!strcmp(word, "blind") || !strcmp(word, "first") ||
+        !strcmp(word, "friend") || !strcmp(word, "good") || !strcmp(word, "letter") ||
+        !strcmp(word, "little") || !strcmp(word, "quick"))) return true;
+    if (!strcmp(text, "abouts") || !strcmp(text, "almosts") || !strcmp(text, "hims")) return false;
+    return at == 0 && (!strcmp(text + after, "s") || !strcmp(text + after, "'s"));
+}
+
+bool braille_computer8_short_match(const uint16_t *s, uint8_t count, uint8_t offset,
+                                  bool after_letter, struct braille_rule *out) {
+    if (offset >= count) return false;
+    const struct contraction *best = NULL;
+    for (unsigned i = 0; i < sizeof(contractions) / sizeof(*contractions); ++i) {
+        const struct contraction *r = &contractions[i];
+        if (r->count < 2 || !matches(r, s + offset, count - offset)) continue;
+        unsigned next = offset + r->count;
+        bool eligible = r->condition == G2_ANY ||
+            (r->condition == G2_FINAL && after_letter);
+        if (r->condition == G2_SHORT)
+            eligible = (c8_left(s, offset) && (c8_right(s + next, count - next) ||
+                         c8_possessive(s + next, count - next))) ||
+                       c8_short_longer(s, count, offset, r);
+        if (eligible && (!best || r->count > best->count ||
+            (r->count == best->count && r->condition == G2_SHORT))) best = r;
+    }
+    if (!best) return false;
+    *out = (struct braille_rule){.chord_count = best->count,
+                                 .class = BRAILLE_CLASS_LETTER};
+    memcpy(out->chords, s + offset, out->chord_count * sizeof(*s));
+    out->action_count = strlen(best->text);
+    for (unsigned i = 0; i < out->action_count; ++i)
+        out->actions[i] = (struct zmk_behavior_binding){
+            .behavior_dev = DEVICE_DT_NAME(DT_NODELABEL(kp)),
+            .param1 = (0x07UL << 16) | (best->text[i] - 'a' + 4)};
+    return true;
+}
+#endif /* CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT */

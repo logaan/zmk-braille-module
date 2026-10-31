@@ -78,11 +78,19 @@ void braille_engine_set_overrides(const struct braille_rule_table *overrides) {
     override_table = overrides;
 }
 
-static bool word_mode(void) {
-#ifdef CONFIG_ZMK_BRAILLE_GRADE2
-    return character_table == &braille_rules_ueb2_characters;
+static bool computer8_word_mode(void) {
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+    return character_table == &braille_rules_computer8_short_characters;
 #else
     return false;
+#endif
+}
+
+static bool word_mode(void) {
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+    return character_table == &braille_rules_ueb2_characters || computer8_word_mode();
+#else
+    return computer8_word_mode();
 #endif
 }
 
@@ -246,6 +254,7 @@ static const struct braille_rule *table_rule(const struct braille_rule_table *t,
 }
 
 static bool is_boundary(uint16_t cell, const struct braille_context *ctx) {
+    if (computer8_word_mode() && cell == 0x24) return true; /* Computer8 hyphen */
     if (braille_engine_is_whitespace(cell)) {
         return true;
     }
@@ -277,7 +286,8 @@ static void match_sequence(const uint16_t *seq, uint8_t count, const struct brai
                                                   NULL};
 #ifdef CONFIG_ZMK_BRAILLE_GRADE2
     if (word_mode())
-        sources[3] = &braille_rules_ueb1_characters;
+        sources[3] = computer8_word_mode() ? &braille_rules_computer8_characters
+                                         : &braille_rules_ueb1_characters;
 #endif
     memset(best, 0, sizeof(*best));
     *wait = false;
@@ -401,6 +411,16 @@ static int commit(const struct braille_rule *rule, enum braille_commit_cause cau
 }
 
 #ifdef CONFIG_ZMK_BRAILLE_GRADE2
+static bool contracted_match(const uint16_t *cells, uint8_t count, uint8_t offset,
+                             const struct braille_context *ctx, bool after_letter,
+                             struct braille_rule *out) {
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+    if (computer8_word_mode())
+        return braille_computer8_short_match(cells, count, offset, after_letter, out);
+#endif
+    return braille_grade2_match(cells, count, offset, ctx, after_letter, out);
+}
+
 /* Resolve the complete word through common rules and commit(), never a new
  * dispatch path. Word buffering supplies finite lookahead to the contraction
  * selector, while the existing matcher supplies UEB1 and override fallback. */
@@ -416,7 +436,7 @@ static int resolve_word(struct zmk_behavior_binding_event event) {
         bool wait;
         uint8_t orphan;
         match_sequence(cells + pos, count - pos, &context, true, &best, &wait, &orphan);
-        bool has = braille_grade2_match(cells, count, pos, &context, after_letter, &contracted);
+        bool has = contracted_match(cells, count, pos, &context, after_letter, &contracted);
         if (has &&
             (!best.rule || best.layer != LAYER_OVERRIDE || best.chords < contracted.chord_count)) {
             best.rule = &contracted;
@@ -424,7 +444,7 @@ static int resolve_word(struct zmk_behavior_binding_event event) {
         }
         /* 5.2–5.6: a final-letter groupsign wins over the symbol indicator.
          * Indicators themselves use the common silent-rule commit path. */
-        if (cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
+        if (!computer8_word_mode() && cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
             (!has || best.rule != &contracted)) {
             uint8_t n = 1;
             while (pos + n < count && cells[pos + n] == 0x30 && n < 3)
@@ -472,13 +492,26 @@ static int resolve_word(struct zmk_behavior_binding_event event) {
         int ret = commit(best.rule, BRAILLE_COMMIT_WORD_END, event);
         if (ret < 0 || generation != reset_generation)
             return ret;
-        if (numeric_indicator && context.grade1 != 2)
-            context.grade1 = 3;
-        if (hyphen && context.grade1 == 3)
-            context.grade1 = 0;
-        if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
-            context.grade1_symbol = false;
-        after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+        if (computer8_word_mode()) {
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+            after_letter = best.rule == &contracted || (best.layer != LAYER_OVERRIDE &&
+                braille_computer8_cell_is_letter(cells[pos + consumed - 1]));
+            /* Computer8's neutral rows still establish positions for user
+             * overrides; none of its punctuation is an invisible indicator. */
+            if (best.layer != LAYER_OVERRIDE)
+                context.word_start = cells[pos + consumed - 1] == 0x24 ||
+                    (context.word_start && best.rule != &contracted &&
+                     braille_computer8_cell_is_opening(cells[pos + consumed - 1]));
+#endif
+        } else {
+            if (numeric_indicator && context.grade1 != 2)
+                context.grade1 = 3;
+            if (hyphen && context.grade1 == 3)
+                context.grade1 = 0;
+            if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
+                context.grade1_symbol = false;
+            after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+        }
         pos += consumed;
     }
     return 0;
@@ -533,13 +566,13 @@ static int preview_rule(uint16_t held, struct braille_rule *out, bool *waiting,
 #ifdef CONFIG_ZMK_BRAILLE_GRADE2
         struct braille_rule contracted;
         if (word_mode()) {
-            bool has = braille_grade2_match(cells, n, pos, &ctx, after_letter, &contracted);
+            bool has = contracted_match(cells, n, pos, &ctx, after_letter, &contracted);
             if (has && (!best.rule || best.layer != LAYER_OVERRIDE ||
                         best.chords < contracted.chord_count)) {
                 best.rule = &contracted;
                 best.chords = contracted.chord_count;
             }
-            if (cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
+            if (!computer8_word_mode() && cells[pos] == 0x30 && best.layer != LAYER_OVERRIDE &&
                 (!has || best.rule != &contracted)) {
                 uint8_t k = 1;
                 while (pos + k < n && cells[pos + k] == 0x30 && k < 3)
@@ -573,6 +606,9 @@ static int preview_rule(uint16_t held, struct braille_rule *out, bool *waiting,
 #endif
         *waiting |= wait;
         if (!best.rule) {
+#ifdef CONFIG_ZMK_BRAILLE_GRADE2
+            after_letter = false; /* Mirror the real resolver after a reserved cell. */
+#endif
             ++pos;
             continue;
         }
@@ -586,13 +622,24 @@ static int preview_rule(uint16_t held, struct braille_rule *out, bool *waiting,
                       (best.chords >= 2 && cells[pos + best.chords - 1] == 0x24);
         enum braille_rule_class cls = best.rule->class;
         transition(&ctx, best.rule);
-        if (numeric && ctx.grade1 != 2)
-            ctx.grade1 = 3;
-        if (hyphen && ctx.grade1 == 3)
-            ctx.grade1 = 0;
-        if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
-            ctx.grade1_symbol = false;
-        after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+        if (computer8_word_mode()) {
+#ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
+            after_letter = best.rule == &contracted || (best.layer != LAYER_OVERRIDE &&
+                braille_computer8_cell_is_letter(cells[pos + best.chords - 1]));
+            if (best.layer != LAYER_OVERRIDE)
+                ctx.word_start = cells[pos + best.chords - 1] == 0x24 ||
+                    (ctx.word_start && best.rule != &contracted &&
+                     braille_computer8_cell_is_opening(cells[pos + best.chords - 1]));
+#endif
+        } else {
+            if (numeric && ctx.grade1 != 2)
+                ctx.grade1 = 3;
+            if (hyphen && ctx.grade1 == 3)
+                ctx.grade1 = 0;
+            if (cls != BRAILLE_CLASS_CAPS_INDICATOR)
+                ctx.grade1_symbol = false;
+            after_letter = cls == BRAILLE_CLASS_LETTER || cls == BRAILLE_CLASS_CAPITAL_LETTER;
+        }
 #endif
         pos += best.chords;
     }
