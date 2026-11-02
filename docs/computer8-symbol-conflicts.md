@@ -1,42 +1,37 @@
-# Computer8 shorthand: single-cell symbol review
+# Computer8 shorthand: category and symbol policy
 
-The blanket single-cell exclusion has been removed. **143 contraction entries
-are enabled:** all 120 multi-cell contractions and 23 alphabetic wordsigns.
-All 26 lowercase letter definitions agree between Computer8 and UEB fallback;
-using a letter as a standing-alone wordsign is normal contextual shorthand.
-For example, `b` can expand to `but`, while `b` within an ordinary word remains
-a letter. This is not a conflict between base letter definitions.
+Only **98 contraction entries are enabled** in 8-dot shorthand: **23 alphabetic
+wordsigns** and **75 shortforms**. All 26 lowercase letter definitions agree
+between Computer8 and UEB fallback. A shared letter can expand when standing
+alone, such as `b` becoming `but`, while remaining a letter within a word.
 
-**39 entries remain excluded**, covering **27 distinct cells**. They use
-cells that Computer8 assigns to digits or punctuation, rather than shared
-letters. Keeping the Computer8 symbol is the conservative policy pending
-review. The table records exact character output, not a claim that every
-human-language interpretation is unrelated. In particular, `&` and `and`
-express related meaning, but replacing a literal ampersand changes the host
-text and can break code or identifiers. That case remains explicit for review.
+**84 entries are excluded:** the 39 single-cell symbol contractions listed
+below, all 33 initial-letter contractions, and all 12 final-letter groupsigns.
+These excluded categories retain their literal Computer8 cells in this mode;
+ordinary UEB2 continues to support its full contraction set.
 
-The 71 multi-cell entries involving Computer8 symbol cells are still enabled.
-Their contextual sequence expansion is part of the requested shorthand mode;
-they are not candidates for removal merely because the literal sequence differs.
-Ordinary Computer8 mode remains available for literal input.
+The user selected the Computer8 meaning for every conflicting single-cell
+symbol and indicator pattern. The 39 single-cell entries cover 27 distinct
+cells. In particular, `&` and `and` have related meaning but different host
+text; this mode retains the ampersand for that single cell.
 
-## Enabled symbol-sequence ambiguities
+## Retained shortform ambiguities
 
-Keeping the 71 symbol-bearing multi-cell entries does not make their prefix
-meanings identical to Computer8. They remain enabled by the requested policy,
-with their genuine literal-sequence ambiguities documented for review. Examples:
+Of the 75 shortforms, **49 contain only shared letter cells** and **26 include
+Computer8 symbol cells**. Their expansion remains intentional under the selected
+shortform category. For example:
 
-| Dots | Literal Computer8 sequence | Shorthand expansion |
+| Dots | Literal Computer8 sequence | Shortform expansion |
 | --- | --- | --- |
-| 5 / 145 | `"d` | `day` |
-| 5 / 13456 | `"y` | `young` |
+| 23 / 14 | `2c` | `because` |
+| 124 / 34 | `f/` | `first` |
+| 16 / 1345 | `*n` | `children` |
 
-These longer matches take precedence over a single-letter wordsign. For
-example, an opening quote followed by the `d` cell can match `day` rather than
-be interpreted as an opening quote followed by the wordsign `do`. To enter
-literal text containing such sequences, select ordinary Computer8 **before**
-starting the word; changing mode discards the current pending buffer. All 71
-entries are marked `enabled_symbol_sequence_ambiguity` in the exhaustive JSON.
+To enter literal text containing such shortform spellings, select ordinary
+Computer8 before starting the word; changing mode discards the pending buffer.
+The removed initial-letter contractions no longer expand `"d` to `day` or
+`"y` to `young`. Alphabetic wordsigns can still apply in eligible quoted word
+contexts, so literal entry should use ordinary Computer8 when needed.
 
 ## Excluded single-cell entries
 

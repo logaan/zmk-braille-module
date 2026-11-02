@@ -45,6 +45,8 @@ def audit(root=ROOT):
         literal = ''.join(chr(value) for value in values)
         shared_letter = len(cells) == 1 and item['condition'] == 'ALPHA' and literal.isalpha()
         symbol_conflict = len(cells) == 1 and not shared_letter
+        shortform = item['condition'] == 'SHORT'
+        enabled = shared_letter or shortform
         rows.append({
             'contraction': item['text'], 'cells': cells,
             'dots': [dots(cell) for cell in cells],
@@ -54,11 +56,12 @@ def audit(root=ROOT):
             'input_kind': 'shared_letters' if literal.isalpha() else 'includes_computer8_symbols',
             'semantic_conflict': ('related_meaning_distinct_symbol_output' if symbol_conflict and literal == '&' and item['text'] == 'and'
                                   else 'different_symbol_definition' if symbol_conflict
-                                  else 'enabled_symbol_sequence_ambiguity' if not literal.isalpha()
+                                  else ('enabled_symbol_sequence_ambiguity' if enabled else 'excluded_symbol_sequence_ambiguity') if not literal.isalpha()
                                   else 'none_expected_contextual_shorthand'),
-            'decision': ('retain_computer8_symbol_pending_review' if symbol_conflict
+            'decision': ('retain_computer8_symbol' if symbol_conflict
                          else 'enabled_contextual_letter_wordsign' if shared_letter
-                         else 'enabled_contextual_multi_cell_expansion'),
+                         else 'enabled_contextual_shortform' if shortform
+                         else 'excluded_category_initial_or_final'),
         })
     sources = ['references/research/computer8.yaml', source,
                'src/braille_rules_computer8.c', 'src/braille_rules_nav.c', 'src/braille_rules_grade1.c']
@@ -70,19 +73,23 @@ def audit(root=ROOT):
         'shared_lowercase_letters': [{'letter': letter, 'cell': cell, 'dots': dots(cell)}
                                      for cell, letter in letters],
         'implementation_interpretation': {
-            'user_clarification': 'it should be a mode, just like ueb2 is now.',
-            'interpretation_not_verbatim_approval': 'Enable all 120 multi-cell contractions and the 23 contextual alphabetic wordsigns. Retain Computer8 digits and punctuation for the other 39 single-cell entries pending symbol-policy review. Original Computer8 stays unchanged.',
-            'remaining_review': 'Review the 39 single-cell symbol-based entries and three indicator meanings. Ampersand and and have related meaning but distinct host output; preserve the symbol pending review. The 71 multi-cell entries involving symbols remain enabled as requested, not removal candidates.',
-            'currently_enabled_multi_cell_expansions': 120,
+            'user_clarification': 'lets only keep Alphabetic wordsigns and shortforms in 8-dot shorthand',
+            'category_policy': 'Enable only the 23 alphabetic wordsigns and 75 shortforms. Exclude 33 initial-letter contractions, 12 final-letter groupsigns and 39 single-cell symbol entries. Retain Computer8 indicator meanings. Original UEB2 and Computer8 modes stay unchanged.',
+            'remaining_ambiguities': '26 enabled shortforms use Computer8 symbol cells. They intentionally expand in eligible contexts; ordinary Computer8 provides literal entry.',
+            'currently_enabled_multi_cell_expansions': 75,
             'currently_enabled_single_cell_wordsigns': 23,
             'currently_excluded_single_cell_contractions': 39,
+            'currently_excluded_multi_cell_contractions': 45,
             'explicit_prefix_required': False,
         },
         'counts': {
             'contractions': len(rows),
             'enabled_contractions': sum(r['decision'].startswith('enabled_') for r in rows),
-            'excluded_symbol_contractions': sum(r['decision'] == 'retain_computer8_symbol_pending_review' for r in rows),
-            'distinct_excluded_symbol_cells': len({r['cells'][0] for r in rows if r['decision'] == 'retain_computer8_symbol_pending_review'}),
+            'excluded_contractions': sum(not r['decision'].startswith('enabled_') for r in rows),
+            'enabled_symbol_sequence_ambiguities': sum(r['semantic_conflict'] == 'enabled_symbol_sequence_ambiguity' for r in rows),
+            'excluded_category_contractions': sum(r['decision'] == 'excluded_category_initial_or_final' for r in rows),
+            'excluded_symbol_contractions': sum(r['decision'] == 'retain_computer8_symbol' for r in rows),
+            'distinct_excluded_symbol_cells': len({r['cells'][0] for r in rows if r['decision'] == 'retain_computer8_symbol'}),
             'single_cell_contractions': sum(len(r['cells']) == 1 for r in rows),
             'multi_cell_contractions': sum(len(r['cells']) > 1 for r in rows),
             'identical_raw_outputs': sum(not r['raw_output_difference'] for r in rows),

@@ -351,6 +351,15 @@ static void test_shorthand(void) {
              reports[0].mods == 0 && reports[1].key == ZMK_HID_USAGE_ID(SPACE),
              "Symbol conflict changed Computer8 digit");
     begin_observation();
+    chord(0x010); chord(0x019); chord(0x010); chord(0x100);
+    /* Literal quotes surround the retained d wordsign; initial-letter day is gone. */
+    const uint32_t quoted[] = {SQT, D, O, SQT, SPACE};
+    __ASSERT(report_count == ARRAY_SIZE(quoted), "Removed initial contraction report count");
+    for (size_t i = 0; i < ARRAY_SIZE(quoted); ++i)
+        __ASSERT(reports[i].key == ZMK_HID_USAGE_ID(quoted[i]) &&
+                 reports[i].mods == ((i == 0 || i == 3) ? MOD_LSFT : 0),
+                 "Removed initial contraction changed literal quotes/wordsign");
+    begin_observation();
     chord(0x001); chord(0x003); chord(0x101); /* navigation discards word */
     expect_output(LEFT_ARROW, 0, false);
     begin_observation();

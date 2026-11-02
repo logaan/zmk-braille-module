@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Contextual letter wordsigns and multi-cell shorthand with Computer8 symbols."""
+"""Only alphabetic wordsigns and shortforms extend literal Computer8."""
 import json
 import os
 from pathlib import Path
@@ -70,9 +70,8 @@ class Computer8Short(unittest.TestCase):
         self.check([3,12,1,256],'b/a ')
         self.check([1,12,3,256],'a/b ')
         self.check([16,3,16,256],'"but" ')
-        # Existing multi-cell contractions retain longest-match priority even
-        # when their prefix is also a Computer8 punctuation character.
-        self.check([16,25,16,256],'day" ')
+        # Removed initial-letter contractions now allow quoted wordsigns.
+        self.check([16,25,16,256],'"do" ')
         self.check([61,36,3,256],'you-but ')
         self.check([61,40,256],'you. ')
         self.assertEqual(self.observe([3,'reset'])['keys'],[])
@@ -82,14 +81,21 @@ class Computer8Short(unittest.TestCase):
         # Equal-length user override remains ahead of a factory wordsign.
         self.check(['override','3','x',3,256],'x ')
 
-    def test_all_120_multi_cell_contractions(self):
-        rows=[r for r in ROWS if len(r['cells'])>1]
-        self.assertEqual(len(rows),120)
+    def test_all_75_shortforms(self):
+        rows=[r for r in ROWS if r['condition']=='SHORT']
+        self.assertEqual(len(rows),75)
         for r in rows:
-            seq=r['cells']; text=r['text']
-            if r['condition']=='ANY': seq=[1]+seq+[1];text='a'+text+'a'
-            if r['condition']=='FINAL': seq=[1]+seq;text='a'+text
-            with self.subTest(text=r['text']): self.check(seq+[256],text+' ')
+            with self.subTest(text=r['text']): self.check(r['cells']+[256],r['text']+' ')
+    def test_all_45_removed_initial_and_final_contractions_are_literal(self):
+        rows=[r for r in ROWS if r['section'] in ('10.7','10.8')]
+        self.assertEqual(len(rows),45)
+        for r in rows:
+            # Enclosing letters avoid the independent standing-alone wordsigns.
+            seq=[1]+r['cells']+[1,256]
+            with self.subTest(text=r['text']):
+                self.assertEqual(self.observe(seq)['keys'],self.observe(seq,'computer8')['keys'])
+                self.assertEqual(self.observe([1]+r['cells'][:-1]+['preview',r['cells'][-1]])['keys'],
+                                 self.observe([r['cells'][-1]],'computer8')['keys'])
     def test_literal_indicators_uppercase_digits_and_ascii_boundaries(self):
         for seq,text in [([32,32,1],',,a'),([48,48,3],';;b'),([60,1,3],'#ab'),
                          ([0x43,1],'Ba'),([0x41,0x43],'AB'),([2,6,18],'123'),
@@ -119,6 +125,17 @@ class Computer8Short(unittest.TestCase):
         # A six-dot cell used as a one-cell UEB groupsign is instead its
         # Computer8 character, and cannot justify an Appendix contraction.
         self.check([7,0x14,5,7,23,256],'l9klr ')
+
+    def test_removed_categories_cannot_license_longer_shortforms(self):
+        # Neither the Appendix search nor the productive decoder may decode
+        # removed groupsigns to justify a shortform in a longer word.
+        friend=next(r['cells'] for r in ROWS if r['text']=='friend')
+        good=next(r['cells'] for r in ROWS if r['text']=='good')
+        ness=next(r['cells'] for r in ROWS if r['text']=='ness')
+        for seq in (good+ness,friend+ness):
+            with self.subTest(seq=seq):
+                self.assertEqual(self.observe(seq+[256])['keys'],
+                                 self.observe(seq+[256],'computer8')['keys'])
 
     def test_productive_shortforms_require_letter_sequences(self):
         productive = ('braille', 'great', 'children', 'blind', 'first',

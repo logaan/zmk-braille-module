@@ -2,7 +2,7 @@
 
 `computer8_short` is a separate, optional mode displayed as **8dot+short**
 (**8SHR** on the narrow OLED). It is a project-defined hybrid: Computer8 cells
-plus UEB2 multi-cell contractions and contextual letter wordsigns. It is not an assertion that
+plus UEB2 shortforms and contextual alphabetic wordsigns. It is not an assertion that
 standard eight-dot computer Braille uses UEB contractions.
 
 Enable both `CONFIG_ZMK_BRAILLE_GRADE2=y` and
@@ -48,20 +48,17 @@ mode: `ab` becoming `about` is the intended feature. The earlier TaskDown
 statement that all 182 entries conflict used an overly strict literal-preservation
 criterion and is superseded by the clarified review.
 
-The entries divide into 23 single-letter contextual wordsigns and 49 all-letter
-multi-cell shortforms, plus 39 single-cell and 71 multi-cell entries involving
-Computer8 digits or punctuation. The 71 multi-cell entries are retained as
-intentional shorthand expansions. The 39 single-cell entries have distinct
-Computer8 symbol outputs; for example, dots 35 mean `9` in Computer8 but can
-mean `in` in UEB2.
+The mode enables exactly two categories: **23 alphabetic wordsigns** and
+**75 shortforms**, for **98 contraction entries**. Initial-letter contractions,
+final-letter groupsigns, strong wordsigns/contractions/groupsigns and all lower
+wordsigns/groupsigns are excluded. This supersedes the earlier 143-entry policy.
 
-The reassessed implementation enables all 23 shared-letter wordsigns and keeps
-all 120 multi-cell mappings enabled under their contextual rules: 143 entries
-in total. The remaining 39 single-cell symbol contractions stay excluded to
-preserve Computer8 digits and punctuation. Their exact cell meanings and
-context are listed in the [symbol conflict report](computer8-symbol-conflicts.md).
-For example, `&` and the word `and` are related in meaning but produce different
-host text; they are documented as an output distinction, not unrelated concepts.
+For example, `ab` still expands to `about`, while the former initial-letter
+sequence dots 5 / 145 no longer expands to `day`; the quote remains
+Computer8 punctuation and `d` follows the alphabetic wordsign rules. Shortforms themselves can contain symbol cells, such as
+`al?` for `although`; their accepted contextual expansions remain enabled.
+The exact excluded symbol definitions and category policy are in the
+[symbol report](computer8-symbol-conflicts.md).
 
 To type a literal standalone letter such as `b` or `y`, select ordinary
 Computer8 before starting the word. No UEB Grade 1 escape is introduced in

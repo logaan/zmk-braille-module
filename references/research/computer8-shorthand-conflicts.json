@@ -141,17 +141,21 @@
     }
   ],
   "implementation_interpretation": {
-    "user_clarification": "it should be a mode, just like ueb2 is now.",
-    "interpretation_not_verbatim_approval": "Enable all 120 multi-cell contractions and the 23 contextual alphabetic wordsigns. Retain Computer8 digits and punctuation for the other 39 single-cell entries pending symbol-policy review. Original Computer8 stays unchanged.",
-    "remaining_review": "Review the 39 single-cell symbol-based entries and three indicator meanings. Ampersand and and have related meaning but distinct host output; preserve the symbol pending review. The 71 multi-cell entries involving symbols remain enabled as requested, not removal candidates.",
-    "currently_enabled_multi_cell_expansions": 120,
+    "user_clarification": "lets only keep Alphabetic wordsigns and shortforms in 8-dot shorthand",
+    "category_policy": "Enable only the 23 alphabetic wordsigns and 75 shortforms. Exclude 33 initial-letter contractions, 12 final-letter groupsigns and 39 single-cell symbol entries. Retain Computer8 indicator meanings. Original UEB2 and Computer8 modes stay unchanged.",
+    "remaining_ambiguities": "26 enabled shortforms use Computer8 symbol cells. They intentionally expand in eligible contexts; ordinary Computer8 provides literal entry.",
+    "currently_enabled_multi_cell_expansions": 75,
     "currently_enabled_single_cell_wordsigns": 23,
     "currently_excluded_single_cell_contractions": 39,
+    "currently_excluded_multi_cell_contractions": 45,
     "explicit_prefix_required": false
   },
   "counts": {
     "contractions": 182,
-    "enabled_contractions": 143,
+    "enabled_contractions": 98,
+    "excluded_contractions": 84,
+    "enabled_symbol_sequence_ambiguities": 26,
+    "excluded_category_contractions": 45,
     "excluded_symbol_contractions": 39,
     "distinct_excluded_symbol_cells": 27,
     "single_cell_contractions": 62,
@@ -567,7 +571,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "out",
@@ -583,7 +587,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "shall",
@@ -599,7 +603,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "still",
@@ -615,7 +619,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "this",
@@ -631,7 +635,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "which",
@@ -647,7 +651,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "be",
@@ -663,7 +667,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "enough",
@@ -679,7 +683,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "his",
@@ -695,7 +699,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "in",
@@ -711,7 +715,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "was",
@@ -727,7 +731,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "were",
@@ -743,7 +747,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "and",
@@ -759,7 +763,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "related_meaning_distinct_symbol_output",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "for",
@@ -775,7 +779,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "of",
@@ -791,7 +795,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "the",
@@ -807,7 +811,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "with",
@@ -823,7 +827,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ar",
@@ -839,7 +843,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ch",
@@ -855,7 +859,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ed",
@@ -871,7 +875,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "er",
@@ -887,7 +891,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "gh",
@@ -903,7 +907,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ing",
@@ -919,7 +923,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ou",
@@ -935,7 +939,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ow",
@@ -951,7 +955,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "sh",
@@ -967,7 +971,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "st",
@@ -983,7 +987,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "th",
@@ -999,7 +1003,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "wh",
@@ -1015,7 +1019,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "be",
@@ -1031,7 +1035,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "con",
@@ -1047,7 +1051,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "dis",
@@ -1063,7 +1067,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "bb",
@@ -1079,7 +1083,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "cc",
@@ -1095,7 +1099,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ea",
@@ -1111,7 +1115,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "ff",
@@ -1127,7 +1131,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "gg",
@@ -1143,7 +1147,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "en",
@@ -1159,7 +1163,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "in",
@@ -1175,7 +1179,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "different_symbol_definition",
-      "decision": "retain_computer8_symbol_pending_review"
+      "decision": "retain_computer8_symbol"
     },
     {
       "contraction": "cannot",
@@ -1192,8 +1196,8 @@
       "computer8_literal": "_c",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "character",
@@ -1210,8 +1214,8 @@
       "computer8_literal": "\"*",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "day",
@@ -1228,8 +1232,8 @@
       "computer8_literal": "\"d",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ever",
@@ -1246,8 +1250,8 @@
       "computer8_literal": "\"e",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "father",
@@ -1264,8 +1268,8 @@
       "computer8_literal": "\"f",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "had",
@@ -1282,8 +1286,8 @@
       "computer8_literal": "_h",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "here",
@@ -1300,8 +1304,8 @@
       "computer8_literal": "\"h",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "know",
@@ -1318,8 +1322,8 @@
       "computer8_literal": "\"k",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "lord",
@@ -1336,8 +1340,8 @@
       "computer8_literal": "\"l",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "many",
@@ -1354,8 +1358,8 @@
       "computer8_literal": "_m",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "mother",
@@ -1372,8 +1376,8 @@
       "computer8_literal": "\"m",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "name",
@@ -1390,8 +1394,8 @@
       "computer8_literal": "\"n",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "one",
@@ -1408,8 +1412,8 @@
       "computer8_literal": "\"o",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ought",
@@ -1426,8 +1430,8 @@
       "computer8_literal": "\"|",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "part",
@@ -1444,8 +1448,8 @@
       "computer8_literal": "\"p",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "question",
@@ -1462,8 +1466,8 @@
       "computer8_literal": "\"q",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "right",
@@ -1480,8 +1484,8 @@
       "computer8_literal": "\"r",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "some",
@@ -1498,8 +1502,8 @@
       "computer8_literal": "\"s",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "spirit",
@@ -1516,8 +1520,8 @@
       "computer8_literal": "_s",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "their",
@@ -1534,8 +1538,8 @@
       "computer8_literal": "_!",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "there",
@@ -1552,8 +1556,8 @@
       "computer8_literal": "\"!",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "these",
@@ -1570,8 +1574,8 @@
       "computer8_literal": "~!",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "those",
@@ -1588,8 +1592,8 @@
       "computer8_literal": "~?",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "through",
@@ -1606,8 +1610,8 @@
       "computer8_literal": "\"?",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "time",
@@ -1624,8 +1628,8 @@
       "computer8_literal": "\"t",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "under",
@@ -1642,8 +1646,8 @@
       "computer8_literal": "\"u",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "upon",
@@ -1660,8 +1664,8 @@
       "computer8_literal": "~u",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "where",
@@ -1678,8 +1682,8 @@
       "computer8_literal": "\":",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "whose",
@@ -1696,8 +1700,8 @@
       "computer8_literal": "~:",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "word",
@@ -1714,8 +1718,8 @@
       "computer8_literal": "~w",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "work",
@@ -1732,8 +1736,8 @@
       "computer8_literal": "\"w",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "world",
@@ -1750,8 +1754,8 @@
       "computer8_literal": "_w",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "young",
@@ -1768,8 +1772,8 @@
       "computer8_literal": "\"y",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ance",
@@ -1786,8 +1790,8 @@
       "computer8_literal": ".e",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ence",
@@ -1804,8 +1808,8 @@
       "computer8_literal": ";e",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ful",
@@ -1822,8 +1826,8 @@
       "computer8_literal": ";l",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ity",
@@ -1840,8 +1844,8 @@
       "computer8_literal": ";y",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "less",
@@ -1858,8 +1862,8 @@
       "computer8_literal": ".s",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ment",
@@ -1876,8 +1880,8 @@
       "computer8_literal": ";t",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ness",
@@ -1894,8 +1898,8 @@
       "computer8_literal": ";s",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ong",
@@ -1912,8 +1916,8 @@
       "computer8_literal": ";g",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ound",
@@ -1930,8 +1934,8 @@
       "computer8_literal": ".d",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "ount",
@@ -1948,8 +1952,8 @@
       "computer8_literal": ".t",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "sion",
@@ -1966,8 +1970,8 @@
       "computer8_literal": ".n",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "tion",
@@ -1984,8 +1988,8 @@
       "computer8_literal": ";n",
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
-      "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "semantic_conflict": "excluded_symbol_sequence_ambiguity",
+      "decision": "excluded_category_initial_or_final"
     },
     {
       "contraction": "about",
@@ -2003,7 +2007,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "above",
@@ -2023,7 +2027,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "according",
@@ -2041,7 +2045,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "across",
@@ -2061,7 +2065,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "after",
@@ -2079,7 +2083,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "afternoon",
@@ -2099,7 +2103,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "afterward",
@@ -2119,7 +2123,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "again",
@@ -2137,7 +2141,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "against",
@@ -2157,7 +2161,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "almost",
@@ -2177,7 +2181,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "already",
@@ -2197,7 +2201,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "also",
@@ -2215,7 +2219,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "although",
@@ -2235,7 +2239,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "altogether",
@@ -2255,7 +2259,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "always",
@@ -2275,7 +2279,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "because",
@@ -2293,7 +2297,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "before",
@@ -2311,7 +2315,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "behind",
@@ -2329,7 +2333,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "below",
@@ -2347,7 +2351,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "beneath",
@@ -2365,7 +2369,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "beside",
@@ -2383,7 +2387,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "between",
@@ -2401,7 +2405,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "beyond",
@@ -2419,7 +2423,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "blind",
@@ -2437,7 +2441,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "braille",
@@ -2457,7 +2461,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "children",
@@ -2475,7 +2479,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "conceive",
@@ -2495,7 +2499,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "conceiving",
@@ -2517,7 +2521,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "could",
@@ -2535,7 +2539,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "deceive",
@@ -2555,7 +2559,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "deceiving",
@@ -2577,7 +2581,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "declare",
@@ -2597,7 +2601,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "declaring",
@@ -2619,7 +2623,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "either",
@@ -2637,7 +2641,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "first",
@@ -2655,7 +2659,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "friend",
@@ -2673,7 +2677,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "good",
@@ -2691,7 +2695,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "great",
@@ -2711,7 +2715,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "herself",
@@ -2731,7 +2735,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "him",
@@ -2749,7 +2753,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "himself",
@@ -2769,7 +2773,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "immediate",
@@ -2789,7 +2793,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "its",
@@ -2807,7 +2811,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "itself",
@@ -2825,7 +2829,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "letter",
@@ -2843,7 +2847,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "little",
@@ -2861,7 +2865,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "much",
@@ -2879,7 +2883,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "must",
@@ -2897,7 +2901,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "myself",
@@ -2917,7 +2921,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "necessary",
@@ -2937,7 +2941,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "neither",
@@ -2957,7 +2961,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "oneself",
@@ -2977,7 +2981,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "ourselves",
@@ -2999,7 +3003,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "paid",
@@ -3017,7 +3021,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "perceive",
@@ -3039,7 +3043,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "perceiving",
@@ -3063,7 +3067,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "perhaps",
@@ -3083,7 +3087,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "quick",
@@ -3101,7 +3105,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "receive",
@@ -3121,7 +3125,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "receiving",
@@ -3143,7 +3147,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "rejoice",
@@ -3163,7 +3167,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "rejoicing",
@@ -3185,7 +3189,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "said",
@@ -3203,7 +3207,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "should",
@@ -3221,7 +3225,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "such",
@@ -3239,7 +3243,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "themselves",
@@ -3261,7 +3265,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "thyself",
@@ -3281,7 +3285,7 @@
       "raw_output_difference": true,
       "input_kind": "includes_computer8_symbols",
       "semantic_conflict": "enabled_symbol_sequence_ambiguity",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "today",
@@ -3299,7 +3303,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "together",
@@ -3319,7 +3323,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "tomorrow",
@@ -3337,7 +3341,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "tonight",
@@ -3355,7 +3359,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "would",
@@ -3373,7 +3377,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "your",
@@ -3391,7 +3395,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "yourself",
@@ -3411,7 +3415,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     },
     {
       "contraction": "yourselves",
@@ -3433,7 +3437,7 @@
       "raw_output_difference": true,
       "input_kind": "shared_letters",
       "semantic_conflict": "none_expected_contextual_shorthand",
-      "decision": "enabled_contextual_multi_cell_expansion"
+      "decision": "enabled_contextual_shortform"
     }
   ]
 }

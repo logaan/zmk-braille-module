@@ -421,8 +421,8 @@ bool braille_grade2_match(const uint16_t *s, uint8_t count, uint8_t offset,
 
 #ifdef CONFIG_ZMK_BRAILLE_COMPUTER8_SHORT
 /* Separate marker: the common word resolver falls back to Computer8, not UEB1.
- * All 120 multi-cell spellings and the 23 shared-letter wordsigns are
- * contextual shorthand. Single-cell symbol contractions and silent UEB
+ * Only shortforms and shared-letter wordsigns are contextual shorthand.
+ * Initial/final contractions, single-cell symbol contractions and silent UEB
  * indicators retain their distinct Computer8 meanings instead. */
 const struct braille_rule_table braille_rules_computer8_short_characters = {0};
 
@@ -473,7 +473,7 @@ static bool c8_possessive(const uint16_t *s, unsigned n) {
     return n >= 2 && computer8_ascii(s[0]) == '\'' && computer8_ascii(s[1]) == 's' &&
            c8_right(s + 2, n - 2);
 }
-/* Appendix membership explores only the same multi-cell spellings the hybrid
+/* Appendix membership explores only the same shortform spellings the hybrid
  * may emit. It never erases commas as UEB capitals or reads digits as lower
  * groupsigns. Fixed 33x64-bit reachability bounds memory and execution. */
 static bool c8_dictionary(const uint16_t *s, unsigned start, unsigned end,
@@ -492,8 +492,7 @@ static bool c8_dictionary(const uint16_t *s, unsigned start, unsigned end,
                 unsigned n = r ? r->count : 1;
                 if (i == wanted_pos && r != wanted) continue;
                 if (i < wanted_pos && i + n > wanted_pos) continue;
-                if (r && (r->count < 2 || !matches(r, s + i, end - i))) continue;
-                if (r && r->condition == G2_FINAL && i == start) continue;
+                if (r && (r->condition != G2_SHORT || !matches(r, s + i, end - i))) continue;
                 char one[2] = {computer8_ascii(s[i]), 0};
                 if (!r && !one[0]) continue;
                 const char *out = r ? r->text : one;
@@ -533,8 +532,7 @@ static bool c8_short_longer(const uint16_t *s, unsigned count, unsigned pos,
         const struct contraction *best = NULL;
         for (unsigned k = 0; k < sizeof(contractions) / sizeof(*contractions); ++k) {
             const struct contraction *r = &contractions[k];
-            if (r->count < 2 || !matches(r, s + i, end - i) ||
-                (r->condition == G2_FINAL && i == start)) continue;
+            if (r->condition != G2_SHORT || !matches(r, s + i, end - i)) continue;
             if (!best || r->count > best->count ||
                 (r->count == best->count && r->condition == G2_SHORT)) best = r;
         }
@@ -575,17 +573,17 @@ static bool c8_short_longer(const uint16_t *s, unsigned count, unsigned pos,
 
 bool braille_computer8_short_match(const uint16_t *s, uint8_t count, uint8_t offset,
                                   bool after_letter, struct braille_rule *out) {
+    (void)after_letter;
     if (offset >= count) return false;
     const struct contraction *best = NULL;
     for (unsigned i = 0; i < sizeof(contractions) / sizeof(*contractions); ++i) {
         const struct contraction *r = &contractions[i];
         bool shared_wordsign = r->count == 1 && r->condition == G2_ALPHA &&
             letter(r->cells[0]) && letter(r->cells[0]) == computer8_ascii(r->cells[0]);
-        if ((r->count < 2 && !shared_wordsign) ||
+        if ((r->condition != G2_SHORT && !shared_wordsign) ||
             !matches(r, s + offset, count - offset)) continue;
         unsigned next = offset + r->count;
-        bool eligible = r->condition == G2_ANY ||
-            (r->condition == G2_FINAL && after_letter);
+        bool eligible = false;
         if (shared_wordsign)
             eligible = c8_left(s, offset) && (c8_right(s + next, count - next) ||
                         c8_apostrophe_suffix(s + next, count - next));

@@ -26,9 +26,9 @@
 #colbreak()
 #chord-section("Navigation and Editing", chords)
 #block(inset: 3pt)[
-  #text(size: 8pt)[*8-dot shorthand:* use the UEB2 multi-cell contractions and
-  23 letter wordsigns (standing-alone b → but, y → you). Single-cell symbol
-  contractions remain Computer8 digits/punctuation. Ordinary 8-dot stays literal.]
+  #text(size: 8pt)[*8-dot shorthand:* use only the 75 UEB2 shortforms and
+  23 alphabetic wordsigns (ab → about, b → but, y → you). Other contraction
+  categories are excluded. Ordinary 8-dot stays literal.]
 ]
 #for section in ueb2 { word-section(section) }
 
