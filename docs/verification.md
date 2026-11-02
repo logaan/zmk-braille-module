@@ -3,6 +3,32 @@
 Software evidence is separate from physical acceptance. These checks do not
 flash any board or claim Bluetooth, panel, macOS, or VoiceOver acceptance.
 
+## Wordsigns and shortforms only
+
+Runtime `f7d4705c46f417d05f95518d8311e8fa3a5bd244` narrows Computer8 shorthand
+to 23 alphabetic wordsigns and 75 shortforms. The 33 initial-letter and 12
+final-letter contractions now fall back to Computer8; the main matcher and
+both longer-word helpers enforce this category choice. UEB2 keeps its full set.
+
+All **96 host tests pass**, along with the native HID check. Targeted tests
+cover all 98 accepted entries, all 45 newly removed entries,
+preview fallback, and indirect decoder regressions. Native HID verifies that
+quoted `d` uses the retained alphabetic wordsign (`"do"`) rather than the
+removed initial-letter contraction `day`. The updated two-page cheatsheet was
+compiled and visually checked.
+
+Clean firmware builds and integrated checks pass:
+
+| Target | Flash bytes | RAM bytes |
+| --- | ---: | ---: |
+| Toucan dongle | 603708 | 228666 |
+| Toucan standalone with Studio | 545768 | 163702 |
+| QBF left | 408680 | 114132 |
+
+Pushed Toucan `6247db4` and QBF `57e2fc3` pin this runtime; aggregate commit
+`897e44f` is local (no remote). Logs and firmware are in
+`build/narrow-shorthand-integration/`. No boards were flashed.
+
 ## Shared-letter wordsign reassessment
 
 Runtime snapshot `e52269e` replaces the blanket single-cell exclusion with
